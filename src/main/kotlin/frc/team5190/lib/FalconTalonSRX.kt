@@ -1,9 +1,6 @@
 package frc.team5190.lib
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced
+import com.ctre.phoenix.motorcontrol.*
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import frc.team5190.lib.utils.EvictingQueue
 
@@ -33,11 +30,11 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
             field = value
         }
 
-//    var sensorPhase = false
-//        set(value) {
-//            setSensorPhase(value)
-//            field = value
-//        }
+    var encoderPhase = false
+        set(value) {
+            setSensorPhase(value)
+            field = value
+        }
 
     var overrideLimitSwitchesEnable = false
         set(value) {
@@ -69,11 +66,11 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
             field = value
         }
 
-//    var neutralMode = NeutralMode.Coast
-//        set(value) {
-//            setNeutralMode(value)
-//            field = value
-//        }
+    var brakeMode = NeutralMode.Coast
+        set(value) {
+            setNeutralMode(value)
+            field = value
+        }
 
     var closedLoopTolerance = 0
         set(value) {
@@ -93,12 +90,6 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
             field = value
         }
 
-    var nominalOutput = 0.0
-        set(value) {
-            nominalFwdOutput = value
-            nominalRevOutput = -value
-            field = value
-        }
 
     var peakFwdOutput = 1.0
         set(value) {
@@ -109,13 +100,6 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
     var peakRevOutput = -1.0
         set(value) {
             configPeakOutputReverse(value, timeoutMs)
-            field = value
-        }
-
-    var peakOutput = 1.0
-        set(value) {
-            peakFwdOutput = value
-            peakRevOutput = -value
             field = value
         }
 
@@ -136,6 +120,8 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
             configSelectedFeedbackSensor(value, 0, timeoutMs)
             field = value
         }
+
+
 
     var lowPeakCurrent = 0
     var highPeakCurrent = 0
@@ -168,11 +154,6 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
         } else MotorState.UNKNOWN
     }
 
-    private fun limitCurrent(): MotorState {
-        addToCurrentBuffer(outputCurrent)
-        return motorState
-    }
-
     fun setLimitSwitch(source: LimitSwitchSource, normal: LimitSwitchNormal) {
         configForwardLimitSwitchSource(source, normal, timeoutMs)
         configReverseLimitSwitchSource(source, normal, timeoutMs)
@@ -182,6 +163,11 @@ class FalconTalonSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
         setStatusFramePeriod(frame, periodMs, timeoutMs)
     }
 
+
+    private fun limitCurrent(): MotorState {
+        addToCurrentBuffer(outputCurrent)
+        return motorState
+    }
 
     private fun addToCurrentBuffer(amps: Double) = currentBuffer.add(amps)
 }
