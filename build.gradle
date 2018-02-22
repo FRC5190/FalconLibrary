@@ -30,7 +30,6 @@ repositories {
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     compile wpilib()
     compile ctre()
     compile navx()
@@ -49,7 +48,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
+    gradleVersion = '4.5.1'
 }
 
 compileKotlin {
