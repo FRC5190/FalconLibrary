@@ -1,51 +1,46 @@
-plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.21"
-    id "java"
-    id "eclipse"
-    id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.02.17"
-}
+buildscript {
+    ext.kotlin_version = '1.2.60'
 
-def TEAM = 5190
-def ROBOT_CLASS = "frc.team5190.robot.Robot"
-
-// Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
-deploy {
-    targets {
-        target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
-        }
+    repositories {
+        mavenCentral()
     }
-    artifacts {
-        artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
-            targets << "roborio"
-        }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'org.junit.platform.gradle.plugin'
 
 repositories {
+    maven { url "http://first.wpi.edu/FRC/roborio/maven/release" }
+    maven { url "https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2" }
     mavenCentral()
 }
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
-    compile wpilib()
-    compile ctre()
-    compile navx()
-    compile openrio.powerup.matchData()
-    compile pathfinder()
+    compile "edu.wpi.first.wpilibj:wpilibj-java:2018.4.1"
+    compile "edu.wpi.first.wpilibj:wpilibj-jni:2018.4.1"
+    compile "edu.wpi.first.wpiutil:wpiutil-java:3.2.0"
+    compile "edu.wpi.first.ntcore:ntcore-java:4.1.0"
+    compile "openrio.mirror.third.ctre:CTRE-phoenix-java:5.3.1.0"
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3'
+
+    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'org.knowm.xchart:xchart:3.2.2'
+
+    testCompile 'junit:junit:4.12'
 }
 
-// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
-// in order to make them all available at runtime. Also adding the manifest so WPILib
-// knows where to look for our Robot Class.
-jar {
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
-}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.5.1'
