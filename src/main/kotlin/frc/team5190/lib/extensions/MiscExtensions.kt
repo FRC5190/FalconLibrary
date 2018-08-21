@@ -16,6 +16,6 @@ fun CANifier.setLEDOutput(r: Int, g: Int, b: Int) {
     setLEDOutput(b * (1.0 / 255.0), CANifier.LEDChannel.LEDChannelC)
 }
 
-fun Pair<Double, Double>.l() = this.first
-fun Pair<Double, Double>.r() = this.second
+val Pair<Double, Double>.l get() = this.first
+val Pair<Double, Double>.r get() = this.second
 
