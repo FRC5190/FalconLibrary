@@ -158,17 +158,15 @@ fun <F, T> processedState(states: List<State<out F>>, processing: (List<F>) -> T
                 }
 
             override fun initWhenUsed(context: CoroutineContext) = synchronized(listenSync) {
-                runBlocking {
-                    handle = disposableHandle(states.map { state ->
-                        state.invokeOnChange(context) { value ->
-                            val newValues = states.map { stateVal -> if (stateVal == state) value else stateVal.value }
-                            synchronized(listenSync) {
-                                changeValue(processing(newValues))
-                            }
+                handle = disposableHandle(states.map { state ->
+                    state.invokeOnChange(context) { value ->
+                        val newValues = states.map { stateVal -> if (stateVal == state) value else stateVal.value }
+                        synchronized(listenSync) {
+                            changeValue(processing(newValues))
                         }
-                    })
-                    changeValue(processing(states.map { it.value }))
-                }
+                    }
+                })
+                changeValue(processing(states.map { it.value }))
             }
 
             override fun disposeWhenUnused() {
