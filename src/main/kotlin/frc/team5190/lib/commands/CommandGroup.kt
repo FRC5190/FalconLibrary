@@ -1,7 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.StateImpl
-import frc.team5190.lib.utils.State
+import frc.team5190.lib.utils.variableState
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
@@ -21,17 +20,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
     private var parentCommandGroup: CommandGroup? = null
     private lateinit var commandGroupHandler: CommandGroupHandler
 
-    private inner class GroupCondition : StateImpl<Boolean>(false) {
-        fun invoke() {
-            internalValue = true
-        }
-
-        fun reset() {
-            internalValue = false
-        }
-    }
-
-    private val groupCondition = GroupCondition()
+    private val groupCondition = variableState(false)
 
     init {
         updateFrequency = 0
@@ -45,8 +34,8 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
     override suspend fun initialize0() {
         super.initialize0()
         commandGroupHandler = if (parentCommandGroup != null) NestedCommandGroupHandler() else BaseCommandGroupHandler()
-        groupCondition.reset()
-        
+        groupCondition.value = false
+
         // Start this group
 
         commandTasks = initTasks()
@@ -155,7 +144,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                         }
                     } while (nextTask != null)
                     if (task.group.commandTasks.isEmpty()) {
-                        task.group.groupCondition.invoke()
+                        task.group.groupCondition.value = true
                         return // command group finished
                     }
                     task.group.handleFinishEvent(event.stopTime)

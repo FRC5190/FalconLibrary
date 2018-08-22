@@ -1,12 +1,17 @@
 package frc.team5190.lib.commands
 
 import frc.team5190.lib.utils.State
-import frc.team5190.lib.utils.StateImpl
-import frc.team5190.lib.utils.StateListener
+import frc.team5190.lib.utils.VariableState
 import frc.team5190.lib.utils.constState
+import frc.team5190.lib.utils.variableState
 import frc.team5190.lib.wrappers.FalconRobotBase
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.disposeOnCancellation
+import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.experimental.CoroutineContext
 
 abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     companion object {
@@ -32,7 +37,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     var timeout = 0L to TimeUnit.SECONDS
         private set
 
-    val commandState: State<CommandState> = CommandStateImpl()
+    val commandState: State<CommandState> = variableState(CommandState.PREPARED)
 
     var startTime = 0L
         internal set
@@ -49,14 +54,11 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
         override val value: Boolean
             get() = currentCondition.value
 
-        override fun invokeOnChange(listener: StateListener<Boolean>): DisposableHandle = synchronized(this) {
-            used = true
-            return currentCondition.invokeOnChange(listener)
-        }
-
-        override fun invokeWhen(state: List<Boolean>, ignoreCurrent: Boolean, listener: StateListener<Boolean>): DisposableHandle = synchronized(this) {
-            used = true
-            return currentCondition.invokeWhen(state, ignoreCurrent, listener)
+        override fun openSubscription(context: CoroutineContext): ReceiveChannel<Boolean> {
+            synchronized(this) {
+                used = true
+                return currentCondition.openSubscription(context)
+            }
         }
 
         /**
@@ -73,7 +75,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     protected operator fun Subsystem.unaryPlus() = (requiredSubsystems as MutableList).add(this)
 
     open suspend fun initialize0() {
-        (commandState as CommandStateImpl).changeValue(CommandState.BAKING)
+        (commandState as VariableState).value = CommandState.BAKING
         initialize()
         timeoutCondition?.start(startTime)
     }
@@ -82,7 +84,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     open suspend fun dispose0() {
         timeoutCondition?.stop()
         dispose()
-        (commandState as CommandStateImpl).changeValue(CommandState.BAKED)
+        (commandState as VariableState).value = CommandState.BAKED
     }
 
     protected open suspend fun initialize() {}
@@ -90,17 +92,18 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     protected open suspend fun dispose() {}
 
     fun start(): Deferred<Unit> {
-        if(commandState.value == CommandState.BAKING){
+        if (commandState.value == CommandState.BAKING) {
             println("[Command] ${this::class.java.simpleName} is already running, discarding start.")
             return CompletableDeferred(Unit)
         }
-        if(commandState.value == CommandState.QUEUED){
+        if (commandState.value == CommandState.QUEUED) {
             println("[Command] ${this::class.java.simpleName} is already queued, discarding start.")
             return CompletableDeferred(Unit)
         }
-        (commandState as CommandStateImpl).changeValue(CommandState.QUEUED)
+        (commandState as VariableState).value = CommandState.QUEUED
         return CommandHandler.start(this, System.nanoTime())
     }
+
     fun stop() = CommandHandler.stop(this, System.nanoTime())
 
     fun withExit(condition: Condition) = also { finishCondition += condition }
@@ -119,13 +122,6 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
         cont.disposeOnCancellation(commandState.invokeOnceWhenFinished {
             cont.resume(Unit)
         })
-    }
-
-
-    private inner class CommandStateImpl : StateImpl<CommandState>(CommandState.PREPARED) {
-        fun changeValue(value: CommandState) {
-            this.internalValue = value
-        }
     }
 
 }

@@ -24,16 +24,16 @@ class DelayCondition(var delay: Long, var unit: TimeUnit) : StateImpl<Boolean>(f
     private var startTime = 0L
 
     fun start(startTime: Long) {
-        internalValue = false
+        changeValue(false)
         this.startTime = startTime
         job = launch(timeoutContext) {
             delay(unit.toNanos(delay) - (System.nanoTime() - startTime), TimeUnit.NANOSECONDS)
-            internalValue = true
+            changeValue(true)
         }
     }
 
     fun stop() {
         job.cancel()
-        internalValue = false
+        changeValue(false)
     }
 }
