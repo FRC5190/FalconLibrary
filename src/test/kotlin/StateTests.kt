@@ -249,4 +249,19 @@ class StateTests {
         assert(two.value)
     }
 
+    @Test
+    fun comparisonTest(){
+        val one = variableState(5.0)
+        val two = constState(10.0)
+
+        val three = one.greaterThan(two)
+        val four = one.lessThan(13.0)
+
+        assert(!three.value)
+        assert(four.value)
+        one.value = 15.0
+        assert(three.value)
+        assert(!four.value)
+    }
+
 }

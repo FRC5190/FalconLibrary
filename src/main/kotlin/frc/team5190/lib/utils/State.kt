@@ -146,6 +146,11 @@ fun <T> State<T>.invokeOnceWhen(
 // Merging states
 
 fun <F, T> processedState(state: State<F>, processing: (F) -> T) = processedState(listOf(state)) { values -> processing(values.first()) }
+fun <F1, F2, T> processedState(one: State<F1>, two: State<F2>, processing: (F1, F2) -> T) =
+        processedState(listOf(one, two)) { values ->
+            @Suppress("UNCHECKED_CAST")
+            processing(values[0] as F1, values[1] as F2)
+        }
 
 fun <F, T> processedState(states: List<State<out F>>, processing: (List<F>) -> T): State<T> =
         object : StateImpl<T>(processing(states.map { it.value })) {
@@ -185,6 +190,24 @@ class ConstantState<T>(override val value: T) : State<T> {
 typealias StateListener<T> = DisposableHandle.(T) -> Unit
 
 // Comparision State
+
+fun <F : Comparable<T>, T : Any> State<F>.greaterThan(other: T) = greaterThan(constState(other))
+fun <F : Comparable<T>, T : Any> State<F>.greaterThan(other: State<T>) = compareToInternal(other) { it > 0 }
+
+fun <F : Comparable<T>, T : Any> State<F>.lessThan(other: T) = lessThan(constState(other))
+fun <F : Comparable<T>, T : Any> State<F>.lessThan(other: State<T>) = compareToInternal(other) { it < 0 }
+
+fun <F : Comparable<T>, T : Any> State<F>.greaterThanOrEquals(other: T) = greaterThanOrEquals(constState(other))
+fun <F : Comparable<T>, T : Any> State<F>.greaterThanOrEquals(other: State<T>) = compareToInternal(other) { it >= 0 }
+
+fun <F : Comparable<T>, T : Any> State<F>.lessThanOrEquals(other: T) = lessThanOrEquals(constState(other))
+fun <F : Comparable<T>, T : Any> State<F>.lessThanOrEquals(other: State<T>) = compareToInternal(other) { it <= 0 }
+
+fun <F : Comparable<T>, T : Any> State<F>.compareTo(other: T) = compareTo(constState(other))
+fun <F : Comparable<T>, T : Any> State<F>.compareTo(other: State<T>) = compareToInternal(other) { it }
+
+private fun <F : Comparable<T>, T : Any, E> State<F>.compareToInternal(other: State<T>, block: (Int) -> E) =
+        processedState(this, other) { one, two -> block(one.compareTo(two)) }
 
 fun <F> comparisionState(one: State<out F>, two: State<out F>, processing: (F, F) -> Boolean): BooleanState =
         processedState(listOf(one, two)) { values -> processing(values[0], values[1]) }
