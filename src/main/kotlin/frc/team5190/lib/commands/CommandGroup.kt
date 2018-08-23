@@ -1,7 +1,6 @@
 package frc.team5190.lib.commands
 
 import frc.team5190.lib.utils.StateImpl
-import frc.team5190.lib.utils.State
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
@@ -46,7 +45,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
         super.initialize0()
         commandGroupHandler = if (parentCommandGroup != null) NestedCommandGroupHandler() else BaseCommandGroupHandler()
         groupCondition.reset()
-        
+
         // Start this group
 
         commandTasks = initTasks()
@@ -62,7 +61,10 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
     protected suspend fun start(task: GroupCommandTask, startTime: Long) = commandGroupHandler.startCommand(task, startTime)
 
     protected inner class GroupCommandTask(val group: CommandGroup, command: Command) : CommandHandler.CommandTask(command) {
-        override suspend fun stop(stopTime: Long) = commandGroupHandler.commandFinishCallback(this, stopTime)
+        override suspend fun stop(stopTime: Long) {
+            println("[Command Group] stopped ${command::class.java.simpleName}")
+            commandGroupHandler.commandFinishCallback(this, stopTime)
+        }
     }
 
     private interface CommandGroupHandler {
@@ -91,9 +93,9 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
         private lateinit var groupActor: SendChannel<GroupEvent>
         private val actorMutex = Mutex()
 
-        private val activeCommands = mutableListOf<GroupCommandTask>()
-        private val runningCommands = mutableListOf<GroupCommandTask>()
-        private val queuedCommands = mutableListOf<GroupCommandTask>()
+        private val activeCommands = mutableSetOf<GroupCommandTask>()
+        private val runningCommands = mutableSetOf<GroupCommandTask>()
+        private val queuedCommands = mutableSetOf<GroupCommandTask>()
 
         private var destroyed = false
 
@@ -119,7 +121,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                     }
                     if (task.command is CommandGroup) {
                         runningCommands += task
-                        task.command.parentCommandGroup = this@CommandGroup
+                        task.command.parentCommandGroup = task.group
                         task.initialize(event.startTime)
                         return
                     }
@@ -129,6 +131,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                         println("[Command Group] Command ${task.command::class.java.simpleName} was delayed since it requires a subsystem that already being used in the command group tree")
                         return
                     }
+                    println("[Command Group] started ${task.command::class.java.simpleName}")
                     runningCommands += task
                     activeCommands += task
                     task.initialize(event.startTime)
@@ -138,27 +141,29 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                     if (!runningCommands.contains(task)) return // discard extra requests
                     runningCommands -= task
                     task.dispose()
-                    task.group.commandTasks -= task
+                   // task.group.commandTasks -= task
                     activeCommands -= task
-                    task.group.parentCommandGroup = null
+                   // task.group.parentCommandGroup = null
                     if (destroyed) {
                         closeIfFinished()
                         return // ignore
                     }
                     // Find queued commands that can run
                     var nextTask: GroupCommandTask?
+                    var fromCurrentGroup = false
                     do {
                         nextTask = queuedCommands.find { canStart(it) }
                         if (nextTask != null) {
                             queuedCommands -= nextTask
                             handleEvent(GroupEvent.StartTask(nextTask, event.stopTime))
+                            if (nextTask.group == task.group) fromCurrentGroup = true
                         }
                     } while (nextTask != null)
                     if (task.group.commandTasks.isEmpty()) {
                         task.group.groupCondition.invoke()
                         return // command group finished
                     }
-                    task.group.handleFinishEvent(event.stopTime)
+                    if (!fromCurrentGroup) task.group.handleFinishEvent(event.stopTime)
                 }
                 is GroupEvent.DestroyTask -> {
                     destroyed = true
@@ -210,6 +215,7 @@ open class SequentialCommandGroup(commands: List<Command>) : CommandGroup(comman
     override suspend fun handleFinishEvent(stopTime: Long) = startNextCommand(stopTime) // Start next command
 
     private suspend fun startNextCommand(startTime: Long) {
+        println("[Sequential] started")
         if (taskIterator.hasNext()) start(taskIterator.next(), startTime)
     }
 }

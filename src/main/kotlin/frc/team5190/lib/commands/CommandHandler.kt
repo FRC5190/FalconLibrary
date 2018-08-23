@@ -3,6 +3,7 @@ package frc.team5190.lib.commands
 import frc.team5190.lib.utils.invokeWhenTrue
 import frc.team5190.lib.utils.launchFrequency
 import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.NonCancellable.isActive
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.sendBlocking
@@ -83,6 +84,7 @@ object CommandHandler {
     abstract class CommandTask(val command: Command) {
         private val commandMutex = Mutex()
         private var updater: Job? = null
+        private var handle: DisposableHandle? = null
         private var finishedNormally = false
 
         private var started = false
@@ -91,14 +93,23 @@ object CommandHandler {
             started = true
             command.startTime = startTime
             command.initialize0()
-            command.exposedCondition.invokeWhenTrue {
+            fun safeStop(time: Long)=launch(commandContext) {
+                commandMutex.withLock {
+                    if(!started || finishedNormally) return@launch
+                    stop(time)
+                    finishedNormally = true
+                }
+            }
+            handle = command.exposedCondition.invokeOnceWhen(true) {
+                if(finishedNormally) return@invokeOnceWhen
+                println("Finished")
                 finishedNormally = true
                 val timeout = command.timeout
                 val stopTime = if (timeout.first > 0) {
                     Math.min(startTime + timeout.second.toNanos(timeout.first), System.nanoTime())
                 } else System.nanoTime()
 
-                launch(commandContext) { stop(stopTime) } // Stop the command early
+                safeStop(stopTime) // Stop the command early
             }
             val frequency = command.updateFrequency
             if (frequency == 0) return@withLock
@@ -108,7 +119,7 @@ object CommandHandler {
                     if (command.isFinished()) {
                         finishedNormally = true
                         // stop command if finished
-                        stop(System.nanoTime())
+                        safeStop(System.nanoTime())
                         return@launchFrequency
                     }
                     commandMutex.withLock {
@@ -123,6 +134,8 @@ object CommandHandler {
 
         suspend fun dispose() = commandMutex.withLock {
             if (!started) return@withLock
+            handle?.dispose()
+            handle = null
             updater?.cancel()
             updater = null
             command.dispose0()
