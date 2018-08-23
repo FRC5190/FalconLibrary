@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.StateImpl
+import frc.team5190.lib.utils.StatefulValueImpl
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
@@ -14,7 +14,7 @@ class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
     }
 }
 
-class DelayCondition(var delay: Long, var unit: TimeUnit) : StateImpl<Boolean>(false) {
+class DelayCondition(var delay: Long, var unit: TimeUnit) : StatefulValueImpl<Boolean>(false) {
 
     companion object {
         private val timeoutContext = newSingleThreadContext("Delay Condition")

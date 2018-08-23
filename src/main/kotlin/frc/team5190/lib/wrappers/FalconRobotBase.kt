@@ -51,7 +51,7 @@ abstract class FalconRobotBase : RobotBase() {
             modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
 
     // Main Robot Code
-    val currentMode: State<Mode>
+    val currentMode: StatefulValue<Mode>
         get() = currentModeState
 
     var initialized = false
@@ -74,7 +74,7 @@ abstract class FalconRobotBase : RobotBase() {
         // Update Values
         onWhile(Mode.ANY) {
             SmartDashboard.updateValues()
-//            LiveWindow.updateValues()
+            //            LiveWindow.updateValues()
         }
 
         initialize()

@@ -1,8 +1,7 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.State
-import frc.team5190.lib.utils.VariableState
-import frc.team5190.lib.utils.constState
+import frc.team5190.lib.utils.StatefulValue
+import frc.team5190.lib.utils.StatefulVariable
 import frc.team5190.lib.utils.variableState
 import frc.team5190.lib.wrappers.FalconRobotBase
 import kotlinx.coroutines.experimental.CompletableDeferred
@@ -29,7 +28,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
 
     internal open val requiredSubsystems: List<Subsystem> = mutableListOf()
 
-    protected val finishCondition = CommandCondition(constState(false))
+    protected val finishCondition = CommandCondition(StatefulValue(false))
     internal val exposedCondition: Condition
         get() = finishCondition
 
@@ -37,7 +36,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     var timeout = 0L to TimeUnit.SECONDS
         private set
 
-    val commandState: State<CommandState> = variableState(CommandState.PREPARED)
+    val commandState: StatefulValue<CommandState> = variableState(CommandState.PREPARED)
 
     var startTime = 0L
         internal set
@@ -48,7 +47,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     fun isFinished() = finishCondition.value
 
     // Little cheat so you don't have to reassign finishCondition every time you modify it
-    protected class CommandCondition(private var currentCondition: Condition) : State<Boolean> {
+    protected class CommandCondition(private var currentCondition: Condition) : StatefulValue<Boolean> {
         private var used = false
 
         override val value: Boolean
@@ -75,7 +74,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     protected operator fun Subsystem.unaryPlus() = (requiredSubsystems as MutableList).add(this)
 
     open suspend fun initialize0() {
-        (commandState as VariableState).value = CommandState.BAKING
+        (commandState as StatefulVariable).value = CommandState.BAKING
         initialize()
         timeoutCondition?.start(startTime)
     }
@@ -84,7 +83,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     open suspend fun dispose0() {
         timeoutCondition?.stop()
         dispose()
-        (commandState as VariableState).value = CommandState.BAKED
+        (commandState as StatefulVariable).value = CommandState.BAKED
     }
 
     protected open suspend fun initialize() {}
@@ -100,7 +99,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
             println("[Command] ${this::class.java.simpleName} is already queued, discarding start.")
             return CompletableDeferred(Unit)
         }
-        (commandState as VariableState).value = CommandState.QUEUED
+        (commandState as StatefulVariable).value = CommandState.QUEUED
         return CommandHandler.start(this, System.nanoTime())
     }
 

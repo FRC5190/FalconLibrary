@@ -12,12 +12,41 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 private val stateContext = newFixedThreadPoolContext(2, "State Context")
 
-interface State<T> : Source<T> {
+interface StatefulValue<T> {
+    val value: T
+
     fun openSubscription(context: CoroutineContext = stateContext): ReceiveChannel<T>
     fun openSubscription(context: CoroutineContext = stateContext, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle {
         val channel = openSubscription(context)
         return block(channel)
     }
+
+    fun invokeWhen(state: T, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeWhen(listOf(state), context, listener)
+
+    fun invokeWhen(states: Collection<T>, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeOnChange(context, true) { if (states.contains(it)) listener(this, it) }
+
+    fun invokeOnChangeTo(state: T, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeOnChangeTo(listOf(state), context, listener)
+
+    fun invokeOnChangeTo(states: Collection<T>, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeOnChange(context, false) { if (states.contains(it)) listener(this, it) }
+
+    fun invokeOnceOnChange(context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeOnChange(context) {
+                listener(this, it)
+                dispose()
+            }
+
+    fun invokeOnceWhen(state: T, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeOnceWhen(listOf(state), context, listener)
+
+    fun invokeOnceWhen(states: Collection<T>, context: CoroutineContext = stateContext, listener: StateListener<T>) =
+            invokeWhen(states, context) {
+                listener(this, it)
+                dispose()
+            }
 
     fun invokeOnChange(context: CoroutineContext = stateContext,
                        invokeFirst: Boolean = false,
@@ -37,9 +66,29 @@ interface State<T> : Source<T> {
         job.invokeOnCompletion { subscription.cancel() }
         disposableHandle
     }
+
+    fun asSource() = Source { value }
+
+    companion object {
+        fun <T> of(value: T) = object : StatefulConstant<T> {
+            override val value = value
+        }
+    }
+
 }
 
-abstract class StateImpl<T>(initValue: T) : State<T> {
+@Suppress("FunctionName")
+fun <T> StatefulValue(value: T) = StatefulValue.of(value)
+
+@Deprecated("", ReplaceWith("StatefulValue(value)"))
+fun <T> constState(value: T): StatefulValue<T> = StatefulValue(value)
+
+interface StatefulConstant<T> : StatefulValue<T> {
+    override fun openSubscription(context: CoroutineContext, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle = NonDisposableHandle
+    override fun openSubscription(context: CoroutineContext): ReceiveChannel<T> = TODO("Constant states cannot be subscribed to")
+}
+
+abstract class StatefulValueImpl<T>(initValue: T) : StatefulValue<T> {
     private val changeSync = Any()
     protected var listenActive = false
         private set
@@ -86,74 +135,20 @@ abstract class StateImpl<T>(initValue: T) : State<T> {
         channel.offer(newValue)
     }
 }
-// Invoke When Helpers
-
-fun <T> State<T>.invokeWhen(
-        state: T,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeWhen(listOf(state), context, listener)
-
-fun <T> State<T>.invokeWhen(
-        states: Collection<T>,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeOnChange(context, true) {
-    if (states.contains(it)) listener(this, it)
-}
-
-// Invoke Change Helpers
-
-fun <T> State<T>.invokeOnChangeTo(
-        state: T,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeOnChangeTo(listOf(state), context, listener)
-
-fun <T> State<T>.invokeOnChangeTo(
-        states: Collection<T>,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeOnChange(context, false) {
-    if (states.contains(it)) listener(this, it)
-}
-
-// Invoke Once Helpers
-
-fun <T> State<T>.invokeOnceOnChange(
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeOnChange(context) {
-    listener(this, it)
-    dispose()
-}
-
-fun <T> State<T>.invokeOnceWhen(
-        state: T,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeOnceWhen(listOf(state), context, listener)
-
-fun <T> State<T>.invokeOnceWhen(
-        states: Collection<T>,
-        context: CoroutineContext = stateContext,
-        listener: StateListener<T>
-) = invokeWhen(states, context) {
-    listener(this, it)
-    dispose()
-}
 
 // Merging states
 
-fun <F, T> processedState(state: State<F>, processing: (F) -> T) = processedState(listOf(state)) { values -> processing(values.first()) }
-fun <F1, F2, T> processedState(one: State<F1>, two: State<F2>, processing: (F1, F2) -> T) =
+fun <F, T> processedState(state: StatefulValue<F>, processing: (F) -> T) =
+        processedState(listOf(state)) { values -> processing(values.first()) }
+
+fun <F1, F2, T> processedState(one: StatefulValue<F1>, two: StatefulValue<F2>, processing: (F1, F2) -> T) =
         processedState(listOf(one, two)) { values ->
             @Suppress("UNCHECKED_CAST")
             processing(values[0] as F1, values[1] as F2)
         }
 
-fun <F, T> processedState(states: List<State<out F>>, processing: (List<F>) -> T): State<T> =
-        object : StateImpl<T>(processing(states.map { it.value })) {
+fun <F, T> processedState(states: List<StatefulValue<out F>>, processing: (List<F>) -> T): StatefulValue<T> =
+        object : StatefulValueImpl<T>(processing(states.map { it.value })) {
             private var handle: DisposableHandle? = null
 
             override val value: T
@@ -180,43 +175,37 @@ fun <F, T> processedState(states: List<State<out F>>, processing: (List<F>) -> T
             }
         }
 
-fun <T> constState(value: T): State<T> = ConstantState(value)
-
-class ConstantState<T>(override val value: T) : State<T> {
-    override fun openSubscription(context: CoroutineContext, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle = NonDisposableHandle
-    override fun openSubscription(context: CoroutineContext): ReceiveChannel<T> = TODO("Constant states cannot be subscribed to")
-}
-
 typealias StateListener<T> = DisposableHandle.(T) -> Unit
 
 // Comparision State
 
-fun <F : Comparable<T>, T : Any> State<F>.greaterThan(other: T) = greaterThan(constState(other))
-fun <F : Comparable<T>, T : Any> State<F>.greaterThan(other: State<T>) = compareToInternal(other) { it > 0 }
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.greaterThan(other: T) = greaterThan(StatefulValue(other))
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.greaterThan(other: StatefulValue<T>) = compareToInternal(other) { it > 0 }
 
-fun <F : Comparable<T>, T : Any> State<F>.lessThan(other: T) = lessThan(constState(other))
-fun <F : Comparable<T>, T : Any> State<F>.lessThan(other: State<T>) = compareToInternal(other) { it < 0 }
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.lessThan(other: T) = lessThan(StatefulValue(other))
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.lessThan(other: StatefulValue<T>) = compareToInternal(other) { it < 0 }
 
-fun <F : Comparable<T>, T : Any> State<F>.greaterThanOrEquals(other: T) = greaterThanOrEquals(constState(other))
-fun <F : Comparable<T>, T : Any> State<F>.greaterThanOrEquals(other: State<T>) = compareToInternal(other) { it >= 0 }
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.greaterThanOrEquals(other: T) = greaterThanOrEquals(StatefulValue(other))
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.greaterThanOrEquals(other: StatefulValue<T>) = compareToInternal(other) { it >= 0 }
 
-fun <F : Comparable<T>, T : Any> State<F>.lessThanOrEquals(other: T) = lessThanOrEquals(constState(other))
-fun <F : Comparable<T>, T : Any> State<F>.lessThanOrEquals(other: State<T>) = compareToInternal(other) { it <= 0 }
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.lessThanOrEquals(other: T) = lessThanOrEquals(StatefulValue(other))
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.lessThanOrEquals(other: StatefulValue<T>) = compareToInternal(other) { it <= 0 }
 
-fun <F : Comparable<T>, T : Any> State<F>.compareTo(other: T) = compareTo(constState(other))
-fun <F : Comparable<T>, T : Any> State<F>.compareTo(other: State<T>) = compareToInternal(other) { it }
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.compareTo(other: T) = compareTo(StatefulValue(other))
+fun <F : Comparable<T>, T : Any> StatefulValue<F>.compareTo(other: StatefulValue<T>) = compareToInternal(other) { it }
 
-private fun <F : Comparable<T>, T : Any, E> State<F>.compareToInternal(other: State<T>, block: (Int) -> E) =
+private fun <F : Comparable<T>, T : Any, E> StatefulValue<F>.compareToInternal(other: StatefulValue<T>, block: (Int) -> E) =
         processedState(this, other) { one, two -> block(one.compareTo(two)) }
 
-fun <F> comparisionState(one: State<out F>, two: State<out F>, processing: (F, F) -> Boolean): BooleanState =
+fun <F> comparisionState(one: StatefulValue<out F>, two: StatefulValue<out F>, processing: (F, F) -> Boolean): BooleanState =
         processedState(listOf(one, two)) { values -> processing(values[0], values[1]) }
 
 // Variable State
 
-fun <T> variableState(initValue: T): VariableState<T> = VariableStateImpl(initValue)
+fun <T> variableState(initValue: T): StatefulVariable<T> =
+        VariableStateImpl(initValue)
 
-private class VariableStateImpl<T>(initValue: T) : StateImpl<T>(initValue), VariableState<T> {
+private class VariableStateImpl<T>(initValue: T) : StatefulValueImpl<T>(initValue), StatefulVariable<T> {
     override var value: T
         set(value) {
             changeValue(value)
@@ -224,15 +213,16 @@ private class VariableStateImpl<T>(initValue: T) : StateImpl<T>(initValue), Vari
         get() = super.value
 }
 
-interface VariableState<T> : State<T> {
+interface StatefulVariable<T> : StatefulValue<T> {
     override var value: T
 }
 
 // Updatable State
 
-fun <T> updatableState(frequency: Int = 50, block: () -> T): StateImpl<T> = UpdatableState(frequency, block)
+fun <T> updatableState(frequency: Int = 50, block: () -> T): StatefulValue<T> =
+        UpdatableStatefulValue(frequency, block)
 
-private class UpdatableState<T>(private val frequency: Int = 50, private val block: () -> T) : StateImpl<T>(block()) {
+private class UpdatableStatefulValue<T>(private val frequency: Int = 50, private val block: () -> T) : StatefulValueImpl<T>(block()) {
     private lateinit var job: Job
 
     override val value: T
@@ -254,7 +244,7 @@ private class UpdatableState<T>(private val frequency: Int = 50, private val blo
 
 // Boolean State
 
-typealias BooleanState = State<Boolean>
+typealias BooleanState = StatefulValue<Boolean>
 typealias BooleanListener = StateListener<Boolean>
 
 fun BooleanState.invokeOnTrue(context: CoroutineContext = stateContext, listener: BooleanListener) = invokeOnChangeTo(true, context, listener)
@@ -282,7 +272,8 @@ operator fun BooleanState.not(): BooleanState = object : BooleanState {
 
 // Extensions
 
-operator fun <T, V> Map<T, V>.get(key: State<T>): State<V?> = processedState(key) { this@get[it] }
+operator fun <T, V> Map<T, V>.get(key: StatefulValue<T>): StatefulValue<V?> =
+        processedState(key) { this@get[it] }
 
 // Sensor Extensions
 

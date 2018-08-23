@@ -9,8 +9,8 @@ class StateTests {
 
     @Test
     fun basicAnd() {
-        val one = constState(true)
-        val two = constState(true)
+        val one = StatefulValue(true)
+        val two = StatefulValue(true)
 
         val three = one and two
 
@@ -19,8 +19,8 @@ class StateTests {
 
     @Test
     fun basicOr() {
-        val one = constState(true)
-        val two = constState(false)
+        val one = StatefulValue(true)
+        val two = StatefulValue(false)
 
         val three = one or two
         val four = two or one
@@ -31,7 +31,7 @@ class StateTests {
 
     @Test
     fun basicNumToBoolean() {
-        val one = constState(5.0)
+        val one = StatefulValue(5.0)
         val two = processedState(one) { it > 2.5 }
 
         assert(two.value)
@@ -204,7 +204,7 @@ class StateTests {
 
     @Test
     fun recursiveListener() {
-        lateinit var two: State<Double>
+        lateinit var two: StatefulValue<Double>
 
         val one by lazy { two }
 
@@ -213,7 +213,7 @@ class StateTests {
         var calledFalse = false
         var calledTrue = false
 
-        two = object : StateImpl<Double>(0.0) {
+        two = object : StatefulValueImpl<Double>(0.0) {
             override fun initWhenUsed(context: CoroutineContext) {
                 three.invokeWhenFalse(context) {
                     calledFalse = true
@@ -252,7 +252,7 @@ class StateTests {
     @Test
     fun comparisonTest(){
         val one = variableState(5.0)
-        val two = constState(10.0)
+        val two = StatefulValue(10.0)
 
         val three = one.greaterThan(two)
         val four = one.lessThan(13.0)

@@ -12,21 +12,23 @@ import frc.team5190.lib.commands.CommandGroup
 import frc.team5190.lib.commands.ParallelCommandGroup
 import frc.team5190.lib.commands.SequentialCommandGroup
 import frc.team5190.lib.utils.Source
-import frc.team5190.lib.utils.State
+import frc.team5190.lib.utils.StatefulValue
 
 // External Extension Helpers
 
 fun sequential(block: BasicCommandGroupBuilder.() -> Unit) = sequential0(block)
 fun parallel(block: BasicCommandGroupBuilder.() -> Unit) = parallel0(block)
-fun <T> stateCommandGroup(state: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) = StateCommandGroupBuilder(state).also { block(it) }.build()
+fun <T> stateCommandGroup(state: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
+        StateCommandGroupBuilder(state).also { block(it) }.build()
 
 // Internal Extension Helpers
 
 private fun sequential0(block: BasicCommandGroupBuilder.() -> Unit) = commandGroup(BasicCommandGroupBuilder.BuilderType.SEQUENTIAL, block)
 private fun parallel0(block: BasicCommandGroupBuilder.() -> Unit) = commandGroup(BasicCommandGroupBuilder.BuilderType.PARALLEL, block)
-private fun <T> stateCommandGroup0(state: State<T>, block: StateCommandGroupBuilder<T>.() -> Unit) = stateCommandGroup(state, block)
+private fun <T> stateCommandGroup0(stateSource: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) = stateCommandGroup(stateSource, block)
 
-private fun commandGroup(type: BasicCommandGroupBuilder.BuilderType, block: BasicCommandGroupBuilder.() -> Unit) = BasicCommandGroupBuilder(type).also { block(it) }.build()
+private fun commandGroup(type: BasicCommandGroupBuilder.BuilderType, block: BasicCommandGroupBuilder.() -> Unit) =
+        BasicCommandGroupBuilder(type).also { block(it) }.build()
 
 // Builders
 
@@ -34,14 +36,18 @@ interface CommandGroupBuilder {
     fun build(): CommandGroup
 }
 
-class BasicCommandGroupBuilder(val type: BuilderType) : CommandGroupBuilder {
+class BasicCommandGroupBuilder(private val type: BuilderType) : CommandGroupBuilder {
     enum class BuilderType { SEQUENTIAL, PARALLEL }
 
     private val commands = mutableListOf<Command>()
 
     fun sequential(block: CommandGroupBuilder.() -> Unit) = sequential0(block).also { it.unaryPlus() }
     fun parallel(block: CommandGroupBuilder.() -> Unit) = parallel0(block).also { it.unaryPlus() }
-    fun <T> stateCommandGroup(state: State<T>, block: StateCommandGroupBuilder<T>.() -> Unit) = stateCommandGroup0(state, block).also { it.unaryPlus() }
+    fun <T> stateCommandGroup(state: StatefulValue<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
+            stateCommandGroup(state.asSource(), block)
+
+    fun <T> stateCommandGroup(stateSource: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
+            stateCommandGroup0(stateSource, block).also { it.unaryPlus() }
 
     operator fun Command.unaryPlus() = commands.add(this)
 

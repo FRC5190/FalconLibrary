@@ -1,6 +1,8 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.*
+import frc.team5190.lib.utils.BooleanState
+import frc.team5190.lib.utils.processedState
+import frc.team5190.lib.utils.updatableState
 
 // Condition implementations for State<Boolean>
 
@@ -24,8 +26,9 @@ infix fun Condition.and(command: Command) = this and condition(command)
 infix fun Condition.or(condition: Condition) = conditionGroup(this, condition) { one, two -> one || two }
 infix fun Condition.and(condition: Condition) = conditionGroup(this, condition) { one, two -> one && two }
 
-private fun conditionGroup(firstCondition: Condition, secondCondition: Condition, condition: (Boolean, Boolean) -> Boolean) = processedState(listOf(firstCondition, secondCondition)) { values ->
-    val one = values[0]
-    val two = values[1]
-    condition(one, two)
-}
+private fun conditionGroup(firstCondition: Condition, secondCondition: Condition, condition: (Boolean, Boolean) -> Boolean) =
+        processedState(listOf(firstCondition, secondCondition)) { values ->
+            val one = values[0]
+            val two = values[1]
+            condition(one, two)
+        }

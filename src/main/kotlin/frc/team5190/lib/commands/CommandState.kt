@@ -21,9 +21,10 @@ enum class CommandState {
     BAKED
 }
 
-fun State<CommandState>.invokeWhenFinished(listener: StateListener<CommandState>) = invokeWhen(CommandState.BAKED, listener = listener)
-fun State<CommandState>.invokeOnceWhenFinished(listener: StateListener<CommandState>) = invokeOnceWhen(CommandState.BAKED, listener = listener)
+fun StatefulValue<CommandState>.invokeWhenFinished(listener: StateListener<CommandState>) = invokeWhen(CommandState.BAKED, listener = listener)
+fun StatefulValue<CommandState>.invokeOnceWhenFinished(listener: StateListener<CommandState>) = invokeOnceWhen(CommandState.BAKED, listener = listener)
 
 fun condition(command: Command): Condition = command.commandState.asFinishState()
 
-fun State<CommandState>.asFinishState(): BooleanState = processedState(this) { it == CommandState.BAKED }
+fun StatefulValue<CommandState>.asFinishState(): BooleanState =
+        processedState(this) { it == CommandState.BAKED }

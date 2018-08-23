@@ -1,11 +1,11 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.constState
+import frc.team5190.lib.utils.StatefulValue
 
 abstract class InstantCommand : Command() {
     init {
         updateFrequency = 0
-        finishCondition += constState(true)
+        finishCondition += StatefulValue(true)
     }
 }
 
