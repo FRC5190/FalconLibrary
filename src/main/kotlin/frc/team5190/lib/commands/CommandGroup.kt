@@ -91,6 +91,7 @@ open class CommandGroup(private val groupType: GroupType,
             when (event) {
                 is GroupEvent.StartTaskEvent -> {
                     val task = event.task
+
                     assert(!allActiveTasks.contains(task)) { "Task ${task.command::class.java.simpleName} already started" }
                     if (destroyed) {
                         println("[Command Group] The start of ${task.command::class.java.simpleName} was ignored since the command group is disposing.")
@@ -106,6 +107,7 @@ open class CommandGroup(private val groupType: GroupType,
                             return
                         }
                     }
+
                     // Command can run without any conflicts
                     allActiveTasks.add(task)
                     task.start0(event.startTime)
