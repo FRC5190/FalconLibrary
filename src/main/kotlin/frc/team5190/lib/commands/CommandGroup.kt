@@ -1,33 +1,36 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.variableState
+import frc.team5190.lib.utils.statefulvalue.StatefulVariable
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import kotlinx.coroutines.experimental.sync.Mutex
 import kotlinx.coroutines.experimental.sync.withLock
 
-abstract class CommandGroup(private val commands: List<Command>) : Command() {
+abstract class CommandGroup(private val commands: List<Command>) : Command(commands.map { it.requiredSubsystems }.flatten()) {
 
     companion object {
         private val commandGroupContext = newFixedThreadPoolContext(2, "Command Group")
     }
 
     protected lateinit var commandTasks: List<GroupCommandTask>
-    override val requiredSubsystems = commands.map { it.requiredSubsystems }.flatten()
 
     private var parentCommandGroup: CommandGroup? = null
     private lateinit var commandGroupHandler: CommandGroupHandler
 
-    private val groupCondition = variableState(false)
+    private val groupCondition = StatefulVariable(false)
 
     init {
-        updateFrequency = 0
+        executeFrequency = 0
         finishCondition += groupCondition
     }
 
-    protected open fun initTasks() = commands.map { GroupCommandTask(this, it) }
+    protected open fun initTasks() = commands.map {
+        GroupCommandTask(this, it)
+    }
+
     protected abstract suspend fun handleStartEvent()
     protected open suspend fun handleFinishEvent(stopTime: Long) {}
 
@@ -50,9 +53,11 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
 
     protected suspend fun start(task: GroupCommandTask, startTime: Long) = commandGroupHandler.startCommand(task, startTime)
 
-    protected inner class GroupCommandTask(val group: CommandGroup, command: Command) : CommandHandler.CommandTask(command) {
-        override suspend fun stop(stopTime: Long) = commandGroupHandler.commandFinishCallback(this, stopTime)
-    }
+    protected inner class GroupCommandTask(val group: CommandGroup, command: Command) : CommandTask(command, { task, stopTime ->
+        launch(commandGroupContext) {
+            commandGroupHandler.commandFinishCallback(task as GroupCommandTask, stopTime)
+        }
+    })
 
     private interface CommandGroupHandler {
         suspend fun start()
@@ -109,7 +114,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                     if (task.command is CommandGroup) {
                         runningCommands += task
                         task.command.parentCommandGroup = this@CommandGroup
-                        task.initialize(event.startTime)
+                        task.start0(event.startTime)
                         return
                     }
                     val canStart = canStart(task)
@@ -120,13 +125,13 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                     }
                     runningCommands += task
                     activeCommands += task
-                    task.initialize(event.startTime)
+                    task.start0(event.startTime)
                 }
                 is GroupEvent.FinishTask -> {
                     val task = event.task
                     if (!runningCommands.contains(task)) return // discard extra requests
                     runningCommands -= task
-                    task.dispose()
+                    task.stop0()
                     task.group.commandTasks -= task
                     activeCommands -= task
                     task.group.parentCommandGroup = null
@@ -152,7 +157,7 @@ abstract class CommandGroup(private val commands: List<Command>) : Command() {
                 is GroupEvent.DestroyTask -> {
                     destroyed = true
                     // signal current tasks to dispose
-                    activeCommands.forEach { it.stop(System.nanoTime()) }
+                    activeCommands.forEach { it.stop0() }
                     closeIfFinished()
                 }
             }

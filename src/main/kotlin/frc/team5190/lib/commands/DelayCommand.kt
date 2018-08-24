@@ -1,5 +1,6 @@
 package frc.team5190.lib.commands
 
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
 import frc.team5190.lib.utils.statefulvalue.StatefulValueImpl
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
@@ -9,12 +10,15 @@ import java.util.concurrent.TimeUnit
 
 class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
     init {
-        updateFrequency = 0
+        executeFrequency = 0
         withTimeout(delay, unit)
     }
 }
 
-class DelayCondition(var delay: Long, var unit: TimeUnit) : StatefulValueImpl<Boolean>(false) {
+class StatefulDelayImpl(
+        override var delay: Long,
+        override var unit: TimeUnit = TimeUnit.SECONDS
+) : StatefulValueImpl<Boolean>(false), StatefulDelay {
 
     companion object {
         private val timeoutContext = newSingleThreadContext("Delay Condition")
@@ -36,4 +40,9 @@ class DelayCondition(var delay: Long, var unit: TimeUnit) : StatefulValueImpl<Bo
         job.cancel()
         changeValue(false)
     }
+}
+
+interface StatefulDelay : StatefulValue<Boolean> {
+    val delay: Long
+    val unit: TimeUnit
 }
