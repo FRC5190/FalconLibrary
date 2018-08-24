@@ -35,7 +35,7 @@ open class CommandGroup(private val groupType: GroupType,
     protected open fun createTasks(): List<CommandGroupTask> = commands.map { CommandGroupTask(it) }
 
     override suspend fun initialize() {
-        commandGroupHandler = if(parentCommandGroup == null) ParentCommandGroupHandler() else ChildCommandGroupHandler()
+        commandGroupHandler = if (parentCommandGroup == null) ParentCommandGroupHandler() else ChildCommandGroupHandler()
         tasksToRun = createTasks().toMutableSet()
         commandGroupFinishCondition.update()
         (commandGroupHandler as? ParentCommandGroupHandler)?.start()
@@ -81,7 +81,7 @@ open class CommandGroup(private val groupType: GroupType,
         private var destroyed = false
 
         private val allActiveTasks = mutableSetOf<CommandGroupTask>()
-        private val queuedStartEvents = mutableSetOf<GroupEvent.StartTaskEvent>()
+        private val queuedTasks = mutableSetOf<CommandGroupTask>()
 
         // Shortcut for checking if its a command group or not
         private val activeCommandTasks
@@ -102,7 +102,7 @@ open class CommandGroup(private val groupType: GroupType,
                         if (used) {
                             // Subsystems it needs is currently in use, queue it for later
                             println("[Command Group] Command ${task.command::class.java.simpleName} was delayed since it requires a subsystem currently in use")
-                            queuedStartEvents.add(event)
+                            queuedTasks.add(task)
                             return
                         }
                     }
@@ -117,14 +117,13 @@ open class CommandGroup(private val groupType: GroupType,
                     allActiveTasks.remove(task)
                     task.stop0(event.stopTime)
                     // Check queue for any commands that can now run
-                    queuedStartEvents.toSet().forEach { startEvent ->
-                        val queuedTask = startEvent.task
+                    queuedTasks.toSet().forEach { queuedTask ->
                         val used = activeCommandTasks.anyUsed(queuedTask.command.requiredSubsystems)
                         if (!used) {
                             // Command can now run without any conflicts
                             println("[Command Group] Resuming command ${task.command::class.java.simpleName} since it can now run")
-                            queuedStartEvents.remove(startEvent)
-                            handleEvent(startEvent)
+                            queuedTasks.remove(queuedTask)
+                            handleEvent(GroupEvent.StartTaskEvent(queuedTask, event.stopTime))
                         }
                     }
                 }
@@ -158,9 +157,9 @@ open class CommandGroup(private val groupType: GroupType,
             assert(!destroyed) { "Somehow the actor already got destroyed" }
             destroyed = true
             groupActor.close()
-            actorFinishMutex.withLock {  }
+            actorFinishMutex.withLock { }
             allActiveTasks.clear()
-            queuedStartEvents.clear()
+            queuedTasks.clear()
         }
 
         override fun startTask(task: CommandGroupTask, startTime: Long) {

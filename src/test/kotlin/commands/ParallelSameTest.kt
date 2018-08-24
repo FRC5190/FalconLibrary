@@ -9,10 +9,13 @@ class ParallelSameTest {
 
     private object FakeSubsystem : Subsystem()
 
-    private fun testCommand(id: Int) = object : Command() {
+    private fun testCommand(id: Int) = object : Command(FakeSubsystem) {
         override suspend fun initialize() {
-            super.initialize()
             println("Start #$id")
+        }
+
+        override suspend fun dispose() {
+            println("Stop #$id")
         }
     }.withTimeout(5, TimeUnit.SECONDS)
 
