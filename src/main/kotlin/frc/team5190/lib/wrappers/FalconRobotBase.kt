@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.team5190.lib.commands.Subsystem
 import frc.team5190.lib.commands.SubsystemHandler
 import frc.team5190.lib.utils.*
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
+import frc.team5190.lib.utils.statefulvalue.variableState
 import frc.team5190.lib.wrappers.hid.FalconHID
 import kotlinx.coroutines.experimental.runBlocking
 

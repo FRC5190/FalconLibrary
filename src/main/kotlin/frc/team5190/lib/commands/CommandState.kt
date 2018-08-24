@@ -1,6 +1,8 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.*
+import frc.team5190.lib.utils.statefulvalue.StatefulBoolean
+import frc.team5190.lib.utils.statefulvalue.StatefulListener
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
 
 enum class CommandState {
     /**
@@ -21,10 +23,9 @@ enum class CommandState {
     BAKED
 }
 
-fun StatefulValue<CommandState>.invokeWhenFinished(listener: StateListener<CommandState>) = invokeWhen(CommandState.BAKED, listener = listener)
-fun StatefulValue<CommandState>.invokeOnceWhenFinished(listener: StateListener<CommandState>) = invokeOnceWhen(CommandState.BAKED, listener = listener)
+fun StatefulValue<CommandState>.invokeWhenFinished(listener: StatefulListener<CommandState>) = invokeWhen(CommandState.BAKED, listener = listener)
+fun StatefulValue<CommandState>.invokeOnceWhenFinished(listener: StatefulListener<CommandState>) = invokeOnceWhen(CommandState.BAKED, listener = listener)
 
 fun condition(command: Command): Condition = command.commandState.asFinishState()
 
-fun StatefulValue<CommandState>.asFinishState(): BooleanState =
-        processedState(this) { it == CommandState.BAKED }
+fun StatefulValue<CommandState>.asFinishState(): StatefulBoolean = withProcessing { it == CommandState.BAKED }

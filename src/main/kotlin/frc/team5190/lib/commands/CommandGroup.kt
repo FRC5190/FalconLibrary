@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.variableState
+import frc.team5190.lib.utils.statefulvalue.variableState
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor

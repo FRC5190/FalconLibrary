@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.StatefulValueImpl
+import frc.team5190.lib.utils.statefulvalue.StatefulValueImpl
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch

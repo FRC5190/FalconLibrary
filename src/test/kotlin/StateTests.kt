@@ -1,7 +1,6 @@
 package frc.team5190.lib.utils
 
-import frc.team5190.lib.commands.and
-import frc.team5190.lib.commands.or
+import frc.team5190.lib.utils.statefulvalue.*
 import org.junit.Test
 import kotlin.coroutines.experimental.CoroutineContext
 
@@ -32,15 +31,15 @@ class StateTests {
     @Test
     fun basicNumToBoolean() {
         val one = StatefulValue(5.0)
-        val two = processedState(one) { it > 2.5 }
+        val two = one.withProcessing { it > 2.5 }
 
         assert(two.value)
     }
 
     @Test
     fun variableListener() {
-        val one = variableState(1.0)
-        val two = processedState(one) { it > 2.0 }
+        val one = StatefulVariable(1.0)
+        val two = one.withProcessing { it > 2.0 }
 
         var called = false
 
@@ -56,11 +55,11 @@ class StateTests {
 
     @Test
     fun doubleVariableListener() {
-        val one = variableState(1.0)
-        val two = variableState(5.0)
+        val one = StatefulVariable(1.0)
+        val two = StatefulVariable(5.0)
 
-        val three = processedState(one) { it > 2.0 }
-        val four = processedState(two) { it < 2.0 }
+        val three = one.withProcessing { it > 2.0 }
+        val four = two.withProcessing { it < 2.0 }
 
         val five = three and four
 
@@ -86,7 +85,7 @@ class StateTests {
 
     @Test
     fun whenListener() {
-        val three = variableState(false)
+        val three = StatefulVariable(false)
 
         var called = false
 
@@ -107,8 +106,8 @@ class StateTests {
 
     @Test
     fun valueTest() {
-        val one = variableState(false)
-        val two = variableState(false)
+        val one = StatefulVariable(false)
+        val two = StatefulVariable(false)
 
         val three = one and two
 
@@ -136,7 +135,7 @@ class StateTests {
 
     @Test
     fun invokeOnce() {
-        val one = variableState(true)
+        val one = StatefulVariable(true)
 
         var called = false
 
@@ -155,8 +154,8 @@ class StateTests {
 
     @Test
     fun andInvokeOnce() {
-        val one = variableState(false)
-        val two = variableState(false)
+        val one = StatefulVariable(false)
+        val two = StatefulVariable(false)
 
         val three = one and two
 
@@ -189,8 +188,8 @@ class StateTests {
     fun counterState() {
         var counter = 0
 
-        val one = updatableState(5) { counter++ }
-        val two = processedState(one) { it >= 5 }
+        val one = StatefulValue(5) { counter++ }
+        val two = one.withProcessing { it >= 5 }
 
         var called = false
 
@@ -203,12 +202,27 @@ class StateTests {
     }
 
     @Test
+    fun frequencyTest() {
+        var counter = 0
+
+        val one = StatefulValue(5) { counter++ }
+
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < 900) {
+            one.value
+            Thread.sleep(1)
+        }
+
+        assert(counter == 5)
+    }
+
+    @Test
     fun recursiveListener() {
         lateinit var two: StatefulValue<Double>
 
         val one by lazy { two }
 
-        val three by lazy { processedState(one) { it > 5.0 } }
+        val three by lazy { one.withProcessing { it > 5.0 } }
 
         var calledFalse = false
         var calledTrue = false
@@ -231,7 +245,7 @@ class StateTests {
 
     @Test
     fun notTest() {
-        val one = variableState(true)
+        val one = StatefulVariable(true)
         val two = !one
 
         var called = false
@@ -250,8 +264,8 @@ class StateTests {
     }
 
     @Test
-    fun comparisonTest(){
-        val one = variableState(5.0)
+    fun comparisonTest() {
+        val one = StatefulVariable(5.0)
         val two = StatefulValue(10.0)
 
         val three = one.greaterThan(two)

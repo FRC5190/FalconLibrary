@@ -1,8 +1,10 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.StatefulValue
-import frc.team5190.lib.utils.StatefulVariable
-import frc.team5190.lib.utils.variableState
+import frc.team5190.lib.utils.statefulvalue.StatefulBoolean
+import frc.team5190.lib.utils.statefulvalue.or
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
+import frc.team5190.lib.utils.statefulvalue.StatefulVariable
+import frc.team5190.lib.utils.statefulvalue.variableState
 import frc.team5190.lib.wrappers.FalconRobotBase
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.Deferred
@@ -47,7 +49,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
     fun isFinished() = finishCondition.value
 
     // Little cheat so you don't have to reassign finishCondition every time you modify it
-    protected class CommandCondition(private var currentCondition: Condition) : StatefulValue<Boolean> {
+    protected class CommandCondition(private var currentCondition: StatefulBoolean) : StatefulValue<Boolean> {
         private var used = false
 
         override val value: Boolean
@@ -63,7 +65,7 @@ abstract class Command(updateFrequency: Int = DEFAULT_FREQUENCY) {
         /**
          * Shortcut for the or operator
          */
-        operator fun plusAssign(condition: Condition) {
+        operator fun plusAssign(condition: StatefulBoolean) {
             synchronized(this) {
                 if (used) throw IllegalStateException("Cannot add condition once a listener has been added")
                 currentCondition = currentCondition or condition

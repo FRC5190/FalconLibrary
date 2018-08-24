@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.StatefulValue
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
 
 abstract class InstantCommand : Command() {
     init {

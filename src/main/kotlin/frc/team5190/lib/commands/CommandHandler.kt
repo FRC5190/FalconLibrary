@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.invokeWhenTrue
+import frc.team5190.lib.utils.statefulvalue.invokeWhenTrue
 import frc.team5190.lib.utils.launchFrequency
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.channels.Channel

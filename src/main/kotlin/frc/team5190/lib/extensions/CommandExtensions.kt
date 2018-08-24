@@ -12,7 +12,7 @@ import frc.team5190.lib.commands.CommandGroup
 import frc.team5190.lib.commands.ParallelCommandGroup
 import frc.team5190.lib.commands.SequentialCommandGroup
 import frc.team5190.lib.utils.Source
-import frc.team5190.lib.utils.StatefulValue
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
 
 // External Extension Helpers
 
