@@ -54,7 +54,7 @@ object CommandHandler {
                     return
                 }
                 // Stop and dispose task
-                task.stop0()
+                task.stop0(event.stopTime)
                 tasks -= task
                 // Start default commands
                 val defaultCommandsToStart = task.command.requiredSubsystems

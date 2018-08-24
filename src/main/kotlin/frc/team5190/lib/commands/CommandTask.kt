@@ -1,16 +1,18 @@
 package frc.team5190.lib.commands
 
 import frc.team5190.lib.utils.launchFrequency
-import frc.team5190.lib.utils.statefulvalue.invokeWhenTrue
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import frc.team5190.lib.utils.statefulvalue.invokeOnceWhenTrue
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.sync.Mutex
+import kotlinx.coroutines.experimental.sync.withLock
 
 open class CommandTask(val command: Command, private val onFinish: (CommandTask, Long) -> Unit) {
     companion object {
         protected val commandContext = newFixedThreadPoolContext(2, "Command Context")
     }
 
-    private val finishSync = Any()
+    // TODO figure out a way to not use coroutines that doesn't bug
+    private val finishSync = Mutex()
     private var state = State.CREATED
     private var finished = false
 
@@ -23,13 +25,17 @@ open class CommandTask(val command: Command, private val onFinish: (CommandTask,
     private var executor: Job? = null
 
     suspend fun start0(startTime: Long) {
-        assert(state != State.RUNNING) { "You tried to start ${command::class.java.simpleName} task twice." }
+        assert(state != State.RUNNING) { "You tried to startTask ${command::class.java.simpleName} task twice." }
         assert(state == State.CREATED) { "You cannot reuse command tasks." }
         state = State.RUNNING
 
         command.startTime = startTime
         command.initialize0()
-        command.finishConditionValue.invokeWhenTrue { handleFinish() }
+        command.finishConditionValue.invokeOnceWhenTrue {
+            runBlocking(commandContext) {
+                handleFinish()
+            }
+        }
 
         val frequency = command.executeFrequency
         if (frequency != 0) executor = launchFrequency(frequency, commandContext) {
@@ -37,7 +43,7 @@ open class CommandTask(val command: Command, private val onFinish: (CommandTask,
         }
     }
 
-    private fun handleFinish() = synchronized(finishSync) {
+    private suspend fun handleFinish() = finishSync.withLock {
         assert(!finished) { "Got finish event twice." }
         finished = true
 
@@ -50,20 +56,18 @@ open class CommandTask(val command: Command, private val onFinish: (CommandTask,
         onFinish(this, stopTime)
     }
 
-    suspend fun stop0() = synchronized(finishSync) {
+    suspend fun stop0(stopTime: Long) = finishSync.withLock {
         assert(state == State.RUNNING) { "You tried to stop a command task that isn't running" }
         state = State.STOPPED
-
-        val forcedStop = !finished
-
-        executor?.run {
-            if (forcedStop) cancel()
-            join()
+        try {
+            executor?.cancelAndJoin()
+        } catch (e: CancellationException) {
+            e.printStackTrace()
         }
         executor = null
-        stop()
         command.dispose0()
+        stop(stopTime)
     }
 
-    protected open fun stop() {}
+    protected open fun stop(stopTime: Long) {}
 }

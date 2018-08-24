@@ -36,6 +36,8 @@ interface StatefulValue<T> {
     fun invokeOnChangeTo(states: Collection<T>, context: CoroutineContext = STATEFUL_CONTEXT, listener: StatefulListener<T>) =
             invokeOnChange(context, false) { if (states.contains(it)) listener(this, it) }
 
+    // Invoke Once Listeners
+
     fun invokeOnceOnChange(context: CoroutineContext = STATEFUL_CONTEXT, listener: StatefulListener<T>) =
             invokeOnChange(context) {
                 listener(this, it)
@@ -47,6 +49,15 @@ interface StatefulValue<T> {
 
     fun invokeOnceWhen(states: Collection<T>, context: CoroutineContext = STATEFUL_CONTEXT, listener: StatefulListener<T>) =
             invokeWhen(states, context) {
+                listener(this, it)
+                dispose()
+            }
+
+    fun invokeOnceOnChangeTo(state: T, context: CoroutineContext = STATEFUL_CONTEXT, listener: StatefulListener<T>) =
+            invokeOnceOnChangeTo(listOf(state), context, listener)
+
+    fun invokeOnceOnChangeTo(states: Collection<T>, context: CoroutineContext = STATEFUL_CONTEXT, listener: StatefulListener<T>) =
+            invokeOnChangeTo(states, context) {
                 listener(this, it)
                 dispose()
             }
@@ -126,7 +137,15 @@ interface StatefulValue<T> {
 
 interface StatefulConstant<T> : StatefulValue<T> {
     override fun openSubscription(context: CoroutineContext, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle = NonDisposableHandle
-    override fun openSubscription(context: CoroutineContext): ReceiveChannel<T> = TODO("Constant states cannot be subscribed to")
+    override fun openSubscription(context: CoroutineContext): ReceiveChannel<T> {
+        TODO("Constant states cannot be subscribed to")
+    }
+
+    override fun invokeOnChange(context: CoroutineContext, invokeFirst: Boolean, listener: StatefulListener<T>): DisposableHandle {
+        val handle = NonDisposableHandle
+        if (invokeFirst) listener(handle, value)
+        return handle
+    }
 }
 
 interface StatefulVariable<T> : StatefulValue<T> {

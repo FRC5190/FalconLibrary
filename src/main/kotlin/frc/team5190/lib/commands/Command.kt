@@ -1,15 +1,9 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.StatefulBoolean
-import frc.team5190.lib.utils.statefulvalue.StatefulValue
-import frc.team5190.lib.utils.statefulvalue.StatefulVariable
-import frc.team5190.lib.utils.statefulvalue.or
+import frc.team5190.lib.utils.statefulvalue.*
 import frc.team5190.lib.wrappers.FalconRobotBase
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.disposeOnCancellation
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.experimental.CoroutineContext
 
@@ -114,6 +108,13 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
         override fun openSubscription(context: CoroutineContext): ReceiveChannel<Boolean> = synchronized(usedSync) {
             used = true
             currentCondition.openSubscription(context)
+        }
+
+        override fun invokeOnChange(context: CoroutineContext, invokeFirst: Boolean, listener: StatefulListener<Boolean>): DisposableHandle = synchronized(usedSync) {
+            used = true
+            // Fix for non-subscribable stateful constants (they don't change)
+            return if (currentCondition is StatefulConstant) currentCondition.invokeOnChange(context, invokeFirst, listener)
+            else super.invokeOnChange(context, invokeFirst, listener)
         }
 
         /**
