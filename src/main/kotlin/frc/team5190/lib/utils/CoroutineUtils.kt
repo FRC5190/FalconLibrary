@@ -27,3 +27,15 @@ fun launchFrequency(
         }
     }
 }
+
+inline fun disposableHandle(crossinline block: () -> Unit) = object : DisposableHandle {
+    override fun dispose() {
+        block()
+    }
+}
+
+fun disposableHandle(vararg handles: DisposableHandle) = disposableHandle(handles.asList())
+
+fun disposableHandle(handles: Collection<DisposableHandle>) = disposableHandle {
+    handles.forEach { it.dispose() }
+}

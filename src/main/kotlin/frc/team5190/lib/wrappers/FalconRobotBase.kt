@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.team5190.lib.commands.Subsystem
 import frc.team5190.lib.commands.SubsystemHandler
 import frc.team5190.lib.utils.*
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
+import frc.team5190.lib.utils.statefulvalue.StatefulVariable
 import frc.team5190.lib.wrappers.hid.FalconHID
 import kotlinx.coroutines.experimental.runBlocking
 
@@ -37,8 +39,12 @@ abstract class FalconRobotBase : RobotBase() {
     }
 
     // State Machine
-    private val currentModeState = variableState(Mode.NONE)
-    val modeStateMachine = StateMachine(currentModeState)
+    private val currentModeState: StatefulVariable<Mode> = StatefulVariable(Mode.NONE)
+    val currentModeStateValue: StatefulValue<Mode> = currentModeState
+    val modeStateMachine: StateMachine<Mode> = StateMachine(currentModeState)
+
+    @Deprecated("")
+    val currentMode: StatefulValue<Mode> = currentModeStateValue
 
     fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) = modeStateMachine.onEnter(enterState.rawValues, listener)
 
@@ -51,8 +57,6 @@ abstract class FalconRobotBase : RobotBase() {
             modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
 
     // Main Robot Code
-    val currentMode: State<Mode>
-        get() = currentModeState
 
     var initialized = false
         private set
@@ -74,7 +78,7 @@ abstract class FalconRobotBase : RobotBase() {
         // Update Values
         onWhile(Mode.ANY) {
             SmartDashboard.updateValues()
-//            LiveWindow.updateValues()
+            //            LiveWindow.updateValues()
         }
 
         initialize()
