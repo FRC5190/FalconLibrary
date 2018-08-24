@@ -34,7 +34,7 @@ inline fun disposableHandle(crossinline block: () -> Unit) = object : Disposable
     }
 }
 
-fun disposableHandle(vararg handles: DisposableHandle) = disposableHandle(handles.asCollection())
+fun disposableHandle(vararg handles: DisposableHandle) = disposableHandle(handles.asList())
 
 fun disposableHandle(handles: Collection<DisposableHandle>) = disposableHandle {
     handles.forEach { it.dispose() }
