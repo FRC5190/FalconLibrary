@@ -1,8 +1,9 @@
 package frc.team5190.lib.utils
 
+import frc.team5190.lib.utils.statefulvalue.StatefulValue
 import kotlinx.coroutines.experimental.*
 
-class StateMachine<T>(val state: State<T>) {
+class StateMachine<T>(val state: StatefulValue<T>) {
 
     companion object {
         private val stateMachineContext = newFixedThreadPoolContext(2, "State Machine")

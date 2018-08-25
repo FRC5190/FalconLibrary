@@ -8,30 +8,45 @@ typealias BooleanSource = Source<Boolean>
 
 interface Source<T> {
     val value: T
+
+    fun <O, P> withMerge(other: Source<O>, block: (T, O) -> P): Source<P> = of { block(this@Source.value, other.value) }
+
+    fun <O> withEquals(other: O) = withEquals(of(other))
+    fun <O> withEquals(other: Source<O>): BooleanSource = of { this@Source.value == other.value }
+
+    fun <O> withProcessing(block: (T) -> O): Source<O> = of { block(this@Source.value) }
+
+    companion object {
+        fun <T> of(value: T): Source<T> = ConstantSource(value)
+        fun <T> of(value: () -> T): Source<T> = VariableSource(value)
+    }
 }
 
-fun <T> constSource(value: T) = object : Source<T> {
-    override val value = value
-}
-
-inline fun <T> variableSource(crossinline value: () -> T) = object : Source<T> {
+private class ConstantSource<T>(override val value: T) : Source<T>
+private class VariableSource<T>(val valueSource: () -> T) : Source<T> {
     override val value: T
-        get() = value()
+        get() = valueSource()
 }
 
-inline fun <T, K> mergeSource(one: Source<out T>, two: Source<out T>, crossinline value: (T, T) -> K) = variableSource { value(one.value, two.value) }
+@Suppress("FunctionName")
+fun <T> Source(value: T) = Source.of(value)
 
-fun <T> Source<T>.withEquals(equalsWhat: T): BooleanSource = withEquals(constSource(equalsWhat))
-fun <T> Source<T>.withEquals(equalsWhat: Source<T>): BooleanSource = withProcessing { it == equalsWhat.value }
+@Suppress("FunctionName")
+fun <T> Source(value: () -> T) = Source.of(value)
 
-inline fun <F, T> Source<F>.withProcessing(crossinline processor: (F) -> T) = variableSource {
-    processor(this@withProcessing.value)
-}
-
-fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(constSource(trueMap), constSource(falseMap))
-fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, constSource(falseMap))
-fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(constSource(trueMap), falseMap)
+fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(Source(trueMap), Source(falseMap))
+fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, Source(falseMap))
+fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(Source(trueMap), falseMap)
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = withProcessing { if (it) trueMap.value else falseMap.value }
+
+@Deprecated("", ReplaceWith("Source(value)"))
+fun <T> constSource(value: T) = Source(value)
+
+@Deprecated("", ReplaceWith("Source(value)"))
+fun <T> variableSource(value: () -> T) = Source(value)
+
+@Deprecated("", ReplaceWith("one.withMerge(two, value)"))
+fun <T, K> mergeSource(one: Source<out T>, two: Source<out T>, value: (T, T) -> K) = one.withMerge(two, value)
 
 fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = withProcessing {
     val currentValue = this@withThreshold.value
