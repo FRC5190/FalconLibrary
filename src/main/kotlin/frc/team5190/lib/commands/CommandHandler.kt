@@ -50,7 +50,7 @@ object CommandHandler {
             is CommandEvent.StopEvent -> {
                 val task = event.task
                 if (!tasks.contains(task)) {
-                    println("[Command Handler] tried to stop ${task.command::class.java.simpleName} which isn't currently running!")
+                    //println("[Command Handler] tried to stop ${task.command::class.java.simpleName} which isn't currently running!")
                     return
                 }
                 // Stop and dispose task

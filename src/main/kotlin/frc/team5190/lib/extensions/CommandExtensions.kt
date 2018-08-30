@@ -37,8 +37,8 @@ interface CommandGroupBuilder {
 class BasicCommandGroupBuilder(private val type: CommandGroup.GroupType) : CommandGroupBuilder {
     private val commands = mutableListOf<Command>()
 
-    fun sequential(block: CommandGroupBuilder.() -> Unit) = sequential0(block).also { it.unaryPlus() }
-    fun parallel(block: CommandGroupBuilder.() -> Unit) = parallel0(block).also { it.unaryPlus() }
+    fun sequential(block: BasicCommandGroupBuilder.() -> Unit) = sequential0(block).also { it.unaryPlus() }
+    fun parallel(block: BasicCommandGroupBuilder.() -> Unit) = parallel0(block).also { it.unaryPlus() }
     fun <T> stateCommandGroup(state: StatefulValue<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
             stateCommandGroup(state.asSource(), block)
 
