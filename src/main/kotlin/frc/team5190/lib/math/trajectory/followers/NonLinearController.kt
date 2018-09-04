@@ -46,20 +46,18 @@ class NonLinearController(trajectory: Trajectory<TimedState<Pose2dWithCurvature>
 
         return calculateTwist(
                 error = pose inFrameOfReferenceOf robot,
-                vd = this.point.state.velocity,
-                wd = this.point.state.velocity * this.point.state.state.curvature
-        ).also { this.point = iterator.advance(dt) }
+                vd = point.state.velocity,
+                wd = point.state.velocity * point.state.state.curvature
+        ).also { point = iterator.advance(dt) }
 
     }
 
-    private fun calculateTwist(error: Pose2d,
-                               vd: Double,
-                               wd: Double): Twist2d = Twist2d(
+    private fun calculateTwist(error: Pose2d, vd: Double, wd: Double) = Twist2d(
             vd * error.rotation.cos + gainFunc(vd, wd) * error.translation.x, 0.0,
             wd + kBeta * sinc(error.rotation.radians) * error.translation.y + gainFunc(vd, wd) * error.rotation.radians
     )
 
-    private fun gainFunc(v: Double, w: Double) = 2 * kZeta * sqrt((w * w) + ((kBeta) * (v * v)))
+    private fun gainFunc(v: Double, w: Double) = 2 * kZeta * sqrt(w * w + kBeta * v * v)
 
     private fun sinc(theta: Double): Double {
         return if (theta epsilonEquals 0.0) 1.0 - 1.0 / 6.0 * theta * theta
