@@ -95,6 +95,9 @@ class Translation2d : ITranslation2d<Translation2d> {
     operator fun plus(other: Translation2d) = this.translateBy(other)
     operator fun minus(other: Translation2d) = this.translateBy(other.inverse)
 
+    operator fun div(other: Double) = times(1.0 / other)
+    operator fun times(other: Double) = this.scale(other)
+
     infix fun epsilonEquals(other: Translation2d): Boolean {
         return x epsilonEquals other.x && y epsilonEquals other.y
     }
