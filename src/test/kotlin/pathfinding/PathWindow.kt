@@ -1,6 +1,8 @@
 import PathWindow.FIELD_WIDTH
 import frc.team5190.lib.math.geometry.Pose2d
 import frc.team5190.lib.math.geometry.Pose2dWithCurvature
+import frc.team5190.lib.math.geometry.Translation2d
+import frc.team5190.lib.math.trajectory.Rectangle
 import frc.team5190.lib.math.trajectory.Trajectory
 import frc.team5190.lib.math.trajectory.TrajectoryGenerator
 import frc.team5190.lib.math.trajectory.TrajectoryIterator
@@ -20,7 +22,7 @@ object PathWindow {
 
     val FIELD = Rectangle(0.0, 0.0, FIELD_LENGTH, FIELD_WIDTH)
 
-    val ROBOT_SIZE = 2.75
+    val ROBOT_SIZE = 3.0 // 2.75
 
     val LEFT_SWITCH = Rectangle(140.0 / 12.0, 85.25 / 12.0, 56.0 / 12.0, 153.5 / 12.0)
     val PLATFORM = Rectangle(261.47 / 12.0, 95.25 / 12.0, 125.06 / 12.0, 133.5 / 12.0)
@@ -36,7 +38,7 @@ object PathWindow {
 
     private var trajectory: Trajectory<TimedState<Pose2dWithCurvature>>? = null
 
-    var astarPath = listOf<Point>()
+    var rawPath: List<Translation2d> = listOf()
         set(value) = synchronized(changeSync) {
             field = value
             panel.repaint()
@@ -73,20 +75,20 @@ object PathWindow {
                     g.fillRect(bannedArea)
                 }
                 if (trajectory != null) {
-                    g.color = Color.MAGENTA.also { Color(it.red, it.green, it.blue, 128) }
+                    g.color = Color.BLUE
 
-                    for ((one, two) in astarPath.zipWithNext()) {
+                    for((one, two) in rawPath.zipWithNext()) {
                         g.drawLine(one, two)
                     }
 
                     g.color = Color.RED
                     val trajectoryIterator = TrajectoryIterator(TimedView(trajectory!!))
 
-                    val points = mutableListOf<Point>()
+                    val points = mutableListOf<Translation2d>()
 
                     while (!trajectoryIterator.isDone) {
                         val point = trajectoryIterator.advance(0.02)
-                        points += Point(point.state.state.translation.x, point.state.state.translation.y)
+                        points += point.state.state.translation
                     }
 
                     for ((one, two) in points.zipWithNext()) {
@@ -106,18 +108,9 @@ object PathWindow {
         frame.isVisible = true
     }
 
-    fun validSpot(point: Point): Boolean {
-        val pointRect = Rectangle(point.x - ROBOT_SIZE / 2.0, point.y - ROBOT_SIZE / 2.0, ROBOT_SIZE, ROBOT_SIZE)
-        return PathWindow.FIELD.isIn(pointRect) &&
-                !PathWindow.LEFT_SWITCH.isIn(pointRect) &&
-                !PathWindow.PLATFORM.isIn(pointRect) &&
-                !PathWindow.RIGHT_SWITCH.isIn(pointRect) &&
-                !PathWindow.bannedAreas.any { area -> area.isIn(pointRect) }
-    }
-
 }
 
-private fun Graphics2D.drawLine(from: Point, to: Point) {
+private fun Graphics2D.drawLine(from: Translation2d, to: Translation2d) {
     val scale = clipBounds.height / FIELD_WIDTH
     drawLine((from.x * scale).toInt(), (from.y * scale).toInt(), (to.x * scale).toInt(), (to.y * scale).toInt())
 }
