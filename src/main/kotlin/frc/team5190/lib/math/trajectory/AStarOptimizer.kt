@@ -4,6 +4,8 @@ import frc.team5190.lib.math.geometry.Pose2d
 import frc.team5190.lib.math.geometry.Rectangle2d
 import frc.team5190.lib.math.geometry.Rotation2d
 import frc.team5190.lib.math.geometry.Translation2d
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 class AStarOptimizer(
         robotSize: Double,
@@ -11,18 +13,23 @@ class AStarOptimizer(
 ) {
 
     companion object {
-        private const val pointsPerFoot: Int = 1
+        private const val pointsPerFoot: Int = 5
 
-        private val neighborTemplate = setOf(
-                IntPoint(1, 0),
-                IntPoint(-1, 0),
-                IntPoint(0, 1),
-                IntPoint(0, -1),
-                IntPoint(1, 1),
-                IntPoint(-1, 1),
-                IntPoint(1, -1),
-                IntPoint(-1, -1)
-        )
+        private val neighborTemplate = createNeighborTemplate(3)
+
+        private fun createNeighborTemplate(size: Int): Set<NeighborPoint> {
+            val range = (-size)..size
+            val points = mutableSetOf<NeighborPoint>()
+            for (x in range) {
+                for (y in range) {
+                    if (x == 0 && y == 0) continue
+                    //val score = Math.sqrt((x * x + y * y).toDouble())
+                    val score = Math.max(x.absoluteValue, y.absoluteValue).toDouble()
+                    points += NeighborPoint(IntPoint(x, y), score)
+                }
+            }
+            return points
+        }
 
         private val FIELD_RECTANGLE = Rectangle2d(0.0, 0.0, 54.0, 27.0)
     }
@@ -40,7 +47,7 @@ class AStarOptimizer(
         val points = optimizePoints(start.translation, goal.translation, *restrictedAreas) ?: return null
         val cleanedUpPoints = points.removeRedundantPoints()
                 .removeNearPoints(3.0)
-                .addFarPoints(10.0)
+                .addFarPoints(5.0)
                 .fixEndPoints(start.translation, goal.translation)
 
         return Result(cleanedUpPoints, cleanedUpPoints.toWayPoints(start, goal))
@@ -165,10 +172,10 @@ class AStarOptimizer(
             openSet -= currentNode
             closedSet += currentNode
 
-            for (neighborPoint in neighborTemplate.map { currentNode.point + it }) {
+            for (neighborPoint in neighborTemplate.map { it + currentNode.point }) {
                 val translatedRobotRectangle = Rectangle2d(
-                        robotRectangle.x + neighborPoint.x,
-                        robotRectangle.y + neighborPoint.y,
+                        robotRectangle.x + neighborPoint.point.x.toDouble() / pointsPerFoot,
+                        robotRectangle.y + neighborPoint.point.y.toDouble() / pointsPerFoot,
                         robotRectangle.w,
                         robotRectangle.h
                 )
@@ -176,31 +183,44 @@ class AStarOptimizer(
                 if (!FIELD_RECTANGLE.isIn(translatedRobotRectangle)
                         || effectiveRestrictedAreas.any { it.isIn(translatedRobotRectangle) }) continue
 
-                val neighborNode = nodeCache.computeIfAbsent(neighborPoint) { Node(it) }
+                val neighborNode = nodeCache.computeIfAbsent(neighborPoint.point) { Node(it) }
 
                 if (closedSet.contains(neighborNode)) continue
 
-                val tentativeGScore = currentNode.gScore + 1
+                val tentativeGScore = (currentNode.gScore ?: Double.POSITIVE_INFINITY) + neighborPoint.score
 
                 if (!openSet.contains(neighborNode)) {
                     openSet += neighborNode // new node
-                } else if (tentativeGScore >= neighborNode.gScore) {
+                } else if (tentativeGScore >= neighborNode.gScore ?: Double.POSITIVE_INFINITY) {
                     continue // not a better path
                 }
 
                 neighborNode.cameFrom = currentNode
                 neighborNode.gScore = tentativeGScore
-                neighborNode.fScore = tentativeGScore + neighborPoint.distance(goalPoint)
+                neighborNode.fScore = tentativeGScore + neighborPoint.point.distance(goalPoint)
             }
         }
 
         return null
     }
 
+    private class NeighborPoint(
+            val point: IntPoint,
+            val score: Double
+    ) {
+        operator fun plus(point: IntPoint) = NeighborPoint(this.point + point, score)
+
+        override fun hashCode() = point.hashCode()
+        override fun equals(other: Any?): Boolean {
+            if (other !is NeighborPoint) return false
+            return other.point == point
+        }
+    }
+
     private class Node(
             val point: IntPoint,
             var cameFrom: Node? = null,
-            var gScore: Double = Double.POSITIVE_INFINITY
+            var gScore: Double? = null
     ) {
         var fScore = Double.POSITIVE_INFINITY
 
@@ -223,8 +243,8 @@ private data class IntPoint(
         val y: Int
 ) {
     constructor(translation2d: Translation2d, pointsPerFoot: Int) : this(
-            (translation2d.x * pointsPerFoot).toInt(),
-            (translation2d.y * pointsPerFoot).toInt()
+            (translation2d.x * pointsPerFoot).roundToInt(),
+            (translation2d.y * pointsPerFoot).roundToInt()
     )
 
     fun distance(other: IntPoint): Double {
