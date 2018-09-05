@@ -66,7 +66,15 @@ class AStarOptimizer(
             if (next2Angle == nextAngle) finalAngle = nextAngle
             if (finalAngle == null && last2Angle == lastAngle) finalAngle = lastAngle
 
-            if (finalAngle == null) finalAngle = (lastAngle * 0.5 + nextAngle) / 1.5
+            if (finalAngle == null) {
+                val lastPoint = get(index - 1)
+                val nextPoint = get(index + 1)
+
+                val lastPointDistance = lastPoint.distance(point)
+                val nextPointDistance = nextPoint.distance(point)
+
+                finalAngle = (lastAngle * lastPointDistance + nextAngle * nextPointDistance) / (lastPointDistance + nextPointDistance)
+            }
 
             newList += Pose2d(point, Rotation2d.fromRadians(finalAngle))
         }
