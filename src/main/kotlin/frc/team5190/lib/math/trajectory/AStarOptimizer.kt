@@ -1,12 +1,13 @@
 package frc.team5190.lib.math.trajectory
 
 import frc.team5190.lib.math.geometry.Pose2d
+import frc.team5190.lib.math.geometry.Rectangle2d
 import frc.team5190.lib.math.geometry.Rotation2d
 import frc.team5190.lib.math.geometry.Translation2d
 
 class AStarOptimizer(
         robotSize: Double,
-        vararg restrictedAreas: Rectangle
+        vararg restrictedAreas: Rectangle2d
 ) {
 
     companion object {
@@ -23,10 +24,10 @@ class AStarOptimizer(
                 IntPoint(-1, -1)
         )
 
-        private val FIELD_RECTANGLE = Rectangle(0.0, 0.0, 54.0, 27.0)
+        private val FIELD_RECTANGLE = Rectangle2d(0.0, 0.0, 54.0, 27.0)
     }
 
-    private val robotRectangle = Rectangle(
+    private val robotRectangle = Rectangle2d(
             -robotSize / 2.0,
             -robotSize / 2.0,
             robotSize,
@@ -35,7 +36,7 @@ class AStarOptimizer(
 
     private val restrictedAreas = restrictedAreas.toList()
 
-    fun optimize(start: Pose2d, goal: Pose2d, vararg restrictedAreas: Rectangle): Result? {
+    fun optimize(start: Pose2d, goal: Pose2d, vararg restrictedAreas: Rectangle2d): Result? {
         val points = optimizePoints(start.translation, goal.translation, *restrictedAreas) ?: return null
         val cleanedUpPoints = points.removeRedundantPoints()
                 .removeNearPoints(3.0)
@@ -123,7 +124,7 @@ class AStarOptimizer(
         return newList
     }
 
-    private fun optimizePoints(start: Translation2d, goal: Translation2d, vararg restrictedAreas: Rectangle): List<Translation2d>? {
+    private fun optimizePoints(start: Translation2d, goal: Translation2d, vararg restrictedAreas: Rectangle2d): List<Translation2d>? {
         val effectiveRestrictedAreas = this.restrictedAreas + restrictedAreas
 
         val startPoint = IntPoint(start, pointsPerFoot)
@@ -157,7 +158,7 @@ class AStarOptimizer(
             closedSet += currentNode
 
             for (neighborPoint in neighborTemplate.map { currentNode.point + it }) {
-                val translatedRobotRectangle = Rectangle(
+                val translatedRobotRectangle = Rectangle2d(
                         robotRectangle.x + neighborPoint.x,
                         robotRectangle.y + neighborPoint.y,
                         robotRectangle.w,
@@ -227,11 +228,3 @@ private data class IntPoint(
     operator fun plus(other: IntPoint) = IntPoint(x + other.x, y + other.y)
 }
 
-data class Rectangle(
-        val x: Double,
-        val y: Double,
-        val w: Double,
-        val h: Double
-) {
-    fun isIn(r: Rectangle) = x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y
-}

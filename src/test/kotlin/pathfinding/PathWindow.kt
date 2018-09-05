@@ -2,7 +2,7 @@ import PathWindow.FIELD_WIDTH
 import frc.team5190.lib.math.geometry.Pose2d
 import frc.team5190.lib.math.geometry.Pose2dWithCurvature
 import frc.team5190.lib.math.geometry.Translation2d
-import frc.team5190.lib.math.trajectory.Rectangle
+import frc.team5190.lib.math.geometry.Rectangle2d
 import frc.team5190.lib.math.trajectory.Trajectory
 import frc.team5190.lib.math.trajectory.TrajectoryGenerator
 import frc.team5190.lib.math.trajectory.TrajectoryIterator
@@ -20,17 +20,17 @@ object PathWindow {
     const val FIELD_WIDTH = 27.0
     const val FIELD_LENGTH = 54.0
 
-    val FIELD = Rectangle(0.0, 0.0, FIELD_LENGTH, FIELD_WIDTH)
+    val FIELD = Rectangle2d(0.0, 0.0, FIELD_LENGTH, FIELD_WIDTH)
 
     val ROBOT_SIZE = 3.0 // 2.75
 
-    val LEFT_SWITCH = Rectangle(140.0 / 12.0, 85.25 / 12.0, 56.0 / 12.0, 153.5 / 12.0)
-    val PLATFORM = Rectangle(261.47 / 12.0, 95.25 / 12.0, 125.06 / 12.0, 133.5 / 12.0)
-    val RIGHT_SWITCH = Rectangle(FIELD_LENGTH - (LEFT_SWITCH.x + LEFT_SWITCH.w), LEFT_SWITCH.y, LEFT_SWITCH.w, LEFT_SWITCH.h)
+    val LEFT_SWITCH = Rectangle2d(140.0 / 12.0, 85.25 / 12.0, 56.0 / 12.0, 153.5 / 12.0)
+    val PLATFORM = Rectangle2d(261.47 / 12.0, 95.25 / 12.0, 125.06 / 12.0, 133.5 / 12.0)
+    val RIGHT_SWITCH = Rectangle2d(FIELD_LENGTH - (LEFT_SWITCH.x + LEFT_SWITCH.w), LEFT_SWITCH.y, LEFT_SWITCH.w, LEFT_SWITCH.h)
 
     val changeSync = Any()
 
-    var bannedAreas = listOf<Rectangle>()
+    var bannedAreas = listOf<Rectangle2d>()
         set(value) = synchronized(changeSync) {
             field = value
             panel.repaint()
@@ -115,7 +115,7 @@ private fun Graphics2D.drawLine(from: Translation2d, to: Translation2d) {
     drawLine((from.x * scale).toInt(), (from.y * scale).toInt(), (to.x * scale).toInt(), (to.y * scale).toInt())
 }
 
-private fun Graphics2D.fillRect(rectangle: Rectangle) {
+private fun Graphics2D.fillRect(rectangle: Rectangle2d) {
     val scale = clipBounds.height / FIELD_WIDTH
     fillRect((rectangle.x * scale).toInt(), (rectangle.y * scale).toInt(), (rectangle.w * scale).toInt(), (rectangle.h * scale).toInt())
 }

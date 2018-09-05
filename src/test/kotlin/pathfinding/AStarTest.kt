@@ -1,7 +1,8 @@
 import frc.team5190.lib.math.geometry.Pose2d
 import frc.team5190.lib.math.geometry.Rotation2d
+import frc.team5190.lib.math.geometry.Translation2d
 import frc.team5190.lib.math.trajectory.AStarOptimizer
-import frc.team5190.lib.math.trajectory.Rectangle
+import frc.team5190.lib.math.geometry.Rectangle2d
 
 fun main(args: Array<String>) {
     PathWindow
@@ -11,11 +12,25 @@ fun main(args: Array<String>) {
             PathWindow.LEFT_SWITCH, PathWindow.PLATFORM, PathWindow.RIGHT_SWITCH
     )
 
+
+    // ROBOT DIMENSIONS
+    val kRobotWidth   = 27.0 / 12.0
+    val kRobotLength  = 33.0 / 12.0
+    val kIntakeLength = 16.0 / 12.0
+    val kBumperLength = 02.0 / 12.0
+
+    // ROBOT POSES
+    val kRobotStartX = (kRobotLength / 2.0) + kBumperLength
+
+    val kExchangeZoneBottomY = 14.5
+    val kPortalZoneBottomY = 27 - (29.69 / 12.0)
+    val kRobotSideStartY = kPortalZoneBottomY - (kRobotWidth / 2.0) - kBumperLength
+    val kRobotCenterStartY = kExchangeZoneBottomY - (kRobotWidth / 2.0) - kBumperLength
+
+
     val result = aStarTest.optimize(
-            Pose2d(PathWindow.LEFT_SWITCH.x - PathWindow.ROBOT_SIZE / 2.0, PathWindow.LEFT_SWITCH.y + PathWindow.ROBOT_SIZE, Rotation2d.fromDegrees(180.0)),
-            Pose2d(23.7, 20.2, Rotation2d.fromDegrees(-15.0)),
-            Rectangle(0.0, PathWindow.LEFT_SWITCH.y + PathWindow.LEFT_SWITCH.h / 2.0,
-                    PathWindow.LEFT_SWITCH.x, PathWindow.LEFT_SWITCH.h)
+            Pose2d(Translation2d(kRobotStartX, kRobotSideStartY), Rotation2d()),
+            Pose2d(Translation2d(23.7, 20.2), Rotation2d.fromDegrees(-10.0))
     )!!
 
     PathWindow.rawPath = result.pathNodes
@@ -27,10 +42,10 @@ fun main(args: Array<String>) {
     //val startAngle = 0.0
     //val endAngle = -165.0
 
-    //PathWindow.bannedAreas += Rectangle(0.0, PathWindow.LEFT_SWITCH.y, PathWindow.LEFT_SWITCH.x, PathWindow.LEFT_SWITCH.h)
+    //PathWindow.bannedAreas += Rectangle2d(0.0, PathWindow.LEFT_SWITCH.y, PathWindow.LEFT_SWITCH.x, PathWindow.LEFT_SWITCH.h)
 
     /*
-    PathWindow.bannedAreas += Rectangle(PathWindow.LEFT_SWITCH.x + PathWindow.LEFT_SWITCH.w,
+    PathWindow.bannedAreas += Rectangle2d(PathWindow.LEFT_SWITCH.x + PathWindow.LEFT_SWITCH.w,
             PathWindow.PLATFORM.y + PathWindow.PLATFORM.h,
             PathWindow.FIELD_LENGTH / 2.0 - PathWindow.LEFT_SWITCH.w - PathWindow.LEFT_SWITCH.x,
             PathWindow.FIELD_WIDTH - PathWindow.PLATFORM.y - PathWindow.PLATFORM.h)
