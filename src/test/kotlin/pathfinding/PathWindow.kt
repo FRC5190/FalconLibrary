@@ -1,17 +1,15 @@
 import PathWindow.FIELD_WIDTH
 import frc.team5190.lib.math.geometry.Pose2d
 import frc.team5190.lib.math.geometry.Pose2dWithCurvature
-import frc.team5190.lib.math.geometry.Translation2d
 import frc.team5190.lib.math.geometry.Rectangle2d
+import frc.team5190.lib.math.geometry.Translation2d
 import frc.team5190.lib.math.trajectory.Trajectory
 import frc.team5190.lib.math.trajectory.TrajectoryGenerator
 import frc.team5190.lib.math.trajectory.TrajectoryIterator
 import frc.team5190.lib.math.trajectory.timing.CentripetalAccelerationConstraint
 import frc.team5190.lib.math.trajectory.timing.TimedState
 import frc.team5190.lib.math.trajectory.view.TimedView
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
+import java.awt.*
 import javax.swing.JFrame
 import javax.swing.JPanel
 
@@ -22,11 +20,12 @@ object PathWindow {
 
     val FIELD = Rectangle2d(0.0, 0.0, FIELD_LENGTH, FIELD_WIDTH)
 
-    val ROBOT_SIZE = 3.0 // 2.75
+    val ROBOT_SIZE = 3.2 // 2.75
 
     val LEFT_SWITCH = Rectangle2d(140.0 / 12.0, 85.25 / 12.0, 56.0 / 12.0, 153.5 / 12.0)
     val PLATFORM = Rectangle2d(261.47 / 12.0, 95.25 / 12.0, 125.06 / 12.0, 133.5 / 12.0)
     val RIGHT_SWITCH = Rectangle2d(FIELD_LENGTH - (LEFT_SWITCH.x + LEFT_SWITCH.w), LEFT_SWITCH.y, LEFT_SWITCH.w, LEFT_SWITCH.h)
+    val BACK_SWITCH_CUBES = Rectangle2d(LEFT_SWITCH.x + LEFT_SWITCH.w, LEFT_SWITCH.y, 15.0 / 12.0, LEFT_SWITCH.h)
 
     val changeSync = Any()
 
@@ -46,11 +45,12 @@ object PathWindow {
 
     var path: List<Pose2d> = listOf()
         set(value) = synchronized(changeSync) {
+            println(value.joinToString("\n"))
             field = value
             panel.repaint()
             trajectory = TrajectoryGenerator.generateTrajectory(
                     false,
-                    ArrayList(value),
+                    value,
                     arrayListOf(CentripetalAccelerationConstraint(4.0)),
                     0.0,
                     0.0,
@@ -63,25 +63,26 @@ object PathWindow {
     private val panel = object : JPanel() {
         override fun paintComponent(g: Graphics) {
             g as Graphics2D
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON)
+
             g.background = Color.white
             g.color = Color.LIGHT_GRAY
             g.fillRect(PLATFORM)
             g.color = Color.GRAY
             g.fillRect(LEFT_SWITCH)
             g.fillRect(RIGHT_SWITCH)
+            g.color = Color.YELLOW
+            g.fillRect(BACK_SWITCH_CUBES)
             synchronized(changeSync) {
                 g.color = Color(255, 0, 0, 64)
                 for (bannedArea in bannedAreas) {
                     g.fillRect(bannedArea)
                 }
                 if (trajectory != null) {
-                    g.color = Color.BLUE
-
-                    for((one, two) in rawPath.zipWithNext()) {
-                        g.drawLine(one, two)
-                    }
 
                     g.color = Color.RED
+                    g.stroke = BasicStroke(7.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, null, 0.0f)
                     val trajectoryIterator = TrajectoryIterator(TimedView(trajectory!!))
 
                     val points = mutableListOf<Translation2d>()
@@ -91,9 +92,20 @@ object PathWindow {
                         points += point.state.state.translation
                     }
 
-                    for ((one, two) in points.zipWithNext()) {
-                        g.drawLine(one, two)
-                    }
+                    val scale = g.clipBounds.height / FIELD_WIDTH
+
+                    var xPoints = IntArray(points.size) { (points[it].x * scale).toInt() }
+                    var yPoints = IntArray(points.size) { (points[it].y * scale).toInt() }
+
+                    g.drawPolyline(xPoints, yPoints, points.size)
+
+                    g.color = Color.BLUE
+                    g.stroke = BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, arrayOf(10.0f).toFloatArray(), 0.0f)
+
+                    xPoints = IntArray(rawPath.size) { (rawPath[it].x * scale).toInt() }
+                    yPoints = IntArray(rawPath.size) { (rawPath[it].y * scale).toInt() }
+
+                    g.drawPolyline(xPoints, yPoints, rawPath.size)
                 }
             }
         }

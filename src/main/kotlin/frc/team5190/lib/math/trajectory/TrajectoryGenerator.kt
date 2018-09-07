@@ -30,8 +30,8 @@ object TrajectoryGenerator {
     // Generate trajectory with custom start and end velocity.
     fun generateTrajectory(
             reversed: Boolean,
-            waypoints: ArrayList<Pose2d>,
-            constraints: ArrayList<TimingConstraint<Pose2dWithCurvature>>,
+            wayPoints: List<Pose2d>,
+            constraints: List<TimingConstraint<Pose2dWithCurvature>>,
             startVel: Double,
             endVel: Double,
             maxVelocity: Double,
@@ -41,22 +41,20 @@ object TrajectoryGenerator {
         val flippedPose2d = Pose2d.fromRotation(Rotation2d.fromDegrees(180.0))
 
         // Make theta normal for trajectory generation if path is trajectoryReversed.
-        val newWaypoints = waypoints.map { if (reversed) it.transformBy(flippedPose2d) else it }
+        val newWayPoints = wayPoints.map { if (reversed) it.transformBy(flippedPose2d) else it }
 
-        var trajectory = TrajectoryUtil.trajectoryFromSplineWaypoints(newWaypoints, kMaxDx, kMaxDy, kMaxDTheta)
+        var trajectory = TrajectoryUtil.trajectoryFromSplineWaypoints(newWayPoints, kMaxDx, kMaxDy, kMaxDTheta)
 
         // After trajectory generation, flip theta back so it's relative to the field.
         // Also fix curvature and its derivative
         if (reversed) {
-            val points = ArrayList<Pose2dWithCurvature>(trajectory.length)
-            for (i in 0 until trajectory.length) {
-                points.add(Pose2dWithCurvature(
-                        pose = trajectory.getState(i).pose.transformBy(flippedPose2d),
-                        curvature = -trajectory.getState(i).curvature,
-                        dcurvature_ds = -trajectory.getState(i).dkds
-                ))
-            }
-            trajectory = Trajectory(points)
+            trajectory = Trajectory(trajectory.map { state ->
+                Pose2dWithCurvature(
+                        pose = state.pose.transformBy(flippedPose2d),
+                        curvature = -state.curvature,
+                        dcurvature_ds = -state.dkds
+                )
+            })
         }
 
         // Parameterize by time and return.

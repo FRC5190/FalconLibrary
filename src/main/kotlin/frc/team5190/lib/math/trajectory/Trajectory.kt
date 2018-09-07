@@ -18,7 +18,7 @@ import frc.team5190.lib.math.geometry.interfaces.State
 import frc.team5190.lib.math.trajectory.view.TrajectoryView
 import java.util.*
 
-class Trajectory<S : State<S>> {
+class Trajectory<S : State<S>> : Iterable<S> {
 
     private val points: MutableList<TrajectoryPoint<S>>
 
@@ -84,6 +84,11 @@ class Trajectory<S : State<S>> {
         return builder.toString()
     }
 
+    override fun iterator(): Iterator<S> = object : Iterator<S> {
+        val iterator = points.iterator()
+        override fun hasNext() = iterator.hasNext()
+        override fun next(): S = iterator.next().state
+    }
 
     inner class IndexView : TrajectoryView<S> {
 

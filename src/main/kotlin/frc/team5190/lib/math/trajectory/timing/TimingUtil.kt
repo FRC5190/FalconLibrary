@@ -30,15 +30,15 @@ object TimingUtil {
             maxVelocity: Double,
             maxAbsAcceleration: Double): Trajectory<TimedState<S>> {
 
+        val distanceViewRange = distanceView.firstInterpolant..distanceView.lastInterpolant
+        val distanceViewSteps = Math.ceil((distanceView.lastInterpolant - distanceView.firstInterpolant) / stepSize + 1).toInt()
 
-        val numStates = Math.ceil(distanceView.lastInterpolant / stepSize + 1).toInt()
-        val states = ArrayList<S>(numStates)
-        for (i in 0 until numStates) {
-            states.add(distanceView.sample(Math.min(i * stepSize, distanceView.lastInterpolant)).state)
+        val states = (0 until distanceViewSteps).map { step ->
+            distanceView.sample((step * stepSize + distanceView.firstInterpolant).coerceIn(distanceViewRange)).state
         }
+
         return timeParameterizeTrajectory(reverse, states, constraints, startVelocity, endVelocity,
                 maxVelocity, maxAbsAcceleration)
-
     }
 
     private fun <S : State<S>> timeParameterizeTrajectory(

@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
 
     val aStarTest = AStarOptimizer(
             PathWindow.ROBOT_SIZE,
-            PathWindow.LEFT_SWITCH, PathWindow.PLATFORM, PathWindow.RIGHT_SWITCH
+            PathWindow.LEFT_SWITCH, PathWindow.PLATFORM, PathWindow.RIGHT_SWITCH, PathWindow.BACK_SWITCH_CUBES
     )
 
 
@@ -30,7 +30,8 @@ fun main(args: Array<String>) {
 
     val result = aStarTest.optimize(
             Pose2d(Translation2d(kRobotStartX, kRobotSideStartY), Rotation2d()),
-            Pose2d(Translation2d(23.7, 20.2), Rotation2d.fromDegrees(-10.0))
+            Pose2d(Translation2d(23.700,6.800), Rotation2d.fromDegrees(20.0)),
+            Rectangle2d(Translation2d(0.0, 0.0), Translation2d(10.0, 10.0))
     )!!
 
     PathWindow.rawPath = result.pathNodes
