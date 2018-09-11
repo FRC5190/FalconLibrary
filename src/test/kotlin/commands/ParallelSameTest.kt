@@ -1,6 +1,6 @@
-package frc.team5190.lib.commands
+package frc.team5190.lib.structures.commands
 
-import frc.team5190.lib.extensions.parallel
+import frc.team5190.lib.structures.parallel
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 import java.util.concurrent.TimeUnit

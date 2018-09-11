@@ -1,6 +1,6 @@
-package frc.team5190.lib.utils
+package frc.team5190.lib.structures.utils
 
-import frc.team5190.lib.utils.statefulvalue.*
+import frc.team5190.lib.structures.utils.statefulvalue.*
 import org.junit.Test
 import kotlin.coroutines.experimental.CoroutineContext
 

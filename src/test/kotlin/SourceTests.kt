@@ -1,4 +1,4 @@
-package frc.team5190.lib.utils
+package frc.team5190.lib.structures.utils
 
 import org.junit.Test
 
