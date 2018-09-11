@@ -6,7 +6,7 @@ import frc.team5190.lib.utils.statefulvalue.StatefulValue
 abstract class InstantCommand : Command() {
     init {
         executeFrequency = 0
-        finishCondition += StatefulValue(true)
+        _finishCondition += StatefulValue(true)
     }
 }
 
@@ -21,7 +21,7 @@ class PeriodicRunnableCommand(
 ) : Command() {
     init {
         this.executeFrequency = executeFrequency
-        finishCondition += exitCondition
+        _finishCondition += exitCondition
     }
 
     override suspend fun execute() = runnable()

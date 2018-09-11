@@ -7,6 +7,7 @@ import frc.team5190.lib.utils.disposableHandle
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.reflect.KProperty
 
 // Basic Implementation
 
@@ -17,6 +18,7 @@ typealias StatefulListener<T> = DisposableHandle.(T) -> Unit
 
 interface StatefulValue<T> {
     val value: T
+    val subscriptionCount: Int
 
     fun openSubscription(context: CoroutineContext = STATEFUL_CONTEXT): ReceiveChannel<T>
     fun openSubscription(context: CoroutineContext = STATEFUL_CONTEXT, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle {
@@ -106,6 +108,8 @@ interface StatefulValue<T> {
 
     fun asSource() = Source { value }
 
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
+
     companion object {
         fun <T> of(value: T): StatefulValue<T> = object : StatefulConstant<T> {
             override val value = value
@@ -136,6 +140,9 @@ interface StatefulValue<T> {
 }
 
 interface StatefulConstant<T> : StatefulValue<T> {
+    override val subscriptionCount
+        get() = 0
+
     override fun openSubscription(context: CoroutineContext, block: (ReceiveChannel<T>) -> DisposableHandle): DisposableHandle = NonDisposableHandle
     override fun openSubscription(context: CoroutineContext): ReceiveChannel<T> {
         TODO("Constant states cannot be subscribed to")
@@ -150,6 +157,10 @@ interface StatefulConstant<T> : StatefulValue<T> {
 
 interface StatefulVariable<T> : StatefulValue<T> {
     override var value: T
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        this.value = value
+    }
 
     companion object {
         fun <T> of(value: T): StatefulVariable<T> = StatefulVariableImpl(value)

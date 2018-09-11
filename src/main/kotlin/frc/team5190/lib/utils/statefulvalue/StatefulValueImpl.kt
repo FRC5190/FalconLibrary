@@ -17,6 +17,9 @@ abstract class StatefulValueImpl<T>(initValue: T) : StatefulValue<T> {
     protected val listenSync = Any()
     private val channel = ConflatedBroadcastChannel<T>()
 
+    override var subscriptionCount: Int = 0
+        protected set
+
     init {
         channel.sendBlocking(initValue)
     }
@@ -37,13 +40,16 @@ abstract class StatefulValueImpl<T>(initValue: T) : StatefulValue<T> {
                 initWhenUsed(context)
             }
             val subscription = channel.openSubscription()
+            subscriptionCount++
             return object : ReceiveChannel<T> by subscription {
                 override fun cancel(cause: Throwable?): Boolean {
                     synchronized(listenSync) {
                         if (!listenActive) disposeWhenUnused()
                         listenActive = false
                     }
-                    return subscription.cancel(cause)
+                    val result = subscription.cancel(cause)
+                    if (result) subscriptionCount--
+                    return result
                 }
             }
         }
@@ -67,7 +73,7 @@ class StatefulVariableImpl<T>(initValue: T) : StatefulValueImpl<T>(initValue), S
 }
 
 class StatefulUpdatableValue<T>(private val frequency: Int,
-                                         private val block: () -> T) : StatefulValueImpl<T>(block()) {
+                                private val block: () -> T) : StatefulValueImpl<T>(block()) {
     private lateinit var job: Job
 
     private val timeSync = Any()

@@ -31,7 +31,7 @@ open class CommandTask(val command: Command, private val onFinish: (CommandTask,
 
         command.startTime = startTime
         command.initialize0()
-        command.finishConditionValue.invokeOnceWhenTrue {
+        command.finishCondition.invokeOnceWhenTrue {
             runBlocking(commandContext) {
                 handleFinish()
             }
@@ -47,7 +47,7 @@ open class CommandTask(val command: Command, private val onFinish: (CommandTask,
         assert(!finished) { "Got finish event twice." }
         finished = true
 
-        val commandTimeout = command.timeoutConditionValue
+        val commandTimeout = command.timeoutCondition
         val stopTime = commandTimeout?.let {
             Math.min(command.startTime + it.unit.toNanos(it.delay), System.nanoTime())
         } ?: System.nanoTime()

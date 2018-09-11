@@ -11,6 +11,9 @@ class StatefulProcessedValueImpl<IN, OUT>(private val state: StatefulValue<IN>,
     override val value: OUT
         get() = processing(state.value)
 
+    override val subscriptionCount: Int
+        get() = state.subscriptionCount
+
     override fun openSubscription(context: CoroutineContext): ReceiveChannel<OUT> =
             ProcessedReceivedChannel(state.openSubscription(context))
 

@@ -29,7 +29,7 @@ open class CommandGroup(private val groupType: GroupType,
 
         commands.forEach { if (it is CommandGroup) it.parentCommandGroup = this }
 
-        finishCondition += commandGroupFinishCondition
+        _finishCondition += commandGroupFinishCondition
     }
 
     protected open fun createTasks(): List<CommandGroupTask> = commands.map { CommandGroupTask(it) }

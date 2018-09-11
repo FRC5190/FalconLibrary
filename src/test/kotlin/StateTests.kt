@@ -278,4 +278,25 @@ class StateTests {
         assert(!four.value)
     }
 
+    @Test
+    fun referenceTest(){
+        val one = StatefulValue {
+            Thread.sleep(100)
+            false
+        }
+        val two = StatefulValue(true)
+
+        val three = StatefulVariableReference(one)
+
+        var called = false
+
+        three.invokeWhenTrue {
+            called = true
+        }
+        assert(!called)
+        three.reference = two
+        Thread.sleep(50)
+        assert(called)
+    }
+
 }
