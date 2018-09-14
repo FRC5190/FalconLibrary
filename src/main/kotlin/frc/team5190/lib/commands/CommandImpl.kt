@@ -1,12 +1,11 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.StatefulBoolean
-import frc.team5190.lib.utils.statefulvalue.StatefulValue
+import frc.team5190.lib.utils.observabletype.ObservableValue
 
 abstract class InstantCommand : Command() {
     init {
         executeFrequency = 0
-        _finishCondition += StatefulValue(true)
+        _finishCondition += ObservableValue(true)
     }
 }
 
@@ -16,7 +15,7 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
 
 class PeriodicRunnableCommand(
         private val runnable: suspend () -> Unit,
-        exitCondition: StatefulBoolean,
+        exitCondition: ObservableValue<Boolean>,
         executeFrequency: Int = Command.DEFAULT_FREQUENCY
 ) : Command() {
     init {

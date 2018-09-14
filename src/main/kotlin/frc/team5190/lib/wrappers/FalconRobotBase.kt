@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.team5190.lib.commands.Subsystem
 import frc.team5190.lib.commands.SubsystemHandler
 import frc.team5190.lib.utils.*
-import frc.team5190.lib.utils.statefulvalue.StatefulValue
-import frc.team5190.lib.utils.statefulvalue.StatefulVariable
+import frc.team5190.lib.utils.observabletype.ObservableValue
+import frc.team5190.lib.utils.observabletype.ObservableVariable
 import frc.team5190.lib.wrappers.hid.FalconHID
 import kotlinx.coroutines.experimental.runBlocking
 
@@ -39,12 +39,9 @@ abstract class FalconRobotBase : RobotBase() {
     }
 
     // State Machine
-    private val currentModeState: StatefulVariable<Mode> = StatefulVariable(Mode.NONE)
-    val currentModeStateValue: StatefulValue<Mode> = currentModeState
+    private val currentModeState = ObservableVariable(Mode.NONE)
+    val currentModeStateValue: ObservableValue<Mode> = currentModeState
     val modeStateMachine: StateMachine<Mode> = StateMachine(currentModeState)
-
-    @Deprecated("")
-    val currentMode: StatefulValue<Mode> = currentModeStateValue
 
     fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) = modeStateMachine.onEnter(enterState.rawValues, listener)
 

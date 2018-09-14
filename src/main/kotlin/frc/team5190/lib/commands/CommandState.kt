@@ -1,6 +1,8 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.*
+import frc.team5190.lib.utils.observabletype.ObservableValue
+import frc.team5190.lib.utils.observabletype.and
+import frc.team5190.lib.utils.observabletype.or
 
 enum class CommandState {
     /**
@@ -21,19 +23,8 @@ enum class CommandState {
     BAKED
 }
 
-fun StatefulValue<CommandState>.invokeWhenFinished(listener: StatefulListener<CommandState>) = invokeWhen(CommandState.BAKED, listener = listener)
-fun StatefulValue<CommandState>.invokeOnceWhenFinished(listener: StatefulListener<CommandState>) = invokeOnceWhen(CommandState.BAKED, listener = listener)
+fun Command.asObservable(): ObservableValue<Boolean> = commandState.asObservableFinish()
+fun ObservableValue<CommandState>.asObservableFinish(): ObservableValue<Boolean> = withProcessing { it == CommandState.BAKED }
 
-fun StatefulValue<CommandState>.asStatefulFinish(): StatefulBoolean = withProcessing { it == CommandState.BAKED }
-
-@Suppress("FunctionName")
-fun StatefulValue(command: Command) = command.commandState.asStatefulFinish()
-
-infix fun StatefulBoolean.or(command: Command): StatefulBoolean = this or StatefulValue(command)
-infix fun StatefulBoolean.and(command: Command): StatefulBoolean = this and StatefulValue(command)
-
-@Deprecated("", ReplaceWith("StatefulValue(command)", "frc.team5190.lib.utils.statefulvalue.StatefulValue"))
-fun condition(command: Command) = StatefulValue(command)
-
-@Deprecated("", ReplaceWith("asStatefulFinish()"))
-fun StatefulValue<CommandState>.asFinishState(): StatefulBoolean = asStatefulFinish()
+infix fun ObservableValue<Boolean>.or(command: Command) = this or command.asObservable()
+infix fun ObservableValue<Boolean>.and(command: Command) = this and command.asObservable()

@@ -1,16 +1,19 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.*
+import frc.team5190.lib.utils.launchFrequency
+import frc.team5190.lib.utils.observabletype.ObservableValue
+import frc.team5190.lib.utils.observabletype.ObservableValueReference
+import frc.team5190.lib.utils.observabletype.ObservableVariable
+import frc.team5190.lib.utils.observabletype.or
 import frc.team5190.lib.wrappers.FalconRobotBase
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.disposeOnCancellation
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.experimental.*
 import java.util.concurrent.TimeUnit
 
 abstract class Command(val requiredSubsystems: List<Subsystem>) {
     companion object {
         const val DEFAULT_FREQUENCY = 50
+
+        protected val commandContext = newFixedThreadPoolContext(2, "Command")
     }
 
     init {
@@ -23,7 +26,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
 
     @Suppress("PropertyName")
     protected val _finishCondition = FinishCondition()
-    val finishCondition: StatefulBoolean = _finishCondition
+    val finishCondition: ObservableValue<Boolean> = _finishCondition
 
     var executeFrequency = DEFAULT_FREQUENCY
         protected set
@@ -32,8 +35,8 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     internal val timeoutCondition: StatefulDelay?
         get() = _timeoutCondition
 
-    private val _commandState = StatefulVariable(CommandState.PREPARED)
-    val commandState: StatefulValue<CommandState> = _commandState
+    private val _commandState = ObservableVariable(CommandState.PREPARED)
+    val commandState: ObservableValue<CommandState> = _commandState
 
     var startTime = 0L
         internal set
@@ -43,14 +46,24 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
      */
     fun isFinished() = finishCondition.value
 
+    private var executor: Job? = null
+
     open suspend fun initialize0() {
         _commandState.value = CommandState.BAKING
         initialize()
         _timeoutCondition?.start(startTime)
+        if(!finishCondition.value) {
+            if (executeFrequency != 0) executor = launchFrequency(executeFrequency, commandContext) {
+                execute0()
+            }
+        }
     }
 
-    open suspend fun execute0() = execute()
+    protected open suspend fun execute0() = execute()
+
     open suspend fun dispose0() {
+        executor?.cancelAndJoin()
+        executor = null
         _timeoutCondition?.stop()
         dispose()
         _commandState.value = CommandState.BAKED
@@ -75,7 +88,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
 
     fun stop() = CommandHandler.stop(this, System.nanoTime())
 
-    fun withExit(condition: StatefulBoolean) = also { _finishCondition += condition }
+    fun withExit(condition: ObservableValue<Boolean>) = also { _finishCondition += condition }
     fun withTimeout(delay: Long, unit: TimeUnit = TimeUnit.MILLISECONDS) = also {
         if (_timeoutCondition == null) {
             _timeoutCondition = StatefulDelayImpl(delay, unit)
@@ -87,15 +100,15 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     }
 
     suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
-        cont.disposeOnCancellation(_commandState.invokeOnceWhenFinished {
+        cont.disposeOnCancellation(_commandState.invokeOnceWhen(CommandState.BAKED) {
             cont.resume(Unit)
         })
     }
 
-    protected class FinishCondition private constructor(private val varReference: StatefulVariableReference<Boolean>) : StatefulBoolean by varReference {
-        constructor() : this(StatefulVariableReference(StatefulValue(false)))
+    protected class FinishCondition private constructor(private val varReference: ObservableValueReference<Boolean>) : ObservableValue<Boolean> by varReference {
+        constructor() : this(ObservableValueReference(ObservableValue(false)))
 
-        operator fun plusAssign(other: StatefulBoolean) {
+        operator fun plusAssign(other: ObservableValue<Boolean>) {
             varReference.reference = varReference.reference or other
         }
     }

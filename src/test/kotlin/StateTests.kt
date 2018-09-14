@@ -1,15 +1,14 @@
 package frc.team5190.lib.utils
 
-import frc.team5190.lib.utils.statefulvalue.*
+import frc.team5190.lib.utils.observabletype.*
 import org.junit.Test
-import kotlin.coroutines.experimental.CoroutineContext
 
 class StateTests {
 
     @Test
     fun basicAnd() {
-        val one = StatefulValue(true)
-        val two = StatefulValue(true)
+        val one = ObservableValue(true)
+        val two = ObservableValue(true)
 
         val three = one and two
 
@@ -18,8 +17,8 @@ class StateTests {
 
     @Test
     fun basicOr() {
-        val one = StatefulValue(true)
-        val two = StatefulValue(false)
+        val one = ObservableValue(true)
+        val two = ObservableValue(false)
 
         val three = one or two
         val four = two or one
@@ -30,7 +29,7 @@ class StateTests {
 
     @Test
     fun basicNumToBoolean() {
-        val one = StatefulValue(5.0)
+        val one = ObservableValue(5.0)
         val two = one.withProcessing { it > 2.5 }
 
         assert(two.value)
@@ -38,7 +37,7 @@ class StateTests {
 
     @Test
     fun variableListener() {
-        val one = StatefulVariable(1.0)
+        val one = ObservableVariable(1.0)
         val two = one.withProcessing { it > 2.0 }
 
         var called = false
@@ -49,14 +48,13 @@ class StateTests {
 
         assert(!called)
         one.value = 3.0
-        Thread.sleep(50)
         assert(called)
     }
 
     @Test
     fun doubleVariableListener() {
-        val one = StatefulVariable(1.0)
-        val two = StatefulVariable(5.0)
+        val one = ObservableVariable(1.0)
+        val two = ObservableVariable(5.0)
 
         val three = one.withProcessing { it > 2.0 }
         val four = two.withProcessing { it < 2.0 }
@@ -69,23 +67,19 @@ class StateTests {
             called = true
         }
 
-        Thread.sleep(50)
         assert(!called)
         one.value = 3.0
-        Thread.sleep(50)
         assert(!called)
         one.value = 1.0
         two.value = 1.0
-        Thread.sleep(50)
         assert(!called)
         one.value = 3.0
-        Thread.sleep(50)
         assert(called)
     }
 
     @Test
     fun whenListener() {
-        val three = StatefulVariable(false)
+        val three = ObservableVariable(false)
 
         var called = false
 
@@ -106,8 +100,8 @@ class StateTests {
 
     @Test
     fun valueTest() {
-        val one = StatefulVariable(false)
-        val two = StatefulVariable(false)
+        val one = ObservableVariable(false)
+        val two = ObservableVariable(false)
 
         val three = one and two
 
@@ -135,27 +129,24 @@ class StateTests {
 
     @Test
     fun invokeOnce() {
-        val one = StatefulVariable(true)
+        val one = ObservableVariable(true)
 
         var called = false
 
         one.invokeOnceOnChange { called = true }
 
-        Thread.sleep(50)
         assert(!called)
         one.value = false
-        Thread.sleep(50)
         assert(called)
         called = false
         one.value = true
-        Thread.sleep(50)
         assert(!called)
     }
 
     @Test
     fun andInvokeOnce() {
-        val one = StatefulVariable(false)
-        val two = StatefulVariable(false)
+        val one = ObservableVariable(false)
+        val two = ObservableVariable(false)
 
         val three = one and two
 
@@ -163,24 +154,19 @@ class StateTests {
 
         three.invokeOnceOnChange { called = true }
 
-        Thread.sleep(50)
         assert(!called)
         two.value = false
         one.value = true
-        Thread.sleep(50)
         assert(!called)
         one.value = false
         two.value = true
-        Thread.sleep(50)
         assert(!called)
         one.value = true
         two.value = true
-        Thread.sleep(50)
         assert(called)
         called = false
         one.value = false
         two.value = false
-        Thread.sleep(50)
         assert(!called)
     }
 
@@ -188,7 +174,7 @@ class StateTests {
     fun counterState() {
         var counter = 0
 
-        val one = StatefulValue(5) { counter++ }
+        val one = UpdatableObservableValue(5) { counter++ }
         val two = one.withProcessing { it >= 5 }
 
         var called = false
@@ -205,7 +191,7 @@ class StateTests {
     fun frequencyTest() {
         var counter = 0
 
-        val one = StatefulValue(5) { counter++ }
+        val one = UpdatableObservableValue(5) { counter++ }
 
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < 900) {
@@ -218,7 +204,7 @@ class StateTests {
 
     @Test
     fun recursiveListener() {
-        lateinit var two: StatefulValue<Double>
+        lateinit var two: ObservableValue<Double>
 
         val one by lazy { two }
 
@@ -227,9 +213,10 @@ class StateTests {
         var calledFalse = false
         var calledTrue = false
 
-        two = object : StatefulValueImpl<Double>(0.0) {
-            override fun initWhenUsed(context: CoroutineContext) {
-                three.invokeWhenFalse(context) {
+        two = object : SubscribableObservableValueImpl<Double>() {
+            override val value: Double = 0.0
+            override fun start() {
+                three.invokeWhenFalse {
                     calledFalse = true
                 }
             }
@@ -245,7 +232,7 @@ class StateTests {
 
     @Test
     fun notTest() {
-        val one = StatefulVariable(true)
+        val one = ObservableVariable(true)
         val two = !one
 
         var called = false
@@ -254,19 +241,17 @@ class StateTests {
             called = true
         }
 
-        Thread.sleep(50)
         assert(!called)
         assert(!two.value)
         one.value = false
-        Thread.sleep(50)
         assert(called)
         assert(two.value)
     }
 
     @Test
     fun comparisonTest() {
-        val one = StatefulVariable(5.0)
-        val two = StatefulValue(10.0)
+        val one = ObservableVariable(5.0)
+        val two = ObservableValue(10.0)
 
         val three = one.greaterThan(two)
         val four = one.lessThan(13.0)
@@ -279,14 +264,14 @@ class StateTests {
     }
 
     @Test
-    fun referenceTest(){
-        val one = StatefulValue {
+    fun referenceTest() {
+        val one = UpdatableObservableValue(5) {
             Thread.sleep(100)
             false
         }
-        val two = StatefulValue(true)
+        val two = ObservableValue(true)
 
-        val three = StatefulVariableReference(one)
+        val three = ObservableValueReference(one)
 
         var called = false
 
@@ -295,8 +280,39 @@ class StateTests {
         }
         assert(!called)
         three.reference = two
-        Thread.sleep(50)
         assert(called)
+    }
+
+    @Test
+    fun conflatedTest() {
+        val points = 1000
+        var current = 0
+
+        val sensor = UpdatableObservableValue(1000) {
+            current++
+            if(current > points) current = 0
+            current
+        }
+
+        val conflated = sensor.asConflated()
+
+        var pointsGot = 0
+        var lastPoint = 0
+
+        current = 0
+
+        conflated.invokeOnSet {
+            if(it < lastPoint) {
+                println("Got $pointsGot points out of $points points sent")
+                dispose()
+                return@invokeOnSet
+            }
+            Thread.sleep(20)
+            lastPoint = it
+            pointsGot++
+        }
+
+        Thread.sleep(1100)
     }
 
 }

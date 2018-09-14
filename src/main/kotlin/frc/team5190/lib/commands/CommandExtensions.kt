@@ -8,7 +8,7 @@
 package frc.team5190.lib.commands
 
 import frc.team5190.lib.utils.Source
-import frc.team5190.lib.utils.statefulvalue.StatefulValue
+import frc.team5190.lib.utils.observabletype.ObservableValue
 
 // External Extension Helpers
 
@@ -37,7 +37,7 @@ class BasicCommandGroupBuilder(private val type: CommandGroup.GroupType) : Comma
 
     fun sequential(block: BasicCommandGroupBuilder.() -> Unit) = sequential0(block).also { it.unaryPlus() }
     fun parallel(block: BasicCommandGroupBuilder.() -> Unit) = parallel0(block).also { it.unaryPlus() }
-    fun <T> stateCommandGroup(state: StatefulValue<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
+    fun <T> stateCommandGroup(state: ObservableValue<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
             stateCommandGroup(state.asSource(), block)
 
     fun <T> stateCommandGroup(stateSource: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =

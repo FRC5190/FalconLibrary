@@ -1,7 +1,8 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.StatefulValue
-import frc.team5190.lib.utils.statefulvalue.StatefulValueImpl
+import frc.team5190.lib.utils.observabletype.ObservableListener
+import frc.team5190.lib.utils.observabletype.ObservableValue
+import frc.team5190.lib.utils.observabletype.ObservableVariable
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
@@ -18,31 +19,37 @@ class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
 class StatefulDelayImpl(
         override var delay: Long,
         override var unit: TimeUnit = TimeUnit.SECONDS
-) : StatefulValueImpl<Boolean>(false), StatefulDelay {
-
+) : ObservableValue<Boolean>, StatefulDelay {
     companion object {
         private val timeoutContext = newSingleThreadContext("Delay Condition")
     }
+
+    private val delayValue = ObservableVariable(false)
+
+    override var value by delayValue
+        private set
+
+    override fun invokeOnSet(listener: ObservableListener<Boolean>) = delayValue.invokeOnSet(listener)
 
     private lateinit var job: Job
     private var startTime = 0L
 
     fun start(startTime: Long) {
-        changeValue(false)
+        value = false
         this.startTime = startTime
         job = launch(timeoutContext) {
             delay(unit.toNanos(delay) - (System.nanoTime() - startTime), TimeUnit.NANOSECONDS)
-            changeValue(true)
+            value = true
         }
     }
 
     fun stop() {
         job.cancel()
-        changeValue(false)
+        value = false
     }
 }
 
-interface StatefulDelay : StatefulValue<Boolean> {
+interface StatefulDelay : ObservableValue<Boolean> {
     val delay: Long
     val unit: TimeUnit
 }

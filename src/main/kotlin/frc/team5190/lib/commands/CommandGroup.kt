@@ -1,6 +1,6 @@
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.utils.statefulvalue.StatefulValueImpl
+import frc.team5190.lib.utils.observabletype.ObservableVariable
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.SendChannel
 import kotlinx.coroutines.experimental.channels.actor
@@ -20,8 +20,11 @@ open class CommandGroup(private val groupType: GroupType,
     private lateinit var tasksToRun: MutableSet<CommandGroupTask>
     private val commandGroupFinishCondition = CommandGroupFinishCondition()
 
-    private inner class CommandGroupFinishCondition : StatefulValueImpl<Boolean>(false) {
-        fun update() = changeValue(tasksToRun.isEmpty())
+    private inner class CommandGroupFinishCondition {
+        val groupDone = ObservableVariable(false)
+        fun update() {
+            groupDone.value = tasksToRun.isEmpty()
+        }
     }
 
     init {
@@ -29,7 +32,7 @@ open class CommandGroup(private val groupType: GroupType,
 
         commands.forEach { if (it is CommandGroup) it.parentCommandGroup = this }
 
-        _finishCondition += commandGroupFinishCondition
+        _finishCondition += commandGroupFinishCondition.groupDone
     }
 
     protected open fun createTasks(): List<CommandGroupTask> = commands.map { CommandGroupTask(it) }
