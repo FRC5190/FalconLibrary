@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.GenericHID
 import frc.team5190.lib.commands.Command
 import frc.team5190.lib.utils.BooleanSource
 import frc.team5190.lib.utils.DoubleSource
-import frc.team5190.lib.utils.withThreshold
 
 fun <T : GenericHID> controller(genericHID: T, block: FalconHIDBuilder<T>.() -> Unit): FalconHID<T> {
     val builder = FalconHIDBuilder(genericHID)

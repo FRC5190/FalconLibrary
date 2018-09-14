@@ -22,6 +22,8 @@ apply plugin: 'org.junit.platform.gradle.plugin'
 repositories {
     maven { url "http://first.wpi.edu/FRC/roborio/maven/release" }
     maven { url "https://raw.githubusercontent.com/Open-RIO/Maven-Mirror/master/m2" }
+    maven { url "http://dl.bintray.com/kyonifer/maven" }
+
     mavenCentral()
 }
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
@@ -32,6 +34,9 @@ dependencies {
     compile "edu.wpi.first.wpiutil:wpiutil-java:3.2.0"
     compile "edu.wpi.first.ntcore:ntcore-java:4.1.0"
     compile "openrio.mirror.third.ctre:CTRE-phoenix-java:5.3.1.0"
+
+    compile group: "koma", name:"core", version:"0.11"
+    compile group: "koma", name:"backend-matrix-ejml", version: "0.11"
 
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3'

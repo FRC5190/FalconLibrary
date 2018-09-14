@@ -1,8 +1,8 @@
-import frc.team5190.lib.math.geometry.Pose2d
-import frc.team5190.lib.math.geometry.Rotation2d
-import frc.team5190.lib.math.geometry.Translation2d
-import frc.team5190.lib.math.trajectory.AStarOptimizer
-import frc.team5190.lib.math.geometry.Rectangle2d
+import frc.team5190.lib.mathematics.twodim.geometry.Pose2d
+import frc.team5190.lib.mathematics.twodim.geometry.Rotation2d
+import frc.team5190.lib.mathematics.twodim.geometry.Translation2d
+import frc.team5190.lib.mathematics.twodim.trajectory.AStarOptimizer
+import frc.team5190.lib.mathematics.twodim.geometry.Rectangle2d
 
 fun main(args: Array<String>) {
     PathWindow

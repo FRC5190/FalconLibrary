@@ -5,7 +5,6 @@
 
 package frc.team5190.lib.commands
 
-import frc.team5190.lib.extensions.sequential
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 import java.util.concurrent.TimeUnit

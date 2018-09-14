@@ -8,7 +8,7 @@ package frc.team5190.lib.wrappers
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import frc.team5190.lib.math.units.*
+import frc.team5190.lib.mathematics.units.*
 import kotlin.reflect.KProperty
 
 class FalconSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
