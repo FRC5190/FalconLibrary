@@ -24,7 +24,7 @@ enum class CommandState {
 }
 
 fun Command.asObservable(): ObservableValue<Boolean> = commandState.asObservableFinish()
-fun ObservableValue<CommandState>.asObservableFinish(): ObservableValue<Boolean> = withProcessing { it == CommandState.BAKED }
+fun ObservableValue<CommandState>.asObservableFinish(): ObservableValue<Boolean> = map { it == CommandState.BAKED }
 
 infix fun ObservableValue<Boolean>.or(command: Command) = this or command.asObservable()
 infix fun ObservableValue<Boolean>.and(command: Command) = this and command.asObservable()

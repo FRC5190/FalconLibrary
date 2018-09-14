@@ -89,6 +89,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     fun stop() = CommandHandler.stop(this, System.nanoTime())
 
     fun withExit(condition: ObservableValue<Boolean>) = also { _finishCondition += condition }
+    fun overrideExit(condition: ObservableVariable<Boolean>) = also { _finishCondition.set(condition) }
     fun withTimeout(delay: Long, unit: TimeUnit = TimeUnit.MILLISECONDS) = also {
         if (_timeoutCondition == null) {
             _timeoutCondition = StatefulDelayImpl(delay, unit)
@@ -110,6 +111,10 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
 
         operator fun plusAssign(other: ObservableValue<Boolean>) {
             varReference.reference = varReference.reference or other
+        }
+
+        fun set(other: ObservableValue<Boolean>) {
+            varReference.reference = other
         }
     }
 
