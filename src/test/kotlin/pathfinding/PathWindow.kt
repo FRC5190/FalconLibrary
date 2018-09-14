@@ -6,8 +6,8 @@ import frc.team5190.lib.mathematics.twodim.geometry.Translation2d
 import frc.team5190.lib.mathematics.twodim.trajectory.Trajectory
 import frc.team5190.lib.mathematics.twodim.trajectory.TrajectoryGenerator
 import frc.team5190.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import frc.team5190.lib.mathematics.twodim.trajectory.timing.CentripetalAccelerationConstraint
-import frc.team5190.lib.mathematics.twodim.trajectory.timing.TimedState
+import frc.team5190.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
+import frc.team5190.lib.mathematics.twodim.trajectory.TimedState
 import frc.team5190.lib.mathematics.twodim.trajectory.view.TimedView
 import java.awt.*
 import javax.swing.JFrame

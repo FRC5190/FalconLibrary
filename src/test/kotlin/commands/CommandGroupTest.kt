@@ -3,9 +3,8 @@
  * Green Hope Falcons
  */
 
-package frc.team5190.lib.structures.commands
+package frc.team5190.lib.commands
 
-import frc.team5190.lib.structures.sequential
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Test
 import java.util.concurrent.TimeUnit

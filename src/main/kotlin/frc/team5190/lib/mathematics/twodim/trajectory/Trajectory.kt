@@ -14,6 +14,8 @@
 
 package frc.team5190.lib.mathematics.twodim.trajectory
 
+import frc.team5190.lib.mathematics.twodim.geometry.Pose2d
+import frc.team5190.lib.mathematics.twodim.geometry.interfaces.IPose2d
 import frc.team5190.lib.mathematics.twodim.geometry.interfaces.State
 import frc.team5190.lib.mathematics.twodim.trajectory.view.TrajectoryView
 import java.util.*
@@ -101,4 +103,29 @@ class Trajectory<S : State<S>> : Iterable<S> {
 
         override val trajectory get() = this@Trajectory
     }
+}
+
+fun <S : IPose2d<S>> Trajectory<S>.mirror(): Trajectory<S> {
+    val waypoints = ArrayList<S>(this.length)
+    for (i in 0 until this.length) {
+        waypoints.add(this.getState(i).mirror)
+    }
+    return Trajectory(waypoints)
+}
+
+fun <S : IPose2d<S>> Trajectory<TimedState<S>>.mirrorTimed(): Trajectory<TimedState<S>> {
+    val waypoints = ArrayList<TimedState<S>>(this.length)
+    for (i in 0 until this.length) {
+        val timedState = this.getState(i)
+        waypoints.add(TimedState(timedState.state.mirror, timedState.t, timedState.velocity, timedState.acceleration))
+    }
+    return Trajectory(waypoints)
+}
+
+fun <S : IPose2d<S>> Trajectory<S>.transform(transform: Pose2d): Trajectory<S> {
+    val waypoints = ArrayList<S>(this.length)
+    for (i in 0 until this.length) {
+        waypoints.add(this.getState(i).transformBy(transform))
+    }
+    return Trajectory(waypoints)
 }

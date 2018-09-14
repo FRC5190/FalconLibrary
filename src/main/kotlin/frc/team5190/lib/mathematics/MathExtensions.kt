@@ -36,8 +36,6 @@ fun Double.boundDegrees(): Double {
     return x
 }
 
-
-
 operator fun Vector2D.minus(other: Vector2D): Vector2D = Vector2D(this.x - other.x, this.y - other.y)
 operator fun Vector2D.plus(other: Vector2D): Vector2D = add(other)
 operator fun Vector2D.times(scalar: Double): Vector2D = scalarMultiply(scalar)

@@ -1,6 +1,6 @@
 package frc.team5190.lib.mathematics.twodim.geometry
 
-import frc.team5190.lib.structures.utils.safeRangeTo
+import frc.team5190.lib.utils.safeRangeTo
 import kotlin.math.max
 import kotlin.math.min
 

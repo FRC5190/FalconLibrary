@@ -19,7 +19,7 @@ import frc.team5190.lib.mathematics.epsilonEquals
 import frc.team5190.lib.mathematics.twodim.geometry.interfaces.State
 import frc.team5190.lib.mathematics.twodim.trajectory.Trajectory
 import frc.team5190.lib.mathematics.twodim.trajectory.TrajectorySamplePoint
-import frc.team5190.lib.mathematics.twodim.trajectory.timing.TimedState
+import frc.team5190.lib.mathematics.twodim.trajectory.TimedState
 
 class TimedView<S : State<S>>(override val trajectory: Trajectory<TimedState<S>>) : TrajectoryView<TimedState<S>> {
 

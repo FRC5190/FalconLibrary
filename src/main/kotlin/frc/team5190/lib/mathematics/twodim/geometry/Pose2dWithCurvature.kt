@@ -20,11 +20,9 @@ import frc.team5190.lib.types.Interpolable
 
 import java.text.DecimalFormat
 
-class Pose2dWithCurvature : IPose2d<Pose2dWithCurvature>, ICurvature<Pose2dWithCurvature> {
+class Pose2dWithCurvature(override val pose: Pose2d, override val curvature: Double, override val dkds: Double)
+    : IPose2d<Pose2dWithCurvature>, ICurvature<Pose2dWithCurvature> {
 
-    override val pose: Pose2d
-    override val curvature: Double
-    override val dkds: Double
 
     override val translation: Translation2d
         get() = pose.translation
@@ -32,35 +30,10 @@ class Pose2dWithCurvature : IPose2d<Pose2dWithCurvature>, ICurvature<Pose2dWithC
     override val rotation: Rotation2d
         get() = pose.rotation
 
-    constructor() {
-        pose = Pose2d()
-        curvature = 0.0
-        dkds = 0.0
-    }
-
-    constructor(pose: Pose2d, curvature: Double) {
-        this.pose = pose
-        this.curvature = curvature
-        dkds = 0.0
-    }
-
-    constructor(pose: Pose2d, curvature: Double, dcurvature_ds: Double) {
-        this.pose = pose
-        this.curvature = curvature
-        dkds = dcurvature_ds
-    }
-
-    constructor(translation: Translation2d, rotation: Rotation2d, curvature: Double) {
-        pose = Pose2d(translation, rotation)
-        this.curvature = curvature
-        dkds = 0.0
-    }
-
-    constructor(translation: Translation2d, rotation: Rotation2d, curvature: Double, dcurvature_ds: Double) {
-        pose = Pose2d(translation, rotation)
-        this.curvature = curvature
-        dkds = dcurvature_ds
-    }
+    constructor() : this(Pose2d(), 0.0, 0.0)
+    constructor(pose: Pose2d, curvature: Double) : this(pose, curvature, 0.0)
+    constructor(translation: Translation2d, rotation: Rotation2d, curvature: Double) : this(Pose2d(translation, rotation), curvature)
+    constructor(translation: Translation2d, rotation: Rotation2d, curvature: Double, dcurvature_ds: Double) : this(Pose2d(translation, rotation), curvature, dcurvature_ds)
 
     override fun transformBy(transform: Pose2d): Pose2dWithCurvature {
         return Pose2dWithCurvature(pose.transformBy(transform), curvature, dkds)
