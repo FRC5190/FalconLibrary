@@ -12,7 +12,7 @@ interface UpdatableObservableValue<T> : ObservableValue<T> {
 
     companion object {
         operator fun <T> invoke(
-                frequency: Int,
+                frequency: Int = kDefaultUpdatableObservableValueReadTime,
                 context: CoroutineContext = DefaultDispatcher,
                 block: () -> T
         ): UpdatableObservableValue<T> = UpdatableObservableValueImpl(context, frequency, block)
