@@ -55,7 +55,7 @@ object TrajectoryGenerator {
                 Pose2dWithCurvature(
                         pose = state.pose.transformBy(flippedPose2d),
                         curvature = -state.curvature,
-                        dcurvature_ds = -state.dkds
+                        dkds = -state.dkds
                 )
             })
         }

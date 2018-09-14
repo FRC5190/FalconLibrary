@@ -27,7 +27,7 @@ fun StatefulValue<CommandState>.invokeOnceWhenFinished(listener: StatefulListene
 fun StatefulValue<CommandState>.asStatefulFinish(): StatefulBoolean = withProcessing { it == CommandState.BAKED }
 
 @Suppress("FunctionName")
-fun StatefulValue(command: Command) = command.commandStateValue.asStatefulFinish()
+fun StatefulValue(command: Command) = command.commandState.asStatefulFinish()
 
 infix fun StatefulBoolean.or(command: Command): StatefulBoolean = this or StatefulValue(command)
 infix fun StatefulBoolean.and(command: Command): StatefulBoolean = this and StatefulValue(command)

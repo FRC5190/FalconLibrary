@@ -2,10 +2,11 @@ package frc.team5190.lib.commands
 
 import frc.team5190.lib.utils.statefulvalue.*
 import frc.team5190.lib.wrappers.FalconRobotBase
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.disposeOnCancellation
+import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.CoroutineContext
 
 abstract class Command(val requiredSubsystems: List<Subsystem>) {
     companion object {
@@ -20,25 +21,19 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
 
     constructor(vararg requiredSubsystems: Subsystem) : this(requiredSubsystems.toList())
 
+    @Suppress("PropertyName")
+    protected val _finishCondition = FinishCondition()
+    val finishCondition: StatefulBoolean = _finishCondition
+
     var executeFrequency = DEFAULT_FREQUENCY
         protected set
 
-    @Deprecated("Execute frequency makes more sense")
-    var updateFrequency
-        get() = executeFrequency
-        set(value) {
-            executeFrequency = value
-        }
+    private var _timeoutCondition: StatefulDelayImpl? = null
+    internal val timeoutCondition: StatefulDelay?
+        get() = _timeoutCondition
 
-    protected val finishCondition = StatefulFinishCondition(StatefulValue(false))
-    internal val finishConditionValue: StatefulBoolean = finishCondition
-
-    private var timeoutCondition: StatefulDelayImpl? = null
-    internal val timeoutConditionValue: StatefulDelay?
-        get() = timeoutCondition
-
-    private val commandState = StatefulVariable(CommandState.PREPARED)
-    val commandStateValue: StatefulValue<CommandState> = commandState
+    private val _commandState = StatefulVariable(CommandState.PREPARED)
+    val commandState: StatefulValue<CommandState> = _commandState
 
     var startTime = 0L
         internal set
@@ -49,16 +44,16 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     fun isFinished() = finishCondition.value
 
     open suspend fun initialize0() {
-        commandState.value = CommandState.BAKING
+        _commandState.value = CommandState.BAKING
         initialize()
-        timeoutCondition?.start(startTime)
+        _timeoutCondition?.start(startTime)
     }
 
     open suspend fun execute0() = execute()
     open suspend fun dispose0() {
-        timeoutCondition?.stop()
+        _timeoutCondition?.stop()
         dispose()
-        commandState.value = CommandState.BAKED
+        _commandState.value = CommandState.BAKED
     }
 
     protected open suspend fun initialize() {}
@@ -66,63 +61,42 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     protected open suspend fun dispose() {}
 
     fun start(): Deferred<Unit> {
-        if (commandState.value == CommandState.BAKING) {
+        if (_commandState.value == CommandState.BAKING) {
             println("[Command] ${this::class.java.simpleName} is already running, discarding start.")
             return CompletableDeferred(Unit)
         }
-        if (commandState.value == CommandState.QUEUED) {
+        if (_commandState.value == CommandState.QUEUED) {
             println("[Command] ${this::class.java.simpleName} is already queued, discarding start.")
             return CompletableDeferred(Unit)
         }
-        commandState.value = CommandState.QUEUED
+        _commandState.value = CommandState.QUEUED
         return CommandHandler.start(this, System.nanoTime())
     }
 
     fun stop() = CommandHandler.stop(this, System.nanoTime())
 
-    fun withExit(condition: StatefulBoolean) = also { finishCondition += condition }
+    fun withExit(condition: StatefulBoolean) = also { _finishCondition += condition }
     fun withTimeout(delay: Long, unit: TimeUnit = TimeUnit.MILLISECONDS) = also {
-        if (timeoutCondition == null) {
-            timeoutCondition = StatefulDelayImpl(delay, unit)
-            finishCondition += timeoutCondition!!
+        if (_timeoutCondition == null) {
+            _timeoutCondition = StatefulDelayImpl(delay, unit)
+            _finishCondition += _timeoutCondition!!
         } else {
-            timeoutCondition!!.delay = delay
-            timeoutCondition!!.unit = unit
+            _timeoutCondition!!.delay = delay
+            _timeoutCondition!!.unit = unit
         }
     }
 
     suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
-        cont.disposeOnCancellation(commandState.invokeOnceWhenFinished {
+        cont.disposeOnCancellation(_commandState.invokeOnceWhenFinished {
             cont.resume(Unit)
         })
     }
 
-    // Little cheat so you don't have to reassign finishCondition every time you modify it
-    protected class StatefulFinishCondition(private var currentCondition: StatefulBoolean) : StatefulValue<Boolean> {
-        private val usedSync = Any()
-        private var used = false
+    protected class FinishCondition private constructor(private val varReference: StatefulVariableReference<Boolean>) : StatefulBoolean by varReference {
+        constructor() : this(StatefulVariableReference(StatefulValue(false)))
 
-        override val value: Boolean
-            get() = currentCondition.value
-
-        override fun openSubscription(context: CoroutineContext): ReceiveChannel<Boolean> = synchronized(usedSync) {
-            used = true
-            currentCondition.openSubscription(context)
-        }
-
-        override fun invokeOnChange(context: CoroutineContext, invokeFirst: Boolean, listener: StatefulListener<Boolean>): DisposableHandle = synchronized(usedSync) {
-            used = true
-            // Fix for non-subscribable stateful constants (they don't change)
-            return if (currentCondition is StatefulConstant) currentCondition.invokeOnChange(context, invokeFirst, listener)
-            else super.invokeOnChange(context, invokeFirst, listener)
-        }
-
-        /**
-         * Shortcut operator for the or function
-         */
-        operator fun plusAssign(condition: StatefulBoolean): Unit = synchronized(usedSync) {
-            if (used) throw IllegalStateException("Cannot add condition once a listener has been added")
-            currentCondition = currentCondition or condition
+        operator fun plusAssign(other: StatefulBoolean) {
+            varReference.reference = varReference.reference or other
         }
     }
 

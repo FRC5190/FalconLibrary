@@ -12,7 +12,7 @@ fun <T> StatefulCommand(state: StatefulValue<T>, process: (T) -> Boolean): Comma
 
 fun StatefulBooleanCommand(state: StatefulBoolean, needed: Boolean = true): Command = object : Command() {
     init {
-        finishCondition += state.withProcessing { it == needed }
+        _finishCondition += state.withProcessing { it == needed }
     }
 }
 
