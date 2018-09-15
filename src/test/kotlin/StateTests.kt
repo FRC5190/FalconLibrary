@@ -1,6 +1,6 @@
-package frc.team5190.lib.utils
+package org.ghrobotics.lib.utils
 
-import frc.team5190.lib.utils.observabletype.*
+import org.ghrobotics.lib.utils.observabletype.*
 import org.junit.Test
 
 class StateTests {
