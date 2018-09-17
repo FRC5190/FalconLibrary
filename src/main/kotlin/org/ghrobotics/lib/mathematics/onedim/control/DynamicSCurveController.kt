@@ -13,7 +13,6 @@ class DynamicSCurveController(val x0: Double, val distance: Double,
             (maxAcceleration.pow(3) / (2 * jerk.pow(2))) - (maxAcceleration.pow(3) / (6 * jerk.pow(2)))
 
 
-
     private val xAccel = xConcave + xLinear + xConvex
     private val xCruise = distance - 2 * xAccel
 

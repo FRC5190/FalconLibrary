@@ -14,7 +14,7 @@ class DynamicSCurveControllerTest {
         val totalDistance = 40.0
         val maxVelocity = 10.0
         val maxAcceleration = 10.0
-        val jerk = 50.0
+        val jerk = 10.0
 
         val controller: DynamicKinematicsController = DynamicSCurveController(0.0, totalDistance, maxVelocity, maxAcceleration, jerk)
 
@@ -33,6 +33,8 @@ class DynamicSCurveControllerTest {
         while (true) {
             velocity = controller.getVelocity(pose.x, time.toLong())
             pose = pose.addDisplacement(Displacement1d(velocity * dt))
+
+//            println(velocity)
 
             assert(((velocity - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
 
@@ -55,8 +57,5 @@ class DynamicSCurveControllerTest {
         chart.addSeries("X", tList.toDoubleArray(), xList.toDoubleArray())
         chart.addSeries("V", tList.toDoubleArray(), vList.toDoubleArray())
 
-        SwingWrapper(chart).displayChart("S Curve Controller Test")
-
-        Thread.sleep(10000000)
     }
 }
