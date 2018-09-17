@@ -13,7 +13,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TrajectoryView
 
 class TrajectoryIterator<S : State<S>>(private val view: TrajectoryView<S>) {

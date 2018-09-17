@@ -16,7 +16,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.view
 
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectorySamplePoint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TimedState

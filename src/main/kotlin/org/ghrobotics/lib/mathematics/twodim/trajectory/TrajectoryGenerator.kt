@@ -15,7 +15,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricQuinticHermiteSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSplineGenerator
@@ -82,9 +82,9 @@ object TrajectoryGenerator {
 
     // http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf and Team 254
     private fun <S : State<S>> timeParameterizeTrajectory(reversed: Boolean, distanceView: DistanceView<S>,
-                                                          stepSize: Double, constraints: List<TimingConstraint<S>>,
-                                                          startVel: Double, endVel: Double,
-                                                          maxVel: Double, maxAbsAcceleration: Double): Trajectory<TimedState<S>> {
+                                                                                         stepSize: Double, constraints: List<TimingConstraint<S>>,
+                                                                                         startVel: Double, endVel: Double,
+                                                                                         maxVel: Double, maxAbsAcceleration: Double): Trajectory<TimedState<S>> {
 
         fun getAccelerationLimits(reversed: Boolean, constraints: List<TimingConstraint<S>>,
                                   state: S, velocity: Double,
@@ -112,8 +112,8 @@ object TrajectoryGenerator {
 
         // Class that holds a constrained state
         data class ConstrainedState<S : State<S>>(var state: S, var distance: Double,
-                                                  var maxVelocity: Double, var minAcceleration: Double,
-                                                  var maxAcceleration: Double)
+                                                                                 var maxVelocity: Double, var minAcceleration: Double,
+                                                                                 var maxAcceleration: Double)
 
         val constrainedStates = ArrayList<ConstrainedState<S>>(states.size)
         val kEpsilon = 1E-6

@@ -16,7 +16,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.IPose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TrajectoryView
 import java.util.*
 

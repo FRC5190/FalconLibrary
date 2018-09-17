@@ -12,6 +12,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry.interfaces
 
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 
 // Interface for Rotation

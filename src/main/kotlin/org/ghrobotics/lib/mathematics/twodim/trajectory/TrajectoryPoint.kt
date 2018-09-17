@@ -12,7 +12,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 
 class TrajectoryPoint<S : State<S>>(val state: S, private val index: Int) {
 

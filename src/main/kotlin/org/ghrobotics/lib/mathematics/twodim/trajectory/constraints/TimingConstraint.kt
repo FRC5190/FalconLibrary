@@ -12,7 +12,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 
 interface TimingConstraint<S : State<S>> {
 

@@ -15,7 +15,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.State
+import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.types.Interpolable
 
 import java.text.DecimalFormat

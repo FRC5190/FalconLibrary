@@ -9,7 +9,7 @@
  * Team 254
  */
 
-package org.ghrobotics.lib.mathematics.twodim.geometry.interfaces
+package org.ghrobotics.lib.mathematics
 
 import org.ghrobotics.lib.types.CSVWritable
 import org.ghrobotics.lib.types.Interpolable

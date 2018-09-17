@@ -3,7 +3,7 @@ package org.ghrobotics.lib.mathematics.onedim.control
 import kotlin.math.pow
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class DynamicTCurveController(val x0: Double, val distance: Double, val dt: Double,
+class DynamicTCurveController(val x0: Double, val distance: Double,
                               val maxVelocity: Double, val maxAcceleration: Double) : DynamicKinematicsController {
 
     /**
@@ -27,16 +27,24 @@ class DynamicTCurveController(val x0: Double, val distance: Double, val dt: Doub
 
     private var velocityCommand = 0.0
 
-    override fun getVelocity(current: Double): Double {
-        val displacement = current - x0
+    // Loops
+    private var lastCallTime = -1.0
+    private var dt = -1.0
+
+    override fun getVelocity(currentPos: Double, nanotime: Long): Double {
+
+        dt = if (lastCallTime < 0) 0.0 else nanotime / 1E9 - lastCallTime
+        lastCallTime = nanotime / 1E9
+
+        val displacement = currentPos - x0
         when {
             // Acceleration Phase
-            displacement <= xAccel -> {
-                velocityCommand = Math.max(velocityCommand + maxAcceleration * dt, maxVelocity)
+            displacement < xAccel -> {
+                velocityCommand = (velocityCommand + maxAcceleration * dt).coerceAtMost(maxVelocity)
             }
             // Deceleration Phase
             displacement >= xAccel +  xCruise -> {
-                velocityCommand = Math.min(0.0, velocityCommand - maxAcceleration * dt)
+                velocityCommand = (velocityCommand - maxAcceleration * dt).coerceAtLeast(0.0)
             }
         }
         return velocityCommand

@@ -11,6 +11,8 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry.interfaces
 
+import org.ghrobotics.lib.mathematics.State
+
 // Interface for curvature
 interface ICurvature<S> : State<S> {
     // Curvature
