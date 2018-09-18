@@ -29,7 +29,7 @@ class NonLinearControllerTest {
         val kCenterStart = Pose2d(Translation2d(1.54, 13.5), Rotation2d())
         val kNearScaleEmpty = Pose2d(Translation2d(23.7, 20.2), Rotation2d.fromDegrees(160.0))
 
-        val name = "Center Start to Left Switch"
+        val name = "T"
         val trajectory: Trajectory<TimedState<Pose2dWithCurvature>> = TrajectoryGenerator.generateTrajectory(
                 true,
                 arrayListOf(kSideStart,
@@ -42,7 +42,7 @@ class NonLinearControllerTest {
                 10.0, 4.0
         )!!
         val iterator = TrajectoryIterator(TimedView(trajectory))
-        trajectoryFollower = NonLinearController(trajectory, 0.3, 0.85)
+        trajectoryFollower = NonLinearController(trajectory, 2.0 / 12.0, 0.85)
 
         var totalpose = Pose2d(Translation2d(1.54, 13.0), Rotation2d(180.0))
 
@@ -122,7 +122,7 @@ class NonLinearControllerTest {
            println("[Test] Rotational Error: $it degrees")
        } < 5.0)
 
-        // SwingWrapper(chart).displayChart()
-        // Thread.sleep(1000000)
+//         SwingWrapper(chart).displayChart()
+//         Thread.sleep(1000000)
     }
 }
