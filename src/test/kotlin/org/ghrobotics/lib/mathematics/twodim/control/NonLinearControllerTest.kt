@@ -115,14 +115,14 @@ class NonLinearControllerTest {
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x, terror.y)
 
-//        assert(terror.norm.also {
-//            println("[Test] Norm of Translational Error: $it")
-//        } < 0.50)
-//        assert(rerror.degrees.also {
-//            println("[Test] Rotational Error: $it degrees")
-//        } < 5.0)
+       assert(terror.norm.also {
+           println("[Test] Norm of Translational Error: $it")
+       } < 0.50)
+       assert(rerror.degrees.also {
+           println("[Test] Rotational Error: $it degrees")
+       } < 5.0)
 
-        SwingWrapper(chart).displayChart()
-        Thread.sleep(1000000)
+        // SwingWrapper(chart).displayChart()
+        // Thread.sleep(1000000)
     }
 }
