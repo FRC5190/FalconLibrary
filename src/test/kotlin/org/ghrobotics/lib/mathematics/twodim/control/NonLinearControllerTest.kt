@@ -10,8 +10,10 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TimedState
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGenerator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TimedView
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -23,19 +25,26 @@ class NonLinearControllerTest {
 
     @Test
     fun testTrajectoryFollower() {
+        val kSideStart = Pose2d(Translation2d(1.54, 23.234166666666666666666666666667), Rotation2d.fromDegrees(180.0))
+        val kCenterStart = Pose2d(Translation2d(1.54, 13.5), Rotation2d())
+        val kNearScaleEmpty = Pose2d(Translation2d(23.7, 20.2), Rotation2d.fromDegrees(160.0))
+
         val name = "Center Start to Left Switch"
         val trajectory: Trajectory<TimedState<Pose2dWithCurvature>> = TrajectoryGenerator.generateTrajectory(
-                false,
-                arrayListOf(Pose2d(Translation2d(0.0, 0.0), Rotation2d.fromDegrees(0.0)),
-                        Pose2d(Translation2d(10.0, 10.0), Rotation2d.fromDegrees(45.0))),
-                arrayListOf(),
+                true,
+                arrayListOf(kSideStart,
+                        kSideStart.transformBy(Pose2d(Translation2d(-13.0, 00.0), Rotation2d())),
+                        kSideStart.transformBy(Pose2d(Translation2d(-19.5, 05.0), Rotation2d.fromDegrees(-90.0))),
+                        kSideStart.transformBy(Pose2d(Translation2d(-19.5, 14.0), Rotation2d.fromDegrees(-90.0))),
+                        kNearScaleEmpty.mirror),
+                arrayListOf(CentripetalAccelerationConstraint(4.0)),
                 0.0, 0.0,
                 10.0, 4.0
         )!!
         val iterator = TrajectoryIterator(TimedView(trajectory))
-        trajectoryFollower = NonLinearController(trajectory, 0.30, 0.85)
+        trajectoryFollower = NonLinearController(trajectory, 0.3, 0.85)
 
-        var totalpose = trajectory.firstState.state.pose
+        var totalpose = Pose2d(Translation2d(1.54, 13.0), Rotation2d(180.0))
 
         var prevdx = 0.0
         var prevdtheta = 0.0
@@ -55,9 +64,9 @@ class NonLinearControllerTest {
             time += dt * 1.0e+9
 
             totalpose = totalpose.transformBy(Pose2d.fromTwist(Twist2d(
-                    output.dx + 0.3 * prevdx,
+                    output.dx + 0.0 * prevdx,
                     output.dy,
-                    output.dtheta + 0.3 * prevdtheta)))
+                    output.dtheta + 0.0 * prevdtheta)))
 
 
             prevdx = output.dx
@@ -99,17 +108,21 @@ class NonLinearControllerTest {
         chart.styler.plotBackgroundColor = Color.DARK_GRAY
 
         chart.addSeries("Trajectory", refXList.toDoubleArray(), refYList.toDoubleArray())
+        chart.addSeries("Robot", xList.toDoubleArray(), yList.toDoubleArray())
 
         val terror = trajectory.lastState.state.translation - totalpose.translation
         val rerror = trajectory.lastState.state.rotation - totalpose.rotation
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x, terror.y)
 
-        assert(terror.norm.also {
-            println("[Test] Norm of Translational Error: $it")
-        } < 0.50)
-        assert(rerror.degrees.also {
-            println("[Test] Rotational Error: $it degrees")
-        } < 5.0)
+//        assert(terror.norm.also {
+//            println("[Test] Norm of Translational Error: $it")
+//        } < 0.50)
+//        assert(rerror.degrees.also {
+//            println("[Test] Rotational Error: $it degrees")
+//        } < 5.0)
+
+        SwingWrapper(chart).displayChart()
+        Thread.sleep(1000000)
     }
 }

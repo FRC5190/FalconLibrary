@@ -13,6 +13,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TimedState
 import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TimedView
+import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -54,7 +55,7 @@ class NonLinearController(trajectory: Trajectory<TimedState<Pose2dWithCurvature>
 
     private fun calculateTwist(error: Pose2d, vd: Double, wd: Double) = Twist2d(
             vd * error.rotation.cos + gainFunc(vd, wd) * error.translation.x, 0.0,
-            wd + kBeta * sinc(error.rotation.radians) * error.translation.y + gainFunc(vd, wd) * error.rotation.radians
+            wd + kBeta * vd * sinc(error.rotation.radians) * error.translation.y + gainFunc(vd, wd) * error.rotation.radians
     )
 
     private fun gainFunc(v: Double, w: Double) = 2 * kZeta * sqrt(w * w + kBeta * v * v)
