@@ -100,6 +100,8 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
         }
     }
 
+    fun withTimeoutSeconds(delaySeconds: Double) = withTimeout((delaySeconds * 1000).toLong(), TimeUnit.MILLISECONDS)
+
     suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
         cont.disposeOnCancellation(_commandState.invokeOnceWhen(CommandState.BAKED) {
             cont.resume(Unit)
