@@ -1,15 +1,15 @@
 package org.ghrobotics.lib.commands
 
+import kotlinx.coroutines.experimental.*
 import org.ghrobotics.lib.utils.observabletype.ObservableListener
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newSingleThreadContext
 import java.util.concurrent.TimeUnit
 
 class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
+
+    constructor(delaySeconds: Double) : this((delaySeconds * 1000).toLong(), TimeUnit.MILLISECONDS)
+
     init {
         executeFrequency = 0
         withTimeout(delay, unit)
