@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID
 import org.ghrobotics.lib.commands.Command
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
+import org.ghrobotics.lib.utils.observabletype.ObservableValue
 
 fun <T : GenericHID> controller(genericHID: T, block: FalconHIDBuilder<T>.() -> Unit): FalconHID<T> {
     val builder = FalconHIDBuilder(genericHID)
@@ -13,11 +14,16 @@ fun <T : GenericHID> controller(genericHID: T, block: FalconHIDBuilder<T>.() -> 
 
 class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
     private val controlBuilders = mutableListOf<FalconHIDControlBuilder>()
+    private val stateControlBuilders = mutableMapOf<ObservableValue<Boolean>, FalconHIDBuilder<T>>()
 
     fun button(buttonId: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = button(HIDButtonSource(genericHID, buttonId), block = block)
     fun axisButton(axisId: Int, threshold: Double = HIDButton.DEFAULT_THRESHOLD, block: FalconHIDButtonBuilder.() -> Unit = {}) = button(HIDAxisSource(genericHID, axisId), threshold, block)
     fun pov(angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = pov(0, angle, block)
     fun pov(pov: Int, angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = button(HIDPOVSource(genericHID, pov, angle), block = block)
+
+    fun state(state: ObservableValue<Boolean>, block: FalconHIDBuilder<T>.() -> Unit) = stateControlBuilders.compute(state) { _, _ ->
+        FalconHIDBuilder(genericHID).also(block)
+    }
 
     fun button(source: HIDSource, threshold: Double = HIDButton.DEFAULT_THRESHOLD, block: FalconHIDButtonBuilder.() -> Unit = {}): FalconHIDButtonBuilder {
         val builder = FalconHIDButtonBuilder(source, threshold)
@@ -28,7 +34,7 @@ class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
 
     fun build(): FalconHID<T> {
         val controls = controlBuilders.map { it.build() }
-        return FalconHID(genericHID, controls)
+        return FalconHID(genericHID, controls, stateControlBuilders.mapValues { it.value.build() })
     }
 }
 
@@ -59,11 +65,17 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
 }
 
 class FalconHID<T : GenericHID>(private val genericHID: T,
-                                private val controls: List<HIDControl>) {
+                                private val controls: List<HIDControl>,
+                                private val stateControls: Map<ObservableValue<Boolean>, FalconHID<T>>) {
 
     fun getRawAxis(axisId: Int): DoubleSource = HIDAxisSource(genericHID, axisId)
     fun getRawButton(buttonId: Int): BooleanSource = HIDButtonSource(genericHID, buttonId).booleanSource
 
-    suspend fun update() = controls.forEach { it.update() }
+    suspend fun update() {
+        controls.forEach { it.update() }
+        for ((state, controller) in stateControls) {
+            if (state.value) controller.update()
+        }
+    }
 
 }
