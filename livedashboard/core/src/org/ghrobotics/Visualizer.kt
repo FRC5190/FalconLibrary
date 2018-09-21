@@ -69,8 +69,12 @@ class Visualizer : ApplicationAdapter() {
 
         val modelBuilder = ModelBuilder()
 
+        /*
         fieldModel = modelBuilder.createBox(Constants.FIELD_LENGTH, 0.1f, Constants.FIELD_WIDTH, Material(ColorAttribute.createDiffuse(Color.GRAY)),
                 VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong())
+*/
+
+        fieldModel = objLoader.loadModel(Gdx.files.internal("field/field2.obj"))
 
         robotModel = modelBuilder.createBox(Constants.ROBOT_WIDTH, 1f, Constants.ROBOT_LENGTH, Material(ColorAttribute.createDiffuse(Color.BLUE)),
                 VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong())
@@ -143,6 +147,7 @@ class Visualizer : ApplicationAdapter() {
 
         shadowLight.begin(Vector3.Zero, topFieldView.direction)
         shadowBatch.begin(shadowLight.camera)
+        //shadowBatch.render(field.modelInstance, environment)
         shadowBatch.render(robot.modelInstance, environment)
         shadowBatch.end()
         shadowLight.end()
