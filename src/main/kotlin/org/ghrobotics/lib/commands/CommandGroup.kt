@@ -56,6 +56,7 @@ open class CommandGroup(private val groupType: GroupType,
     }
 
     protected inner class CommandGroupTask(command: Command) : CommandTask(command, commandGroupHandler::handleFinish) {
+        val group = this@CommandGroup
         override fun stop(stopTime: Long) {
             synchronized(tasksToRun) { tasksToRun.remove(this) }
             if (groupType == GroupType.SEQUENTIAL) {
@@ -104,15 +105,17 @@ open class CommandGroup(private val groupType: GroupType,
                     if (task.command !is CommandGroup) {
                         val used = activeCommandTasks.anyUsed(task.command.requiredSubsystems)
                         if (used) {
+                            println("Current Commands: ${activeCommandTasks.joinToString { it.command::class.java.simpleName }}")
                             // Subsystems it needs is currently in use, queue it for later
                             println("[Command Group] Command ${task.command::class.java.simpleName} was delayed since it requires a subsystem currently in use")
                             queuedTasks.add(task)
                             return
                         }
                     }
+                    println("Start Command ${task.command::class.java.simpleName}")
 
                     // Command can run without any conflicts
-                    allActiveTasks.add(task)
+                    allActiveTasks += task
                     task.start0(event.startTime)
                 }
                 is GroupEvent.FinishTaskEvent -> {
@@ -120,7 +123,16 @@ open class CommandGroup(private val groupType: GroupType,
                     assert(allActiveTasks.contains(task)) { "Finish Task was called for ${task.command::class.java.simpleName} which isn't current running" }
                     // Command ended
                     allActiveTasks.remove(task)
+                    if(task.command is CommandGroup){
+                        for (subCommand in queuedTasks.filter { it.group == task.command }) {
+                            handleEvent(GroupEvent.FinishTaskEvent(subCommand, event.stopTime))
+                        }
+                        for (subCommand in allActiveTasks.filter { it.group == task.command }) {
+                            handleEvent(GroupEvent.FinishTaskEvent(subCommand, event.stopTime))
+                        }
+                    }
                     task.stop0(event.stopTime)
+                    println("Command Stopped ${task.command::class.java.simpleName}")
                     // Check queue for any commands that can now run
                     queuedTasks.toSet().forEach { queuedTask ->
                         val used = activeCommandTasks.anyUsed(queuedTask.command.requiredSubsystems)
