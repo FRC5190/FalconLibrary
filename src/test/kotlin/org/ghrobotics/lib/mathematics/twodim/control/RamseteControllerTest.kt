@@ -19,14 +19,16 @@ import java.awt.Color
 import java.awt.Font
 import java.text.DecimalFormat
 
-class NonLinearControllerTest {
+class RamseteControllerTest {
 
     private lateinit var trajectoryFollower: TrajectoryFollower
 
+    private val kBeta = 2.0
+    private val kZeta = 0.7
+
     @Test
     fun testTrajectoryFollower() {
-        val kSideStart = Pose2d(Translation2d(1.54, 23.234166666666666666666666666667), Rotation2d.fromDegrees(180.0))
-        val kCenterStart = Pose2d(Translation2d(1.54, 13.5), Rotation2d())
+        val kSideStart = Pose2d(Translation2d(1.54, 23.234167), Rotation2d.fromDegrees(180.0))
         val kNearScaleEmpty = Pose2d(Translation2d(23.7, 20.2), Rotation2d.fromDegrees(160.0))
 
         val name = "T"
@@ -42,12 +44,10 @@ class NonLinearControllerTest {
                 10.0, 4.0
         )!!
         val iterator = TrajectoryIterator(TimedView(trajectory))
-        trajectoryFollower = NonLinearController(trajectory, 2.0 / 12.0, 0.85)
+        trajectoryFollower = RamseteController(trajectory, kBeta, kZeta)
 
-        var totalpose = Pose2d(Translation2d(1.54, 13.0), Rotation2d(180.0))
-
-        var prevdx = 0.0
-        var prevdtheta = 0.0
+        val error = Pose2d(Translation2d(0.0, 14.0), Rotation2d.fromDegrees(5.0))
+        var totalpose = trajectory.firstState.state.pose.transformBy(error)
 
         var time = 0.0
         val dt = 0.02
@@ -64,13 +64,9 @@ class NonLinearControllerTest {
             time += dt * 1.0e+9
 
             totalpose = totalpose.transformBy(Pose2d.fromTwist(Twist2d(
-                    output.dx + 0.0 * prevdx,
+                    output.dx,
                     output.dy,
-                    output.dtheta + 0.0 * prevdtheta)))
-
-
-            prevdx = output.dx
-            prevdtheta = output.dtheta
+                    output.dtheta * 1.05)))
 
             xList.add(totalpose.translation.x)
             yList.add(totalpose.translation.y)
@@ -115,14 +111,14 @@ class NonLinearControllerTest {
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x, terror.y)
 
-       assert(terror.norm.also {
-           println("[Test] Norm of Translational Error: $it")
-       } < 0.50)
-       assert(rerror.degrees.also {
-           println("[Test] Rotational Error: $it degrees")
-       } < 5.0)
-
-//         SwingWrapper(chart).displayChart()
-//         Thread.sleep(1000000)
+        assert(terror.norm.also {
+            println("[Test] Norm of Translational Error: $it")
+        } < 0.50)
+        assert(rerror.degrees.also {
+            println("[Test] Rotational Error: $it degrees")
+        } < 5.0)
+//
+//        SwingWrapper(chart).displayChart()
+//        Thread.sleep(1000000)
     }
 }
