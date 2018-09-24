@@ -64,4 +64,6 @@ private class UpdatableObservableValueImpl<T>(
         job.cancel()
     }
 
+    override fun toString() = "UPDATE[$value]"
+
 }

@@ -1,12 +1,9 @@
 package org.ghrobotics.lib.commands
 
-import org.ghrobotics.lib.utils.launchFrequency
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
-import org.ghrobotics.lib.utils.observabletype.ObservableValueReference
-import org.ghrobotics.lib.utils.observabletype.ObservableVariable
-import org.ghrobotics.lib.utils.observabletype.or
-import org.ghrobotics.lib.wrappers.FalconRobotBase
 import kotlinx.coroutines.experimental.*
+import org.ghrobotics.lib.utils.loopFrequency
+import org.ghrobotics.lib.utils.observabletype.*
+import org.ghrobotics.lib.wrappers.FalconRobotBase
 import java.util.concurrent.TimeUnit
 
 abstract class Command(val requiredSubsystems: List<Subsystem>) {
@@ -39,35 +36,66 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     val commandState: ObservableValue<CommandState> = _commandState
 
     var startTime = 0L
-        internal set
+        private set
 
     /**
      * Is true when all the finish conditions are met
      */
     fun isFinished() = finishCondition.value
 
-    private var executor: Job? = null
+    // Internal Task of the Command
 
-    open suspend fun initialize0() {
+    private var internalJob: Job? = null
+    private var finishHandle: DisposableHandle? = null
+
+    internal suspend fun internalStart(startTime: Long, onFinish: (Long) -> Unit) {
+        this.startTime = startTime
         _commandState.value = CommandState.BAKING
-        initialize()
-        _timeoutCondition?.start(startTime)
-        if(!finishCondition.value) {
-            if (executeFrequency != 0) executor = launchFrequency(executeFrequency, commandContext) {
-                execute0()
+        internalJob = launch(commandContext) {
+            initialize0()
+            // Only start if the command didn't end already
+            if (!finishCondition.value) {
+                finishHandle = finishCondition.invokeOnceWhenTrue {
+                    val timeoutCondition = this@Command._timeoutCondition
+
+                    val stopTime = if (timeoutCondition != null)
+                        Math.min(System.nanoTime(), startTime + timeoutCondition.unit.toNanos(timeoutCondition.delay))
+                    else System.nanoTime()
+
+                    onFinish(stopTime)
+                }
+                if (executeFrequency != 0) loopFrequency(executeFrequency) { execute0() }
+            } else {
+                onFinish(startTime)
             }
         }
+    }
+
+    internal suspend fun internalStop() {
+        assert(internalJob != null) { "Tried to stop a command that isnt running!" }
+        internalJob?.cancelAndJoin()
+        internalJob = null
+        finishHandle?.dispose()
+        finishHandle = null
+        dispose0()
+        _commandState.value = CommandState.BAKED
+    }
+
+    // Some methods for people who know what they are doing
+
+    open suspend fun initialize0() {
+        initialize()
+        _timeoutCondition?.start(startTime)
     }
 
     protected open suspend fun execute0() = execute()
 
     open suspend fun dispose0() {
-        executor?.cancelAndJoin()
-        executor = null
         _timeoutCondition?.stop()
         dispose()
-        _commandState.value = CommandState.BAKED
     }
+
+    // Methods that don't need anything special
 
     protected open suspend fun initialize() {}
     protected open suspend fun execute() {}
@@ -118,6 +146,8 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
         fun set(other: ObservableValue<Boolean>) {
             varReference.reference = other
         }
+
+        override fun toString() = "FINISH($varReference)[$value]"
     }
 
 }

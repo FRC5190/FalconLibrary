@@ -16,15 +16,20 @@ fun launchFrequency(
 ): Job {
     if (frequency <= 0) throw IllegalArgumentException("Frequency cannot be lower then 1!")
     return launch(context, start, parent, onCompletion) {
-        val timeBetweenUpdate = TimeUnit.SECONDS.toNanos(1) / frequency
-        // Stores when the next update should happen
-        var nextNS = System.nanoTime() + timeBetweenUpdate
-        while (isActive) {
-            block(this)
-            val delayNeeded = nextNS - System.nanoTime()
-            nextNS += timeBetweenUpdate
-            delay(delayNeeded, TimeUnit.NANOSECONDS)
-        }
+        loopFrequency(frequency, block)
+    }
+}
+
+suspend fun CoroutineScope.loopFrequency(frequency: Int = 50,
+                                           block: suspend CoroutineScope.() -> Unit) {
+    val timeBetweenUpdate = TimeUnit.SECONDS.toNanos(1) / frequency
+    // Stores when the next update should happen
+    var nextNS = System.nanoTime() + timeBetweenUpdate
+    while (isActive) {
+        block(this)
+        val delayNeeded = nextNS - System.nanoTime()
+        nextNS += timeBetweenUpdate
+        delay(delayNeeded, TimeUnit.NANOSECONDS)
     }
 }
 

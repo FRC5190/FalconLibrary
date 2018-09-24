@@ -80,4 +80,6 @@ private class ConflatedObservableValueImpl<T>(
         }
     }
 
+    override fun toString() = "Conflated($parent)[$value]"
+
 }

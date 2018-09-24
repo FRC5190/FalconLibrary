@@ -25,7 +25,7 @@ class ParallelSameTest {
         var realStartTime = 0L
         val group = parallel {
             +InstantRunnableCommand { realStartTime = System.currentTimeMillis() }
-            sequential {
+            +sequential {
                 +DelayCommand(1, TimeUnit.SECONDS)
                 +testCommand(1)
                 +testCommand(3)

@@ -121,5 +121,7 @@ interface ObservableValue<T> {
 
 private class ObservableValueImpl<T>(override val value: T) : ObservableValue<T> {
     override fun invokeOnSet(listener: ObservableListener<T>) = NonObservableHandle
+
+    override fun toString() = "VAL[$value]"
 }
 

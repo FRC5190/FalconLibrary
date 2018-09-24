@@ -45,4 +45,6 @@ private class MergedObservableValueImpl<V1, V2, F>(
         handle.dispose()
     }
 
+    override fun toString() = "MERGED($first, $second)[$value]"
+
 }

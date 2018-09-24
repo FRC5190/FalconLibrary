@@ -21,4 +21,6 @@ private class ObservableVariableImpl<T>(value: T) : ObservableVariable<T>, Subsc
             informListeners(value)
             field = value
         }
+
+    override fun toString() = "VAR[$value]"
 }

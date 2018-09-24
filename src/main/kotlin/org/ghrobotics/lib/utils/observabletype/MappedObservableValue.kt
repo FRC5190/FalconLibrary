@@ -39,4 +39,6 @@ private class MappedObservableValueImpl<V, F>(
         handle.dispose()
     }
 
+    override fun toString() = "MAPPED($parent)[$value]"
+
 }

@@ -17,15 +17,21 @@ private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : O
             field = value
             synchronized(running) {
                 if (running.get()) {
-                    synchronized(referenceSync) {
-                        start()
-                        stop()
-                    }
+                    start()
+                    stop()
                 }
             }
         }
 
     override var value: T = reference.value
+        get() {
+            synchronized(running) {
+                if (!running.get()) {
+                    field = reference.value
+                }
+            }
+            return field
+        }
         set(value) {
             informListeners(value)
             field = value
@@ -41,5 +47,6 @@ private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : O
         handle.dispose()
     }
 
+    override fun toString() = "VALREF($reference)"
 
 }

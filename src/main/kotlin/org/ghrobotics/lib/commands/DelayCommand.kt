@@ -43,10 +43,12 @@ class StatefulDelayImpl(
         }
     }
 
-    fun stop() {
-        job.cancel()
+    suspend fun stop() {
+        job.cancelAndJoin()
         value = false
     }
+
+    override fun toString() = "DELAY($delayValue)"
 }
 
 interface StatefulDelay : ObservableValue<Boolean> {

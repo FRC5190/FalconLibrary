@@ -35,14 +35,6 @@ interface CommandGroupBuilder {
 class BasicCommandGroupBuilder(private val type: CommandGroup.GroupType) : CommandGroupBuilder {
     private val commands = mutableListOf<Command>()
 
-    fun sequential(block: BasicCommandGroupBuilder.() -> Unit) = sequential0(block).also { it.unaryPlus() }
-    fun parallel(block: BasicCommandGroupBuilder.() -> Unit) = parallel0(block).also { it.unaryPlus() }
-    fun <T> stateCommandGroup(state: ObservableValue<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
-            stateCommandGroup(state.asSource(), block)
-
-    fun <T> stateCommandGroup(stateSource: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
-            stateCommandGroup0(stateSource, block).also { it.unaryPlus() }
-
     operator fun Command.unaryPlus() = commands.add(this)
 
     override fun build() = CommandGroup(type, commands)
@@ -68,7 +60,7 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) : CommandGroupBu
                 println("[StateCommandGroup] Missing state: $currentState")
                 return emptyList()
             }
-            return listOf(CommandGroupTask(command))
+            return listOf(createTask(command))
         }
     }
 }
