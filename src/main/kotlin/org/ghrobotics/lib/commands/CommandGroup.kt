@@ -38,8 +38,7 @@ open class CommandGroup(
     protected open fun createTasks(): List<CommandGroupTask> = commands.map { CommandGroupTask(it) }
 
     override suspend fun initialize() {
-        commandGroupHandler =
-                if (parentCommandGroup == null) ParentCommandGroupHandler() else ChildCommandGroupHandler()
+        commandGroupHandler = parentCommandGroup?.let { ChildCommandGroupHandler(it.commandGroupHandler) } ?: ParentCommandGroupHandler()
         tasksToRun = createTasks().toMutableSet()
         commandGroupFinishCondition.update()
         (commandGroupHandler as? ParentCommandGroupHandler)?.start()
@@ -76,9 +75,9 @@ open class CommandGroup(
         fun handleTaskFinish(task: CommandGroupTask, stopTime: Long)
     }
 
-    private inner class ChildCommandGroupHandler : CommandGroupHandler by parentCommandGroup!!.commandGroupHandler
+    private class ChildCommandGroupHandler(parent: CommandGroupHandler) : CommandGroupHandler by parent
 
-    private inner class ParentCommandGroupHandler : CommandGroupHandler {
+    private class ParentCommandGroupHandler : CommandGroupHandler {
 
         private val taskChannel = Channel<Triple<Boolean, CommandGroupTask, Long>>(Channel.UNLIMITED)
 
