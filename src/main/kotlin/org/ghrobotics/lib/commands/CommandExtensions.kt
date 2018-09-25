@@ -60,7 +60,7 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) : CommandGroupBu
                 println("[StateCommandGroup] Missing state: $currentState")
                 return emptyList()
             }
-            return listOf(createTask(command))
+            return listOf(CommandGroupTask(command))
         }
     }
 }
