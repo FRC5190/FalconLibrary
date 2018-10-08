@@ -11,7 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.*
 import kotlin.reflect.KProperty
 
-class FalconSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
+class FalconSRX(
+    id: Int,
+    val nativeUnitSettings: NativeUnitSettings,
+    private val timeoutMs: Int = 10
+) : TalonSRX(id) {
 
     private fun <T> propInit(initValue: T, set: FalconSRX.(T) -> Unit): FalconSRXProp<T> {
         var value = initValue
@@ -41,13 +45,13 @@ class FalconSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
     var encoderPhase by propInit(false) { setSensorPhase(it) }
 
     var overrideLimitSwitchesEnable by propInit(false) { overrideLimitSwitchesEnable(it) }
-    var softLimitFwd by propInit<Distance>(NativeUnits(0)) { configForwardSoftLimitThreshold(it.STU, timeoutMs) }
-    var softLimitRev by propInit<Distance>(NativeUnits(0)) { configReverseSoftLimitThreshold(it.STU, timeoutMs) }
+    var softLimitFwd by propInit(0.FT) { configForwardSoftLimitThreshold(it.STU(nativeUnitSettings).asInt, timeoutMs) }
+    var softLimitRev by propInit(0.FT) { configReverseSoftLimitThreshold(it.STU(nativeUnitSettings).asInt, timeoutMs) }
     var softLimitFwdEnabled by propInit(false) { configForwardSoftLimitEnable(it, timeoutMs) }
     var softLimitRevEnabled by propInit(false) { configReverseSoftLimitEnable(it, timeoutMs) }
 
     var brakeMode by propInit(NeutralMode.Coast) { setNeutralMode(it) }
-    var closedLoopTolerance by propInit<Distance>(NativeUnits(0)) { configAllowableClosedloopError(0, it.STU, timeoutMs) }
+    var closedLoopTolerance by propInit(0.FT) { configAllowableClosedloopError(0, it.STU(nativeUnitSettings).asInt, timeoutMs) }
 
     var nominalFwdOutput by propInit(0.0) { configNominalOutputForward(it, timeoutMs) }
     var nominalRevOutput by propInit(0.0) { configNominalOutputReverse(it, timeoutMs) }
@@ -71,7 +75,7 @@ class FalconSRX(id: Int, private val timeoutMs: Int = 10) : TalonSRX(id) {
     var voltageCompensationSaturation by propInit<Voltage>(Volts(12.0)) { configVoltageCompSaturation(it.volts, timeoutMs) }
     var voltageCompensationEnabled by propInit(false) { enableVoltageCompensation(it) }
 
-    var sensorPosition by prop<Distance>({ setSelectedSensorPosition(it.STU, 0, timeoutMs) }) { NativeUnits(getSelectedSensorPosition(0)) }
+    var sensorPosition by prop<Distance>({ setSelectedSensorPosition(it.STU(nativeUnitSettings).asInt, 0, timeoutMs) }) { getSelectedSensorPosition(0).STU(nativeUnitSettings) }
     val sensorVelocity: Speed
         get() = NativeUnitsPer100Ms(getSelectedSensorVelocity(0))
 
