@@ -13,7 +13,6 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TimedView
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -21,10 +20,10 @@ import java.text.DecimalFormat
 
 class RamseteControllerTest {
 
-    private lateinit var trajectoryFollower: TrajectoryFollower
+    private lateinit var trajectoryFollower: ITrajectoryFollower
 
-    private val kBeta = 2.0
-    private val kZeta = 0.7
+    private val kBeta = 1.5
+    private val kZeta = 0.85
 
     @Test
     fun testTrajectoryFollower() {

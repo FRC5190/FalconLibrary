@@ -75,6 +75,7 @@ class ParametricQuinticHermiteSpline(private val x0: Double,
         computeCoefficients()
     }
 
+    // Perform hermite matrix multiplication to compute polynomial coefficients
     private fun computeCoefficients() {
         val hermite = mat[
                 -06.0, -03.0, -00.5, +00.5, -03.0, +06.0 end
@@ -91,6 +92,7 @@ class ParametricQuinticHermiteSpline(private val x0: Double,
         yCoefficients = hermite * y
     }
 
+    // Get point at a specified t
     override fun getPoint(t: Double): Translation2d {
         val x = ax * t.pow(5) + bx * t.pow(4) + cx * t.pow(3) + dx * t.pow(2) + ex * t + fx
         val y = ay * t.pow(5) + by * t.pow(4) + cy * t.pow(3) + dy * t.pow(2) + ey * t + fy
@@ -178,7 +180,7 @@ class ParametricQuinticHermiteSpline(private val x0: Double,
             return sum
         }
 
-
+        // Run an optimization algorithm to reduce curvature along the spline
         fun optimizeSpline(splines: MutableList<ParametricQuinticHermiteSpline>): Double {
             var count = 0
             var prev = sumDCurvature2(splines)

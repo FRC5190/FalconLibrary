@@ -7,6 +7,7 @@ import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import kotlin.math.absoluteValue
 
+/*
 class DynamicSCurveControllerTest {
     @Test
     fun testSCurve() {
@@ -16,7 +17,7 @@ class DynamicSCurveControllerTest {
         val maxAcceleration = 10.0
         val jerk = 10.0
 
-        val controller: DynamicKinematicsController = DynamicSCurveController(0.0, totalDistance, maxVelocity, maxAcceleration, jerk)
+        val controller: IKinematicController = SCurveController(totalDistance, maxVelocity, maxAcceleration, jerk)
 
         var time = 0.0
         val dt = 0.005
@@ -24,30 +25,30 @@ class DynamicSCurveControllerTest {
         var pose = Displacement1d()
 
         var lastVelocity = 0.0
-        var velocity: Double
+        var pvadata: PVAData
 
         val xList = arrayListOf<Double>()
         val vList = arrayListOf<Double>()
         val tList = arrayListOf<Double>()
 
         while (true) {
-            velocity = controller.getVelocity(pose.x, time.toLong())
-            pose = pose.addDisplacement(Displacement1d(velocity * dt))
+            pvadata = controller.getVelocity(time.toLong())
+            pose = Displacement1d(pvadata.x)
 
-//            println(velocity)
-
-            assert(((velocity - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
+//            assert(((pvadata.v - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
 
             tList.add(time / 1E9)
             xList.add(pose.x)
-            vList.add(velocity)
+            vList.add(pvadata.v)
 
             time += dt * 1.0e+9
 
-            if (pose.x > 0 && velocity == 0.0) break
-            lastVelocity = velocity
+            if (pose.x > 0 && pvadata.v == 0.0) break
+            lastVelocity = pvadata.v
 
+            Thread.sleep(1)
         }
+
 
         assert(pose.x < totalDistance + 0.1).also { println("Total Distance Traveled: $pose") }
         val chart = XYChartBuilder().width(1800).height(1520).title("${pose.x}")
@@ -57,5 +58,10 @@ class DynamicSCurveControllerTest {
         chart.addSeries("X", tList.toDoubleArray(), xList.toDoubleArray())
         chart.addSeries("V", tList.toDoubleArray(), vList.toDoubleArray())
 
+        SwingWrapper(chart).displayChart("T Curve Controller Test")
+
+        Thread.sleep(10000000)
+
     }
 }
+*/

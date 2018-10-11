@@ -3,9 +3,11 @@ package org.ghrobotics.lib.mathematics.onedim.control
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.onedim.geometry.Displacement1d
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
+import org.knowm.xchart.XYChartBuilder
 import kotlin.math.absoluteValue
 
-class DynamicTCurveControllerTest {
+class TCurveControllerTest {
 
     @Test
     fun testTrapezoid() {
@@ -18,34 +20,34 @@ class DynamicTCurveControllerTest {
     }
 
     private fun testController(totalDistance: Double, maxVelocity: Double, maxAcceleration: Double) {
-        val controller: DynamicKinematicsController = DynamicTCurveController(0.0, totalDistance, maxVelocity, maxAcceleration)
+        val controller: IKinematicController = TCurveController(totalDistance, maxVelocity, maxAcceleration)
 
         var time = 0.0
         val dt = 0.005
 
-        var pose = Displacement1d()
+        var pose: Displacement1d
 
         var lastVelocity = 0.0
-        var velocity: Double
+        var pvadata: PVAData
 
         val xList = arrayListOf<Double>()
         val vList = arrayListOf<Double>()
         val tList = arrayListOf<Double>()
 
         while (true) {
-            velocity = controller.getVelocity(pose.x, time.toLong())
-            pose = pose.addDisplacement(Displacement1d(velocity * dt))
+            pvadata = controller.getVelocity(time.toLong())
+            pose = Displacement1d(pvadata.x)
 
-            assert(((velocity - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
+            assert(((pvadata.v - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
 
             tList.add(time / 1E9)
             xList.add(pose.x)
-            vList.add(velocity)
+            vList.add(pvadata.v)
 
             time += dt * 1.0e+9
 
-            if (pose.x > 0 && velocity == 0.0) break
-            lastVelocity = velocity
+            if (pose.x > 0 && pvadata.v == 0.0) break
+            lastVelocity = pvadata.v
 
             Thread.sleep(1)
         }

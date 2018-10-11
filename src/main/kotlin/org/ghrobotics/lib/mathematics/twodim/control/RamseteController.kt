@@ -21,7 +21,7 @@ import kotlin.math.sqrt
 
 open class RamseteController(trajectory: Trajectory<TimedState<Pose2dWithCurvature>>,
                              private val kBeta: Double,
-                             private val kZeta: Double) : TrajectoryFollower {
+                             private val kZeta: Double) : ITrajectoryFollower {
 
     private val iterator = TrajectoryIterator(TimedView(trajectory))
 
