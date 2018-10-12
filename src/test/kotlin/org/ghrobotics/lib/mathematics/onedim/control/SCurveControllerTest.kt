@@ -7,22 +7,26 @@ import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import kotlin.math.absoluteValue
 
-/*
-class DynamicSCurveControllerTest {
+
+class SCurveControllerTest {
+
     @Test
-    fun testSCurve() {
+    fun testSCurve1() {
+        testController(60.0, 15.0, 15.0, 60.0)
+    }
 
-        val totalDistance = 40.0
-        val maxVelocity = 10.0
-        val maxAcceleration = 10.0
-        val jerk = 10.0
+    @Test
+    fun testSCurve2() {
+        testController(20.0, 3.0, 5.0, 100.0)
+    }
 
+    private fun testController(totalDistance: Double, maxVelocity: Double, maxAcceleration: Double, jerk: Double) {
         val controller: IKinematicController = SCurveController(totalDistance, maxVelocity, maxAcceleration, jerk)
 
         var time = 0.0
         val dt = 0.005
 
-        var pose = Displacement1d()
+        var pose: Displacement1d
 
         var lastVelocity = 0.0
         var pvadata: PVAData
@@ -35,7 +39,7 @@ class DynamicSCurveControllerTest {
             pvadata = controller.getVelocity(time.toLong())
             pose = Displacement1d(pvadata.x)
 
-//            assert(((pvadata.v - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
+            assert(((pvadata.v - lastVelocity) / dt).absoluteValue <= maxAcceleration + kEpsilon)
 
             tList.add(time / 1E9)
             xList.add(pose.x)
@@ -49,19 +53,19 @@ class DynamicSCurveControllerTest {
             Thread.sleep(1)
         }
 
-
         assert(pose.x < totalDistance + 0.1).also { println("Total Distance Traveled: $pose") }
-        val chart = XYChartBuilder().width(1800).height(1520).title("${pose.x}")
-                .xAxisTitle("X").yAxisTitle("Y").build()
 
-
-        chart.addSeries("X", tList.toDoubleArray(), xList.toDoubleArray())
-        chart.addSeries("V", tList.toDoubleArray(), vList.toDoubleArray())
-
-        SwingWrapper(chart).displayChart("T Curve Controller Test")
-
-        Thread.sleep(10000000)
+//        val chart = XYChartBuilder().width(1800).height(1520).title("${pose.x}")
+//                .xAxisTitle("X").yAxisTitle("Y").build()
+//
+//
+//        chart.addSeries("X", tList.toDoubleArray(), xList.toDoubleArray())
+//        chart.addSeries("V", tList.toDoubleArray(), vList.toDoubleArray())
+//
+//        SwingWrapper(chart).displayChart("T Curve Controller Test")
+//
+//        Thread.sleep(10000000)
 
     }
 }
-*/
+

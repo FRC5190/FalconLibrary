@@ -29,38 +29,42 @@ class TCurveController(val distance: Double,
         xCruise = x(tCruise, 0.0, cruiseVelocity, 0.0)
     }
 
+    val t1 = tAccel
+    val t2 = tAccel + tCruise
+    val t3 = 2 * tAccel + tCruise
+
     // Loops
     private var lastCallTime = -1.0
     private var dt = -1.0
-    private var t = 0.0
+    private var elapsed = 0.0
 
     override fun getVelocity(nanotime: Long): PVAData {
 
         dt = if (lastCallTime < 0) 0.0 else nanotime / 1E9 - lastCallTime
         lastCallTime = nanotime / 1E9
-        t += dt
+        elapsed += dt
 
         return when {
-            t < tAccel -> {
-                val t1 = t
+            elapsed < t1 -> {
+                val t = elapsed
                 PVAData(
-                        x(t1, 0.0, 0.0, maxAcceleration),
-                        v(t1, 0.0, maxAcceleration),
+                        x(t, 0.0, 0.0, maxAcceleration),
+                        v(t, 0.0, maxAcceleration),
                         maxAcceleration)
             }
-            t < tAccel + tCruise -> {
-                val t2 = t - tAccel
+            elapsed < t2 -> {
+                val t = elapsed - t1
                 PVAData(
-                        x(t2, xAccel, cruiseVelocity, 0.0),
-                        v(t2, cruiseVelocity, 0.0),
+                        x(t, xAccel, cruiseVelocity, 0.0),
+                        v(t, cruiseVelocity, 0.0),
                         0.0
                 )
             }
-            t < tAccel + tCruise + tAccel -> {
-                val t3 = t - tAccel - tCruise
+            elapsed < t3 -> {
+                val t = elapsed - t2
                 PVAData(
-                        x(t3, xAccel + xCruise, cruiseVelocity, -maxAcceleration),
-                        v(t3, cruiseVelocity, -maxAcceleration),
+                        x(t, xAccel + xCruise, cruiseVelocity, -maxAcceleration),
+                        v(t, cruiseVelocity, -maxAcceleration),
                         -maxAcceleration
                 )
             }
