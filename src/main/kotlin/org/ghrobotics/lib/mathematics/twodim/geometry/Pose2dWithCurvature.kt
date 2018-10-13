@@ -35,6 +35,12 @@ data class Pose2dWithCurvature(
         )
 
     override fun distance(other: Pose2dWithCurvature) = pose.distance(other.pose)
+
+    operator fun plus(other: Pose2d) = Pose2dWithCurvature(
+        this.pose + other,
+        curvature
+    )
+
 }
 
 /**
