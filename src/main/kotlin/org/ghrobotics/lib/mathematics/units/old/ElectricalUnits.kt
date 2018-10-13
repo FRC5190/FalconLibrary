@@ -3,14 +3,16 @@
  * Green Hope Falcons
  */
 
-package org.ghrobotics.lib.mathematics.units
+package org.ghrobotics.lib.mathematics.units.old
 
 interface Current {
 
     val amps: Int
 
-    operator fun plus(other: Current) = Amps(this.amps + other.amps)
-    operator fun minus(other: Current) = Amps(this.amps - other.amps)
+    operator fun plus(other: Current) =
+        Amps(this.amps + other.amps)
+    operator fun minus(other: Current) =
+        Amps(this.amps - other.amps)
     operator fun unaryMinus() = Amps(-this.amps)
 }
 
@@ -21,8 +23,10 @@ class Amps (val value: Int) : Current {
 interface Voltage {
     val volts: Double
 
-    operator fun plus(other: Voltage) = Volts(this.volts + other.volts)
-    operator fun minus(other: Voltage) = Volts(this.volts - other.volts)
+    operator fun plus(other: Voltage) =
+        Volts(this.volts + other.volts)
+    operator fun minus(other: Voltage) =
+        Volts(this.volts - other.volts)
     operator fun unaryMinus() = Volts(-this.volts)
 }
 
