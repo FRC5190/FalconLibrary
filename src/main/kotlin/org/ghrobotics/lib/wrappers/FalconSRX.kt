@@ -8,17 +8,15 @@ package org.ghrobotics.lib.wrappers
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
+import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
 import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
-import org.ghrobotics.lib.mathematics.units.old.Amps
-import org.ghrobotics.lib.mathematics.units.old.Current
-import org.ghrobotics.lib.mathematics.units.old.Voltage
-import org.ghrobotics.lib.mathematics.units.old.Volts
 import org.ghrobotics.lib.mathematics.units.second
 import kotlin.reflect.KProperty
 
@@ -58,15 +56,15 @@ class FalconSRX(
     var encoderPhase by propInit(false) { setSensorPhase(it) }
 
     var overrideLimitSwitchesEnable by propInit(false) { overrideLimitSwitchesEnable(it) }
-    var softLimitFwd by propInit(0.feet) {
+    var softLimitFwd by propInit(0.STU) {
         configForwardSoftLimitThreshold(
-            it.STU(nativeUnitSettings).asInt,
+            it.asInt,
             timeoutMs
         )
     }
-    var softLimitRev by propInit(0.feet) {
+    var softLimitRev by propInit(0.STU) {
         configReverseSoftLimitThreshold(
-            it.STU(nativeUnitSettings).asInt,
+            it.asInt,
             timeoutMs
         )
     }
@@ -105,9 +103,7 @@ class FalconSRX(
     }
 
     var feedbackSensor by propInit(FeedbackDevice.None) { configSelectedFeedbackSensor(it, 0, timeoutMs) }
-    var peakCurrentLimit by propInit<Current>(
-        Amps(0)
-    ) { configPeakCurrentLimit(it.amps, timeoutMs) }
+    var peakCurrentLimit by propInit(0.amp) { configPeakCurrentLimit(it.amp.asInt, timeoutMs) }
 
     var peakCurrentLimitDuration by propInit(0.millisecond) {
         configPeakCurrentDuration(
@@ -115,14 +111,10 @@ class FalconSRX(
             timeoutMs
         )
     }
-    var continuousCurrentLimit by propInit<Current>(
-        Amps(0)
-    ) { configContinuousCurrentLimit(it.amps, timeoutMs) }
+    var continuousCurrentLimit by propInit(0.amp) { configContinuousCurrentLimit(it.amp.asInt, timeoutMs) }
     var currentLimitingEnabled by propInit(false) { enableCurrentLimit(it) }
 
-    var voltageCompensationSaturation by propInit<Voltage>(
-        Volts(12.0)
-    ) { configVoltageCompSaturation(it.volts, timeoutMs) }
+    var voltageCompensationSaturation by propInit(12.volt) { configVoltageCompSaturation(it.asDouble, timeoutMs) }
     var voltageCompensationEnabled by propInit(false) { enableVoltageCompensation(it) }
 
     var sensorPosition by prop({

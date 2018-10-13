@@ -4,6 +4,7 @@ object UnitMapper {
 
     val lengthMapper = SpecificUnitMapper<LengthUnits>()
     val timeMapper = SpecificUnitMapper<TimeUnits>()
+    val electricCurrentMapper = SpecificUnitMapper<ElectricCurrentUnits>()
 
     init {
         lengthMapper.apply {
