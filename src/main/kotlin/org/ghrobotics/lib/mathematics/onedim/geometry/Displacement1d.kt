@@ -1,13 +1,10 @@
 package org.ghrobotics.lib.mathematics.onedim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.onedim.geometry.interfaces.IDisplacement1d
+import org.ghrobotics.lib.types.VaryInterpolatable
 import java.text.DecimalFormat
 
-class Displacement1d(val x: Double) : IDisplacement1d<Displacement1d> {
-
-    override val displacement
-        get() = this
+class Displacement1d(val x: Double) : VaryInterpolatable<Displacement1d> {
 
     constructor() : this(0.0)
 
@@ -26,7 +23,7 @@ class Displacement1d(val x: Double) : IDisplacement1d<Displacement1d> {
         return "(" + fmt.format(x) + ")"
     }
 
-    override fun toCSV(): String {
+    fun toCSV(): String {
         val fmt = DecimalFormat("#0.000")
         return fmt.format(x)
     }

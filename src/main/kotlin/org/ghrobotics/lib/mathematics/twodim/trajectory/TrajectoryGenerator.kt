@@ -9,92 +9,116 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import org.ghrobotics.lib.mathematics.State
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.degrees
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricQuinticHermiteSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSplineGenerator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.TimingConstraint
-import org.ghrobotics.lib.mathematics.twodim.trajectory.view.DistanceView
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.DistanceTrajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
+import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.types.VaryInterpolatable
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 
-object TrajectoryGenerator {
+val DefaultTrajectoryGenerator = TrajectoryGenerator(
+    2.inch,
+    0.25.inch,
+    5.degrees
+)
 
-    private const val kMaxDx = 2.0 / 12.0
-    private const val kMaxDy = 0.25 / 12.0
-    private val kMaxDTheta = Math.toRadians(5.0)
+class TrajectoryGenerator(
+    kMaxDx: Length,
+    kMaxDy: Length,
+    kMaxDTheta: Rotation2d
+) {
 
+    val kMaxDx = kMaxDx.asMetric.asDouble
+    val kMaxDy = kMaxDy.asMetric.asDouble
+    val kMaxDTheta = kMaxDTheta.radians
 
-    // Generate trajectory with custom start and end velocity.
     fun generateTrajectory(
-            reversed: Boolean,
-            wayPoints: List<Pose2d>,
-            constraints: List<TimingConstraint<Pose2dWithCurvature>>,
-            startVel: Double,
-            endVel: Double,
-            maxVelocity: Double,
-            maxAcceleration: Double
-    ): Trajectory<TimedState<Pose2dWithCurvature>>? {
-
-        val flippedPose2d = Pose2d.fromRotation(Rotation2d.fromDegrees(180.0))
+        wayPoints: List<Pose2d>,
+        constraints: List<TimingConstraint<Pose2dWithCurvature>>,
+        startVelocity: Velocity,
+        endVelocity: Velocity,
+        maxVelocity: Velocity,
+        maxAcceleration: Acceleration,
+        reversed: Boolean
+    ): TimedTrajectory<Pose2dWithCurvature> {
+        val flippedPosition = Pose2d(rotation = Rotation2d.fromDegrees(180.0))
 
         // Make theta normal for trajectory generation if path is trajectoryReversed.
-        val newWayPoints = wayPoints.map { if (reversed) it.transformBy(flippedPose2d) else it }
+        val newWayPoints = wayPoints.asSequence().map { point ->
+            if (reversed) point + flippedPosition else point
+        }
 
-        var trajectory = trajectoryFromSplineWaypoints(newWayPoints, kMaxDx, kMaxDy, kMaxDTheta)
+        var trajectory = trajectoryFromSplineWaypoints(newWayPoints).points
 
         // After trajectory generation, flip theta back so it's relative to the field.
         // Also fix curvature and its derivative
         if (reversed) {
-            trajectory = Trajectory(trajectory.map { state ->
+            trajectory = trajectory.map { state ->
                 Pose2dWithCurvature(
-                        pose = state.pose.transformBy(flippedPose2d),
-                        curvature = -state.curvature,
-                        dkds = -state.dkds
+                    pose = state.pose + flippedPosition,
+                    curvature = -state.curvature
                 )
-            })
+            }
         }
 
-        // Parameterize by time and return.
-        return timeParameterizeTrajectory(reversed, DistanceView(trajectory), kMaxDx, constraints,
-                startVel, endVel, maxVelocity, maxAcceleration)
+        return timeParameterizeTrajectory(
+            DistanceTrajectory(trajectory),
+            constraints,
+            startVelocity.asMetric.asDouble,
+            endVelocity.asMetric.asDouble,
+            maxVelocity.asMetric.asDouble,
+            maxAcceleration.asMetric.asDouble.absoluteValue,
+            kMaxDx,
+            reversed
+        )
     }
 
-    private fun trajectoryFromSplineWaypoints(waypoints: List<Pose2d>,
-                                              maxDx: Double,
-                                              maxDy: Double,
-                                              maxDTheta: Double): Trajectory<Pose2dWithCurvature> {
-
-        val splines = ArrayList<ParametricQuinticHermiteSpline>(waypoints.size - 1)
-        for (i in 1 until waypoints.size) {
-            splines.add(ParametricQuinticHermiteSpline(waypoints[i - 1], waypoints[i]))
-        }
+    private fun trajectoryFromSplineWaypoints(
+        wayPoints: Sequence<Pose2d>
+    ): IndexedTrajectory<Pose2dWithCurvature> {
+        val splines = wayPoints.zipWithNext { a, b -> ParametricQuinticHermiteSpline(a, b) }.toMutableList()
         ParametricQuinticHermiteSpline.optimizeSpline(splines)
-        return trajectoryFromSplines(splines, maxDx, maxDy, maxDTheta)
+        return trajectoryFromSplines(splines)
     }
 
-    private fun trajectoryFromSplines(splines: List<ParametricSpline>, maxDx: Double,
-                                      maxDy: Double, maxDTheta: Double): Trajectory<Pose2dWithCurvature> {
-        return Trajectory(ParametricSplineGenerator.parameterizeSplines(splines, maxDx, maxDy,
-                maxDTheta))
-    }
+    private fun trajectoryFromSplines(
+        splines: List<ParametricSpline>
+    ) = IndexedTrajectory(
+        ParametricSplineGenerator.parameterizeSplines(
+            splines,
+            kMaxDx,
+            kMaxDy,
+            kMaxDTheta
+        )
+    )
 
-    // http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf and Team 254
-    private fun <S : State<S>> timeParameterizeTrajectory(reverse: Boolean,
-                                                          distanceView: DistanceView<S>,
-                                                          stepSize: Double,
-                                                          constraints: List<TimingConstraint<S>>,
-                                                          startVelocity: Double,
-                                                          endVelocity: Double,
-                                                          maxVelocity: Double,
-                                                          maxAbsAcceleration: Double): Trajectory<TimedState<S>> {
+    private fun <S : VaryInterpolatable<S>> timeParameterizeTrajectory(
+        distanceTrajectory: DistanceTrajectory<S>,
+        constraints: List<TimingConstraint<S>>,
+        startVelocity: Double,
+        endVelocity: Double,
+        maxVelocity: Double,
+        maxAcceleration: Double,
+        stepSize: Double,
+        reversed: Boolean
+    ): TimedTrajectory<S> {
 
-        class ConstrainedState<S : State<S>> {
+        class ConstrainedState<S : VaryInterpolatable<S>> {
             lateinit var state: S
             var distance: Double = 0.0
             var maxVelocity: Double = 0.0
@@ -108,29 +132,38 @@ object TrajectoryGenerator {
             }
         }
 
-        fun enforceAccelerationLimits(reverse: Boolean, constraints: List<TimingConstraint<S>>,
-                                      constraintState: ConstrainedState<S>) {
+        fun enforceAccelerationLimits(
+            reverse: Boolean, constraints: List<TimingConstraint<S>>,
+            constraintState: ConstrainedState<S>
+        ) {
 
             for (constraint in constraints) {
                 val minMaxAccel = constraint.getMinMaxAcceleration(
-                        constraintState.state,
-                        (if (reverse) -1.0 else 1.0) * constraintState.maxVelocity)
+                    constraintState.state,
+                    (if (reverse) -1.0 else 1.0) * constraintState.maxVelocity
+                )
                 if (!minMaxAccel.valid) {
                     throw RuntimeException()
                 }
-                constraintState.minAcceleration = Math.max(constraintState.minAcceleration,
-                        if (reverse) -minMaxAccel.maxAcceleration else minMaxAccel.minAcceleration)
-                constraintState.maxAcceleration = Math.min(constraintState.maxAcceleration,
-                        if (reverse) -minMaxAccel.minAcceleration else minMaxAccel.maxAcceleration)
+                constraintState.minAcceleration = Math.max(
+                    constraintState.minAcceleration,
+                    if (reverse) -minMaxAccel.maxAcceleration else minMaxAccel.minAcceleration
+                )
+                constraintState.maxAcceleration = Math.min(
+                    constraintState.maxAcceleration,
+                    if (reverse) -minMaxAccel.minAcceleration else minMaxAccel.maxAcceleration
+                )
             }
 
         }
 
-        val distanceViewRange = distanceView.firstInterpolant..distanceView.lastInterpolant
-        val distanceViewSteps = Math.ceil((distanceView.lastInterpolant - distanceView.firstInterpolant) / stepSize + 1).toInt()
+        val distanceViewRange = distanceTrajectory.firstInterpolant.asDouble..distanceTrajectory.lastInterpolant.asDouble
+        val distanceViewSteps =
+            Math.ceil((distanceTrajectory.lastInterpolant.asDouble - distanceTrajectory.firstInterpolant.asDouble) / stepSize + 1).toInt()
 
         val states = (0 until distanceViewSteps).map { step ->
-            distanceView.sample((step * stepSize + distanceView.firstInterpolant).coerceIn(distanceViewRange)).state
+            distanceTrajectory.sample((step * stepSize + distanceTrajectory.firstInterpolant.asDouble).coerceIn(distanceViewRange))
+                .state
         }
 
         val constraintStates = ArrayList<ConstrainedState<S>>(states.size)
@@ -146,8 +179,8 @@ object TrajectoryGenerator {
         predecessor.state = states[0]
         predecessor.distance = 0.0
         predecessor.maxVelocity = startVelocity
-        predecessor.minAcceleration = -maxAbsAcceleration
-        predecessor.maxAcceleration = maxAbsAcceleration
+        predecessor.minAcceleration = -maxAcceleration
+        predecessor.maxAcceleration = maxAcceleration
 
 
         for (i in states.indices) {
@@ -163,14 +196,16 @@ object TrajectoryGenerator {
             while (true) {
                 // Enforce global max velocity and max reachable velocity by global acceleration limit.
                 // vf = sqrt(vi^2 + 2*a*d)
-                constraintState.maxVelocity = Math.min(maxVelocity,
-                        Math.sqrt(predecessor.maxVelocity.pow(2) + 2.0 * predecessor.maxAcceleration * ds))
-                if (java.lang.Double.isNaN(constraintState.maxVelocity)) {
+                constraintState.maxVelocity = Math.min(
+                    maxVelocity,
+                    Math.sqrt(predecessor.maxVelocity.pow(2) + 2.0 * predecessor.maxAcceleration * ds)
+                )
+                if (constraintState.maxVelocity.isNaN()) {
                     throw RuntimeException()
                 }
                 // Enforce global max absolute acceleration.
-                constraintState.minAcceleration = -maxAbsAcceleration
-                constraintState.maxAcceleration = maxAbsAcceleration
+                constraintState.minAcceleration = -maxAcceleration
+                constraintState.maxAcceleration = maxAcceleration
 
                 // At this point, the state is full constructed, but no constraints have been applied aside from
                 // predecessor
@@ -178,8 +213,10 @@ object TrajectoryGenerator {
 
                 // Enforce all velocity constraints.
                 for (constraint in constraints) {
-                    constraintState.maxVelocity = Math.min(constraintState.maxVelocity,
-                            constraint.getMaxVelocity(constraintState.state))
+                    constraintState.maxVelocity = Math.min(
+                        constraintState.maxVelocity,
+                        constraint.getMaxVelocity(constraintState.state)
+                    )
                 }
                 if (constraintState.maxVelocity < 0.0) {
                     // This should never happen if constraints are well-behaved.
@@ -187,7 +224,7 @@ object TrajectoryGenerator {
                 }
 
                 // Now enforce all acceleration constraints.
-                enforceAccelerationLimits(reverse, constraints, constraintState)
+                enforceAccelerationLimits(reversed, constraints, constraintState)
                 if (constraintState.minAcceleration > constraintState.maxAcceleration) {
                     // This should never happen if constraints are well-behaved.
                     throw RuntimeException()
@@ -199,7 +236,8 @@ object TrajectoryGenerator {
 
                 // If the max acceleration for this constraint state is more conservative than what we had applied, we
                 // need to reduce the max accel at the predecessor state and try again.
-                val actualAcceleration = (constraintState.maxVelocity.pow(2) - predecessor.maxVelocity.pow(2)) / (2.0 * ds)
+                val actualAcceleration =
+                    (constraintState.maxVelocity.pow(2) - predecessor.maxVelocity.pow(2)) / (2.0 * ds)
                 if (constraintState.maxAcceleration < actualAcceleration - epsilon) {
                     predecessor.maxAcceleration = constraintState.maxAcceleration
                 } else {
@@ -221,8 +259,8 @@ object TrajectoryGenerator {
         successor.state = states[states.size - 1]
         successor.distance = constraintStates[states.size - 1].distance
         successor.maxVelocity = endVelocity
-        successor.minAcceleration = -maxAbsAcceleration
-        successor.maxAcceleration = maxAbsAcceleration
+        successor.minAcceleration = -maxAcceleration
+        successor.maxAcceleration = maxAcceleration
         for (i in states.indices.reversed()) {
             val constraintState = constraintStates[i]
             val ds = constraintState.distance - successor.distance // will be negative.
@@ -241,7 +279,7 @@ object TrajectoryGenerator {
                 }
 
                 // Now check all acceleration constraints with the lower max velocity.
-                enforceAccelerationLimits(reverse, constraints, constraintState)
+                enforceAccelerationLimits(reversed, constraints, constraintState)
                 if (constraintState.minAcceleration > constraintState.maxAcceleration) {
                     throw RuntimeException()
                 }
@@ -251,7 +289,8 @@ object TrajectoryGenerator {
                 }
                 // If the min acceleration for this constraint state is more conservative than what we have applied, we
                 // need to reduce the min accel and try again.
-                val actualAcceleration = (constraintState.maxVelocity.pow(2) - successor.maxVelocity.pow(2)) / (2.0 * ds)
+                val actualAcceleration =
+                    (constraintState.maxVelocity.pow(2) - successor.maxVelocity.pow(2)) / (2.0 * ds)
                 if (constraintState.minAcceleration > actualAcceleration + epsilon) {
                     successor.minAcceleration = constraintState.minAcceleration
                 } else {
@@ -263,7 +302,7 @@ object TrajectoryGenerator {
         }
 
         // Integrate the constrained states forward in time to obtain the TimedStates.
-        val timedStates = ArrayList<TimedState<S>>(states.size)
+        val timedStates = ArrayList<TimedEntry<S>>(states.size)
         var t = 0.0
         var s = 0.0
         var v = 0.0
@@ -274,7 +313,9 @@ object TrajectoryGenerator {
             val accel = (constrainedState.maxVelocity.pow(2) - v.pow(2)) / (2.0 * ds)
             var dt = 0.0
             if (i > 0) {
-                timedStates[i - 1].acceleration = (if (reverse) -accel else accel)
+                timedStates[i - 1] = timedStates[i - 1].copy(
+                    acceleration = (if (reversed) -accel else accel)
+                )
 
                 dt = when {
                     Math.abs(accel) > epsilon -> (constrainedState.maxVelocity - v) / accel
@@ -283,14 +324,22 @@ object TrajectoryGenerator {
                 }
             }
             t += dt
-            if (t.isNaN()|| t.isInfinite()) {
+            if (t.isNaN() || t.isInfinite()) {
                 throw RuntimeException()
             }
 
             v = constrainedState.maxVelocity
             s = constrainedState.distance
-            timedStates.add(TimedState(constrainedState.state, t, if (reverse) -v else v, if (reverse) -accel else accel))
+            timedStates.add(
+                TimedEntry(
+                    constrainedState.state,
+                    t,
+                    if (reversed) -v else v,
+                    if (reversed) -accel else accel
+                )
+            )
         }
-        return Trajectory(timedStates)
+        return TimedTrajectory(timedStates)
     }
+
 }

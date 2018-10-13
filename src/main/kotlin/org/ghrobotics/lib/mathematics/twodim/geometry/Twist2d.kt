@@ -12,22 +12,55 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import java.text.DecimalFormat
+import org.ghrobotics.lib.mathematics.kEpsilon
+import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.meter
+import kotlin.math.absoluteValue
 
 
-class Twist2d(val dx: Double = 0.0, val dy: Double = 0.0, val dtheta: Double = 0.0) {
+class Twist2d(
+    val dxRaw: Double,
+    val dyRaw: Double,
+    val dThetaRaw: Double
+) {
 
-    fun scaled(scale: Double): Twist2d {
-        return Twist2d(dx * scale, dy * scale, dtheta * scale)
-    }
+    constructor(
+        dx: Length,
+        dy: Length,
+        dTheta: Rotation2d
+    ) : this(
+        dx.asMetric.asDouble,
+        dy.asMetric.asDouble,
+        dTheta.radians
+    )
 
-    fun norm(): Double {
-        // Common case of dy == 0
-        return if (dy == 0.0) Math.abs(dx) else Math.hypot(dx, dy)
-    }
+    val dx
+        get() = dxRaw.meter
+    val dy
+        get() = dyRaw.meter
+    val dTheta
+        get() = dThetaRaw.radians
 
-    override fun toString(): String {
-        val fmt = DecimalFormat("#0.000")
-        return "(" + fmt.format(dx) + "," + fmt.format(dy) + "," + fmt.format(Math.toDegrees(dtheta)) + " deg)"
-    }
+    val norm
+        get() = if (dyRaw == 0.0) dxRaw.absoluteValue else Math.hypot(dxRaw, dyRaw)
+
+    val asPose: Pose2d
+        get() {
+            val sinTheta = Math.sin(dThetaRaw)
+            val cosTheta = Math.cos(dThetaRaw)
+
+            val (s, c) = if (Math.abs(dThetaRaw) < kEpsilon) {
+                1.0 - 1.0 / 6.0 * dThetaRaw * dThetaRaw to .5 * dThetaRaw
+            } else {
+                sinTheta / dThetaRaw to (1.0 - cosTheta) / dThetaRaw
+            }
+            return Pose2d(
+                Translation2d(dxRaw * s - dyRaw * c, dxRaw * c + dyRaw * s),
+                Rotation2d(cosTheta, sinTheta, false)
+            )
+        }
+
+    operator fun times(scale: Double) =
+        Twist2d(dxRaw * scale, dyRaw * scale, dThetaRaw * scale)
+
 }

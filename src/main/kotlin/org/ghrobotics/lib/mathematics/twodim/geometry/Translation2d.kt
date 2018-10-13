@@ -14,119 +14,84 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.ITranslation2d
-import java.text.DecimalFormat
+import org.ghrobotics.lib.mathematics.lerp
+import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.types.VaryInterpolatable
 
+data class Translation2d(
+    var xRaw: Double = 0.0,
+    var yRaw: Double = 0.0
+) : VaryInterpolatable<Translation2d> {
 
-class Translation2d : ITranslation2d<Translation2d> {
-
-    var x: Double = 0.toDouble()
-    var y: Double = 0.toDouble()
-
-    override val translation: Translation2d
-        get() = this
-
-    constructor() {
-        x = 0.0
-        y = 0.0
-    }
-
-    constructor(x: Double, y: Double) {
-        this.x = x
-        this.y = y
-    }
-
-    constructor(other: Translation2d) {
-        x = other.x
-        y = other.y
-    }
-
-    constructor(start: Translation2d, end: Translation2d) {
-        x = end.x - start.x
-        y = end.y - start.y
-    }
-
-
-    val norm: Double
-        get() {
-            return Math.hypot(x, y)
+    var x: Length
+        get() = xRaw.meter
+        set(value) {
+            xRaw = value.meter.asDouble
         }
 
-
-    fun translateBy(other: Translation2d): Translation2d {
-        return Translation2d(x + other.x, y + other.y)
-    }
-
-
-    fun rotateBy(rotation: Rotation2d): Translation2d {
-        return Translation2d(x * rotation.cos - y * rotation.sin, x * rotation.sin + y * rotation.cos)
-    }
-
-
-    val inverse: Translation2d
-        get() {
-            return Translation2d(-x, -y)
+    var y: Length
+        get() = yRaw.meter
+        set(value) {
+            yRaw = value.meter.asDouble
         }
 
-    override fun interpolate(upperVal: Translation2d, interpolatePoint: Double): Translation2d {
-        if (interpolatePoint <= 0) {
-            return Translation2d(this)
-        } else if (interpolatePoint >= 1) {
-            return Translation2d(upperVal)
-        }
-        return extrapolate(upperVal, interpolatePoint)
+    constructor(
+        x: Length,
+        y: Length
+    ) : this(
+        x.meter.asDouble,
+        y.meter.asDouble
+    )
+
+    val norm
+        get() = Math.hypot(xRaw, yRaw)
+
+    override fun interpolate(endValue: Translation2d, t: Double) = when {
+        t <= 0 -> this
+        t >= 1 -> endValue
+        else -> Translation2d(
+            xRaw.lerp(endValue.xRaw, t),
+            yRaw.lerp(endValue.yRaw, t)
+        )
     }
 
-    private fun extrapolate(other: Translation2d, x: Double): Translation2d {
-        return Translation2d(x * (other.x - x) + x, x * (other.y - y) + y)
+    override fun distance(other: Translation2d) = (-this + other).norm
+
+    operator fun plus(other: Translation2d) = Translation2d(
+        xRaw + other.xRaw,
+        yRaw + other.yRaw
+    )
+
+    operator fun minus(other: Translation2d) = Translation2d(
+        xRaw - other.xRaw,
+        yRaw - other.yRaw
+    )
+
+    operator fun times(other: Rotation2d) = Translation2d(
+        xRaw * other.cos - yRaw * other.sin,
+        xRaw * other.sin + yRaw * other.cos
+    )
+
+    operator fun times(other: Number): Translation2d {
+        val factor = other.toDouble()
+        return Translation2d(
+            xRaw * factor,
+            yRaw * factor
+        )
     }
 
-    fun scale(s: Double): Translation2d {
-        return Translation2d(x * s, y * s)
+    operator fun div(other: Number): Translation2d {
+        val factor = other.toDouble()
+        return Translation2d(
+            xRaw / factor,
+            yRaw / factor
+        )
     }
 
-    val mirror: Translation2d
-        get() {
-            return Translation2d(x, 27 - y)
-        }
-
-    operator fun plus(other: Translation2d) = this.translateBy(other)
-    operator fun minus(other: Translation2d) = this.translateBy(other.inverse)
-
-    operator fun div(other: Double) = times(1.0 / other)
-    operator fun div(other: Int) = times(1.0 / other.toDouble())
-
-    operator fun times(other: Double) = this.scale(other)
-    operator fun times(other: Int) = this.scale(other.toDouble())
-
-    infix fun epsilonEquals(other: Translation2d): Boolean {
-        return x epsilonEquals other.x && y epsilonEquals other.y
-    }
-
-    override fun toString(): String {
-        val fmt = DecimalFormat("#0.000")
-        return "(" + fmt.format(x) + "," + fmt.format(y) + ")"
-    }
-
-    override fun toCSV(): String {
-        val fmt = DecimalFormat("#0.000")
-        return fmt.format(x) + "," + fmt.format(y)
-    }
-
-    override fun distance(other: Translation2d): Double {
-        return inverse.translateBy(other).norm
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other == null || other !is Translation2d) false else distance(other) < kEpsilon
-    }
+    operator fun unaryMinus() = Translation2d(-xRaw, -yRaw)
 
     companion object {
-        fun cross(a: Translation2d, b: Translation2d): Double {
-            return a.x * b.y - a.y * b.x
-        }
+        fun cross(a: Translation2d, b: Translation2d) = a.xRaw * b.yRaw - a.yRaw * b.xRaw
     }
-
 }

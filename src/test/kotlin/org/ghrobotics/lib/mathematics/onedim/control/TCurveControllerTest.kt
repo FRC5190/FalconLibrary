@@ -54,7 +54,7 @@ class TCurveControllerTest {
 
         assert(pose.x < totalDistance + 0.1).also { println("Total Distance Traveled: $pose") }
 
-//        val chart = XYChartBuilder().width(1800).height(1520).title("${pose.x}")
+//        val chart = XYChartBuilder().width(1800).height(1520).title("${pose.xRaw}")
 //                .xAxisTitle("X").yAxisTitle("Y").build()
 //
 //

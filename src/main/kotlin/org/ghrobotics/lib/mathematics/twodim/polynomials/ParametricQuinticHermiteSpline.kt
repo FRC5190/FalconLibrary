@@ -34,14 +34,14 @@ class ParametricQuinticHermiteSpline(private val x0: Double,
                                      private var ddy1: Double) : ParametricSpline() {
 
     constructor(start: Pose2d, end: Pose2d) : this(
-            x0 = start.translation.x,
-            x1 = end.translation.x,
+            x0 = start.translation.xRaw,
+            x1 = end.translation.xRaw,
             dx0 = 1.2 * start.translation.distance(end.translation) * start.rotation.cos,
             dx1 = 1.2 * start.translation.distance(end.translation) * end.rotation.cos,
             ddx0 = 0.0,
             ddx1 = 0.0,
-            y0 = start.translation.y,
-            y1 = end.translation.y,
+            y0 = start.translation.yRaw,
+            y1 = end.translation.yRaw,
             dy0 = 1.2 * start.translation.distance(end.translation) * start.rotation.sin,
             dy1 = 1.2 * start.translation.distance(end.translation) * end.rotation.sin,
             ddy0 = 0.0,

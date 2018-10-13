@@ -15,52 +15,29 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.IRotation2d
 import org.ghrobotics.lib.mathematics.kEpsilon
-import java.text.DecimalFormat
 
+val Number.degrees
+    get() = Rotation2d.fromDegrees(toDouble())
+val Number.radians
+    get() = Rotation2d(toDouble())
 
-class Rotation2d : IRotation2d<Rotation2d> {
+/**
+ * @param angle in radians
+ */
+class Rotation2d {
 
+    val radians: Double
     val cos: Double
     val sin: Double
 
-    val tan: Double
-        get() {
-            return if (Math.abs(cos) < kEpsilon) {
-                if (sin >= 0.0) {
-                    java.lang.Double.POSITIVE_INFINITY
-                } else {
-                    java.lang.Double.NEGATIVE_INFINITY
-                }
-            } else sin / cos
-        }
+    constructor(angle: Double = 0.0) {
+        this.radians = angle % (Math.PI * 2)
+        cos = Math.cos(angle)
+        sin = Math.sin(angle)
+    }
 
-
-    private var unboundedDegrees = 0.0
-
-
-    val radians: Double
-        get() = Math.atan2(sin, cos)
-
-    val degrees: Double
-        get() = Math.toDegrees(radians)
-
-    val normal: Rotation2d
-        get() {
-            return Rotation2d(-sin, cos, false)
-        }
-
-    val inverse: Rotation2d
-        get() {
-            return Rotation2d(cos, -sin, false)
-        }
-
-    override val rotation: Rotation2d
-        get() = this
-
-
-    constructor(x: Double = 1.0, y: Double = 0.0, normalize: Boolean = false) {
+    constructor(x: Double, y: Double, normalize: Boolean) {
         if (normalize) {
             val magnitude = Math.hypot(x, y)
             if (magnitude > kEpsilon) {
@@ -74,82 +51,28 @@ class Rotation2d : IRotation2d<Rotation2d> {
             cos = x
             sin = y
         }
-        unboundedDegrees = Math.toDegrees(Math.atan2(sin, cos))
+        radians = Math.atan2(sin, cos) % (Math.PI * 2)
     }
 
-    constructor(other: Rotation2d) {
-        cos = other.cos
-        sin = other.sin
-        unboundedDegrees = Math.toDegrees(Math.atan2(sin, cos))
-    }
+    val degrees
+        get() = Math.toDegrees(radians)
 
-    constructor(theta_degrees: Double) {
-        cos = Math.cos(Math.toRadians(theta_degrees))
-        sin = Math.sin(Math.toRadians(theta_degrees))
-        this.unboundedDegrees = theta_degrees
-    }
+    val toVector
+        get() = Translation2d(cos, sin)
 
-    constructor(direction: Translation2d, normalize: Boolean) : this(direction.x, direction.y, normalize)
+    fun isParallel(other: Rotation2d) = Translation2d.cross(toVector, other.toVector) epsilonEquals 0.0
 
+    operator fun plus(other: Rotation2d) = Rotation2d(
+        cos * other.cos - sin * other.sin,
+        cos * other.sin + sin * other.cos,
+        true
+    )
 
-    fun rotateBy(other: Rotation2d): Rotation2d {
-        return Rotation2d(cos * other.cos - sin * other.sin,
-                cos * other.sin + sin * other.cos, true)
-    }
+    operator fun minus(other: Rotation2d) = plus(-other)
 
-
-    fun isParallel(other: Rotation2d): Boolean {
-        return Translation2d.cross(toTranslation(), other.toTranslation()) epsilonEquals 0.0
-    }
-
-    fun toTranslation(): Translation2d {
-        return Translation2d(cos, sin)
-    }
-
-    operator fun plus(other: Rotation2d) = this.rotateBy(other)
-    operator fun minus(other: Rotation2d) = this.rotateBy(other.inverse)
-
-    override fun interpolate(upperVal: Rotation2d, interpolatePoint: Double): Rotation2d {
-        if (interpolatePoint <= 0) {
-            return Rotation2d(this)
-        } else if (interpolatePoint >= 1) {
-            return Rotation2d(upperVal)
-        }
-        val angleDiff = inverse.rotateBy(upperVal).radians
-        return this.rotateBy(Rotation2d.fromRadians(angleDiff * interpolatePoint))
-    }
-
-    override fun toString(): String {
-        val fmt = DecimalFormat("#0.000")
-        return "(" + fmt.format(degrees) + " deg)"
-    }
-
-    override fun toCSV(): String {
-        val fmt = DecimalFormat("#0.000")
-        return fmt.format(degrees)
-    }
-
-    override fun distance(other: Rotation2d): Double {
-        return inverse.rotateBy(other).radians
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other == null || other !is Rotation2d) false else distance(other) < kEpsilon
-    }
+    operator fun unaryMinus() = Rotation2d(cos, -sin, false)
 
     companion object {
-        private val kIdentity = Rotation2d()
-
-        fun identity(): Rotation2d {
-            return kIdentity
-        }
-
-        fun fromRadians(angleRadians: Double): Rotation2d {
-            return Rotation2d(Math.cos(angleRadians), Math.sin(angleRadians), false)
-        }
-
-        fun fromDegrees(angleDegrees: Double): Rotation2d {
-            return Rotation2d(angleDegrees)
-        }
+        fun fromDegrees(angle: Double) = Rotation2d(Math.toRadians(angle))
     }
 }

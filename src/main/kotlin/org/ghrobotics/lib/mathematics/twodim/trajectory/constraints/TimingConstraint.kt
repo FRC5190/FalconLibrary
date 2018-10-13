@@ -9,39 +9,23 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
-import org.ghrobotics.lib.mathematics.State
-
-interface TimingConstraint<S : State<S>> {
-
+interface TimingConstraint<S> {
     fun getMaxVelocity(state: S): Double
 
     fun getMinMaxAcceleration(state: S, velocity: Double): MinMaxAcceleration
 
-    class MinMaxAcceleration {
-        val minAcceleration: Double
+    class MinMaxAcceleration(
+        val minAcceleration: Double,
         val maxAcceleration: Double
+    ) {
+        constructor() : this(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
 
-        val valid
-            get() = minAcceleration <= maxAcceleration
-
-        constructor() {
-            // No limits.
-            minAcceleration = Double.NEGATIVE_INFINITY
-            maxAcceleration = Double.POSITIVE_INFINITY
-        }
-
-        @Suppress("unused")
-        constructor(min_acceleration: Double, max_acceleration: Double) {
-            minAcceleration = min_acceleration
-            maxAcceleration = max_acceleration
-        }
-
+        val valid = minAcceleration <= maxAcceleration
 
         companion object {
-            var kNoLimits = MinMaxAcceleration()
+            val kNoLimits = MinMaxAcceleration()
         }
     }
 }

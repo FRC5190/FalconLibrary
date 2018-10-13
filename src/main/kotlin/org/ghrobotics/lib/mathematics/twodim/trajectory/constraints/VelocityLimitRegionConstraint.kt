@@ -9,28 +9,37 @@
  * Team 254
  */
 
-
 @file:Suppress("unused")
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.interfaces.ITranslation2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
+import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
+import org.ghrobotics.lib.mathematics.units.meter
 
-class VelocityLimitRegionConstraint<S : ITranslation2d<S>>(
-        private val region: Rectangle2d,
-        private val velocityLimit: Double) : TimingConstraint<S> {
+class VelocityLimitRegionConstraint(
+    val region: Rectangle2d,
+    val velocityLimitRaw: Double
+) : TimingConstraint<Translation2d> {
 
-    override fun getMaxVelocity(state: S): Double {
-        val translation = state.translation
-        return if (translation.x <= region.maxCorner.x && translation.x >= region.minCorner.x &&
-                translation.y <= region.maxCorner.y && translation.y >= region.minCorner.y) {
-            velocityLimit
-        } else java.lang.Double.POSITIVE_INFINITY
-    }
+    val velocityLimit
+        get() = velocityLimitRaw.meter.velocity
 
-    override fun getMinMaxAcceleration(state: S, velocity: Double): TimingConstraint.MinMaxAcceleration {
-        return TimingConstraint.MinMaxAcceleration.kNoLimits
-    }
+    constructor(
+        region: Rectangle2d,
+        velocityLimit: Velocity
+    ) : this(
+        region,
+        velocityLimit.asMetric.asDouble
+    )
 
+    override fun getMaxVelocity(state: Translation2d) =
+        if (state in region) velocityLimitRaw else Double.POSITIVE_INFINITY
+
+    override fun getMinMaxAcceleration(
+        state: Translation2d,
+        velocity: Double
+    ) = TimingConstraint.MinMaxAcceleration.kNoLimits
 }

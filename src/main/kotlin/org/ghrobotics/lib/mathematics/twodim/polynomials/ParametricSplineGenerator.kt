@@ -14,7 +14,6 @@ package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import java.util.*
 
 object ParametricSplineGenerator {
@@ -24,8 +23,10 @@ object ParametricSplineGenerator {
     private const val kMinSampleSize = 1
 
 
-    private fun parameterizeSpline(s: ParametricSpline, maxDx: Double = kMaxDX, maxDy: Double = kMaxDY, maxDTheta: Double = kMaxDTheta,
-                                   t0: Double = 0.0, t1: Double = 1.0): ArrayList<Pose2dWithCurvature> {
+    private fun parameterizeSpline(
+        s: ParametricSpline, maxDx: Double = kMaxDX, maxDy: Double = kMaxDY, maxDTheta: Double = kMaxDTheta,
+        t0: Double = 0.0, t1: Double = 1.0
+    ): ArrayList<Pose2dWithCurvature> {
 
         val rv = ArrayList<Pose2dWithCurvature>()
         rv.add(s.getPose2dWithCurvature(0.0))
@@ -38,8 +39,10 @@ object ParametricSplineGenerator {
         return rv
     }
 
-    fun parameterizeSplines(splines: List<ParametricSpline>, maxDx: Double, maxDy: Double,
-                            maxDTheta: Double): List<Pose2dWithCurvature> {
+    fun parameterizeSplines(
+        splines: List<ParametricSpline>, maxDx: Double, maxDy: Double,
+        maxDTheta: Double
+    ): List<Pose2dWithCurvature> {
         val rv = ArrayList<Pose2dWithCurvature>()
         if (splines.isEmpty()) return rv
         rv.add(splines[0].getPose2dWithCurvature(0.0))
@@ -51,16 +54,18 @@ object ParametricSplineGenerator {
         return rv
     }
 
-    private fun getSegmentArc(s: ParametricSpline, rv: MutableList<Pose2dWithCurvature>, t0: Double, t1: Double, maxDx: Double,
-                              maxDy: Double,
-                              maxDTheta: Double) {
+    private fun getSegmentArc(
+        s: ParametricSpline, rv: MutableList<Pose2dWithCurvature>, t0: Double, t1: Double, maxDx: Double,
+        maxDy: Double,
+        maxDTheta: Double
+    ) {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)
         val r0 = s.getHeading(t0)
         val r1 = s.getHeading(t1)
-        val transformation = Pose2d(Translation2d(p0, p1).rotateBy(r0.inverse), r1.rotateBy(r0.inverse))
-        val twist = Pose2d.toTwist(transformation)
-        if (twist.dy > maxDy || twist.dx > maxDx || twist.dtheta > maxDTheta) {
+        val transformation = Pose2d((p1 - p0) * -r0, r1 + -r0)
+        val twist = transformation.twist
+        if (twist.dyRaw > maxDy || twist.dxRaw > maxDx || twist.dThetaRaw > maxDTheta) {
             getSegmentArc(s, rv, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta)
             getSegmentArc(s, rv, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
         } else {

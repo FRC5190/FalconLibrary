@@ -6,7 +6,6 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TimedState
-import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 
-class FeedForwardController(trajectory: Trajectory<TimedState<Pose2dWithCurvature>>) : RamseteController(trajectory, 0.0, 0.0)
+class FeedForwardController(trajectory: TimedTrajectory<Pose2dWithCurvature>) : RamseteController(trajectory, 0.0, 0.0)

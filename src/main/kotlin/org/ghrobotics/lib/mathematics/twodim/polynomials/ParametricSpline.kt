@@ -12,10 +12,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.*
 
 abstract class ParametricSpline {
     abstract fun getPoint(t: Double): Translation2d
@@ -29,6 +26,6 @@ abstract class ParametricSpline {
     }
 
     fun getPose2dWithCurvature(t: Double): Pose2dWithCurvature {
-        return Pose2dWithCurvature(getPose2d(t), getCurvature(t), getDCurvature(t) / getVelocity(t))
+        return Pose2dWithCurvature(getPose2d(t), Curvature(getCurvature(t), getDCurvature(t) / getVelocity(t)))
     }
 }

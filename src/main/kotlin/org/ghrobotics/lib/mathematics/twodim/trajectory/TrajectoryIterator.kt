@@ -13,44 +13,35 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import org.ghrobotics.lib.mathematics.State
-import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TrajectoryView
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TrajectorySamplePoint
+import org.ghrobotics.lib.types.VaryInterpolatable
 
-class TrajectoryIterator<S : State<S>>(private val view: TrajectoryView<S>) {
+abstract class TrajectoryIterator<U : Comparable<U>, S : VaryInterpolatable<S>>(
+    val trajectory: Trajectory<U, S>
+) {
 
-    private var progress = 0.0
-    private var sample: TrajectorySamplePoint<S>
+    protected abstract fun addition(a: U, b: U): U
 
+    private var progress = trajectory.firstInterpolant
+    private var sample = trajectory.sample(progress)
 
-    val isDone: Boolean
-        get() = remainingProgress == 0.0
+    val isDone
+        get() = progress >= trajectory.lastInterpolant
 
-    val remainingProgress: Double
-        get() = Math.max(0.0, view.lastInterpolant - progress)
+    val currentState
+        get() = sample
 
-    val state: S
-        get() = sample.state
-
-    init {
-        sample = view.sample(view.firstInterpolant)
-        progress = view.firstInterpolant
-    }
-
-    fun advance(additional_progress: Double): TrajectorySamplePoint<S> {
-        progress = Math.max(view.firstInterpolant,
-                Math.min(view.lastInterpolant, progress + additional_progress))
-        sample = view.sample(progress)
-
+    fun advance(amount: U): TrajectorySamplePoint<S> {
+        progress = addition(progress, amount)
+            .coerceIn(trajectory.firstInterpolant, trajectory.lastInterpolant)
+        sample = trajectory.sample(progress)
         return sample
     }
 
-    fun preview(additional_progress: Double): TrajectorySamplePoint<S> {
-        val progress = Math.max(view.firstInterpolant,
-                Math.min(view.lastInterpolant, this.progress + additional_progress))
-        return view.sample(progress)
-    }
-
-    fun trajectory(): Trajectory<S> {
-        return view.trajectory
+    fun preview(amount: U): TrajectorySamplePoint<S> {
+        val progress = addition(progress, amount)
+            .coerceIn(trajectory.firstInterpolant, trajectory.lastInterpolant)
+        return trajectory.sample(progress)
     }
 }

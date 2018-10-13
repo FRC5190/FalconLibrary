@@ -2,14 +2,14 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.radians
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 class AStarOptimizer(
-        robotSize: Double,
-        vararg restrictedAreas: Rectangle2d
+    robotSize: Double,
+    vararg restrictedAreas: Rectangle2d
 ) {
 
     companion object {
@@ -35,10 +35,10 @@ class AStarOptimizer(
     }
 
     private val robotRectangle = Rectangle2d(
-            -robotSize / 2.0,
-            -robotSize / 2.0,
-            robotSize,
-            robotSize
+        -robotSize / 2.0,
+        -robotSize / 2.0,
+        robotSize,
+        robotSize
     )
 
     private val restrictedAreas = restrictedAreas.toList()
@@ -46,16 +46,16 @@ class AStarOptimizer(
     fun optimize(start: Pose2d, goal: Pose2d, vararg restrictedAreas: Rectangle2d): Result? {
         val points = optimizePoints(start.translation, goal.translation, *restrictedAreas) ?: return null
         val cleanedUpPoints = points.removeRedundantPoints()
-                .removeNearPoints(4.0)
-                .addFarPoints(13.0)
-                .fixEndPoints(start.translation, goal.translation)
+            .removeNearPoints(4.0)
+            .addFarPoints(13.0)
+            .fixEndPoints(start.translation, goal.translation)
 
         return Result(cleanedUpPoints, cleanedUpPoints.toWayPoints(start, goal))
     }
 
     private fun List<Translation2d>.toWayPoints(start: Pose2d, goal: Pose2d): List<Pose2d> {
         val newList = mutableListOf<Pose2d>()
-        val pointAngles = zipWithNext { one, two -> Math.atan2(two.y - one.y, two.x - one.x) }
+        val pointAngles = zipWithNext { one, two -> Math.atan2(two.yRaw - one.yRaw, two.xRaw - one.xRaw) }
 
         for ((index, point) in withIndex()) {
             if (index == 0 || index == size - 1) {
@@ -72,7 +72,8 @@ class AStarOptimizer(
             var finalAngle: Double? = null
 
             if (next2Angle != null && (next2Angle - nextAngle).absoluteValue < minAngleError) finalAngle = nextAngle
-            if (finalAngle == null && last2Angle != null && (last2Angle - lastAngle).absoluteValue < minAngleError) finalAngle = lastAngle
+            if (finalAngle == null && last2Angle != null && (last2Angle - lastAngle).absoluteValue < minAngleError) finalAngle =
+                    lastAngle
 
             if (finalAngle == null) {
                 val lastPoint = get(index - 1)
@@ -81,10 +82,11 @@ class AStarOptimizer(
                 val lastPointDistance = lastPoint.distance(point)
                 val nextPointDistance = nextPoint.distance(point)
 
-                finalAngle = (lastAngle * lastPointDistance + nextAngle * nextPointDistance) / (lastPointDistance + nextPointDistance)
+                finalAngle = (lastAngle * lastPointDistance + nextAngle * nextPointDistance) /
+                        (lastPointDistance + nextPointDistance)
             }
 
-            newList += Pose2d(point, Rotation2d.fromRadians(finalAngle))
+            newList += Pose2d(point, finalAngle.radians)
         }
         return newList
     }
@@ -123,7 +125,8 @@ class AStarOptimizer(
                 newList += point
                 continue
             }
-            val nextDistance = if (index == size - 2) Math.min(distances[index - 1], distances[index]) else distances[index - 1]
+            val nextDistance =
+                if (index == size - 2) Math.min(distances[index - 1], distances[index]) else distances[index - 1]
             if (nextDistance > nearDistance) {
                 newList += point
             } else if (index + 1 < distances.size) {
@@ -135,7 +138,8 @@ class AStarOptimizer(
 
     private fun List<Translation2d>.removeRedundantPoints(): List<Translation2d> {
         val newList = mutableListOf<Translation2d>()
-        val pointAngles = zipWithNext { one, two -> Math.atan2(two.y - one.y, two.x - one.x) }.toMutableList()
+        val pointAngles =
+            zipWithNext { one, two -> Math.atan2(two.yRaw - one.yRaw, two.xRaw - one.xRaw) }.toMutableList()
         for ((index, point) in withIndex()) {
             if (index == 0 || index == size - 1) {
                 // Never remove end points
@@ -152,7 +156,11 @@ class AStarOptimizer(
         return newList
     }
 
-    private fun optimizePoints(start: Translation2d, goal: Translation2d, vararg restrictedAreas: Rectangle2d): List<Translation2d>? {
+    private fun optimizePoints(
+        start: Translation2d,
+        goal: Translation2d,
+        vararg restrictedAreas: Rectangle2d
+    ): List<Translation2d>? {
         val effectiveRestrictedAreas = this.restrictedAreas + restrictedAreas
 
         val startPoint = IntPoint(start, pointsPerFoot)
@@ -160,8 +168,8 @@ class AStarOptimizer(
 
         val startNode = Node(startPoint)
 
-        val nodeCache = Array((FIELD_RECTANGLE.w * pointsPerFoot).toInt()) { x ->
-            Array<Node?>(((FIELD_RECTANGLE.h * pointsPerFoot).toInt())) { y -> Node(IntPoint(x, y)) }
+        val nodeCache = Array((FIELD_RECTANGLE.wRaw * pointsPerFoot).toInt()) { x ->
+            Array<Node?>(((FIELD_RECTANGLE.hRaw * pointsPerFoot).toInt())) { y -> Node(IntPoint(x, y)) }
         }
 
         val closedSet = mutableSetOf<Node>()
@@ -176,8 +184,8 @@ class AStarOptimizer(
                 while (current != null) {
                     val currentPoint = current.point
                     reconstructedPath += Translation2d(
-                            currentPoint.x.toDouble() / pointsPerFoot,
-                            currentPoint.y.toDouble() / pointsPerFoot
+                        currentPoint.x.toDouble() / pointsPerFoot,
+                        currentPoint.y.toDouble() / pointsPerFoot
                     )
                     current = current.cameFrom
                 }
@@ -194,7 +202,8 @@ class AStarOptimizer(
                 val neighborNode = nodeCache[neighborPoint.point.x][neighborPoint.point.y] ?: continue
                 // Check if point is within the field and not in the restricted areas
                 if (!FIELD_RECTANGLE.isWithin(translatedRobotRectangle)
-                        || effectiveRestrictedAreas.any { it.isIn(translatedRobotRectangle) }) {
+                    || effectiveRestrictedAreas.any { it.isIn(translatedRobotRectangle) }
+                ) {
                     closedSet += neighborNode
                     nodeCache[neighborPoint.point.x][neighborPoint.point.y] = null
                     continue
@@ -202,8 +211,8 @@ class AStarOptimizer(
 
                 // Check if it collides with restricted areas
                 val translation2d = Translation2d(
-                        neighborPoint.original.x.toDouble() / pointsPerFoot,
-                        neighborPoint.original.y.toDouble() / pointsPerFoot
+                    neighborPoint.original.x.toDouble() / pointsPerFoot,
+                    neighborPoint.original.y.toDouble() / pointsPerFoot
                 )
                 if (effectiveRestrictedAreas.any { it.doesCollide(currentRobotRectangle, translation2d) }) continue
 
@@ -227,16 +236,16 @@ class AStarOptimizer(
     }
 
     private fun IntPoint.toRobotRectangle() = Rectangle2d(
-            robotRectangle.x + x.toDouble() / pointsPerFoot,
-            robotRectangle.y + y.toDouble() / pointsPerFoot,
-            robotRectangle.w,
-            robotRectangle.h
+        robotRectangle.xRaw + x.toDouble() / pointsPerFoot,
+        robotRectangle.yRaw + y.toDouble() / pointsPerFoot,
+        robotRectangle.wRaw,
+        robotRectangle.hRaw
     )
 
     private class NeighborPoint(
-            val point: IntPoint,
-            val worth: Double,
-            val original: IntPoint = point
+        val point: IntPoint,
+        val worth: Double,
+        val original: IntPoint = point
     ) {
         operator fun plus(point: IntPoint) = NeighborPoint(this.point + point, worth, original)
 
@@ -248,9 +257,9 @@ class AStarOptimizer(
     }
 
     private class Node(
-            val point: IntPoint,
-            var cameFrom: Node? = null,
-            var gScore: Double = 0.0
+        val point: IntPoint,
+        var cameFrom: Node? = null,
+        var gScore: Double = 0.0
     ) {
         var fScore = Double.POSITIVE_INFINITY
 
@@ -262,19 +271,19 @@ class AStarOptimizer(
     }
 
     class Result(
-            val pathNodes: List<Translation2d>,
-            val path: List<Pose2d>
+        val pathNodes: List<Translation2d>,
+        val path: List<Pose2d>
     )
 
 }
 
 private data class IntPoint(
-        val x: Int,
-        val y: Int
+    val x: Int,
+    val y: Int
 ) {
     constructor(translation2d: Translation2d, pointsPerFoot: Int) : this(
-            (translation2d.x * pointsPerFoot).roundToInt(),
-            (translation2d.y * pointsPerFoot).roundToInt()
+        (translation2d.xRaw * pointsPerFoot).roundToInt(),
+        (translation2d.yRaw * pointsPerFoot).roundToInt()
     )
 
     fun distance(other: IntPoint): Double {

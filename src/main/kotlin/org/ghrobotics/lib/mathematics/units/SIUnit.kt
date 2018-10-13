@@ -138,9 +138,13 @@ enum class SIPrefix(val exponent: Int) {
         ): SIPrefix {
             val exponent = Math.log10(value).toInt() + currentPrefix.exponent
             return if (exponent > 0) {
-                values().first { it.exponent >= exponent }
+                values().run {
+                    firstOrNull { it.exponent >= exponent } ?: first()
+                }
             } else {
-                values().last { it.exponent <= exponent }
+                values().run {
+                    lastOrNull { it.exponent <= exponent } ?: last()
+                }
             }
         }
 

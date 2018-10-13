@@ -9,23 +9,25 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TimedState
-import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.view.TimedView
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.utils.DeltaTime
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 // https://www.dis.uniroma1.it/~labrob/pub/papers/Ramsete01.pdf
 // Equation 5.12
 
-open class RamseteController(trajectory: Trajectory<TimedState<Pose2dWithCurvature>>,
-                             private val kBeta: Double,
-                             private val kZeta: Double) : ITrajectoryFollower {
+open class RamseteController(
+    trajectory: TimedTrajectory<Pose2dWithCurvature>,
+    private val kBeta: Double,
+    private val kZeta: Double
+) : ITrajectoryFollower {
 
-    private val iterator = TrajectoryIterator(TimedView(trajectory))
+    private val iterator = trajectory.iterator()
 
-    override var point = iterator.preview(0.0)
+    override var point = iterator.currentState
 
     override val pose
         get() = point.state.state.pose
@@ -35,19 +37,16 @@ open class RamseteController(trajectory: Trajectory<TimedState<Pose2dWithCurvatu
 
 
     // Loops
-    private var lastCallTime = -1.0
-    private var dt = -1.0
+    private var deltaTimeController = DeltaTime()
 
     // Returns desired linear and angular velocity of the robot
-    override fun getSteering(robot: Pose2d, nanotime: Long): Twist2d {
-
-        dt = if (lastCallTime < 0) 0.0 else nanotime / 1E9 - lastCallTime
-        lastCallTime = nanotime / 1E9
+    override fun getSteering(robot: Pose2d, currentTime: Time): Twist2d {
+        val dt = deltaTimeController.updateTime(currentTime)
 
         return calculateTwist(
-                error = pose inFrameOfReferenceOf robot,
-                vd = ftm(point.state.velocity),
-                wd = point.state.velocity * point.state.state.curvature
+            error = pose inFrameOfReferenceOf robot,
+            vd = point.state.velocity,
+            wd = point.state.velocity * point.state.state.curvature.curvature
         ).also { point = iterator.advance(dt) }
 
     }
@@ -56,10 +55,11 @@ open class RamseteController(trajectory: Trajectory<TimedState<Pose2dWithCurvatu
         val k1 = gainFunc(vd, wd)
         val angleError = error.rotation.radians
         val delta = Twist2d(
-                dx = vd * error.rotation.cos + k1 * ftm(error.translation.x),
-                dy = 0.0,
-                dtheta = wd + kBeta * vd * sinc(angleError) * ftm(error.translation.y) + k1 * angleError)
-        return Twist2d(mtf(delta.dx), 0.0, delta.dtheta)
+            dxRaw = vd * error.rotation.cos + k1 * error.translation.xRaw,
+            dyRaw = 0.0,
+            dThetaRaw = wd + kBeta * vd * sinc(angleError) * error.translation.yRaw + k1 * angleError
+        )
+        return Twist2d(delta.dxRaw, 0.0, delta.dThetaRaw)
     }
 
     private fun gainFunc(v: Double, w: Double) = 2 * kZeta * sqrt(w * w + kBeta * v * v)
@@ -69,7 +69,5 @@ open class RamseteController(trajectory: Trajectory<TimedState<Pose2dWithCurvatu
             return if (theta epsilonEquals 0.0) 1.0 - 1.0 / 6.0 * theta * theta
             else sin(theta) / theta
         }
-        private fun ftm(f: Double) = f * 12.0 * 0.0254
-        private fun mtf(m: Double) = m / 0.0254 / 12.0
     }
 }

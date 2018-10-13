@@ -10,6 +10,8 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 
+fun Double.lerp(endValue: Double, t: Double) = this + (endValue - this) * t.coerceIn(0.0, 1.0)
+
 infix fun Double.epsilonEquals(other: Double): Boolean {
     return (this - other).absoluteValue < kEpsilon
 }

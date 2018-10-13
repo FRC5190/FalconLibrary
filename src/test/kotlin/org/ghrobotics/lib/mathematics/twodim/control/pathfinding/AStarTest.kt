@@ -43,13 +43,13 @@ fun main(args: Array<String>) {
     //val startAngle = 0.0
     //val endAngle = -165.0
 
-    //PathWindow.bannedAreas += Rectangle2d(0.0, PathWindow.LEFT_SWITCH.y, PathWindow.LEFT_SWITCH.x, PathWindow.LEFT_SWITCH.h)
+    //PathWindow.bannedAreas += Rectangle2d(0.0, PathWindow.LEFT_SWITCH.yRaw, PathWindow.LEFT_SWITCH.xRaw, PathWindow.LEFT_SWITCH.hRaw)
 
     /*
-    PathWindow.bannedAreas += Rectangle2d(PathWindow.LEFT_SWITCH.x + PathWindow.LEFT_SWITCH.w,
-            PathWindow.PLATFORM.y + PathWindow.PLATFORM.h,
-            PathWindow.FIELD_LENGTH / 2.0 - PathWindow.LEFT_SWITCH.w - PathWindow.LEFT_SWITCH.x,
-            PathWindow.FIELD_WIDTH - PathWindow.PLATFORM.y - PathWindow.PLATFORM.h)
+    PathWindow.bannedAreas += Rectangle2d(PathWindow.LEFT_SWITCH.xRaw + PathWindow.LEFT_SWITCH.wRaw,
+            PathWindow.PLATFORM.yRaw + PathWindow.PLATFORM.hRaw,
+            PathWindow.FIELD_LENGTH / 2.0 - PathWindow.LEFT_SWITCH.wRaw - PathWindow.LEFT_SWITCH.xRaw,
+            PathWindow.FIELD_WIDTH - PathWindow.PLATFORM.yRaw - PathWindow.PLATFORM.hRaw)
 */
 
     //println(path)
