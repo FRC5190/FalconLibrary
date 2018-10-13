@@ -6,7 +6,20 @@ import java.util.concurrent.TimeUnit
 
 class ParallelSameTest {
 
-    private object FakeSubsystem : Subsystem()
+    private object FakeSubsystem : Subsystem() {
+        override fun autoReset() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun teleopReset() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun zeroOutputs() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+    }
 
     private fun testCommand(id: Int) = object : Command(FakeSubsystem) {
         override suspend fun initialize() {
