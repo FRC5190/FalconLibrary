@@ -21,6 +21,13 @@ data class Pose2dWithCurvature(
     val pose: Pose2d,
     val curvature: Curvature
 ) : VaryInterpolatable<Pose2dWithCurvature> {
+
+    val mirror
+        get() = Pose2dWithCurvature(
+            pose.mirror,
+            -curvature
+        )
+
     override fun interpolate(endValue: Pose2dWithCurvature, t: Double) =
         Pose2dWithCurvature(
             pose.interpolate(endValue.pose, t),

@@ -3,6 +3,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.types
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
@@ -80,7 +81,7 @@ class TimedIterator<S : VaryInterpolatable<S>>(
     override fun addition(a: Time, b: Time) = a + b
 }
 
-fun TimedTrajectory<Pose2d>.mirror() = TimedTrajectory(
+fun TimedTrajectory<Pose2dWithCurvature>.mirror() = TimedTrajectory(
     points.map {
         TimedEntry(
             it.state.mirror,
@@ -91,7 +92,7 @@ fun TimedTrajectory<Pose2d>.mirror() = TimedTrajectory(
     }
 )
 
-fun TimedTrajectory<Pose2d>.transform(transform: Pose2d) = TimedTrajectory(
+fun TimedTrajectory<Pose2dWithCurvature>.transform(transform: Pose2d) = TimedTrajectory(
     points.map {
         TimedEntry(
             it.state + transform,
