@@ -25,7 +25,7 @@ interface NativeUnit :
 
 data class NativeUnitSettings(
     val sensorUnitsPerRotation: Int = 1440,
-    val radius: Double = 3.0
+    val radius: Length = 3.0.inch
 )
 
 private class NativeUnitImpl(val value: Long) : NativeUnit {
@@ -77,7 +77,7 @@ private class NativeUnitImpl(val value: Long) : NativeUnit {
 
     companion object {
         fun convertToInch(value: Long, settings: NativeUnitSettings): Double =
-            value.toDouble() / settings.sensorUnitsPerRotation.toDouble() * (2.0 * Math.PI * settings.radius)
+            value.toDouble() / settings.sensorUnitsPerRotation.toDouble() * (2.0 * Math.PI * settings.radius.inch.asDouble)
 
         fun distanceToNativeUnit(distance: Length, settings: NativeUnitSettings): NativeUnit =
             NativeUnitImpl(
@@ -88,6 +88,6 @@ private class NativeUnitImpl(val value: Long) : NativeUnit {
             )
 
         fun distanceToNativeUnitVal(distance: Length, settings: NativeUnitSettings): Long =
-            (distance.inch.asDouble / (2.0 * Math.PI * settings.radius) * settings.sensorUnitsPerRotation.toDouble()).roundToLong()
+            (distance.inch.asDouble / (2.0 * Math.PI * settings.radius.inch.asDouble) * settings.sensorUnitsPerRotation.toDouble()).roundToLong()
     }
 }

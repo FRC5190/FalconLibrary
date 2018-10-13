@@ -1,25 +1,25 @@
 package org.ghrobotics.lib.mathematics
 
 import org.ghrobotics.lib.mathematics.units.derivedunits.per
+import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
-import kotlin.math.absoluteValue
 
 class UnitTest {
 
     private val settings = NativeUnitSettings(
         1440,
-        3.0
+        3.0.inch
     )
 
     @Test
     fun testNativeUnits() {
         val nativeUnits = 360.STU(settings)
 
-        assert((nativeUnits.inch.asDouble - 4.71).absoluteValue < 0.005)
+        assert(nativeUnits.inch.asDouble epsilonEquals 4.71238898038469)
     }
 
     @Test
