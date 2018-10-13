@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.hal.HAL
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import kotlinx.coroutines.experimental.runBlocking
 import org.ghrobotics.lib.commands.Subsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
 import org.ghrobotics.lib.utils.*
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 import org.ghrobotics.lib.wrappers.hid.FalconHID
-import kotlinx.coroutines.experimental.runBlocking
 
 abstract class FalconRobotBase : RobotBase() {
 
@@ -78,6 +78,10 @@ abstract class FalconRobotBase : RobotBase() {
             //            LiveWindow.updateValues()
         }
 
+        onTransition(Mode.ANY, Mode.AUTONOMOUS) { _, _ -> SubsystemHandler.autoReset() }
+        onTransition(Mode.ANY, Mode.TELEOP) { _, _ -> SubsystemHandler.teleopReset() }
+        onTransition(Mode.ANY, Mode.DISABLED) { _, _ -> SubsystemHandler.zeroOutputs() }
+
         initialize()
         initialized = true
         // Start up the default commands
@@ -104,8 +108,6 @@ abstract class FalconRobotBase : RobotBase() {
     }
 
     // Helpers
-
     protected suspend operator fun Subsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
     protected suspend operator fun FalconHID<*>.unaryPlus() = onWhile(Mode.TELEOP) { update() }
-
 }

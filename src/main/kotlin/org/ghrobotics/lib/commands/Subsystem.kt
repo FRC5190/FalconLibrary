@@ -27,6 +27,18 @@ object SubsystemHandler {
         subsystems.forEach { it.defaultCommand?.start() }
     }
 
+    suspend fun autoReset() = subsystemMutex.withLock {
+        subsystems.forEach { it.autoReset() }
+    }
+
+    suspend fun teleopReset() = subsystemMutex.withLock {
+        subsystems.forEach { it.teleopReset() }
+    }
+
+    // https://www.chiefdelphi.com/forums/showthread.php?t=166814
+    suspend fun zeroOutputs() = subsystemMutex.withLock {
+        subsystems.forEach { it.zeroOutputs() }
+    }
 }
 
 abstract class Subsystem(@Suppress("unused") val name: String) {
@@ -38,4 +50,8 @@ abstract class Subsystem(@Suppress("unused") val name: String) {
 
     var defaultCommand: Command? = null
         protected set
+
+    abstract fun autoReset()
+    abstract fun teleopReset()
+    abstract fun zeroOutputs()
 }
