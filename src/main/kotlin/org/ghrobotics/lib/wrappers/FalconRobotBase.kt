@@ -78,9 +78,9 @@ abstract class FalconRobotBase : RobotBase() {
             //            LiveWindow.updateValues()
         }
 
-        onTransition(Mode.ANY, Mode.AUTONOMOUS) { _, _ -> SubsystemHandler.autoReset() }
-        onTransition(Mode.ANY, Mode.TELEOP) { _, _ -> SubsystemHandler.teleopReset() }
-        onTransition(Mode.ANY, Mode.DISABLED) { _, _ -> SubsystemHandler.zeroOutputs() }
+        onEnter(Mode.AUTONOMOUS) { SubsystemHandler.autoReset() }
+        onEnter(Mode.TELEOP) { SubsystemHandler.teleopReset() }
+        onEnter(Mode.DISABLED) { SubsystemHandler.zeroOutputs() }
 
         initialize()
         initialized = true
@@ -109,5 +109,6 @@ abstract class FalconRobotBase : RobotBase() {
 
     // Helpers
     protected suspend operator fun Subsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
+
     protected suspend operator fun FalconHID<*>.unaryPlus() = onWhile(Mode.TELEOP) { update() }
 }
