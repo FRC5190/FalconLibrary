@@ -35,7 +35,7 @@ class DifferentialDrive(
         // better match reality.  For future seasons, we should investigate what's going on here...
         private val angularDrag: Double,
         // Self-explanatory.  Measure by rolling the robot a known distance and counting encoder ticks.
-        private val wheelRadius: Double  // m
+        val wheelRadius: Double  // m
         ,
         // "Effective" kinematic wheelbase radius.  Might be larger than theoretical to compensate for skid steer.  Measure
         // by turning the robot in place several times and figuring out what the equivalent wheelbase radius is.
@@ -211,6 +211,13 @@ class DifferentialDrive(
         return wheelRadius * (rightSpeedAtMaxVoltage + leftSpeedIfRightMax) / 2.0
     }
 
+    fun getVoltagesFromkV(velocities: DifferentialDrive.WheelState): WheelState {
+        return DifferentialDrive.WheelState(
+                velocities.left / leftTransmission.speedPerVolt,
+                velocities.right / rightTransmission.speedPerVolt
+        )
+    }
+
     class MinMax {
         var min: Double = 0.toDouble()
         var max: Double = 0.toDouble()
@@ -282,6 +289,13 @@ class DifferentialDrive(
             val fmt = DecimalFormat("#0.000")
             return fmt.format(linear) + ", " + fmt.format(angular)
         }
+
+        operator fun minus(other: ChassisState): ChassisState {
+            return ChassisState(this.linear - other.linear, this.angular - other.angular)
+        }
+
+        operator fun times(scalar: Double) = ChassisState(linear * scalar, angular * scalar)
+        operator fun div(scalar: Double) = this * (1 / scalar)
     }
 
     // Can refer to velocity, acceleration, torque, voltage, etc., depending on context.

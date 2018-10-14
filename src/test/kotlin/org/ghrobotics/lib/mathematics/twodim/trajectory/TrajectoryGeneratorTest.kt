@@ -7,54 +7,53 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.degrees
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
-import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
-import org.knowm.xchart.QuickChart
-import org.knowm.xchart.SwingWrapper
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 class TrajectoryGeneratorTest {
 
-    private val kRobotLinearInertia = 60.0  // kg
-    private val kRobotAngularInertia = 10.0  // kg m^2
-    private val kRobotAngularDrag = 12.0  // N*m / (rad/sec)
-    private val kDriveVIntercept = 1.055  // V
-    private val kDriveKv = 0.135  // V per rad/s
-    private val kDriveKa = 0.012  // V per rad/s^2
+    companion object {
+        private const val kRobotLinearInertia = 60.0  // kg
+        private const val kRobotAngularInertia = 10.0  // kg m^2
+        private const val kRobotAngularDrag = 12.0  // N*m / (rad/sec)
+        private const val kDriveVIntercept = 1.055  // V
+        private const val kDriveKv = 0.135  // V per rad/s
+        private const val kDriveKa = 0.012  // V per rad/s^2
 
-    private val kDriveWheelRadiusInches = 3.0.inch
-    private val kWheelBaseDiameter = 29.5.inch
+        private val kDriveWheelRadiusInches = 3.0.inch
+        private val kWheelBaseDiameter = 29.5.inch
 
-    private val transmission = DCMotorTransmission(
-            speedPerVolt = 1 / kDriveKv,
-            torquePerVolt = kDriveWheelRadiusInches.asMetric.asDouble.pow(2) * kRobotLinearInertia / (2.0 * kDriveKa),
-            frictionVoltage = kDriveVIntercept
-    )
+        private val transmission = DCMotorTransmission(
+                speedPerVolt = 1 / kDriveKv,
+                torquePerVolt = kDriveWheelRadiusInches.asMetric.asDouble.pow(2) * kRobotLinearInertia / (2.0 * kDriveKa),
+                frictionVoltage = kDriveVIntercept
+        )
 
-    private val drive = DifferentialDrive(
-            mass = kRobotLinearInertia,
-            moi = kRobotAngularInertia,
-            angularDrag = kRobotAngularDrag,
-            wheelRadius = kDriveWheelRadiusInches.asMetric.asDouble,
-            effectiveWheelBaseRadius = kWheelBaseDiameter.asMetric.asDouble / 2.0,
-            leftTransmission = transmission,
-            rightTransmission = transmission
-    )
+        val drive = DifferentialDrive(
+                mass = kRobotLinearInertia,
+                moi = kRobotAngularInertia,
+                angularDrag = kRobotAngularDrag,
+                wheelRadius = kDriveWheelRadiusInches.asMetric.asDouble,
+                effectiveWheelBaseRadius = kWheelBaseDiameter.asMetric.asDouble / 2.0,
+                leftTransmission = transmission,
+                rightTransmission = transmission
+        )
 
-    private val kMaxCentripetalAcceleration = 8.feet.acceleration
-    private val kMaxAcceleration = 8.feet.acceleration
-    private val kMaxVelocity = 10.feet.velocity
+        private val kMaxCentripetalAcceleration = 8.feet.acceleration
+        private val kMaxAcceleration = 8.feet.acceleration
+        private val kMaxVelocity = 10.feet.velocity
 
-    private val kTolerance = 0.1
+        private const val kTolerance = 0.1
 
-    @Test
-    fun testTrajectoryGenerationAndConstraints() {
-
-        val kSideStart = Pose2d(1.54.feet, 23.234167.feet, 180.degrees)
-        val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.degrees)
+        private val kSideStart = Pose2d(1.54.feet, 23.234167.feet, 180.degrees)
+        private val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.degrees)
 
         val trajectory = DefaultTrajectoryGenerator.generateTrajectory(
                 listOf(
@@ -73,7 +72,10 @@ class TrajectoryGeneratorTest {
                 kMaxAcceleration,
                 true
         )
+    }
 
+    @Test
+    fun testTrajectoryGenerationAndConstraints() {
         val iterator = trajectory.iterator()
 
         var time = 0.second

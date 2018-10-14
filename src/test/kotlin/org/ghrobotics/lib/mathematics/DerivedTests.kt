@@ -27,12 +27,12 @@ class DerivedTests {
         val three = one per two
 
         val four = three.adjust(
-            LengthUnits.Feet,
-            TimeUnits.Minute
+                LengthUnits.Feet,
+                TimeUnits.Minute
         )
 
         print(four.asDouble)
-        assert(four.asDouble epsilonEquals  492.12598425196853)
+        assert(four.asDouble epsilonEquals 492.12598425196853)
     }
 
     @Test
@@ -50,8 +50,8 @@ class DerivedTests {
         val three = one * two
 
         val four = three.adjust(
-            LengthUnits.Meter,
-            TimeUnits.Second
+                LengthUnits.Meter,
+                TimeUnits.Second
         )
 
         assert(four.asDouble epsilonEquals 15.625)

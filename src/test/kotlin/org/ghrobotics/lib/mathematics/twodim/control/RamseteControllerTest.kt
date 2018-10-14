@@ -5,12 +5,16 @@
 
 package org.ghrobotics.lib.mathematics.twodim.control
 
+import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.*
 import org.ghrobotics.lib.mathematics.twodim.trajectory.DefaultTrajectoryGenerator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest.Companion.trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
@@ -22,36 +26,17 @@ import java.text.DecimalFormat
 
 class RamseteControllerTest {
 
-    private lateinit var trajectoryFollower: ITrajectoryFollower
+    private lateinit var trajectoryFollower: TrajectoryFollower
 
-    private val kBeta = 1.5 / 3.2
-    private val kZeta = 0.85 / 3.2
+    private val kBeta = 2.0
+    private val kZeta = 0.7
 
     @Test
     fun testTrajectoryFollower() {
-        val kSideStart = Pose2d(1.54.feet, 23.234167.feet, 180.degrees)
-        val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.degrees)
+        val iterator = TrajectoryGeneratorTest.trajectory.iterator()
+        trajectoryFollower = RamseteController(trajectory, TrajectoryGeneratorTest.drive, kBeta, kZeta)
 
-        val name = "T"
-        val trajectory = DefaultTrajectoryGenerator.generateTrajectory(
-            listOf(
-                kSideStart,
-                kSideStart + Pose2d((-13).feet, 0.feet, 0.degrees),
-                kSideStart + Pose2d((-19.5).feet, 5.feet, (-90).degrees),
-                kSideStart + Pose2d((-19.5).feet, 14.feet, (-90).degrees),
-                kNearScaleEmpty.mirror
-            ),
-            listOf(CentripetalAccelerationConstraint(4.feet.acceleration)),
-            0.0.feet.velocity,
-            0.0.feet.velocity,
-            10.0.feet.velocity,
-            4.0.feet.acceleration,
-            true
-        )
-        val iterator = trajectory.iterator()
-        trajectoryFollower = RamseteController(trajectory, kBeta, kZeta)
-
-        val error = Pose2d(0.feet, 14.feet, 5.degrees)
+        val error = Pose2d()
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
@@ -64,14 +49,22 @@ class RamseteControllerTest {
         val refYList = arrayListOf<Double>()
 
         while (!iterator.isDone) {
+
             val pt = iterator.advance(dt)
-            val output = trajectoryFollower.getSteering(totalpose, time) * dt.second.asDouble
+            val output = trajectoryFollower.getOutputFromDynamics(totalpose, time)
+
+            val wheelstate = DifferentialDrive.WheelState(
+                    output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
+                    output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble)
+
+            val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
+
             time += dt
 
             totalpose += Twist2d(
-                output.dxRaw,
-                output.dyRaw,
-                output.dThetaRaw * 1.05
+                k.linear,
+                0.0,
+                k.angular * 1.05
             ).asPose
 
 
@@ -84,7 +77,7 @@ class RamseteControllerTest {
 
         val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second.asDouble)
 
-        val chart = XYChartBuilder().width(1800).height(1520).title("$name: $fm seconds.")
+        val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
             .xAxisTitle("X").yAxisTitle("Y").build()
 
         chart.styler.markerSize = 8
