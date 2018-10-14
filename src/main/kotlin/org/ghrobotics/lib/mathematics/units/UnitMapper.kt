@@ -12,6 +12,7 @@ object UnitMapper {
             map(LengthUnits.Inch, LengthUnits.Line, 12.0)
             map(LengthUnits.Inch, LengthUnits.Meter, 0.0254)
             map(LengthUnits.Feet, LengthUnits.Inch, 12.0)
+            map(LengthUnits.Feet, LengthUnits.Meter, 0.3048)
             map(LengthUnits.Yard, LengthUnits.Feet, 3.0)
             map(LengthUnits.Mile, LengthUnits.Feet, 5280.0)
             map(LengthUnits.League, LengthUnits.Mile, 3.0)

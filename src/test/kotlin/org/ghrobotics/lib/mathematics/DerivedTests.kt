@@ -31,7 +31,8 @@ class DerivedTests {
             TimeUnits.Minute
         )
 
-        assert(four.asDouble == 492.12598425196853)
+        print(four.asDouble)
+        assert(four.asDouble epsilonEquals  492.12598425196853)
     }
 
     @Test
