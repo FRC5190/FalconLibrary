@@ -23,9 +23,9 @@ open class SIFrac11<T : SIValue<T>, B : SIValue<B>>(
 ) : AbstractSIFrac<T, B, SIFrac11<T, B>>(
     top,
     bottom
-) {
-    val tA get() = top
-    val bA get() = bottom
+), SIFracExpT1<T>, SIFracExpB1<B> {
+    override val tA get() = top
+    override val bA get() = bottom
 
     override fun create(newTop: T, newBottom: B) = SIFrac11(newTop, newBottom)
 

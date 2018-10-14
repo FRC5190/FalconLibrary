@@ -1,8 +1,7 @@
 package org.ghrobotics.lib.mathematics
 
 import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.*
 import org.ghrobotics.lib.mathematics.units.fractions.adjust
 import org.junit.Test
 
@@ -94,7 +93,27 @@ class DerivedTests {
 
         val three = one / two
 
-        assert(three epsilonEquals  3.0)
+        assert(three epsilonEquals 3.0)
+    }
+
+    @Test
+    fun testVoltage() {
+        val one = 1.volt
+        val two = 5.amp
+
+        val three: Watt = one * two
+
+        assert(three.asMetric.asDouble epsilonEquals 5.0)
+    }
+
+    @Test
+    fun testOhm() {
+        val one = 2.volt
+        val two = 5.amp
+
+        val three: Ohm = one / two
+
+        assert(three.asDouble epsilonEquals 0.4)
     }
 
 }
