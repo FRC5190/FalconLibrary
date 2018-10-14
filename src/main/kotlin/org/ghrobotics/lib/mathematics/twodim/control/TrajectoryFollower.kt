@@ -22,7 +22,8 @@ import org.ghrobotics.lib.utils.DeltaTime
 abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurvature>,
                                   private val drive: DifferentialDrive) {
 
-    abstract val chassisVelocity: (robotPose: Pose2d) -> DifferentialDrive.ChassisState
+    abstract fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState
+
     private var previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
 
     protected val iterator = trajectory.iterator()
@@ -45,7 +46,7 @@ abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurv
     fun getOutputFromKinematics(robot: Pose2d, currentTime: Time = System.nanoTime().nanosecond): Output {
         val dt = deltaTimeController.updateTime(currentTime)
 
-        val chassisVelocity = chassisVelocity(robot)
+        val chassisVelocity = calculateChassisVelocity(robot)
 
         val wheelVelocities = drive.solveInverseKinematics(chassisVelocity)
         val feedforwardVoltages = drive.getVoltagesFromkV(wheelVelocities)
@@ -58,7 +59,7 @@ abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurv
     fun getOutputFromDynamics(robot: Pose2d, currentTime: Time = System.nanoTime().nanosecond): Output {
         val dt = deltaTimeController.updateTime(currentTime)
 
-        val chassisVelocity = chassisVelocity(robot)
+        val chassisVelocity = calculateChassisVelocity(robot)
         val chassisAcceleration = if (dt == 0.0.second) {
             DifferentialDrive.ChassisState(0.0, 0.0)
         } else {

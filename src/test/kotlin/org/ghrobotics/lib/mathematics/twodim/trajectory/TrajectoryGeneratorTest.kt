@@ -9,6 +9,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalA
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.millisecond
@@ -46,8 +47,8 @@ class TrajectoryGeneratorTest {
                 rightTransmission = transmission
         )
 
-        private val kMaxCentripetalAcceleration = 8.feet.acceleration
-        private val kMaxAcceleration = 8.feet.acceleration
+        private val kMaxCentripetalAcceleration = 4.feet.acceleration
+        private val kMaxAcceleration = 4.feet.acceleration
         private val kMaxVelocity = 10.feet.velocity
 
         private const val kTolerance = 0.1
@@ -65,7 +66,7 @@ class TrajectoryGeneratorTest {
                 ),
                 listOf(
                         CentripetalAccelerationConstraint(kMaxCentripetalAcceleration),
-                        DifferentialDriveDynamicsConstraint(drive, 9.0)),
+                        DifferentialDriveDynamicsConstraint(drive, 9.0.volt)),
                 0.0.feet.velocity,
                 0.0.feet.velocity,
                 kMaxVelocity,

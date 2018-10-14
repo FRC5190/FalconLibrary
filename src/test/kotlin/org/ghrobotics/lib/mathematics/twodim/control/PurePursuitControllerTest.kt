@@ -3,7 +3,9 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.degrees
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
+import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.second
@@ -27,7 +29,7 @@ class PurePursuitControllerTest {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
         trajectoryFollower = PurePursuitController(TrajectoryGeneratorTest.trajectory, TrajectoryGeneratorTest.drive, kLat, kLookaheadTime)
 
-        val error = Pose2d()
+        val error =  Pose2d(1.feet, 50.inch, 5.degrees)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
@@ -108,7 +110,7 @@ class PurePursuitControllerTest {
         assert(rerror.degrees.also {
             println("[Test] Rotational Error: $it degrees")
         } < 10.0)
-//
+////
 //        SwingWrapper(chart).displayChart()
 //        Thread.sleep(1000000)
     }

@@ -13,7 +13,7 @@ class PurePursuitController(
         private val kLat: Double,
         private val kLookaheadTime: Time) : TrajectoryFollower(trajectory, drive) {
 
-    override val chassisVelocity = { robotPose: Pose2d ->
+    override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
         val lookaheadState = iterator.preview(kLookaheadTime)
         val lookaheadTransform = lookaheadState.state.state.pose inFrameOfReferenceOf robotPose
@@ -25,7 +25,7 @@ class PurePursuitController(
 
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
 
-        DifferentialDrive.ChassisState(
+        return DifferentialDrive.ChassisState(
                 linear = adjustedLinearVelocity,
                 angular = adjustedLinearVelocity * curvature
         )

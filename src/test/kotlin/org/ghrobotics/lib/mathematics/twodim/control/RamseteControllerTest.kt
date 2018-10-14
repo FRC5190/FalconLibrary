@@ -29,14 +29,14 @@ class RamseteControllerTest {
     private lateinit var trajectoryFollower: TrajectoryFollower
 
     private val kBeta = 2.0
-    private val kZeta = 0.7
+    private val kZeta = 0.85
 
     @Test
     fun testTrajectoryFollower() {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
         trajectoryFollower = RamseteController(trajectory, TrajectoryGeneratorTest.drive, kBeta, kZeta)
 
-        val error = Pose2d()
+        val error = Pose2d(1.feet, 50.inch, 5.degrees)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
