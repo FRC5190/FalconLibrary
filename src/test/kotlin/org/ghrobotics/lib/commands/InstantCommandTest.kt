@@ -1,6 +1,7 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.runBlocking
+import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.junit.Test
 import kotlin.system.measureNanoTime
 
@@ -15,8 +16,8 @@ class InstantCommandTest {
 
         val instantCommand = object : InstantCommand() {
             override suspend fun dispose() {
-                val endTime = System.nanoTime()
-                println("Init -> Dispose ${(endTime - startTime) / 1.0e+6}")
+                val endTime = System.nanoTime().nanosecond
+                println("Init -> Dispose ${(endTime - startTime).second.asDouble}")
             }
         }
         instantCommand.start()

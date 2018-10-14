@@ -1,24 +1,22 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.*
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.nanosecond
+import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.observabletype.ObservableListener
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
-import java.util.concurrent.TimeUnit
 
-class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
-
-    constructor(delaySeconds: Double) : this((delaySeconds * 1000).toLong(), TimeUnit.MILLISECONDS)
-
+class DelayCommand(delay: Time) : Command() {
     init {
         executeFrequency = 0
-        withTimeout(delay, unit)
+        withTimeout(delay)
     }
 }
 
 class StatefulDelayImpl(
-    override var delay: Long,
-    override var unit: TimeUnit = TimeUnit.SECONDS
+    override var delay: Time
 ) : ObservableValue<Boolean>, StatefulDelay {
     companion object {
         private val timeoutScope = CoroutineScope(newSingleThreadContext("Delay Condition"))
@@ -32,13 +30,13 @@ class StatefulDelayImpl(
     override fun invokeOnSet(listener: ObservableListener<Boolean>) = delayValue.invokeOnSet(listener)
 
     private lateinit var job: Job
-    private var startTime = 0L
+    private var startTime = 0.second
 
-    fun start(startTime: Long) {
+    fun start(startTime: Time) {
         value = false
         this.startTime = startTime
         job = timeoutScope.launch {
-            delay(unit.toNanos(delay) - (System.nanoTime() - startTime), TimeUnit.NANOSECONDS)
+            delay((delay - (System.nanoTime().nanosecond - startTime)).millisecond.asLong)
             value = true
         }
     }
@@ -52,6 +50,5 @@ class StatefulDelayImpl(
 }
 
 interface StatefulDelay : ObservableValue<Boolean> {
-    val delay: Long
-    val unit: TimeUnit
+    val delay: Time
 }

@@ -6,20 +6,23 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.runBlocking
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.nanosecond
+import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
 class CommandGroupTest {
 
-    private fun delayHelper(delay: Long, name: String) = object : Command() {
+    private fun delayHelper(delay: Time, name: String) = object : Command() {
         init {
-            withTimeout(delay, TimeUnit.SECONDS)
+            withTimeout(delay)
         }
 
         override suspend fun initialize() = println("$name > START")
         override suspend fun dispose() {
-            println("$name > ${TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime)}")
+            println("$name > ${(System.nanoTime().nanosecond - startTime).millisecond.asDouble}")
         }
     }
 
@@ -33,14 +36,14 @@ class CommandGroupTest {
 
             val command = sequential {
                 +parallel {
-                    +delayHelper(1, "S1 -> P1 -> 1")
+                    +delayHelper(1.second, "S1 -> P1 -> 1")
                     +sequential {
-                        +delayHelper(1, "S1 -> P1 -> 2")
+                        +delayHelper(1.second, "S1 -> P1 -> 2")
                         +sequential {
-                            +delayHelper(1, "S1 -> P1 -> S1 -> 3")
-                            +delayHelper(1, "S1 -> P1 -> S1 -> 4")
+                            +delayHelper(1.second, "S1 -> P1 -> S1 -> 3")
+                            +delayHelper(1.second, "S1 -> P1 -> S1 -> 4")
                         }
-                        +delayHelper(1, "S1 -> P1 -> 5")
+                        +delayHelper(1.second, "S1 -> P1 -> 5")
                     }
                 }
             }
@@ -68,14 +71,14 @@ class CommandGroupTest {
         val command = sequential {
             +object : Command() {
                 init {
-                    withTimeout(5, TimeUnit.SECONDS)
+                    withTimeout(5.second)
                 }
 
                 override suspend fun dispose() {
                     delayEndTime = System.nanoTime()
                 }
             }
-        }.withTimeout(500, TimeUnit.MILLISECONDS)
+        }.withTimeout(500.millisecond)
 
         var commandStartTime = 0L
 

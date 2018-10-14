@@ -6,6 +6,8 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.sendBlocking
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 
 open class CommandGroup(
@@ -63,7 +65,7 @@ open class CommandGroup(
         commandGroupHandler.handleTaskFinish(task as CommandGroupTask, stopTime)
     }) {
         val group: CommandGroup = this@CommandGroup
-        override fun stop(stopTime: Long) {
+        override fun stop(stopTime: Time) {
             synchronized(tasksToRun) { tasksToRun.remove(this) }
             if (groupType == GroupType.SEQUENTIAL) {
                 tasksToRun.firstOrNull()?.let { commandGroupHandler.queueTask(it, stopTime) }
@@ -73,15 +75,15 @@ open class CommandGroup(
     }
 
     private interface CommandGroupHandler {
-        fun queueTask(task: CommandGroupTask, startTime: Long)
-        fun handleTaskFinish(task: CommandGroupTask, stopTime: Long)
+        fun queueTask(task: CommandGroupTask, startTime: Time)
+        fun handleTaskFinish(task: CommandGroupTask, stopTime: Time)
     }
 
     private class ChildCommandGroupHandler(parent: CommandGroupHandler) : CommandGroupHandler by parent
 
     private class ParentCommandGroupHandler : CommandGroupHandler {
 
-        private val taskChannel = Channel<Triple<Boolean, CommandGroupTask, Long>>(Channel.UNLIMITED)
+        private val taskChannel = Channel<Triple<Boolean, CommandGroupTask, Time>>(Channel.UNLIMITED)
 
         private val activeTasks = mutableSetOf<CommandGroupTask>()
         private val delayedTasks = mutableSetOf<CommandGroupTask>()
@@ -101,7 +103,7 @@ open class CommandGroup(
             }
         }
 
-        private suspend fun startNewTask(task: CommandGroupTask, startTime: Long) {
+        private suspend fun startNewTask(task: CommandGroupTask, startTime: Time) {
             assert(!activeTasks.contains(task)) { "Task ${task.command::class.java.simpleName} already started" }
 
             if (task.command !is CommandGroup && !canStart(task.command.requiredSubsystems)) {
@@ -113,7 +115,7 @@ open class CommandGroup(
             startTaskInternal(task, startTime)
         }
 
-        private suspend fun stopOldTask(task: CommandGroupTask, stopTime: Long) {
+        private suspend fun stopOldTask(task: CommandGroupTask, stopTime: Time) {
             if (!activeTasks.contains(task)) {
                 println("[Command Group] [Warning] Finish Task was called for ${task.command::class.java.simpleName} which isn't current running")
                 return
@@ -121,13 +123,13 @@ open class CommandGroup(
             stopTaskInternal(task, stopTime)
         }
 
-        private suspend fun startTaskInternal(task: CommandGroupTask, startTime: Long) {
+        private suspend fun startTaskInternal(task: CommandGroupTask, startTime: Time) {
             activeTasks += task
             task.start0(startTime)
             //println("[Command Group] Adding ${task.command::class.java.simpleName}")
         }
 
-        private suspend fun stopTaskInternal(task: CommandGroupTask, stopTime: Long) {
+        private suspend fun stopTaskInternal(task: CommandGroupTask, stopTime: Time) {
             if (task.command is CommandGroup) {
                 // Remove all sub commands of this command group since it finished
                 activeTasks.filter { it.group == task.command }.forEach { stopTaskInternal(it, stopTime) }
@@ -140,7 +142,7 @@ open class CommandGroup(
         }
 
         private suspend fun resumeDelayedTasks() {
-            val currentTime = System.nanoTime()
+            val currentTime = System.nanoTime().nanosecond
 
             val iterator = delayedTasks.iterator()
             while (iterator.hasNext()) {
@@ -166,19 +168,19 @@ open class CommandGroup(
             handlerJob = null
 
             delayedTasks.clear()
-            val currentTime = System.nanoTime()
+            val currentTime = System.nanoTime().nanosecond
             while (activeTasks.isNotEmpty()) {
                 stopTaskInternal(activeTasks.first(), currentTime)
             }
             assert(activeTasks.isEmpty()) { "Failed to dispose parent command group with leftover tasks" }
         }
 
-        override fun queueTask(task: CommandGroupTask, startTime: Long) {
+        override fun queueTask(task: CommandGroupTask, startTime: Time) {
             //println("[Command Group] Requested Queue ${task.command::class.java.simpleName}")
             taskChannel.sendBlocking(Triple(true, task, startTime))
         }
 
-        override fun handleTaskFinish(task: CommandGroupTask, stopTime: Long) {
+        override fun handleTaskFinish(task: CommandGroupTask, stopTime: Time) {
             //println("[Command Group] Requested Stop ${task.command::class.java.simpleName}")
             taskChannel.sendBlocking(Triple(false, task, stopTime))
         }

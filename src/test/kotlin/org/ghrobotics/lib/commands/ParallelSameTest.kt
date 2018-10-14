@@ -1,8 +1,8 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.runBlocking
+import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 class ParallelSameTest {
 
@@ -29,7 +29,7 @@ class ParallelSameTest {
         override suspend fun dispose() {
             println("Stop #$id")
         }
-    }.withTimeout(5, TimeUnit.SECONDS)
+    }.withTimeout(5.second)
 
     @Test
     fun testSameSubsystem() = runBlocking {
@@ -39,7 +39,7 @@ class ParallelSameTest {
         val group = parallel {
             +InstantRunnableCommand { realStartTime = System.currentTimeMillis() }
             +sequential {
-                +DelayCommand(1, TimeUnit.SECONDS)
+                +DelayCommand(1.second)
                 +testCommand(1)
                 +testCommand(3)
             }

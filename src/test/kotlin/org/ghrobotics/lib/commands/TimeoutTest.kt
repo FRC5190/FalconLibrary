@@ -1,20 +1,20 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.runBlocking
+import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
 class TimeoutTest {
 
     @Test
-    fun timeoutTest() = runBlocking{
+    fun timeoutTest() = runBlocking {
         val run = InstantRunnableCommand {}
         run.start()
         run.await()
 
-        val delay = DelayCommand(5, TimeUnit.SECONDS)
-        val delayWithTimeout = DelayCommand(5, TimeUnit.SECONDS).withTimeout(2, TimeUnit.SECONDS)
+        val delay = DelayCommand(5.second)
+        val delayWithTimeout = DelayCommand(5.second).withTimeout(2.second)
 
         val time1 = measureTimeMillis {
             delay.start()

@@ -1,10 +1,13 @@
 package org.ghrobotics.lib.commands
 
 import kotlinx.coroutines.experimental.*
+import org.ghrobotics.lib.mathematics.min
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.nanosecond
+import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.loopFrequency
 import org.ghrobotics.lib.utils.observabletype.*
 import org.ghrobotics.lib.wrappers.FalconRobotBase
-import java.util.concurrent.TimeUnit
 
 abstract class Command(val requiredSubsystems: List<Subsystem>) {
     companion object {
@@ -35,7 +38,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     private val _commandState = ObservableVariable(CommandState.PREPARED)
     val commandState: ObservableValue<CommandState> = _commandState
 
-    var startTime = 0L
+    var startTime = 0.second
         private set
 
     /**
@@ -48,7 +51,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     private var internalJob: Job? = null
     private var finishHandle: DisposableHandle? = null
 
-    internal suspend fun internalStart(startTime: Long, onFinish: (Long) -> Unit) {
+    internal suspend fun internalStart(startTime: Time, onFinish: (Time) -> Unit) {
         this.startTime = startTime
         _commandState.value = CommandState.BAKING
         internalJob = commandScope.launch {
@@ -59,8 +62,8 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
                     val timeoutCondition = this@Command._timeoutCondition
 
                     val stopTime = if (timeoutCondition != null)
-                        Math.min(System.nanoTime(), startTime + timeoutCondition.unit.toNanos(timeoutCondition.delay))
-                    else System.nanoTime()
+                        min(System.nanoTime().nanosecond, startTime + timeoutCondition.delay)
+                    else System.nanoTime().nanosecond
 
                     onFinish(stopTime)
                 }
@@ -111,24 +114,21 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
             return CompletableDeferred(Unit)
         }
         _commandState.value = CommandState.QUEUED
-        return CommandHandler.start(this, System.nanoTime())
+        return CommandHandler.start(this, System.nanoTime().nanosecond)
     }
 
-    fun stop() = CommandHandler.stop(this, System.nanoTime())
+    fun stop() = CommandHandler.stop(this, System.nanoTime().nanosecond)
 
     fun withExit(condition: ObservableValue<Boolean>) = also { _finishCondition += condition }
     fun overrideExit(condition: ObservableValue<Boolean>) = also { _finishCondition.set(condition) }
-    fun withTimeout(delay: Long, unit: TimeUnit = TimeUnit.MILLISECONDS) = also {
+    fun withTimeout(delay: Time) = also {
         if (_timeoutCondition == null) {
-            _timeoutCondition = StatefulDelayImpl(delay, unit)
+            _timeoutCondition = StatefulDelayImpl(delay)
             _finishCondition += _timeoutCondition!!
         } else {
             _timeoutCondition!!.delay = delay
-            _timeoutCondition!!.unit = unit
         }
     }
-
-    fun withTimeoutSeconds(delaySeconds: Double) = withTimeout((delaySeconds * 1000).toLong(), TimeUnit.MILLISECONDS)
 
     suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
         cont.disposeOnCancellation(_commandState.invokeOnceWhen(CommandState.BAKED) {

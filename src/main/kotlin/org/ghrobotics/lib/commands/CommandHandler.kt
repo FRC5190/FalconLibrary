@@ -6,6 +6,7 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.sendBlocking
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import org.ghrobotics.lib.mathematics.units.Time
 
 object CommandHandler {
 
@@ -17,9 +18,9 @@ object CommandHandler {
     private val tasks = mutableListOf<CommandTask>()
 
     private sealed class CommandEvent {
-        class StartEvent(val command: Command, val startTime: Long, val callback: CompletableDeferred<Unit>?) : CommandEvent()
-        class StopCommandEvent(val command: Command, val stopTime: Long) : CommandEvent()
-        class StopEvent(val task: CommandTask, val stopTime: Long, val shouldStartDefault: (Subsystem) -> Boolean) : CommandEvent()
+        class StartEvent(val command: Command, val startTime: Time, val callback: CompletableDeferred<Unit>?) : CommandEvent()
+        class StopCommandEvent(val command: Command, val stopTime: Time) : CommandEvent()
+        class StopEvent(val task: CommandTask, val stopTime: Time, val shouldStartDefault: (Subsystem) -> Boolean) : CommandEvent()
     }
 
     private val commandActor = actor<CommandEvent>(context = commandContext, capacity = Channel.UNLIMITED) {
@@ -65,7 +66,7 @@ object CommandHandler {
         }
     }
 
-    fun start(command: Command, startTime: Long): Deferred<Unit> {
+    fun start(command: Command, startTime: Time): Deferred<Unit> {
         // Check if all subsystems are registered
         for (subsystem in command.requiredSubsystems) {
             if (!SubsystemHandler.isRegistered(subsystem)) throw IllegalArgumentException("A task required a subsystem that hasnt been registered! Subsystem: ${subsystem.name} ${subsystem::class.java.simpleName} Command: ${command::class.java.simpleName}")
@@ -75,7 +76,7 @@ object CommandHandler {
         return callback
     }
 
-    fun stop(command: Command, stopTime: Long) = commandActor.sendBlocking(CommandEvent.StopCommandEvent(command, stopTime))
-    private fun stop(task: CommandTask, stopTime: Long) = commandActor.sendBlocking(CommandEvent.StopEvent(task, stopTime) { true })
+    fun stop(command: Command, stopTime: Time) = commandActor.sendBlocking(CommandEvent.StopCommandEvent(command, stopTime))
+    private fun stop(task: CommandTask, stopTime: Time) = commandActor.sendBlocking(CommandEvent.StopEvent(task, stopTime) { true })
   
 }
