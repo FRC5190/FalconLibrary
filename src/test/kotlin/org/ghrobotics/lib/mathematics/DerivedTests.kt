@@ -1,10 +1,8 @@
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.LengthUnits
-import org.ghrobotics.lib.mathematics.units.TimeUnits
-import org.ghrobotics.lib.mathematics.units.derivedunits.per
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.derivedunits.*
+import org.ghrobotics.lib.mathematics.units.fractions.adjust
 import org.junit.Test
 
 class DerivedTests {
@@ -14,7 +12,7 @@ class DerivedTests {
         val one = 5.meter
         val two = 2.second
 
-        val three = one per two
+        val three: Velocity = one per two
 
         assert(three.asDouble == 2.5)
     }
@@ -24,11 +22,11 @@ class DerivedTests {
         val one = 5.meter
         val two = 2.second
 
-        val three = one per two
+        val three: Velocity = one per two
 
-        val four = three.adjust(
-                LengthUnits.Feet,
-                TimeUnits.Minute
+        val four: Velocity = three.adjust(
+            SIPrefix.BASE, LengthUnits.Feet,
+            SIPrefix.BASE, TimeUnits.Minute
         )
 
         print(four.asDouble)
@@ -37,21 +35,21 @@ class DerivedTests {
 
     @Test
     fun testAcceleration() {
-        val one = 10.meter per 2.second per 4.second
+        val one: Acceleration = 10.meter per 2.second per 4.second
 
         assert(one.asDouble == 1.25)
     }
 
     @Test
     fun testAccelerationToVelocity() {
-        val one = 10.meter per 1.6.second per 2.second
+        val one: Acceleration = 10.meter per 1.6.second per 2.second
         val two = 5.second
 
-        val three = one * two
+        val three: Velocity = one * two
 
-        val four = three.adjust(
-                LengthUnits.Meter,
-                TimeUnits.Second
+        val four: Velocity = three.adjust(
+            SIPrefix.BASE, LengthUnits.Meter,
+            SIPrefix.BASE, TimeUnits.Second
         )
 
         assert(four.asDouble epsilonEquals 15.625)
@@ -59,7 +57,7 @@ class DerivedTests {
 
     @Test
     fun testVelocityToLength() {
-        val one = 5.meter per 2.second
+        val one: Velocity = 5.meter per 2.second
         val two = 6.second
 
         val three = one * two
@@ -70,8 +68,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityAndAccelerationToTime() {
-        val one = 22.meter per 2.second
-        val two = 18.meter per 0.5.second per 4.second
+        val one: Velocity = 22.meter per 2.second
+        val two: Acceleration = 18.meter per 0.5.second per 4.second
 
         val three = one / two
 
@@ -80,8 +78,8 @@ class DerivedTests {
 
     @Test
     fun testAccelerationDividedByAcceleration() {
-        val one = 33.meter per 1.second per 1.second
-        val two = 22.meter per 2.second per 1.second
+        val one: Acceleration = 33.meter per 1.second per 1.second
+        val two: Acceleration = 22.meter per 2.second per 1.second
 
         val three = one / two
 
@@ -90,12 +88,32 @@ class DerivedTests {
 
     @Test
     fun testVelocityDividedByVelocity() {
-        val one = 33.meter per 1.second
-        val two = 22.meter per 2.second
+        val one: Velocity = 33.meter per 1.second
+        val two: Velocity = 22.meter per 2.second
 
         val three = one / two
 
-        assert(three == 3.0)
+        assert(three epsilonEquals 3.0)
+    }
+
+    @Test
+    fun testVoltage() {
+        val one = 1.volt
+        val two = 5.amp
+
+        val three: Watt = one * two
+
+        assert(three.asMetric.asDouble epsilonEquals 5.0)
+    }
+
+    @Test
+    fun testOhm() {
+        val one = 2.volt
+        val two = 5.amp
+
+        val three: Ohm = one / two
+
+        assert(three.asDouble epsilonEquals 0.4)
     }
 
 }

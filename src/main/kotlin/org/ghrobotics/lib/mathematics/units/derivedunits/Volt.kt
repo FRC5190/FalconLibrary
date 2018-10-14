@@ -1,31 +1,23 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
-import org.ghrobotics.lib.mathematics.units.AbstractSIValue
-import org.ghrobotics.lib.mathematics.units.SIValue
-import kotlin.math.absoluteValue
+import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.expressions.SIExp3
+import org.ghrobotics.lib.mathematics.units.expressions.SIExp4
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac33
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac34
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac35
 
 val Number.volt: Volt
-    get() = VoltImpl(toDouble())
+    get() = SIFrac34(
+        SIExp3(this.gram, 1.meter, 1.meter),
+        SIExp4(1.second, 1.second, 1.second, 1.amp)
+    )
 
-interface Volt : SIValue<Volt>
+typealias Volt = SIFrac34<Mass, Length, Length,
+        Time, Time, Time, ElectricCurrent>
 
-class VoltImpl(
-    value: Double
-) : AbstractSIValue<Volt>(), Volt {
-    override val asDouble = value
-    override val asMetric = this
+typealias Watt = SIFrac33<Mass, Length, Length,
+        Time, Time, Time>
 
-    override val absoluteValue by lazy { VoltImpl(asDouble.absoluteValue) }
-
-    override fun unaryMinus() = VoltImpl(-asDouble)
-
-    override fun plus(other: Volt) = VoltImpl(asDouble + other.asDouble)
-    override fun minus(other: Volt) = VoltImpl(asDouble - other.asDouble)
-
-    override fun div(other: Volt) = asDouble / other.asDouble
-
-    override fun times(other: Number) = VoltImpl(asDouble * other.toDouble())
-    override fun div(other: Number) = VoltImpl(asDouble / other.toDouble())
-
-    override fun compareTo(other: Volt) = asDouble.compareTo(other.asDouble)
-}
+typealias Ohm = SIFrac35<Mass, Length, Length,
+        Time, Time, Time, ElectricCurrent, ElectricCurrent>

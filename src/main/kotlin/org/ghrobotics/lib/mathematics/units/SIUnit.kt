@@ -1,5 +1,7 @@
 package org.ghrobotics.lib.mathematics.units
 
+import org.ghrobotics.lib.mathematics.units.expressions.SIExp2
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac11
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.properties.ReadOnlyProperty
@@ -8,6 +10,13 @@ import kotlin.reflect.KProperty
 interface SIUnit<T : SIUnit<T, E>, E : Enum<E>> : SIValue<T> {
     val prefix: SIPrefix
     val type: E
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun <B : SIUnit<B, *>> times(other: B) = SIExp2(this as T, other)
+
+    infix fun <B : SIUnit<B, *>> per(other: B) = div(other)
+    @Suppress("UNCHECKED_CAST")
+    operator fun <B : SIUnit<B, *>> div(other: B) = SIFrac11(this as T, other)
 
     fun convertTo(newPrefix: SIPrefix, newUnit: E): T
 }

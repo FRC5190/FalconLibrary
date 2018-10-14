@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.units
 
-interface SIValue<T> : Comparable<T> {
+interface SIValue<T : SIValue<T>> : Comparable<T> {
     val asDouble: Double
     val asFloat: Float
     val asLong: Long
@@ -20,7 +20,7 @@ interface SIValue<T> : Comparable<T> {
     operator fun div(other: Number): T
 }
 
-abstract class AbstractSIValue<T> : SIValue<T> {
+abstract class AbstractSIValue<T : SIValue<T>> : SIValue<T> {
     override val asFloat
         get() = asDouble.toFloat()
     override val asInt: Int

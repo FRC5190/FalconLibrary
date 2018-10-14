@@ -1,10 +1,12 @@
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.derivedunits.per
+import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
+import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100msPerSecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 
@@ -38,6 +40,13 @@ class UnitTest {
         val two = one.STU(settings)
 
         assert(two.STUPer100msPerSecond.asDouble == 30080.0)
+    }
+
+    @Test
+    fun testFeetToMeter() {
+        val one = 1.feet
+
+        assert(one.meter.asDouble epsilonEquals 0.3048)
     }
 
 }
