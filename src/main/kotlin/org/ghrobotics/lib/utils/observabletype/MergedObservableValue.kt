@@ -1,36 +1,61 @@
 package org.ghrobotics.lib.utils.observabletype
 
-interface MergedObservableValue<V1, V2, F> : ObservableValue<F> {
-    val first: ObservableValue<V1>
-    val second: ObservableValue<V2>
+@JvmName("plusDouble")
+operator fun ObservableValue<Double>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toDouble() }
 
-    val merger: (V1, V2) -> F
+@JvmName("plusFloat")
+operator fun ObservableValue<Float>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toFloat() }
 
-    companion object {
-        operator fun <V1, V2, F> invoke(
-                first: ObservableValue<V1>,
-                second: ObservableValue<V2>,
-                merger: (V1, V2) -> F
-        ): MergedObservableValue<V1, V2, F> = MergedObservableValueImpl(first, second, merger)
-    }
-}
+@JvmName("plusLong")
+operator fun ObservableValue<Long>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toLong() }
 
-private class MergedObservableValueImpl<V1, V2, F>(
-        override val first: ObservableValue<V1>,
-        override val second: ObservableValue<V2>,
-        override val merger: (V1, V2) -> F
-) : MergedObservableValue<V1, V2, F>, SubscribableObservableValueImpl<F>() {
+@JvmName("plusInt")
+operator fun ObservableValue<Int>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toInt() }
 
-    override var value: F = merger(first.value, second.value)
-        private set(newValue) {
-            informListeners(newValue)
-            field = newValue
+@JvmName("plusShort")
+operator fun ObservableValue<Short>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toShort() }
+
+@JvmName("plusByte")
+operator fun ObservableValue<Byte>.plus(other: ObservableValue<Number>) =
+    mergeWith(other) { one, two -> one + two.toByte() }
+
+@JvmName("plusString")
+operator fun ObservableValue<String>.plus(other: ObservableValue<String>) = mergeWithString(other)
+
+fun ObservableValue<String>.mergeWithString(
+    other: ObservableValue<String>,
+    separator: String = " "
+) = mergeWith(other) { one, two -> "$one$separator$two" }
+
+@JvmName("plusAny")
+operator fun <F1, F2> ObservableValue<F1>.plus(other: ObservableValue<F2>) =
+    mergeWith(other) { one, two -> one to two }
+
+fun <F1, F2, T> ObservableValue<F1>.mergeWith(
+    with: ObservableValue<F2>,
+    merger: (F1, F2) -> T
+): ObservableValue<T> = MergedObservableValueImpl(this, with, merger)
+
+private class MergedObservableValueImpl<F1, F2, T>(
+    val first: ObservableValue<F1>,
+    val second: ObservableValue<F2>,
+    val merger: (F1, F2) -> T
+) : ObservableValue<T>, SubscribableObservableValueImpl<T>() {
+
+    override var value: T = merger(first.value, second.value)
+        private set(value) {
+            informListeners(value)
+            field = value
         }
         get() {
-            synchronized(running) {
-                if(!running.get()) value = merger(first.value, second.value)
-            }
-            return field
+            val newValue = merger(first.value, second.value)
+            value = newValue
+            return newValue
         }
 
     private lateinit var handle: ObservableHandle

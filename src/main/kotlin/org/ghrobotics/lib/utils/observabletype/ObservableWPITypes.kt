@@ -1,12 +1,11 @@
 package org.ghrobotics.lib.utils.observabletype
 
 import edu.wpi.first.wpilibj.AnalogInput
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.experimental.CoroutineScope
 
 // Analog Input
 
 fun AnalogInput.asObservableVoltage(
-        frequency: Int = 50,
-        context: CoroutineContext = DefaultDispatcher
-): ObservableValue<Double> = UpdatableObservableValue(frequency, context) { this.averageVoltage }
+    scope: CoroutineScope,
+    frequency: Int = 50
+): ObservableValue<Double> = scope.updatableValue(frequency) { this.averageVoltage }

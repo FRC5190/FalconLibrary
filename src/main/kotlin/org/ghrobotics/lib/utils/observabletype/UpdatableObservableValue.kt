@@ -1,61 +1,56 @@
 package org.ghrobotics.lib.utils.observabletype
 
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.sync.Mutex
 import org.ghrobotics.lib.utils.launchFrequency
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.Job
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.experimental.CoroutineContext
 
-interface UpdatableObservableValue<T> : ObservableValue<T> {
-    val context: CoroutineContext
-    val frequency: Int
+fun <T> CoroutineScope.updatableValue(
+    frequency: Int = kDefaultUpdatableObservableValueReadTime,
+    block: () -> T
+): UpdatableObservableValue<T> = UpdatableObservableValueImpl(this, frequency, block)
 
-    companion object {
-        operator fun <T> invoke(
-                frequency: Int = kDefaultUpdatableObservableValueReadTime,
-                context: CoroutineContext = DefaultDispatcher,
-                block: () -> T
-        ): UpdatableObservableValue<T> = UpdatableObservableValueImpl(context, frequency, block)
-    }
+interface UpdatableObservableValue<T> : ObservableValue<T> {
+    val scope: CoroutineScope
+    val frequency: Int
 }
 
 private class UpdatableObservableValueImpl<T>(
-        override val context: CoroutineContext,
-        override val frequency: Int,
-        private val block: () -> T
+    override val scope: CoroutineScope,
+    override val frequency: Int,
+    private val block: () -> T
 ) : UpdatableObservableValue<T>, SubscribableObservableValueImpl<T>() {
 
+    private val deltaTime = TimeUnit.SECONDS.toNanos(1) / frequency
+
+    private var lastUpdateTime = System.nanoTime()
+
     override var value: T = block()
-        set(value) {
+        private set(value) {
             informListeners(value)
             field = value
         }
         get() {
+            if(running.get())
+                return field
             synchronized(running) {
-                if (!running.get()) {
-                    synchronized(updateSync) {
-                        val currentTime = System.nanoTime()
-                        if (currentTime - lastUpdate > deltaTime) {
-                            value = block()
-                            lastUpdate = currentTime
-                        }
-                    }
-                }
+                val currentTime = System.nanoTime()
+                if (currentTime - lastUpdateTime < deltaTime)
+                    return@synchronized // no need for update
+                lastUpdateTime = currentTime
+                value = block()
             }
             return field
         }
 
-    private val updateSync = Any()
-    private var lastUpdate = System.nanoTime()
-    private val deltaTime = TimeUnit.SECONDS.toNanos(1) / frequency
-
     private lateinit var job: Job
 
     override fun start() {
-        job = launchFrequency(frequency, context) {
-            synchronized(updateSync) {
+        job = scope.launchFrequency(frequency) {
+            synchronized(running) {
                 value = block()
-                lastUpdate = System.nanoTime()
+                lastUpdateTime = System.nanoTime()
             }
         }
     }
@@ -63,6 +58,7 @@ private class UpdatableObservableValueImpl<T>(
     override fun stop() {
         job.cancel()
     }
+
 
     override fun toString() = "UPDATE[$value]"
 

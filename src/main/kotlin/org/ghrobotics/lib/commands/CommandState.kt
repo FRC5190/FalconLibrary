@@ -2,6 +2,7 @@ package org.ghrobotics.lib.commands
 
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.and
+import org.ghrobotics.lib.utils.observabletype.map
 import org.ghrobotics.lib.utils.observabletype.or
 
 enum class CommandState {

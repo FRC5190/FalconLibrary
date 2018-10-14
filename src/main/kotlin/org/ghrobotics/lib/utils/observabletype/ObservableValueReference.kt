@@ -1,50 +1,47 @@
 package org.ghrobotics.lib.utils.observabletype
 
+@Suppress("FunctionName")
+fun <T> ObservableValueReference(reference: ObservableValue<T>): ObservableValueReference<T> =
+    ObservableValueReferenceImpl(reference)
+
 interface ObservableValueReference<T> : ObservableValue<T> {
     var reference: ObservableValue<T>
-
-    companion object {
-        operator fun <T> invoke(reference: ObservableValue<T>): ObservableValueReference<T> = ObservableValueReferenceImpl(reference)
-    }
 }
 
-private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : ObservableValueReference<T>, SubscribableObservableValueImpl<T>() {
+private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : ObservableValueReference<T>,
+    SubscribableObservableValueImpl<T>() {
 
-    private val referenceSync = Any()
+    private var handle: ObservableHandle? = null
 
-    override var reference = reference
-        set(value) = synchronized(referenceSync) {
+    override var reference: ObservableValue<T> = reference
+        set(value) {
             field = value
             synchronized(running) {
-                if (running.get()) {
-                    start()
+                if(handle != null) {
                     stop()
+                    start()
                 }
             }
         }
 
     override var value: T = reference.value
-        get() {
-            synchronized(running) {
-                if (!running.get()) {
-                    field = reference.value
-                }
-            }
-            return field
-        }
-        set(value) {
+        private set(value) {
             informListeners(value)
             field = value
         }
+        get() {
+            val newValue = reference.value
+            value = newValue
+            return newValue
+        }
 
-    private lateinit var handle: ObservableHandle
-
-    override fun start() = synchronized(referenceSync) {
+    override fun start() {
         handle = reference.invokeWhen { value = it }
     }
 
-    override fun stop() = synchronized(referenceSync) {
-        handle.dispose()
+    override fun stop() {
+        handle!!.dispose()
+        handle = null
     }
 
     override fun toString() = "VALREF($reference)"

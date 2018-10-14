@@ -4,6 +4,14 @@ import kotlinx.coroutines.experimental.DisposableHandle
 
 typealias ObservableListener<T> = ObservableHandle.(T) -> Unit
 
+fun <T> ObservableListener<T>.thenDispose(): ObservableListener<T> = {
+    try {
+        this@thenDispose(it)
+    } finally {
+        dispose()
+    }
+}
+
 interface ObservableHandle : DisposableHandle {
     operator fun plus(other: ObservableHandle): ObservableHandle {
         fun mainDispose() = dispose()
@@ -15,6 +23,7 @@ interface ObservableHandle : DisposableHandle {
         }
     }
 }
+
 object NonObservableHandle : ObservableHandle {
     override fun dispose() {}
 }

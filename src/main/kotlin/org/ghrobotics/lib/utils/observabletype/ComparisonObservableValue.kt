@@ -15,4 +15,4 @@ fun <T : Comparable<F>, F> ObservableValue<T>.compareTo(other: ObservableValue<F
 private inline fun <T : Comparable<F>, F, R> ObservableValue<T>.compareToInternal(
         other: ObservableValue<F>,
         crossinline block: (Int) -> R
-): ObservableValue<R> = MergedObservableValue(this, other) { one, two -> block(one.compareTo(two)) }
+): ObservableValue<R> = this.mergeWith(other) { one, two -> block(one.compareTo(two)) }

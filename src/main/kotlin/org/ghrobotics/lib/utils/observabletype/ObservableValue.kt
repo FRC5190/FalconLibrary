@@ -1,14 +1,13 @@
 package org.ghrobotics.lib.utils.observabletype
 
 import org.ghrobotics.lib.utils.Source
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-interface ObservableValue<T> {
+interface ObservableValue<T> : ReadOnlyProperty<Any?, T> {
     val value: T
 
-    operator fun getValue(thisRef: Any, property: KProperty<*>) = value
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 
     // Basic Invoke On
 
@@ -20,16 +19,9 @@ interface ObservableValue<T> {
         if (values.contains(it)) listener(this, it)
     }
 
-    private fun invokeOnce(listener: ObservableListener<T>): ObservableListener<T> = {
-        try {
-            listener(this, it)
-        } finally {
-            dispose()
-        }
-    }
-
-    fun invokeOnceOnSet(listener: ObservableListener<T>) = invokeOnSet(listener = invokeOnce(listener))
-    fun invokeOnceOnSet(vararg values: T, listener: ObservableListener<T>) = invokeOnSet(*values, listener = invokeOnce(listener))
+    fun invokeOnceOnSet(listener: ObservableListener<T>) = invokeOnSet(listener.thenDispose())
+    fun invokeOnceOnSet(vararg values: T, listener: ObservableListener<T>) =
+        invokeOnSet(*values, listener = listener.thenDispose())
 
     // Invoke On Change
 
@@ -41,9 +33,10 @@ interface ObservableValue<T> {
         }
     }
 
-    fun invokeOnceOnChange(listener: ObservableListener<T>) = invokeOnChange(invokeOnce(listener))
+    fun invokeOnceOnChange(listener: ObservableListener<T>) = invokeOnChange(listener.thenDispose())
 
-    fun invokeOnChangeTo(vararg values: T, listener: ObservableListener<T>) = invokeOnChangeTo(values.asList(), listener)
+    fun invokeOnChangeTo(vararg values: T, listener: ObservableListener<T>) =
+        invokeOnChangeTo(values.asList(), listener)
 
     fun invokeOnChangeTo(values: List<T>, listener: ObservableListener<T>): ObservableHandle {
         var firstRun = true
@@ -85,13 +78,10 @@ interface ObservableValue<T> {
         }
     }
 
-    fun invokeOnceWhen(listener: ObservableListener<T>) = invokeWhen(listener = invokeOnce(listener))
-    fun invokeOnceWhen(vararg values: T, listener: ObservableListener<T>) = invokeWhen(*values, listener = invokeOnce(listener))
+    fun invokeOnceWhen(listener: ObservableListener<T>) = invokeWhen(listener = listener.thenDispose())
+    fun invokeOnceWhen(vararg values: T, listener: ObservableListener<T>) =
+        invokeWhen(*values, listener = listener.thenDispose())
 
-    fun asConflated(context: CoroutineContext = DefaultDispatcher) = ConflatedObservableValue(context, this)
-    @Deprecated("Use map instead", ReplaceWith("map(block)"))
-    fun <F> withProcessing(block: (T) -> F) = map(block)
-    fun <F> map(block: (T) -> F) = MappedObservableValue(this, block)
     fun asSource() = Source { value }
 
     // Comparison
@@ -109,9 +99,9 @@ interface ObservableValue<T> {
     fun <F : Comparable<T>> compareTo(other: ObservableValue<F>) = compareToInternal(other) { it }
 
     private inline fun <F : Comparable<T>, R> compareToInternal(
-            other: ObservableValue<F>,
-            crossinline block: (Int) -> R
-    ): ObservableValue<R> = MergedObservableValue(this, other) { one, two -> block(-two.compareTo(one)) }
+        other: ObservableValue<F>,
+        crossinline block: (Int) -> R
+    ): ObservableValue<R> = this.mergeWith(other) { one, two -> block(-two.compareTo(one)) }
 
     companion object {
         operator fun <T> invoke(value: T): ObservableValue<T> = ObservableValueImpl(value)

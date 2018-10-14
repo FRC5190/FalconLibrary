@@ -1,7 +1,9 @@
 package org.ghrobotics.lib.utils
 
+import kotlinx.coroutines.experimental.GlobalScope
 import org.ghrobotics.lib.utils.observabletype.*
 import org.junit.Test
+import kotlin.math.absoluteValue
 
 class StateTests {
 
@@ -30,7 +32,7 @@ class StateTests {
     @Test
     fun basicNumToBoolean() {
         val one = ObservableValue(5.0)
-        val two = one.withProcessing { it > 2.5 }
+        val two = one.map { it > 2.5 }
 
         assert(two.value)
     }
@@ -38,7 +40,7 @@ class StateTests {
     @Test
     fun variableListener() {
         val one = ObservableVariable(1.0)
-        val two = one.withProcessing { it > 2.0 }
+        val two = one.map { it > 2.0 }
 
         var called = false
 
@@ -56,8 +58,8 @@ class StateTests {
         val one = ObservableVariable(1.0)
         val two = ObservableVariable(5.0)
 
-        val three = one.withProcessing { it > 2.0 }
-        val four = two.withProcessing { it < 2.0 }
+        val three = one.map { it > 2.0 }
+        val four = two.map { it < 2.0 }
 
         val five = three and four
 
@@ -174,8 +176,8 @@ class StateTests {
     fun counterState() {
         var counter = 0
 
-        val one = UpdatableObservableValue(5) { counter++ }
-        val two = one.withProcessing { it >= 5 }
+        val one = GlobalScope.updatableValue(5) { counter++ }
+        val two = one.map { it >= 5 }
 
         var called = false
 
@@ -191,7 +193,7 @@ class StateTests {
     fun frequencyTest() {
         var counter = 0
 
-        val one = UpdatableObservableValue(5) { counter++ }
+        val one = GlobalScope.updatableValue(5) { counter++ }
 
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < 900) {
@@ -208,7 +210,7 @@ class StateTests {
 
         val one by lazy { two }
 
-        val three by lazy { one.withProcessing { it > 5.0 } }
+        val three by lazy { one.map { it > 5.0 } }
 
         var calledFalse = false
         var calledTrue = false
@@ -265,7 +267,7 @@ class StateTests {
 
     @Test
     fun referenceTest() {
-        val one = UpdatableObservableValue(5) {
+        val one = GlobalScope.updatableValue(5) {
             Thread.sleep(100)
             false
         }
@@ -288,13 +290,13 @@ class StateTests {
         val points = 1000
         var current = 0
 
-        val sensor = UpdatableObservableValue(1000) {
+        val sensor = GlobalScope.updatableValue(1000) {
             current++
             if(current > points) current = 0
             current
         }
 
-        val conflated = sensor.asConflated()
+        val conflated = sensor.asConflated(GlobalScope)
 
         var pointsGot = 0
         var lastPoint = 0
@@ -303,7 +305,7 @@ class StateTests {
 
         conflated.invokeOnSet {
             if(it < lastPoint) {
-                println("Got $pointsGot points out of $points points sent")
+                //println("Got $pointsGot points out of $lastPoint points sent")
                 dispose()
                 return@invokeOnSet
             }
@@ -313,6 +315,8 @@ class StateTests {
         }
 
         Thread.sleep(1100)
+        assert((pointsGot - 50).absoluteValue < 4)
+        assert(lastPoint > 975)
     }
 
 }

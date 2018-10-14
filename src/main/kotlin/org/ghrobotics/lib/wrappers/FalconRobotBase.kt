@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.hal.HAL
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import kotlinx.coroutines.experimental.isActive
 import kotlinx.coroutines.experimental.runBlocking
 import org.ghrobotics.lib.commands.Subsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
@@ -43,15 +44,17 @@ abstract class FalconRobotBase : RobotBase() {
     val currentModeStateValue: ObservableValue<Mode> = currentModeState
     val modeStateMachine: StateMachine<Mode> = StateMachine(currentModeState)
 
-    fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) = modeStateMachine.onEnter(enterState.rawValues, listener)
+    fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) =
+        modeStateMachine.onEnter(enterState.rawValues, listener)
 
-    fun onLeave(leaveState: Mode, listener: SMLeaveListener<Mode>) = modeStateMachine.onLeave(leaveState.rawValues, listener)
+    fun onLeave(leaveState: Mode, listener: SMLeaveListener<Mode>) =
+        modeStateMachine.onLeave(leaveState.rawValues, listener)
 
     fun onTransition(fromState: Mode, toState: Mode, listener: SMTransitionListener<Mode>) =
-            modeStateMachine.onTransition(fromState.rawValues, toState.rawValues, listener)
+        modeStateMachine.onTransition(fromState.rawValues, toState.rawValues, listener)
 
     fun onWhile(whileState: Mode, frequency: Int = 50, listener: SMWhileListener<Mode>) =
-            modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
+        modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
 
     // Main Robot Code
 

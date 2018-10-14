@@ -6,22 +6,22 @@ import kotlinx.coroutines.experimental.*
 class StateMachine<T>(val state: ObservableValue<T>) {
 
     companion object {
-        private val stateMachineContext = newFixedThreadPoolContext(2, "State Machine")
+        private val stateMachineScope = CoroutineScope(newFixedThreadPoolContext(2, "State Machine"))
     }
 
     fun onEnter(enterState: List<T>, listener: SMEnterListener<T>) = state.invokeWhen(enterState) {
-        runBlocking(stateMachineContext) { listener(it) }
+        runBlocking { listener(it) }
     }
 
     fun onLeave(leaveState: List<T>, listener: SMLeaveListener<T>) = state.invokeOnChange {
         val from = state.value
-        if (leaveState.contains(from)) runBlocking(stateMachineContext) { listener(from) }
+        if (leaveState.contains(from)) runBlocking { listener(from) }
     }
 
     fun onTransition(fromState: List<T>, toState: List<T>, listener: SMTransitionListener<T>) = state.invokeOnChange {
         val from = state.value
         if (fromState.contains(from) && toState.contains(it)) {
-            runBlocking(stateMachineContext) { listener(from, it) }
+            runBlocking { listener(from, it) }
         }
     }
 
@@ -31,12 +31,12 @@ class StateMachine<T>(val state: ObservableValue<T>) {
         val handle1 = state.invokeWhen(whileState) {
             currentValue = it
             if (job != null) return@invokeWhen
-            job = launchFrequency(frequency, stateMachineContext) {
+            job = stateMachineScope.launchFrequency(frequency) {
                 listener(currentValue)
             }
         }
         val handle2 = state.invokeOnChange {
-            if (!whileState.contains(it)) runBlocking(stateMachineContext) {
+            if (!whileState.contains(it)) runBlocking {
                 job?.cancelAndJoin()
                 job = null
             }

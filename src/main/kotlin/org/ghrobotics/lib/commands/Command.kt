@@ -10,7 +10,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     companion object {
         const val DEFAULT_FREQUENCY = 50
 
-        protected val commandContext = newFixedThreadPoolContext(2, "Command")
+        protected val commandScope = CoroutineScope(newFixedThreadPoolContext(2, "Command"))
     }
 
     init {
@@ -51,7 +51,7 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
     internal suspend fun internalStart(startTime: Long, onFinish: (Long) -> Unit) {
         this.startTime = startTime
         _commandState.value = CommandState.BAKING
-        internalJob = launch(commandContext) {
+        internalJob = commandScope.launch {
             initialize0()
             // Only start if the command didn't end already
             if (!finishCondition.value) {
@@ -136,7 +136,8 @@ abstract class Command(val requiredSubsystems: List<Subsystem>) {
         })
     }
 
-    protected class FinishCondition private constructor(private val varReference: ObservableValueReference<Boolean>) : ObservableValue<Boolean> by varReference {
+    protected class FinishCondition private constructor(private val varReference: ObservableValueReference<Boolean>) :
+        ObservableValue<Boolean> by varReference {
         constructor() : this(ObservableValueReference(ObservableValue(false)))
 
         operator fun plusAssign(other: ObservableValue<Boolean>) {

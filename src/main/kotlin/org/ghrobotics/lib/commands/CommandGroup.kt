@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.commands
 
+import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.sendBlocking
@@ -12,7 +13,7 @@ open class CommandGroup(
     private val commands: List<Command>
 ) : Command(commands.flatMap { it.requiredSubsystems }) {
     companion object {
-        private val commandGroupContext = newFixedThreadPoolContext(2, "Command Group")
+        private val commandGroupScope = CoroutineScope(newFixedThreadPoolContext(2, "Command Group"))
     }
 
     protected var parentCommandGroup: CommandGroup? = null
@@ -38,7 +39,8 @@ open class CommandGroup(
     protected open fun createTasks(): List<CommandGroupTask> = commands.map { CommandGroupTask(it) }
 
     override suspend fun initialize() {
-        commandGroupHandler = parentCommandGroup?.let { ChildCommandGroupHandler(it.commandGroupHandler) } ?: ParentCommandGroupHandler()
+        commandGroupHandler = parentCommandGroup?.let { ChildCommandGroupHandler(it.commandGroupHandler) } ?:
+                ParentCommandGroupHandler()
         tasksToRun = createTasks().toMutableSet()
         commandGroupFinishCondition.update()
         (commandGroupHandler as? ParentCommandGroupHandler)?.start()
@@ -87,7 +89,7 @@ open class CommandGroup(
         private var handlerJob: Job? = null
 
         fun start() {
-            handlerJob = launch(commandGroupContext) {
+            handlerJob = commandGroupScope.launch {
                 for ((start, task, time) in taskChannel) {
                     if (start) {
                         startNewTask(task, time)

@@ -17,11 +17,11 @@ class DelayCommand(delay: Long, unit: TimeUnit = TimeUnit.SECONDS) : Command() {
 }
 
 class StatefulDelayImpl(
-        override var delay: Long,
-        override var unit: TimeUnit = TimeUnit.SECONDS
+    override var delay: Long,
+    override var unit: TimeUnit = TimeUnit.SECONDS
 ) : ObservableValue<Boolean>, StatefulDelay {
     companion object {
-        private val timeoutContext = newSingleThreadContext("Delay Condition")
+        private val timeoutScope = CoroutineScope(newSingleThreadContext("Delay Condition"))
     }
 
     private val delayValue = ObservableVariable(false)
@@ -37,7 +37,7 @@ class StatefulDelayImpl(
     fun start(startTime: Long) {
         value = false
         this.startTime = startTime
-        job = launch(timeoutContext) {
+        job = timeoutScope.launch {
             delay(unit.toNanos(delay) - (System.nanoTime() - startTime), TimeUnit.NANOSECONDS)
             value = true
         }

@@ -1,38 +1,28 @@
 package org.ghrobotics.lib.utils.observabletype
 
-interface MappedObservableValue<V, F> : ObservableValue<F> {
-    val parent: ObservableValue<V>
-    val mapper: (V) -> F
+fun <F, T> ObservableValue<F>.map(block: (F) -> T): ObservableValue<T> =
+    MappedObservableValueImpl(this, block)
 
-    companion object {
-        operator fun <V, F> invoke(
-                parent: ObservableValue<V>,
-                mapper: (V) -> F
-        ): MappedObservableValue<V, F> = MappedObservableValueImpl(parent, mapper)
-    }
-}
+private class MappedObservableValueImpl<F, T>(
+    val parent: ObservableValue<F>,
+    val mapper: (F) -> T
+) : ObservableValue<T>, SubscribableObservableValueImpl<T>() {
 
-private class MappedObservableValueImpl<V, F>(
-        override val parent: ObservableValue<V>,
-        override val mapper: (V) -> F
-) : MappedObservableValue<V, F>, SubscribableObservableValueImpl<F>() {
-
-    override var value: F = mapper(parent.value)
+    override var value: T = mapper(parent.value)
         private set(value) {
             informListeners(value)
             field = value
         }
         get() {
-            synchronized(running) {
-                if (!running.get()) value = mapper(parent.value)
-            }
-            return field
+            val newValue = mapper(parent.value)
+            field = newValue
+            return newValue
         }
 
     private lateinit var handle: ObservableHandle
 
     override fun start() {
-        handle = parent.invokeWhen { value = mapper(it) }
+        handle = parent.invokeOnSet { value = mapper(it) }
     }
 
     override fun stop() {
