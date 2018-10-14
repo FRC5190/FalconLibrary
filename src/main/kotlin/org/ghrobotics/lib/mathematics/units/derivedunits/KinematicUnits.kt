@@ -1,17 +1,35 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
 import org.ghrobotics.lib.mathematics.units.*
-
-infix fun Length.per(other: Time): Velocity = div(other)
-operator fun Length.div(other: Time): Velocity = VelocityImpl(this, other)
+import org.ghrobotics.lib.mathematics.units.fractions.*
 
 val Length.velocity: Velocity
-    get() = VelocityImpl(
-        this,
-        1.second
+    get() = this per 1.second
+
+val Length.acceleration: Acceleration
+    get() = this.velocity per 1.second
+
+typealias Velocity = SIFrac11<Length, Time>
+typealias Speed = Velocity
+typealias Acceleration = SIFrac12<Length, Time, Time>
+typealias Jerk = SIFrac13<Length, Time, Time, Time>
+typealias Jolt = Jerk
+
+val Velocity.feetPerSecond
+    get() = adjust(
+        SIPrefix.BASE, LengthUnits.Feet,
+        SIPrefix.BASE, TimeUnits.Second
     )
 
-interface Velocity : SIFraction<Length, LengthUnits, Time, TimeUnits, Velocity> {
+val Velocity.inchesPerSecond
+    get() = adjust(
+        SIPrefix.BASE, LengthUnits.Inch,
+        SIPrefix.BASE, TimeUnits.Second
+    )
+
+
+/*
+interface Velocity : SIFrac<Length, LengthUnits, Time, TimeUnits, Velocity> {
     val length: Length
     val time: Time
 
@@ -34,7 +52,7 @@ interface Velocity : SIFraction<Length, LengthUnits, Time, TimeUnits, Velocity> 
 class VelocityImpl(
     override val length: Length,
     override val time: Time
-) : Velocity, AbstractSIFraction<Length, LengthUnits, Time, TimeUnits, Velocity>(
+) : Velocity, AbstractSIFrac<Length, LengthUnits, Time, TimeUnits, Velocity>(
     length,
     time
 ) {
@@ -50,4 +68,4 @@ class VelocityImpl(
 
         return (aTime2 * vLength.asDouble * aTime1.asDouble) / (vTime.asDouble * aLength.asDouble)
     }
-}
+}*/

@@ -1,10 +1,11 @@
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.derivedunits.per
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
+import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100msPerSecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 

@@ -1,34 +1,18 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.SIPrefix
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.TimeUnits
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.per
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac12
+import org.ghrobotics.lib.mathematics.units.fractions.adjustBottom
 
-infix fun NativeUnitVelocity.per(other: Time): NativeUnitAcceleration = div(other)
-operator fun NativeUnitVelocity.div(other: Time): NativeUnitAcceleration = NativeUnitAccelerationImpl(this, other)
+typealias NativeUnitAcceleration = SIFrac12<NativeUnit, Time, Time>
 
-fun Acceleration.STU(settings: NativeUnitSettings): NativeUnitAcceleration = top.STU(settings) per bottom
+fun Acceleration.STU(settings: NativeUnitSettings): NativeUnitAcceleration = top.STU(settings) per bottom.a per bottom.b
 
-interface NativeUnitAcceleration : SIChainedFraction<NativeUnitVelocity, Time, TimeUnits, NativeUnitAcceleration> {
-    val STUPer100msPerSecond: NativeUnitAcceleration
-
-    fun toAcceleration(settings: NativeUnitSettings) = top.toVelocity(settings) per bottom
-}
-
-class NativeUnitAccelerationImpl(
-    top: NativeUnitVelocity,
-    bottom: Time
-) : NativeUnitAcceleration, AbstractSIChainedFraction<NativeUnitVelocity, Time, TimeUnits, NativeUnitAcceleration>(
-    top,
-    bottom
-) {
-    override val STUPer100msPerSecond: NativeUnitAcceleration
-        get() = create(
-            top.STUPer100ms,
-            bottom.convertTo(SIPrefix.BASE, TimeUnits.Second)
-        )
-
-    override fun create(newTop: NativeUnitVelocity, newBottom: Time) =
-        NativeUnitAccelerationImpl(newTop, newBottom)
-
-}
+val NativeUnitAcceleration.STUPer100msPerSecond: NativeUnitAcceleration
+    get() = adjustBottom(
+        SIPrefix.DECA, TimeUnits.Second,
+        SIPrefix.BASE, TimeUnits.Second
+    )

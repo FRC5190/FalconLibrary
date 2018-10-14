@@ -8,16 +8,12 @@ package org.ghrobotics.lib.wrappers
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import org.ghrobotics.lib.mathematics.units.amp
-import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.volt
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.derivedunits.*
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
 import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100msPerSecond
 import kotlin.reflect.KProperty
 
 class FalconSRX(
@@ -89,13 +85,13 @@ class FalconSRX(
     var openLoopRamp by propInit(0.second) { configOpenloopRamp(it.second.asDouble, timeoutMs) }
     var closedLoopRamp by propInit(0.second) { configClosedloopRamp(it.second.asDouble, timeoutMs) }
 
-    var motionCruiseVelocity by propInit(Velocity.ZERO) {
+    var motionCruiseVelocity by propInit(0.meter.velocity) {
         configMotionCruiseVelocity(
             it.STU(nativeUnitSettings).STUPer100ms.asInt,
             timeoutMs
         )
     }
-    var motionAcceleration by propInit(Acceleration.ZERO) {
+    var motionAcceleration by propInit(0.meter.acceleration) {
         configMotionAcceleration(
             it.STU(nativeUnitSettings).STUPer100msPerSecond.asInt,
             timeoutMs
