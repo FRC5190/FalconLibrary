@@ -51,7 +51,7 @@ abstract class Subsystem(@Suppress("unused") val name: String) {
     var defaultCommand: Command? = null
         protected set
 
-    abstract fun autoReset()
-    abstract fun teleopReset()
-    abstract fun zeroOutputs()
+    open fun autoReset() {}
+    open fun teleopReset() {}
+    open fun zeroOutputs() {}
 }

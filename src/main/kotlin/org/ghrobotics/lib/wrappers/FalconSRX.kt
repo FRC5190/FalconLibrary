@@ -5,11 +5,16 @@
 
 package org.ghrobotics.lib.wrappers
 
+import com.ctre.phoenix.motorcontrol.ControlMode
+import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.*
+import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
 import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
@@ -122,6 +127,14 @@ class FalconSRX(
     }) { getSelectedSensorPosition(0).STU(nativeUnitSettings) }
     val sensorVelocity
         get() = getSelectedSensorVelocity(0).STUPer100ms(nativeUnitSettings)
+
+    fun set(controlMode: ControlMode, length: Length) = set(controlMode, length.STU(nativeUnitSettings).asDouble)
+
+    fun set(controlMode: ControlMode, velocity: Velocity) =
+        set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
+
+    fun set(controlMode: ControlMode, velocity: Velocity, demandType: DemandType, outputPercent: Double) =
+        set(controlMode, velocity.STU(nativeUnitSettings).STUPer100ms.asDouble, demandType, outputPercent)
 
     init {
         //        kP = 0.0; kI = 0.0; kD = 0.0; kF = 0.0
