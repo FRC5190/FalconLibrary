@@ -4,28 +4,24 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
 import kotlin.math.absoluteValue
 
-val Number.degree: Rotation get() = RotationImpl(toDouble(), false)
-val Number.radian: Rotation get() = RotationImpl(toDouble(), true)
+val Number.degree: Rotation2d get() = Rotation2dImpl(toDouble(), false)
+val Number.radian: Rotation2d get() = Rotation2dImpl(toDouble(), true)
 
-@Suppress("FunctionName")
-fun Rotation(x: Double, y: Double, normalize: Boolean): Rotation =
-    RotationImpl(x, y, normalize)
-
-interface Rotation : SIValue<Rotation> {
-    val degree: Rotation
-    val radian: Rotation
+interface Rotation2d : SIValue<Rotation2d> {
+    val degree: Rotation2d
+    val radian: Rotation2d
 
     val cos: Double
     val sin: Double
 
-    fun isParallel(rotation: Rotation): Boolean
+    fun isParallel(rotation: Rotation2d): Boolean
 
     companion object {
         val kRotation = 360.degree
     }
 }
 
-class RotationImpl : AbstractSIValue<Rotation>, Rotation {
+class Rotation2dImpl : AbstractSIValue<Rotation2d>, Rotation2d {
     override val asDouble: Double
     private val isRadian: Boolean
     override val cos: Double
@@ -59,27 +55,27 @@ class RotationImpl : AbstractSIValue<Rotation>, Rotation {
     }
 
     override val asMetric get() = radian
-    override val absoluteValue get() = RotationImpl(asDouble.absoluteValue, isRadian)
+    override val absoluteValue get() = Rotation2dImpl(asDouble.absoluteValue, isRadian)
 
-    override fun unaryMinus() = RotationImpl(cos, -sin, false)
+    override fun unaryMinus() = Rotation2dImpl(cos, -sin, false)
 
-    override fun plus(other: Rotation) = RotationImpl(
+    override fun plus(other: Rotation2d) = Rotation2dImpl(
         cos * other.cos - sin * other.sin,
         cos * other.sin + sin * other.cos,
         true
     )
 
-    override fun minus(other: Rotation) = plus(-other)
+    override fun minus(other: Rotation2d) = plus(-other)
 
-    override fun div(other: Rotation) = radian.asDouble / other.radian.asDouble
+    override fun div(other: Rotation2d) = radian.asDouble / other.radian.asDouble
 
-    override fun times(other: Number) = RotationImpl(asDouble * other.toDouble(), isRadian)
-    override fun div(other: Number) = RotationImpl(asDouble / other.toDouble(), isRadian)
+    override fun times(other: Number) = Rotation2dImpl(asDouble * other.toDouble(), isRadian)
+    override fun div(other: Number) = Rotation2dImpl(asDouble / other.toDouble(), isRadian)
 
-    override fun compareTo(other: Rotation) = radian.asDouble.compareTo(other.asDouble)
+    override fun compareTo(other: Rotation2d) = radian.asDouble.compareTo(other.asDouble)
 
-    override val degree get() = if (isRadian) RotationImpl(Math.toDegrees(asDouble), false) else this
-    override val radian get() = if (!isRadian) RotationImpl(Math.toRadians(asDouble), true) else this
+    override val degree get() = if (isRadian) Rotation2dImpl(Math.toDegrees(asDouble), false) else this
+    override val radian get() = if (!isRadian) Rotation2dImpl(Math.toRadians(asDouble), true) else this
 
-    override fun isParallel(rotation: Rotation) = (this - rotation).asDouble epsilonEquals 0.0
+    override fun isParallel(rotation: Rotation2d) = (this - rotation).asDouble epsilonEquals 0.0
 }

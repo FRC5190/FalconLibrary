@@ -16,11 +16,11 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
-fun Rotation.toTranslation(): Translation2d {
+fun Rotation2d.toTranslation(): Translation2d {
     val radians = radian.asDouble
     return Translation2d(Math.cos(radians), Math.sin(radians))
 }
@@ -74,7 +74,7 @@ data class Translation2d(
         yRaw - other.yRaw
     )
 
-    operator fun times(other: Rotation) = Translation2d(
+    operator fun times(other: Rotation2d) = Translation2d(
         xRaw * other.cos - yRaw * other.sin,
         xRaw * other.sin + yRaw * other.cos
     )

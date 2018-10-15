@@ -14,26 +14,26 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.radian
 import kotlin.math.absoluteValue
 
 
 class Twist2d(
-    val dxRaw: Double,
-    val dyRaw: Double,
-    val dThetaRaw: Double
+        val dxRaw: Double,
+        val dyRaw: Double,
+        val dThetaRaw: Double
 ) {
 
     constructor(
-        dx: Length,
-        dy: Length,
-        dTheta: Rotation
+            dx: Length,
+            dy: Length,
+            dTheta: Rotation2d
     ) : this(
-        dx.asMetric.asDouble,
-        dy.asMetric.asDouble,
-        dTheta.radian.asDouble
+            dx.asMetric.asDouble,
+            dy.asMetric.asDouble,
+            dTheta.radian.asDouble
     )
 
     val dx
@@ -57,12 +57,12 @@ class Twist2d(
                 sinTheta / dThetaRaw to (1.0 - cosTheta) / dThetaRaw
             }
             return Pose2d(
-                Translation2d(dxRaw * s - dyRaw * c, dxRaw * c + dyRaw * s),
-                Rotation(cosTheta, sinTheta, false)
+                    Translation2d(dxRaw * s - dyRaw * c, dxRaw * c + dyRaw * s),
+                    Rotation2d(cosTheta, sinTheta, false)
             )
         }
 
     operator fun times(scale: Double) =
-        Twist2d(dxRaw * scale, dyRaw * scale, dThetaRaw * scale)
+            Twist2d(dxRaw * scale, dyRaw * scale, dThetaRaw * scale)
 
 }

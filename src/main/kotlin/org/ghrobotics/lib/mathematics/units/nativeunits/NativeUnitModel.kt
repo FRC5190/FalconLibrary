@@ -15,12 +15,12 @@ class NativeUnitLengthModel(
 
 class NativeUnitRotationModel(
     sensorUnitsPerRotation: NativeUnit = NativeUnitModel.kDefaultSensorUnitsPerRotation
-) : NativeUnitModel<Rotation>(sensorUnitsPerRotation, 0.degree) {
+) : NativeUnitModel<Rotation2d>(sensorUnitsPerRotation, 0.degree) {
     override fun toModel(value: NativeUnit) =
-        Rotation.kRotation * (value / sensorUnitsPerRotation)
+        Rotation2d.kRotation * (value / sensorUnitsPerRotation)
 
-    override fun fromModel(value: Rotation) =
-        sensorUnitsPerRotation * (value / Rotation.kRotation)
+    override fun fromModel(value: Rotation2d) =
+        sensorUnitsPerRotation * (value / Rotation2d.kRotation)
 }
 
 abstract class NativeUnitModel<T : SIValue<T>>(

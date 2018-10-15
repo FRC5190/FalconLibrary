@@ -22,7 +22,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
@@ -40,7 +40,7 @@ val DefaultTrajectoryGenerator = TrajectoryGenerator(
 class TrajectoryGenerator(
     kMaxDx: Length,
     kMaxDy: Length,
-    kMaxDTheta: Rotation
+    kMaxDTheta: Rotation2d
 ) {
 
     val kMaxDx = kMaxDx.asMetric.asDouble

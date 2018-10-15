@@ -15,39 +15,40 @@ import koma.end
 import koma.extensions.get
 import koma.mat
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 import kotlin.math.pow
 
 
 class ParametricQuinticHermiteSpline(
-    private val x0: Double,
-    private val x1: Double,
-    private val dx0: Double,
-    private val dx1: Double,
-    private var ddx0: Double,
-    private var ddx1: Double,
-    private val y0: Double,
-    private val y1: Double,
-    private val dy0: Double,
-    private val dy1: Double,
-    private var ddy0: Double,
-    private var ddy1: Double
+        private val x0: Double,
+        private val x1: Double,
+        private val dx0: Double,
+        private val dx1: Double,
+        private var ddx0: Double,
+        private var ddx1: Double,
+        private val y0: Double,
+        private val y1: Double,
+        private val dy0: Double,
+        private val dy1: Double,
+        private var ddy0: Double,
+        private var ddy1: Double
 ) : ParametricSpline() {
 
     constructor(start: Pose2d, end: Pose2d) : this(
-        x0 = start.translation.xRaw,
-        x1 = end.translation.xRaw,
-        dx0 = 1.2 * start.translation.distance(end.translation) * start.rotation.cos,
-        dx1 = 1.2 * start.translation.distance(end.translation) * end.rotation.cos,
-        ddx0 = 0.0,
-        ddx1 = 0.0,
-        y0 = start.translation.yRaw,
-        y1 = end.translation.yRaw,
-        dy0 = 1.2 * start.translation.distance(end.translation) * start.rotation.sin,
-        dy1 = 1.2 * start.translation.distance(end.translation) * end.rotation.sin,
-        ddy0 = 0.0,
-        ddy1 = 0.0
+            x0 = start.translation.xRaw,
+            x1 = end.translation.xRaw,
+            dx0 = 1.2 * start.translation.distance(end.translation) * start.rotation.cos,
+            dx1 = 1.2 * start.translation.distance(end.translation) * end.rotation.cos,
+            ddx0 = 0.0,
+            ddx1 = 0.0,
+            y0 = start.translation.yRaw,
+            y1 = end.translation.yRaw,
+            dy0 = 1.2 * start.translation.distance(end.translation) * start.rotation.sin,
+            dy1 = 1.2 * start.translation.distance(end.translation) * end.rotation.sin,
+            ddy0 = 0.0,
+            ddy1 = 0.0
     )
 
 
@@ -69,10 +70,10 @@ class ParametricQuinticHermiteSpline(
     private val fy get() = yCoefficients[5]
 
     val startPose
-        get() = Pose2d(Translation2d(x0, y0), Rotation(dx0, dy0, true))
+        get() = Pose2d(Translation2d(x0, y0), Rotation2d(dx0, dy0, true))
 
     val endPose
-        get() = Pose2d(Translation2d(x1, y1), Rotation(dx1, dy1, true))
+        get() = Pose2d(Translation2d(x1, y1), Rotation2d(dx1, dy1, true))
 
     init {
         computeCoefficients()
@@ -137,23 +138,23 @@ class ParametricQuinticHermiteSpline(
     override fun getDCurvature(t: Double): Double {
         val dx2dy2 = dx(t) * dx(t) + dy(t) * dy(t)
         val num =
-            (dx(t) * dddy(t) - dddx(t) * dy(t)) * dx2dy2 - 3.0 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(
-                t
-            ) * ddy(t))
+                (dx(t) * dddy(t) - dddx(t) * dy(t)) * dx2dy2 - 3.0 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(
+                        t
+                ) * ddy(t))
         return num / (dx2dy2 * dx2dy2 * Math.sqrt(dx2dy2))
     }
 
     private fun dCurvature2(t: Double): Double {
         val dx2dy2 = dx(t) * dx(t) + dy(t) * dy(t)
         val num =
-            (dx(t) * dddy(t) - dddx(t) * dy(t)) * dx2dy2 - 3.0 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(
-                t
-            ) * ddy(t))
+                (dx(t) * dddy(t) - dddx(t) * dy(t)) * dx2dy2 - 3.0 * (dx(t) * ddy(t) - ddx(t) * dy(t)) * (dx(t) * ddx(t) + dy(
+                        t
+                ) * ddy(t))
         return num * num / (dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2)
     }
 
-    override fun getHeading(t: Double): Rotation {
-        return Rotation(dx(t), dy(t), true)
+    override fun getHeading(t: Double): Rotation2d {
+        return Rotation2d(dx(t), dy(t), true)
     }
 
     private fun sumDCurvature2(): Double {
@@ -231,41 +232,41 @@ class ParametricQuinticHermiteSpline(
 
                 //calculate partial derivatives of sumDCurvature2
                 splines[i] = ParametricQuinticHermiteSpline(
-                    temp.x0,
-                    temp.x1,
-                    temp.dx0,
-                    temp.dx1,
-                    temp.ddx0,
-                    temp.ddx1 + kEpsilon,
-                    temp.y0,
-                    temp.y1,
-                    temp.dy0,
-                    temp.dy1,
-                    temp.ddy0,
-                    temp.ddy1
+                        temp.x0,
+                        temp.x1,
+                        temp.dx0,
+                        temp.dx1,
+                        temp.ddx0,
+                        temp.ddx1 + kEpsilon,
+                        temp.y0,
+                        temp.y1,
+                        temp.dy0,
+                        temp.dy1,
+                        temp.ddy0,
+                        temp.ddy1
                 )
                 splines[i + 1] = ParametricQuinticHermiteSpline(
-                    temp1.x0,
-                    temp1.x1,
-                    temp1.dx0,
-                    temp1.dx1,
-                    temp1.ddx0 + kEpsilon,
-                    temp1.ddx1,
-                    temp1.y0,
-                    temp1.y1,
-                    temp1.dy0,
-                    temp1.dy1,
-                    temp1.ddy0,
-                    temp1.ddy1
+                        temp1.x0,
+                        temp1.x1,
+                        temp1.dx0,
+                        temp1.dx1,
+                        temp1.ddx0 + kEpsilon,
+                        temp1.ddx1,
+                        temp1.y0,
+                        temp1.y1,
+                        temp1.dy0,
+                        temp1.dy1,
+                        temp1.ddy0,
+                        temp1.ddy1
                 )
                 controlPoints[i].ddx = (sumDCurvature2(splines) - original) / kEpsilon
                 splines[i] = ParametricQuinticHermiteSpline(
-                    temp.x0, temp.x1, temp.dx0, temp.dx1, temp.ddx0, temp.ddx1, temp
+                        temp.x0, temp.x1, temp.dx0, temp.dx1, temp.ddx0, temp.ddx1, temp
                         .y0, temp.y1, temp.dy0, temp.dy1, temp.ddy0, temp.ddy1 + kEpsilon
                 )
                 splines[i + 1] = ParametricQuinticHermiteSpline(
-                    temp1.x0, temp1.x1, temp1.dx0, temp1.dx1, temp1.ddx0,
-                    temp1.ddx1, temp1.y0, temp1.y1, temp1.dy0, temp1.dy1, temp1.ddy0 + kEpsilon, temp1.ddy1
+                        temp1.x0, temp1.x1, temp1.dx0, temp1.dx1, temp1.ddx0,
+                        temp1.ddx1, temp1.y0, temp1.y1, temp1.dy0, temp1.dy1, temp1.ddy0 + kEpsilon, temp1.ddy1
                 )
                 controlPoints[i].ddy = (sumDCurvature2(splines) - original) / kEpsilon
 
@@ -319,9 +320,9 @@ class ParametricQuinticHermiteSpline(
             val p3 = Translation2d(kStepSize, sumDCurvature2(splines))
 
             val stepSize = FunctionalQuadraticSpline(
-                p1,
-                p2,
-                p3
+                    p1,
+                    p2,
+                    p3
             ).vertexXCoordinate //approximate step size to minimize sumDCurvature2 along the gradient
 
             for (i in 0 until splines.size - 1) {

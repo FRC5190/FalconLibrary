@@ -16,11 +16,11 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Curvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 
 abstract class ParametricSpline {
     abstract fun getPoint(t: Double): Translation2d
-    abstract fun getHeading(t: Double): Rotation
+    abstract fun getHeading(t: Double): Rotation2d
     abstract fun getCurvature(t: Double): Double
     abstract fun getDCurvature(t: Double): Double
     abstract fun getVelocity(t: Double): Double
