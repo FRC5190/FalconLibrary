@@ -13,7 +13,6 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import javafx.animation.Interpolatable
 import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.types.VaryInterpolatable
 
