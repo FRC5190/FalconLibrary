@@ -10,7 +10,7 @@ import org.junit.Test
 class UnitTest {
 
     private val settings = NativeUnitLengthModel(
-        1440,
+        1440.STU,
         3.0.inch
     )
 
