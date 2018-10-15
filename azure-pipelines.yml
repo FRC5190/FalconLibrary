@@ -8,8 +8,6 @@ pool:
 
 steps:
 
-- bash: sudo apt-get install openjfx
-
 - task: Gradle@2
   inputs:
     workingDirectory: ''
