@@ -3,7 +3,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.radians
+import org.ghrobotics.lib.mathematics.units.radian
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -86,7 +86,7 @@ class AStarOptimizer(
                         (lastPointDistance + nextPointDistance)
             }
 
-            newList += Pose2d(point, finalAngle.radians)
+            newList += Pose2d(point, finalAngle.radian)
         }
         return newList
     }

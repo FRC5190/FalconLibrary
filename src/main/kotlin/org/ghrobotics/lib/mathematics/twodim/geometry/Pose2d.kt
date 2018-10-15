@@ -16,6 +16,8 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.absoluteValue
@@ -24,18 +26,18 @@ import kotlin.math.absoluteValue
 
 data class Pose2d(
     val translation: Translation2d = Translation2d(),
-    val rotation: Rotation2d = Rotation2d()
+    val rotation: Rotation = 0.degree
 ) : VaryInterpolatable<Pose2d> {
 
     constructor(
         x: Length,
         y: Length,
-        rotation: Rotation2d
+        rotation: Rotation
     ) : this(Translation2d(x, y), rotation)
 
     val twist: Twist2d
         get() {
-            val dtheta = rotation.radians
+            val dtheta = rotation.radian.asDouble
             val halfDTheta = dtheta / 2.0
             val cosMinusOne = rotation.cos - 1.0
 
@@ -45,7 +47,7 @@ data class Pose2d(
                 -(halfDTheta * rotation.sin) / cosMinusOne
             }
             val translationPart = translation *
-                    Rotation2d(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
+                    Rotation(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
             return Twist2d(translationPart.xRaw, translationPart.yRaw, dtheta)
         }
 

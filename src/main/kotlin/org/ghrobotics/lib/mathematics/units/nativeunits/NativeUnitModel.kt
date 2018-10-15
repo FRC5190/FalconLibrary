@@ -1,8 +1,6 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.SIValue
-import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.*
 
 class NativeUnitLengthModel(
     sensorUnitsPerRotation: NativeUnit = NativeUnitModel.kDefaultSensorUnitsPerRotation,
@@ -13,6 +11,16 @@ class NativeUnitLengthModel(
 
     override fun fromModel(value: Length): NativeUnit =
         sensorUnitsPerRotation * (value / (wheelRadius * (2.0 * Math.PI)))
+}
+
+class NativeUnitRotationModel(
+    sensorUnitsPerRotation: NativeUnit = NativeUnitModel.kDefaultSensorUnitsPerRotation
+) : NativeUnitModel<Rotation>(sensorUnitsPerRotation, 0.degree) {
+    override fun toModel(value: NativeUnit) =
+        Rotation.kRotation * (value / sensorUnitsPerRotation)
+
+    override fun fromModel(value: Rotation) =
+        sensorUnitsPerRotation * (value / Rotation.kRotation)
 }
 
 abstract class NativeUnitModel<T : SIValue<T>>(

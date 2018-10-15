@@ -17,10 +17,11 @@ import kotlin.math.sqrt
 // Equation 5.12
 
 open class RamseteController(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        drive: DifferentialDrive,
-        private val kBeta: Double,
-        private val kZeta: Double) : TrajectoryFollower(trajectory, drive) {
+    trajectory: TimedTrajectory<Pose2dWithCurvature>,
+    drive: DifferentialDrive,
+    private val kBeta: Double,
+    private val kZeta: Double
+) : TrajectoryFollower(trajectory, drive) {
 
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
@@ -29,11 +30,11 @@ open class RamseteController(
         val wd = vd * referencePoint.state.state.curvature.curvature
 
         val k1 = 2 * kZeta * sqrt(wd * wd + kBeta * vd * vd)
-        val angleError = error.rotation.radians
+        val angleError = error.rotation.radian.asDouble
 
         return DifferentialDrive.ChassisState(
-                linear = vd * error.rotation.cos + k1 * error.translation.xRaw,
-                angular = wd + kBeta * vd * sinc(angleError) * error.translation.yRaw + k1 * angleError
+            linear = vd * error.rotation.cos + k1 * error.translation.xRaw,
+            angular = wd + kBeta * vd * sinc(angleError) * error.translation.yRaw + k1 * angleError
         )
     }
 

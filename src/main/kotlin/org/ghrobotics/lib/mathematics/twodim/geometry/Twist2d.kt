@@ -14,7 +14,9 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Rotation
 import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.radian
 import kotlin.math.absoluteValue
 
 
@@ -27,11 +29,11 @@ class Twist2d(
     constructor(
         dx: Length,
         dy: Length,
-        dTheta: Rotation2d
+        dTheta: Rotation
     ) : this(
         dx.asMetric.asDouble,
         dy.asMetric.asDouble,
-        dTheta.radians
+        dTheta.radian.asDouble
     )
 
     val dx
@@ -39,7 +41,7 @@ class Twist2d(
     val dy
         get() = dyRaw.meter
     val dTheta
-        get() = dThetaRaw.radians
+        get() = dThetaRaw.radian
 
     val norm
         get() = if (dyRaw == 0.0) dxRaw.absoluteValue else Math.hypot(dxRaw, dyRaw)
@@ -56,7 +58,7 @@ class Twist2d(
             }
             return Pose2d(
                 Translation2d(dxRaw * s - dyRaw * c, dxRaw * c + dyRaw * s),
-                Rotation2d(cosTheta, sinTheta, false)
+                Rotation(cosTheta, sinTheta, false)
             )
         }
 

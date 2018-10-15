@@ -6,19 +6,12 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
 import com.team254.lib.physics.DifferentialDrive
-import org.ghrobotics.lib.mathematics.twodim.geometry.*
-import org.ghrobotics.lib.mathematics.twodim.trajectory.DefaultTrajectoryGenerator
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest.Companion.trajectory
-import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.millisecond
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -36,7 +29,7 @@ class RamseteControllerTest {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
         trajectoryFollower = RamseteController(trajectory, TrajectoryGeneratorTest.drive, kBeta, kZeta)
 
-        val error = Pose2d(1.feet, 50.inch, 5.degrees)
+        val error = Pose2d(1.feet, 50.inch, 5.degree)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
@@ -54,8 +47,9 @@ class RamseteControllerTest {
             val output = trajectoryFollower.getOutputFromDynamics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                    output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
-                    output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble)
+                output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
+                output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble
+            )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
 
@@ -114,7 +108,7 @@ class RamseteControllerTest {
         assert(terror.norm.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
-        assert(rerror.degrees.also {
+        assert(rerror.degree.asDouble.also {
             println("[Test] Rotational Error: $it degrees")
         } < 5.0)
 //

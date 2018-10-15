@@ -13,8 +13,6 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.degrees
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricQuinticHermiteSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSplineGenerator
@@ -24,6 +22,8 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Rotation
+import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 import org.ghrobotics.lib.mathematics.units.inch
@@ -34,18 +34,18 @@ import kotlin.math.pow
 val DefaultTrajectoryGenerator = TrajectoryGenerator(
     2.inch,
     0.25.inch,
-    5.degrees
+    5.degree
 )
 
 class TrajectoryGenerator(
     kMaxDx: Length,
     kMaxDy: Length,
-    kMaxDTheta: Rotation2d
+    kMaxDTheta: Rotation
 ) {
 
     val kMaxDx = kMaxDx.asMetric.asDouble
     val kMaxDy = kMaxDy.asMetric.asDouble
-    val kMaxDTheta = kMaxDTheta.radians
+    val kMaxDTheta = kMaxDTheta.radian.asDouble
 
     fun generateTrajectory(
         wayPoints: List<Pose2d>,
@@ -56,7 +56,7 @@ class TrajectoryGenerator(
         maxAcceleration: Acceleration,
         reversed: Boolean
     ): TimedTrajectory<Pose2dWithCurvature> {
-        val flippedPosition = Pose2d(rotation = Rotation2d.fromDegrees(180.0))
+        val flippedPosition = Pose2d(rotation = 180.degree)
 
         // Make theta normal for trajectory generation if path is trajectoryReversed.
         val newWayPoints = wayPoints.asSequence().map { point ->
@@ -157,12 +157,18 @@ class TrajectoryGenerator(
 
         }
 
-        val distanceViewRange = distanceTrajectory.firstInterpolant.asDouble..distanceTrajectory.lastInterpolant.asDouble
+        val distanceViewRange =
+            distanceTrajectory.firstInterpolant.asDouble..distanceTrajectory.lastInterpolant.asDouble
         val distanceViewSteps =
-            Math.ceil((distanceTrajectory.lastInterpolant.asDouble - distanceTrajectory.firstInterpolant.asDouble) / stepSize + 1).toInt()
+            Math.ceil((distanceTrajectory.lastInterpolant.asDouble - distanceTrajectory.firstInterpolant.asDouble) / stepSize + 1)
+                .toInt()
 
         val states = (0 until distanceViewSteps).map { step ->
-            distanceTrajectory.sample((step * stepSize + distanceTrajectory.firstInterpolant.asDouble).coerceIn(distanceViewRange))
+            distanceTrajectory.sample(
+                (step * stepSize + distanceTrajectory.firstInterpolant.asDouble).coerceIn(
+                    distanceViewRange
+                )
+            )
                 .state
         }
 

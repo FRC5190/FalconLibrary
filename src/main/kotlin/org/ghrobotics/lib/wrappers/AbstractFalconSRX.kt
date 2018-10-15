@@ -130,7 +130,7 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
             timeoutInt
         )
     }
-    var currentLimitEnabled by Delegates.observable(false) { _, _, newValue ->
+    var currentLimitingEnabled by Delegates.observable(false) { _, _, newValue ->
         enableCurrentLimit(
             newValue
         )

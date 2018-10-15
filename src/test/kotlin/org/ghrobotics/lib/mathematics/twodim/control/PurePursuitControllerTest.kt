@@ -3,14 +3,9 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.degrees
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.millisecond
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -27,9 +22,14 @@ class PurePursuitControllerTest {
     @Test
     fun testTrajectoryFollower() {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
-        trajectoryFollower = PurePursuitController(TrajectoryGeneratorTest.trajectory, TrajectoryGeneratorTest.drive, kLat, kLookaheadTime)
+        trajectoryFollower = PurePursuitController(
+            TrajectoryGeneratorTest.trajectory,
+            TrajectoryGeneratorTest.drive,
+            kLat,
+            kLookaheadTime
+        )
 
-        val error =  Pose2d(1.feet, 50.inch, 5.degrees)
+        val error = Pose2d(1.feet, 50.inch, 5.degree)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
@@ -47,17 +47,18 @@ class PurePursuitControllerTest {
             val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                    output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
-                    output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble)
+                output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
+                output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble
+            )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
 
             time += dt
 
             totalpose += Twist2d(
-                    k.linear,
-                    0.0,
-                    k.angular * 1.05
+                k.linear,
+                0.0,
+                k.angular * 1.05
             ).asPose
 
 
@@ -71,7 +72,7 @@ class PurePursuitControllerTest {
         val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second.asDouble)
 
         val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
-                .xAxisTitle("X").yAxisTitle("Y").build()
+            .xAxisTitle("X").yAxisTitle("Y").build()
 
         chart.styler.markerSize = 8
         chart.styler.seriesColors = arrayOf(Color.ORANGE, Color(151, 60, 67))
@@ -107,7 +108,7 @@ class PurePursuitControllerTest {
         assert(terror.norm.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
-        assert(rerror.degrees.also {
+        assert(rerror.degree.asDouble.also {
             println("[Test] Rotational Error: $it degrees")
         } < 10.0)
 ////
