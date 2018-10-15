@@ -14,6 +14,7 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.lerp
+import org.ghrobotics.lib.types.Interpolatable
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 data class Pose2dWithCurvature(
