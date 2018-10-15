@@ -7,147 +7,70 @@ package org.ghrobotics.lib.wrappers
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
-import com.ctre.phoenix.motorcontrol.FeedbackDevice
-import com.ctre.phoenix.motorcontrol.NeutralMode
-import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.volt
-import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitSettings
-import org.ghrobotics.lib.mathematics.units.nativeunits.STU
-import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100ms
-import org.ghrobotics.lib.mathematics.units.nativeunits.STUPer100msPerSecond
-import kotlin.reflect.KProperty
+import org.ghrobotics.lib.mathematics.units.expressions.SIExp2
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac11
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac12
+import org.ghrobotics.lib.mathematics.units.nativeunits.*
+import kotlin.properties.Delegates.observable
 
-class FalconSRX(
+typealias FalconLengthSRX = FalconSRX<Length>
+
+class FalconSRX<T : SIValue<T>>(
     id: Int,
-    val nativeUnitSettings: NativeUnitSettings,
-    private val timeoutMs: Int = 10
-) : TalonSRX(id) {
-
-    private fun <T> propInit(initValue: T, set: FalconSRX.(T) -> Unit): FalconSRXProp<T> {
-        var value = initValue
-        return prop({
-            value = it
-            set(this, it)
-        }) { value }
-    }
-
-    private fun <T> prop(set: FalconSRX.(T) -> Unit, get: FalconSRX.() -> T) = FalconSRXProp(set, get)
-
-    private class FalconSRXProp<T>(
-        private val set: FalconSRX.(T) -> Unit,
-        private val get: FalconSRX.() -> T
-    ) {
-        operator fun setValue(thisRef: FalconSRX, property: KProperty<*>, value: T) {
-            synchronized(this) {
-                set(thisRef, value)
-            }
-        }
-
-        operator fun getValue(thisRef: FalconSRX, property: KProperty<*>) = synchronized(this) { get(thisRef) }
-    }
-
-    var kP by propInit(0.0) { config_kP(0, it, timeoutMs) }
-    var kI by propInit(0.0) { config_kI(0, it, timeoutMs) }
-    var kD by propInit(0.0) { config_kD(0, it, timeoutMs) }
-    var kF by propInit(0.0) { config_kF(0, it, timeoutMs) }
-    var encoderPhase by propInit(false) { setSensorPhase(it) }
-
-    var overrideLimitSwitchesEnable by propInit(false) { overrideLimitSwitchesEnable(it) }
-    var softLimitFwd by propInit(0.STU) {
-        configForwardSoftLimitThreshold(
-            it.asInt,
-            timeoutMs
-        )
-    }
-    var softLimitRev by propInit(0.STU) {
-        configReverseSoftLimitThreshold(
-            it.asInt,
-            timeoutMs
-        )
-    }
-    var softLimitFwdEnabled by propInit(false) { configForwardSoftLimitEnable(it, timeoutMs) }
-    var softLimitRevEnabled by propInit(false) { configReverseSoftLimitEnable(it, timeoutMs) }
-
-    var brakeMode by propInit(NeutralMode.Coast) { setNeutralMode(it) }
-    var closedLoopTolerance by propInit(0.feet) {
+    val nativeUnitModel: NativeUnitModel<T>,
+    timeout: Time = 10.millisecond
+) : AbstractFalconSRX<T>(id, timeout) {
+    override var allowedClosedLoopError: T by observable(nativeUnitModel.zero) { _, _, newValue ->
         configAllowableClosedloopError(
             0,
-            it.STU(nativeUnitSettings).asInt,
-            timeoutMs
+            nativeUnitModel.fromModel(newValue).asInt,
+            timeoutInt
         )
     }
 
-    var nominalFwdOutput by propInit(0.0) { configNominalOutputForward(it, timeoutMs) }
-    var nominalRevOutput by propInit(0.0) { configNominalOutputReverse(it, timeoutMs) }
-
-    var peakFwdOutput by propInit(1.0) { configPeakOutputForward(it, timeoutMs) }
-    var peakRevOutput by propInit(-1.0) { configPeakOutputReverse(it, timeoutMs) }
-
-    var openLoopRamp by propInit(0.second) { configOpenloopRamp(it.second.asDouble, timeoutMs) }
-    var closedLoopRamp by propInit(0.second) { configClosedloopRamp(it.second.asDouble, timeoutMs) }
-
-    var motionCruiseVelocity by propInit(0.meter.velocity) {
+    override var motionCruiseVelocity: SIFrac11<T, Time> by observable(
+        SIFrac11(
+            nativeUnitModel.zero,
+            0.second
+        )
+    ) { _, _, newValue ->
         configMotionCruiseVelocity(
-            it.STU(nativeUnitSettings).STUPer100ms.asInt,
-            timeoutMs
+            newValue.fromModel(nativeUnitModel).STUPer100ms.asInt,
+            timeoutInt
         )
     }
-    var motionAcceleration by propInit(0.meter.acceleration) {
+    override var motionAcceleration: SIFrac12<T, Time, Time> by observable(
+        SIFrac12(
+            nativeUnitModel.zero,
+            SIExp2(0.second, 0.second)
+        )
+    ) { _, _, newValue ->
         configMotionAcceleration(
-            it.STU(nativeUnitSettings).STUPer100msPerSecond.asInt,
-            timeoutMs
+            newValue.fromModel(nativeUnitModel).STUPer100msPerSecond.asInt,
+            timeoutInt
         )
     }
+    override var sensorPosition: T
+        get() = getSelectedSensorPosition(0).STU.toModel(nativeUnitModel)
+        set(value) {
+            setSelectedSensorPosition(value.fromModel(nativeUnitModel).asInt, 0, timeoutInt)
+        }
+    override val sensorVelocity: SIFrac11<T, Time>
+        get() = getSelectedSensorVelocity(0).STUPer100ms.toModel(nativeUnitModel)
 
-    var feedbackSensor by propInit(FeedbackDevice.None) { configSelectedFeedbackSensor(it, 0, timeoutMs) }
-    var peakCurrentLimit by propInit(0.amp) { configPeakCurrentLimit(it.amp.asInt, timeoutMs) }
+    override fun set(controlMode: ControlMode, length: T) = set(controlMode, length.fromModel(nativeUnitModel).asDouble)
 
-    var peakCurrentLimitDuration by propInit(0.millisecond) {
-        configPeakCurrentDuration(
-            it.millisecond.asInt,
-            timeoutMs
-        )
-    }
-    var continuousCurrentLimit by propInit(0.amp) { configContinuousCurrentLimit(it.amp.asInt, timeoutMs) }
-    var currentLimitingEnabled by propInit(false) { enableCurrentLimit(it) }
-
-    var voltageCompensationSaturation by propInit(12.volt) { configVoltageCompSaturation(it.asDouble, timeoutMs) }
-    var voltageCompensationEnabled by propInit(false) { enableVoltageCompensation(it) }
-
-    var sensorPosition by prop({
-        setSelectedSensorPosition(
-            it.STU(nativeUnitSettings).asInt,
-            0,
-            timeoutMs
-        )
-    }) { getSelectedSensorPosition(0).STU(nativeUnitSettings) }
-    val sensorVelocity
-        get() = getSelectedSensorVelocity(0).STUPer100ms(nativeUnitSettings)
-
-    fun set(controlMode: ControlMode, length: Length) = set(controlMode, length.STU(nativeUnitSettings).asDouble)
-
-    fun set(controlMode: ControlMode, velocity: Velocity) =
+    override fun set(controlMode: ControlMode, velocity: SIFrac11<T, Time>) =
         set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
-    fun set(controlMode: ControlMode, velocity: Velocity, demandType: DemandType, outputPercent: Double) =
-        set(controlMode, velocity.STU(nativeUnitSettings).STUPer100ms.asDouble, demandType, outputPercent)
+    override fun set(
+        controlMode: ControlMode,
+        velocity: SIFrac11<T, Time>,
+        demandType: DemandType,
+        outputPercent: Double
+    ) = set(controlMode, velocity.fromModel(nativeUnitModel).STUPer100ms.asDouble, demandType, outputPercent)
 
-    init {
-        //        kP = 0.0; kI = 0.0; kD = 0.0; kF = 0.0
-        //        encoderPhase = false; overrideLimitSwitchesEnable = false
-        //        softLimitFwd = NativeUnits(0); softLimitFwdEnabled = false
-        //        softLimitRev = NativeUnits(0); softLimitRevEnabled = false
-        //        openLoopRamp = Seconds(0.0); closedLoopRamp = Seconds(0.0)
-        //        motionCruiseVelocity = NativeUnitsPer100Ms(0); motionAcceleration = 0
-        //        feedbackSensor = FeedbackDevice.None
-        //        peakCurrentLimit = Amps(0); continousCurrentLimit = Amps(0)
-        //        peakCurrentLimitDuration = Seconds(0.0); currentLimitingEnabled = false
-        //        voltageCompensationSaturation = Volts(12.0); voltageCompensationEnabled = false
-    }
 
 }
 

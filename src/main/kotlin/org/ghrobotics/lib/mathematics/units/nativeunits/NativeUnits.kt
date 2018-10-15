@@ -1,93 +1,49 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.AbstractSIValue
 import org.ghrobotics.lib.mathematics.units.SIValue
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.millisecond
 import kotlin.math.absoluteValue
-import kotlin.math.roundToLong
 
-fun Length.STU(settings: NativeUnitSettings) =
-    NativeUnitImpl.distanceToNativeUnit(this, settings)
+fun <T : SIValue<T>> T.fromModel(model: NativeUnitModel<T>) = model.fromModel(this)
 
-val Number.STU: NativeUnit
-    get() = NativeUnitImpl(toLong())
-
-fun Number.STU(settings: NativeUnitSettings) = STU.length(settings)
+val Number.STU: NativeUnit get() = NativeUnitImpl(toDouble())
 
 interface NativeUnit :
     SIValue<NativeUnit> {
-    fun length(settings: NativeUnitSettings): Length
+    fun <T : SIValue<T>> toModel(model: NativeUnitModel<T>): T
 
-    fun plus(other: Length, settings: NativeUnitSettings): NativeUnit
-    fun minus(other: Length, settings: NativeUnitSettings): NativeUnit
+    fun <T : SIValue<T>> plus(other: T, model: NativeUnitModel<T>): NativeUnit
+    fun <T : SIValue<T>> minus(other: T, model: NativeUnitModel<T>): NativeUnit
 }
 
-data class NativeUnitSettings(
-    val sensorUnitsPerRotation: Int = 1440,
-    val radius: Length = 3.0.inch
-)
+class NativeUnitImpl(value: Double) : AbstractSIValue<NativeUnit>(), NativeUnit {
+    override val asDouble: Double = value
 
-private class NativeUnitImpl(val value: Long) : NativeUnit {
-    override val asDouble: Double
-        get() = value.toDouble()
-    override val asFloat: Float
-        get() = value.toFloat()
-    override val asLong: Long
-        get() = value
-    override val asInt: Int
-        get() = value.toInt()
+    override val asMetric: NativeUnit = this
 
-    override val asMetric: NativeUnit
-        get() = TODO("Native Unit cannot be represented as metric")
-
-    override fun length(settings: NativeUnitSettings) = convertToInch(
-        value,
-        settings
-    ).inch
+    override fun <T : SIValue<T>> toModel(model: NativeUnitModel<T>): T = model.toModel(this)
 
     override val absoluteValue by lazy { NativeUnitImpl(value.absoluteValue) }
 
     override fun plus(other: NativeUnit) =
-        NativeUnitImpl(value + other.asLong)
+        NativeUnitImpl(asDouble + other.asDouble)
 
     override fun minus(other: NativeUnit) =
-        NativeUnitImpl(value - other.asLong)
+        NativeUnitImpl(asDouble - other.asDouble)
 
-    override fun plus(other: Length, settings: NativeUnitSettings): NativeUnit =
-        plus(
-            distanceToNativeUnit(
-                other,
-                settings
-            )
-        )
+    override fun <T : SIValue<T>> plus(other: T, model: NativeUnitModel<T>): NativeUnit = plus(model.fromModel(other))
 
-    override fun minus(other: Length, settings: NativeUnitSettings) = plus(-other, settings)
+    override fun <T : SIValue<T>> minus(other: T, model: NativeUnitModel<T>): NativeUnit = minus(-other, model)
 
     override fun times(other: Number) =
-        NativeUnitImpl(value * other.toLong())
+        NativeUnitImpl(asDouble * other.toDouble())
+
     override fun div(other: Number) =
-        NativeUnitImpl(value * other.toLong())
+        NativeUnitImpl(asDouble * other.toDouble())
 
-    override fun div(other: NativeUnit) = (value / other.asLong).toDouble()
+    override fun div(other: NativeUnit) = asDouble / other.asDouble
 
-    override fun unaryMinus() = NativeUnitImpl(-value)
+    override fun unaryMinus() = NativeUnitImpl(-asDouble)
 
-    override fun compareTo(other: NativeUnit) = value.compareTo(other.asLong)
-
-    companion object {
-        fun convertToInch(value: Long, settings: NativeUnitSettings): Double =
-            value.toDouble() / settings.sensorUnitsPerRotation.toDouble() * (2.0 * Math.PI * settings.radius.inch.asDouble)
-
-        fun distanceToNativeUnit(distance: Length, settings: NativeUnitSettings): NativeUnit =
-            NativeUnitImpl(
-                distanceToNativeUnitVal(
-                    distance,
-                    settings
-                )
-            )
-
-        fun distanceToNativeUnitVal(distance: Length, settings: NativeUnitSettings): Long =
-            (distance.inch.asDouble / (2.0 * Math.PI * settings.radius.inch.asDouble) * settings.sensorUnitsPerRotation.toDouble()).roundToLong()
-    }
+    override fun compareTo(other: NativeUnit) = asDouble.compareTo(other.asDouble)
 }
