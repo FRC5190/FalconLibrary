@@ -28,10 +28,10 @@ abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurv
 
     protected val iterator = trajectory.iterator()
 
-    protected val referencePoint
+    val referencePoint
         get() = iterator.currentState
 
-    protected val referencePose
+    val referencePose
         get() = referencePoint.state.state.pose
 
     val isFinished
