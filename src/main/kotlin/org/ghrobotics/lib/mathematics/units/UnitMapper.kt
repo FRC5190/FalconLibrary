@@ -6,7 +6,6 @@ object UnitMapper {
     val timeMapper = SpecificUnitMapper<TimeUnits>()
     val electricCurrentMapper = SpecificUnitMapper<ElectricCurrentUnits>()
     val massMapper = SpecificUnitMapper<MassUnits>()
-    val rotationMapper = SpecificUnitMapper<LengthUnits>()
 
     init {
         lengthMapper.apply {
@@ -26,9 +25,6 @@ object UnitMapper {
             map(TimeUnits.Day, TimeUnits.Hour, 24.0)
             map(TimeUnits.Week, TimeUnits.Day, 7.0)
             map(TimeUnits.Moment, TimeUnits.Second, 90.0)
-        }
-        rotationMapper.apply {
-
         }
     }
 

@@ -4,14 +4,20 @@ import kotlinx.coroutines.experimental.*
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.observabletype.ObservableListener
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 
-class DelayCommand(delay: Time) : Command() {
+class DelayCommand(private val delaySource: Source<Time>) : Command() {
     init {
         executeFrequency = 0
-        withTimeout(delay)
+    }
+
+    constructor(delay: Time) : this(Source(delay))
+
+    override suspend fun initialize() {
+        withTimeout(delaySource.value)
     }
 }
 
