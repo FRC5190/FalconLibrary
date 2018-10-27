@@ -46,13 +46,13 @@ class BasicCommandGroupBuilder(private val type: FalconCommandGroup.GroupType) :
 }
 
 class StateCommandGroupBuilder<T>(private val state: Source<T>) : CommandGroupBuilder {
-    private val stateMap = mutableMapOf<T, FalconCommand>()
+    private val stateMap = mutableMapOf<T, AbstractFalconCommand>()
 
-    fun state(vararg states: T, block: () -> FalconCommand) = state(states = *states, command = block())
-    fun state(vararg states: T, command: FalconCommand) = states.forEach { state(it, command) }
+    fun state(vararg states: T, block: () -> AbstractFalconCommand) = state(states = *states, command = block())
+    fun state(vararg states: T, command: AbstractFalconCommand) = states.forEach { state(it, command) }
 
-    fun state(state: T, block: () -> FalconCommand) = state(state, block())
-    fun state(state: T, command: FalconCommand) {
+    fun state(state: T, block: () -> AbstractFalconCommand) = state(state, block())
+    fun state(state: T, command: AbstractFalconCommand) {
         if (stateMap.containsKey(state)) println("[StateCommandGroup] Warning: state $state was overwritten during building")
         stateMap[state] = command
     }

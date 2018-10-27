@@ -6,19 +6,26 @@ import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.loopFrequency
 
-abstract class FalconCommand(val requiredSubsystems: List<Subsystem>) : AbstractFalconCommand() {
+abstract class FalconCommand(val requiredSubsystems: List<FalconSubsystem>) : AbstractFalconCommand() {
     companion object {
         const val DEFAULT_FREQUENCY = 50
 
         protected val commandScope = CoroutineScope(newFixedThreadPoolContext(2, "Command"))
     }
 
-    constructor(vararg requiredSubsystems: Subsystem) : this(requiredSubsystems.toList())
+    constructor(vararg requiredSubsystems: FalconSubsystem) : this(requiredSubsystems.toList())
 
     private val _wpiCommand = FalconWpiCommand()
     override val wpiCommand: Command = _wpiCommand
 
     private inner class FalconWpiCommand : Command() {
+
+        init {
+            requiredSubsystems.forEach {
+                requires(it.wpiSubsystem)
+            }
+        }
+
         var timeout = 0.second
             set(value) {
                 setTimeout(value.second.asDouble)
@@ -50,4 +57,10 @@ abstract class FalconCommand(val requiredSubsystems: List<Subsystem>) : Abstract
 
     override fun withTimeout(delay: Time) = apply { _wpiCommand.timeout = delay }
 
+}
+
+object EmptyFalconCommand : FalconCommand() {
+    init {
+        executeFrequency = 0
+    }
 }
