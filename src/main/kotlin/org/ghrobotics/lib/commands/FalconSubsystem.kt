@@ -34,13 +34,14 @@ abstract class FalconSubsystem(val name: String = "FalconSubsystem ${subsystemId
 
     private inner class FalconWpiSubsystem : Subsystem(name) {
         override fun initDefaultCommand() {
-            defaultCommand = (this@FalconSubsystem.defaultCommand ?: EmptyFalconCommand).wpiCommand
+            defaultCommand = this@FalconSubsystem.defaultCommand.wpiCommand
         }
     }
 
-    var defaultCommand: FalconCommand? = null
+    @Suppress("LeakingThis")
+    var defaultCommand: FalconCommand = DefaultCommand(this)
         protected set(value) {
-            _wpiSubsystem.defaultCommand = (value ?: EmptyFalconCommand).wpiCommand
+            _wpiSubsystem.defaultCommand = value.wpiCommand
             field = value
         }
 

@@ -79,7 +79,6 @@ abstract class FalconRobotBase : RobotBase() {
         // Update Values
         onWhile(Mode.ANY) {
             SmartDashboard.updateValues()
-            Scheduler.getInstance().run()
             //            LiveWindow.updateValues()
         }
 
@@ -91,6 +90,10 @@ abstract class FalconRobotBase : RobotBase() {
         initialized = true
         // Start up the default commands
         println("[Robot] Initialized")
+        // Update Commands
+        onWhile(Mode.ANY) {
+            Scheduler.getInstance().run()
+        }
 
         // Tell the DS that the robot is ready to be enabled
         HAL.observeUserProgramStarting()
@@ -111,7 +114,7 @@ abstract class FalconRobotBase : RobotBase() {
     }
 
     // Helpers
-    protected suspend operator fun FalconSubsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
+    protected operator fun FalconSubsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
 
     protected suspend operator fun FalconHID<*>.unaryPlus() = onWhile(Mode.TELEOP) { update() }
 }

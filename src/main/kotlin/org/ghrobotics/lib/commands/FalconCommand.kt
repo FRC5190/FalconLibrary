@@ -64,3 +64,9 @@ object EmptyFalconCommand : FalconCommand() {
         executeFrequency = 0
     }
 }
+
+class DefaultCommand(subsystem: FalconSubsystem) : FalconCommand(subsystem) {
+    init {
+        executeFrequency = 0
+    }
+}
