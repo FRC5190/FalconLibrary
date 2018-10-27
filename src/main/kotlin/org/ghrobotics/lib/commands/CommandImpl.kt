@@ -2,7 +2,7 @@ package org.ghrobotics.lib.commands
 
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 
-abstract class InstantCommand : Command() {
+abstract class InstantCommand : FalconCommand() {
     init {
         executeFrequency = 0
         _finishCondition += ObservableValue(true)
@@ -16,8 +16,8 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
 class PeriodicRunnableCommand(
         private val runnable: suspend () -> Unit,
         exitCondition: ObservableValue<Boolean>,
-        executeFrequency: Int = Command.DEFAULT_FREQUENCY
-) : Command() {
+        executeFrequency: Int = FalconCommand.DEFAULT_FREQUENCY
+) : FalconCommand() {
     init {
         this.executeFrequency = executeFrequency
         _finishCondition += exitCondition

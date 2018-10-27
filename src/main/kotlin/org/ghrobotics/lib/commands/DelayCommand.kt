@@ -9,7 +9,7 @@ import org.ghrobotics.lib.utils.observabletype.ObservableListener
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 
-class DelayCommand(private val delaySource: Source<Time>) : Command() {
+class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
     init {
         executeFrequency = 0
     }

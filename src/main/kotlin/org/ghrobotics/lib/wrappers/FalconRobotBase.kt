@@ -1,6 +1,7 @@
 package org.ghrobotics.lib.wrappers
 
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.command.Scheduler
 import edu.wpi.first.wpilibj.hal.HAL
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -78,6 +79,7 @@ abstract class FalconRobotBase : RobotBase() {
         // Update Values
         onWhile(Mode.ANY) {
             SmartDashboard.updateValues()
+            Scheduler.getInstance().run()
             //            LiveWindow.updateValues()
         }
 

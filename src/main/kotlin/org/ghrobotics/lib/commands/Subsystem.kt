@@ -48,7 +48,7 @@ abstract class Subsystem(@Suppress("unused") val name: String) {
 
     constructor() : this("Subsystem ${subsystemId.incrementAndGet()}")
 
-    var defaultCommand: Command? = null
+    var defaultCommand: FalconCommand? = null
         protected set
 
     open fun autoReset() {}
