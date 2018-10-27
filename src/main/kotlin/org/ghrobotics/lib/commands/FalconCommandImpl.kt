@@ -37,6 +37,9 @@ class ConditionCommand(
 }
 
 class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
+    
+    constructor(delay: Time) : this(Source(delay))
+
     override suspend fun InitCommandScope.initialize() {
         executeFrequency = 0
         withTimeout(delaySource.value)

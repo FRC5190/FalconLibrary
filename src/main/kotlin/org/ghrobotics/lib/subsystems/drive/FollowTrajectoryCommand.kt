@@ -36,7 +36,9 @@ class FollowTrajectoryCommand(
         trajectoryFollower: TrajectoryFollower,
         trajectory: TimedTrajectory<Pose2dWithCurvature>,
         pathMirrored: BooleanSource = Source(false)
-    ) : this(driveSubsystem, trajectoryFollower, Source(trajectory), pathMirrored)
+    ) : this(driveSubsystem, trajectoryFollower, Source(trajectory), pathMirrored) {
+        trajectoryUsed = trajectory
+    }
 
     private val markers = mutableListOf<Pair<ObservableVariable<Boolean>, Source<Translation2d>>>()
     private val activeMarkers = mutableListOf<Pair<ObservableVariable<Boolean>, Time>>()
