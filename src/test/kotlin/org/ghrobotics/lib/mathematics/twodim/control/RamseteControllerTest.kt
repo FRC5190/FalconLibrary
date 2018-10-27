@@ -44,7 +44,7 @@ class RamseteControllerTest {
         while (!iterator.isDone) {
 
             val pt = iterator.advance(dt)
-            val output = trajectoryFollower.getOutputFromDynamics(totalpose, time)
+            val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
                 output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
@@ -67,6 +67,9 @@ class RamseteControllerTest {
 
             refXList.add(pt.state.state.pose.translation.x.feet.asDouble)
             refYList.add(pt.state.state.pose.translation.y.feet.asDouble)
+
+            System.out.printf("Left Voltage: %3.3f, Right Voltage: %3.3f%n",
+                    output.lfVoltage.asDouble, output.rfVoltage.asDouble)
         }
 
         val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second.asDouble)

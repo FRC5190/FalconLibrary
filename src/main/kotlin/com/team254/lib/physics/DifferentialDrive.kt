@@ -213,8 +213,10 @@ class DifferentialDrive(
 
     fun getVoltagesFromkV(velocities: DifferentialDrive.WheelState): WheelState {
         return DifferentialDrive.WheelState(
-                velocities.left / leftTransmission.speedPerVolt,
-                velocities.right / rightTransmission.speedPerVolt
+                velocities.left / leftTransmission.speedPerVolt +
+                        leftTransmission.frictionVoltage * Math.signum(velocities.left),
+                velocities.right / rightTransmission.speedPerVolt +
+                        rightTransmission.frictionVoltage * Math.signum(velocities.right)
         )
     }
 
