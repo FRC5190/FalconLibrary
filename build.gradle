@@ -35,8 +35,7 @@ dependencies {
 
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
-
-    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    
     compile 'org.apache.commons:commons-math3:3.6.1'
     compile 'org.knowm.xchart:xchart:3.2.2'
 
@@ -45,7 +44,7 @@ dependencies {
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.5.1'
+    gradleVersion = '4.9'
 }
 
 compileKotlin {
