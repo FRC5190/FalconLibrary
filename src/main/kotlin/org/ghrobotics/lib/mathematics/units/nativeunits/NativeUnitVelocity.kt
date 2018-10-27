@@ -13,7 +13,7 @@ infix fun NativeUnit.per(other: Time): NativeUnitVelocity = div(other)
 operator fun NativeUnit.div(other: Time): NativeUnitVelocity = SIFrac11(this, other)
 
 val NativeUnitVelocity.STUPer100ms: NativeUnitVelocity
-    get() = adjustBottom(SIPrefix.DECA, TimeUnits.Second)
+    get() = adjustBottom(SIPrefix.DECI, TimeUnits.Second)
 
 fun <T : SIValue<T>> SIFrac11<T, Time>.fromModel(model: NativeUnitModel<T>): NativeUnitVelocity =
     SIFrac11(model.fromModel(top), bottom)

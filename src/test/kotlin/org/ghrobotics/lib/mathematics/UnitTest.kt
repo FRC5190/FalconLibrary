@@ -27,7 +27,7 @@ class UnitTest {
 
         val two = one.fromModel(settings)
 
-        assert(two.STUPer100ms.asDouble epsilonEquals 30076.52467878338)
+        assert(two.STUPer100ms.asInt == 300)
     }
 
     @Test
@@ -36,7 +36,7 @@ class UnitTest {
 
         val two = one.fromModel(settings)
 
-        assert(two.STUPer100msPerSecond.asDouble epsilonEquals 30076.52467878338)
+        assert(two.STUPer100msPerSecond.asInt == 300)
     }
 
     @Test

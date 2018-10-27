@@ -17,6 +17,6 @@ val Number.STUPer100msPerSecond: NativeUnitAcceleration
 
 val NativeUnitAcceleration.STUPer100msPerSecond: NativeUnitAcceleration
     get() = adjustBottom(
-        SIPrefix.DECA, TimeUnits.Second,
+        SIPrefix.DECI, TimeUnits.Second,
         SIPrefix.BASE, TimeUnits.Second
     )
