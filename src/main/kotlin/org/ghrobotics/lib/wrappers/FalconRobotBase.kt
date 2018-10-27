@@ -88,7 +88,7 @@ abstract class FalconRobotBase : RobotBase() {
 
         initialize()
         initialized = true
-        // Start up the default commands
+        // Start up the default command
         println("[Robot] Initialized")
         // Update Commands
         onWhile(Mode.ANY) {

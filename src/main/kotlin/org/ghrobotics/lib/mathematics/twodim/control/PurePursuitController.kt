@@ -2,16 +2,14 @@ package org.ghrobotics.lib.mathematics.twodim.control
 
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Time
 import kotlin.math.pow
 
 class PurePursuitController(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        drive: DifferentialDrive,
-        private val kLat: Double,
-        private val kLookaheadTime: Time) : TrajectoryFollower(trajectory, drive) {
+    drive: DifferentialDrive,
+    private val kLat: Double,
+    private val kLookaheadTime: Time
+) : TrajectoryFollower(drive) {
 
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
@@ -26,8 +24,8 @@ class PurePursuitController(
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
 
         return DifferentialDrive.ChassisState(
-                linear = adjustedLinearVelocity,
-                angular = adjustedLinearVelocity * curvature
+            linear = adjustedLinearVelocity,
+            angular = adjustedLinearVelocity * curvature
         )
     }
 }

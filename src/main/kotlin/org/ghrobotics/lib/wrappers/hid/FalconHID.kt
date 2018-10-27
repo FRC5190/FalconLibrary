@@ -1,10 +1,10 @@
 package org.ghrobotics.lib.wrappers.hid
 
 import edu.wpi.first.wpilibj.GenericHID
-import org.ghrobotics.lib.commands.AbstractFalconCommand
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
+import org.ghrobotics.lib.commands.FalconCommand
 
 fun <T : GenericHID> controller(genericHID: T, block: FalconHIDBuilder<T>.() -> Unit): FalconHID<T> {
     val builder = FalconHIDBuilder(genericHID)
@@ -61,13 +61,13 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
     private val changeOn = mutableListOf<HIDControlListener>()
     private val changeOff = mutableListOf<HIDControlListener>()
 
-    fun change(command: AbstractFalconCommand) {
+    fun change(command: FalconCommand) {
         changeOn(command)
         changeOff { command.stop() }
     }
 
-    fun changeOn(command: AbstractFalconCommand) = changeOn { command.start() }
-    fun changeOff(command: AbstractFalconCommand) = changeOff { command.start() }
+    fun changeOn(command: FalconCommand) = changeOn { command.start() }
+    fun changeOff(command: FalconCommand) = changeOff { command.start() }
 
     fun whileOff(block: HIDControlListener) = also { whileOff.add(block) }
     fun whileOn(block: HIDControlListener) = also { whileOn.add(block) }

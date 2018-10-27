@@ -8,8 +8,6 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -17,11 +15,10 @@ import kotlin.math.sqrt
 // Equation 5.12
 
 open class RamseteController(
-    trajectory: TimedTrajectory<Pose2dWithCurvature>,
     drive: DifferentialDrive,
     private val kBeta: Double,
     private val kZeta: Double
-) : TrajectoryFollower(trajectory, drive) {
+) : TrajectoryFollower(drive) {
 
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 

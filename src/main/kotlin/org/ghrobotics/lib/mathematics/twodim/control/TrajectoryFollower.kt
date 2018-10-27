@@ -8,6 +8,7 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
@@ -19,14 +20,18 @@ import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.DeltaTime
 
-abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurvature>,
-                                  private val drive: DifferentialDrive) {
+abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
     abstract fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState
 
     private var previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
 
-    protected val iterator = trajectory.iterator()
+    protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
+        private set
+
+    fun init(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
+        iterator = trajectory.iterator()
+    }
 
     val referencePoint
         get() = iterator.currentState
@@ -36,7 +41,6 @@ abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurv
 
     val isFinished
         get() = iterator.isDone
-
 
     // Loops
     private var deltaTimeController = DeltaTime()
@@ -76,13 +80,15 @@ abstract class TrajectoryFollower(val trajectory: TimedTrajectory<Pose2dWithCurv
     data class Output(val lSetpoint: Velocity, val rSetpoint: Velocity, val lfVoltage: Volt, val rfVoltage: Volt)
 
     companion object {
-        private fun outputFromWheelStates(drive: DifferentialDrive,
-                                          setpoint: DifferentialDrive.WheelState,
-                                          voltages: DifferentialDrive.WheelState) = Output(
-                lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
-                rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
-                lfVoltage = voltages.left.volt,
-                rfVoltage = voltages.right.volt
+        private fun outputFromWheelStates(
+            drive: DifferentialDrive,
+            setpoint: DifferentialDrive.WheelState,
+            voltages: DifferentialDrive.WheelState
+        ) = Output(
+            lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
+            rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
+            lfVoltage = voltages.left.volt,
+            rfVoltage = voltages.right.volt
         )
     }
 }

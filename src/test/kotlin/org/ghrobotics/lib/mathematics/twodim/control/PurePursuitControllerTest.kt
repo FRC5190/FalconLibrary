@@ -23,11 +23,11 @@ class PurePursuitControllerTest {
     fun testTrajectoryFollower() {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
         trajectoryFollower = PurePursuitController(
-            TrajectoryGeneratorTest.trajectory,
             TrajectoryGeneratorTest.drive,
             kLat,
             kLookaheadTime
         )
+        trajectoryFollower.init(TrajectoryGeneratorTest.trajectory)
 
         val error = Pose2d(1.feet, 50.inch, 5.degree)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
