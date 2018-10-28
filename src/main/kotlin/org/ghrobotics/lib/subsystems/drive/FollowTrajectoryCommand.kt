@@ -48,7 +48,7 @@ class FollowTrajectoryCommand(
     override suspend fun InitCommandScope.initialize() {
         trajectorySamples.clear()
 
-        trajectoryFollower.init(trajectory)
+        trajectoryFollower.resetTrajectory(trajectory)
         trajectoryFinished.value = false
     }
 

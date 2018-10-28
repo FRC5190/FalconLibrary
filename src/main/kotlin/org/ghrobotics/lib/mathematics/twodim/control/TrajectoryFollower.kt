@@ -29,8 +29,9 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
         private set
 
-    fun init(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
+    fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
         iterator = trajectory.iterator()
+        previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
     }
 
     val referencePoint

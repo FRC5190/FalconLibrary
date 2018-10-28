@@ -27,7 +27,7 @@ class PurePursuitControllerTest {
             kLat,
             kLookaheadTime
         )
-        trajectoryFollower.init(TrajectoryGeneratorTest.trajectory)
+        trajectoryFollower.resetTrajectory(TrajectoryGeneratorTest.trajectory)
 
         val error = Pose2d(1.feet, 50.inch, 5.degree)
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
