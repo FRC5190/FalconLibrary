@@ -1,8 +1,12 @@
 package org.ghrobotics.lib.commands
 
+import edu.wpi.first.wpilibj.command.Command
 import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
+import kotlin.properties.Delegates.observable
 
 abstract class InstantCommand : FalconCommand() {
     override fun CreateCommandScope.create() {
@@ -18,10 +22,10 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
 class PeriodicRunnableCommand(
     private val runnable: suspend () -> Unit,
     private val exitCondition: ObservableValue<Boolean>,
-    private val executeFrequency: Int = DEFAULT_FREQUENCY
+    private val runnableFrequency: Int = DEFAULT_FREQUENCY
 ) : FalconCommand() {
     override fun CreateCommandScope.create() {
-        this.executeFrequency = this@PeriodicRunnableCommand.executeFrequency
+        this.executeFrequency = runnableFrequency
         finishCondition += exitCondition
     }
 
@@ -37,7 +41,7 @@ class ConditionCommand(
 }
 
 class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
-    
+
     constructor(delay: Time) : this(Source(delay))
 
     override suspend fun InitCommandScope.initialize() {
@@ -50,4 +54,27 @@ class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*
     override suspend fun InitCommandScope.initialize() {
         executeFrequency = 0
     }
+}
+
+class ConditionalCommand(
+    val condition: BooleanSource,
+    val onTrue: FalconCommand?,
+    val onFalse: FalconCommand? = null
+) : FalconCommand() {
+
+    override val wrappedValue: Command = WpiConditionalCommand()
+
+    private inner class WpiConditionalCommand : edu.wpi.first.wpilibj.command.ConditionalCommand(
+        onTrue?.wrappedValue,
+        onFalse?.wrappedValue
+    ), IWpiCommand {
+        override var timeout by observable(0.second) { _, _, newValue ->
+            setTimeout(newValue.second.asDouble)
+        }
+
+        override fun condition(): Boolean = condition.value
+
+        override fun isFinished() = super.isFinished() || finishCondition.value
+    }
+
 }

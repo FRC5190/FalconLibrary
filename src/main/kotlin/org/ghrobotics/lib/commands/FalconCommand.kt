@@ -38,7 +38,8 @@ abstract class FalconCommand(
 
     private val _finishCondition = FinishCondition()
     val finishCondition: ObservableValue<Boolean> = _finishCondition
-    private var executeFrequency = DEFAULT_FREQUENCY
+    var executeFrequency = DEFAULT_FREQUENCY
+        private set
 
     private fun create0() = CreateCommandScope().run { create() }
     protected open suspend fun initialize0() = InitCommandScope().run { initialize() }
