@@ -24,8 +24,8 @@ object ParametricSplineGenerator {
 
 
     private fun parameterizeSpline(
-        s: ParametricSpline, maxDx: Double = kMaxDX, maxDy: Double = kMaxDY, maxDTheta: Double = kMaxDTheta,
-        t0: Double = 0.0, t1: Double = 1.0
+            s: ParametricSpline, maxDx: Double = kMaxDX, maxDy: Double = kMaxDY, maxDTheta: Double = kMaxDTheta,
+            t0: Double = 0.0, t1: Double = 1.0
     ): ArrayList<Pose2dWithCurvature> {
 
         val rv = ArrayList<Pose2dWithCurvature>()
@@ -40,8 +40,8 @@ object ParametricSplineGenerator {
     }
 
     fun parameterizeSplines(
-        splines: List<ParametricSpline>, maxDx: Double, maxDy: Double,
-        maxDTheta: Double
+            splines: List<ParametricSpline>, maxDx: Double, maxDy: Double,
+            maxDTheta: Double
     ): List<Pose2dWithCurvature> {
         val rv = ArrayList<Pose2dWithCurvature>()
         if (splines.isEmpty()) return rv
@@ -55,9 +55,9 @@ object ParametricSplineGenerator {
     }
 
     private fun getSegmentArc(
-        s: ParametricSpline, rv: MutableList<Pose2dWithCurvature>, t0: Double, t1: Double, maxDx: Double,
-        maxDy: Double,
-        maxDTheta: Double
+            s: ParametricSpline, rv: MutableList<Pose2dWithCurvature>, t0: Double, t1: Double, maxDx: Double,
+            maxDy: Double,
+            maxDTheta: Double
     ) {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)

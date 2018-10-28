@@ -22,12 +22,12 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     val localization = TankDriveLocalization(this)
 
     fun followTrajectory(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>
+            trajectory: TimedTrajectory<Pose2dWithCurvature>
     ) = FollowTrajectoryCommand(this, trajectory)
 
     fun followTrajectory(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        pathMirrored: Boolean
+            trajectory: TimedTrajectory<Pose2dWithCurvature>,
+            pathMirrored: Boolean
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
     })
@@ -35,33 +35,33 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     // Misc Helper methods
 
     fun followTrajectory(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        pathMirrored: BooleanSource
+            trajectory: TimedTrajectory<Pose2dWithCurvature>,
+            pathMirrored: BooleanSource
     ) = ConditionalCommand(
-        pathMirrored,
-        followTrajectory(trajectory, true),
-        followTrajectory(trajectory, false)
+            pathMirrored,
+            followTrajectory(trajectory, true),
+            followTrajectory(trajectory, false)
     )
 
     fun followTrajectory(
-        conditionSource: BooleanSource,
-        onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
-        onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
-        pathMirrored: Boolean = false
+            conditionSource: BooleanSource,
+            onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
+            onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
+            pathMirrored: Boolean = false
     ) = ConditionalCommand(
-        conditionSource,
-        followTrajectory(onTrueTrajectory, pathMirrored),
-        onFalseTrajectory?.let { followTrajectory(it, pathMirrored) }
+            conditionSource,
+            followTrajectory(onTrueTrajectory, pathMirrored),
+            onFalseTrajectory?.let { followTrajectory(it, pathMirrored) }
     )
 
     fun followTrajectory(
-        conditionSource: BooleanSource,
-        onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
-        onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
-        pathMirrored: BooleanSource
+            conditionSource: BooleanSource,
+            onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
+            onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
+            pathMirrored: BooleanSource
     ) = ConditionalCommand(
-        conditionSource,
-        followTrajectory(onTrueTrajectory, pathMirrored),
-        onFalseTrajectory?.let { followTrajectory(it, pathMirrored) }
+            conditionSource,
+            followTrajectory(onTrueTrajectory, pathMirrored),
+            onFalseTrajectory?.let { followTrajectory(it, pathMirrored) }
     )
 }

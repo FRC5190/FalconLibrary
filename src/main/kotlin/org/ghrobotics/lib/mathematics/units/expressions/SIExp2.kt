@@ -4,8 +4,8 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp2<A : SIValue<A>, B : SIValue<B>>(
-    val a: A,
-    val b: B
+        val a: A,
+        val b: B
 ) : SIExpression<SIExp2<A, B>>() {
     override val asDouble: Double
         get() = a.asDouble * b.asDouble
@@ -22,12 +22,12 @@ open class SIExp2<A : SIValue<A>, B : SIValue<B>>(
     @JvmName("divOA")
     operator fun div(other: A): B = divA(other)
 
-    fun divA(other: A) =  b * (a / other)
+    fun divA(other: A) = b * (a / other)
 
     @JvmName("divOB")
     operator fun div(other: B) = divB(other)
 
-    fun divB(other: B) =  a * (b / other)
+    fun divB(other: B) = a * (b / other)
 
     override fun toString() = buildString {
         append('(')

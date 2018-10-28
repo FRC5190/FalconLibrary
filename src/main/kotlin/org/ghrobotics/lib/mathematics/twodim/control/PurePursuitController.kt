@@ -6,9 +6,9 @@ import org.ghrobotics.lib.mathematics.units.Time
 import kotlin.math.pow
 
 class PurePursuitController(
-    drive: DifferentialDrive,
-    private val kLat: Double,
-    private val kLookaheadTime: Time
+        drive: DifferentialDrive,
+        private val kLat: Double,
+        private val kLookaheadTime: Time
 ) : TrajectoryFollower(drive) {
 
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
@@ -24,8 +24,8 @@ class PurePursuitController(
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
 
         return DifferentialDrive.ChassisState(
-            linear = adjustedLinearVelocity,
-            angular = adjustedLinearVelocity * curvature
+                linear = adjustedLinearVelocity,
+                angular = adjustedLinearVelocity * curvature
         )
     }
 }

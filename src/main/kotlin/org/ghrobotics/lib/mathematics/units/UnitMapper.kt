@@ -37,10 +37,10 @@ object UnitMapper {
         }
 
         fun conversionFactor(from: T, to: T) =
-            unitMap[from to to]
-                ?: unitMap[to to from]?.let { 1.0 / it }
-                ?: smartConversionFactor(from, to)
-                ?: throw IllegalArgumentException("Unable to find conversion factor between $from and $to")
+                unitMap[from to to]
+                        ?: unitMap[to to from]?.let { 1.0 / it }
+                        ?: smartConversionFactor(from, to)
+                        ?: throw IllegalArgumentException("Unable to find conversion factor between $from and $to")
 
         private fun smartConversionFactor(from: T, to: T): Double? {
             val path = smartConversionFactor(emptyList(), from, to) ?: return null
@@ -60,9 +60,9 @@ object UnitMapper {
         }
 
         private fun smartConversionFactor(
-            cameFrom: List<Pair<T, T>>,
-            current: T,
-            to: T
+                cameFrom: List<Pair<T, T>>,
+                current: T,
+                to: T
         ): List<Pair<T, T>>? {
             val possiblePaths = unitMap.keys.filter {
                 !cameFrom.contains(it) && (it.first == current || it.second == current)
@@ -72,7 +72,7 @@ object UnitMapper {
                 if (key.first == to || key.second == to) return listOf(key)
                 val newCurrent = if (key.first == current) key.second else key.first
                 val path = smartConversionFactor(cameFrom + key, newCurrent, to)
-                    ?: continue
+                        ?: continue
                 if (bestPath == null || path.size + 1 < bestPath.size)
                     bestPath = path + key
             }
@@ -80,9 +80,9 @@ object UnitMapper {
         }
 
         fun convert(
-            value: Double,
-            from: T,
-            to: T
+                value: Double,
+                from: T,
+                to: T
         ): Double {
             if (from == to) return value
             return conversionFactor(from, to) * value

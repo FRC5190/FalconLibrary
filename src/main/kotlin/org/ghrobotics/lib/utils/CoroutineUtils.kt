@@ -6,10 +6,10 @@ import kotlin.coroutines.experimental.CoroutineContext
 import kotlin.coroutines.experimental.EmptyCoroutineContext
 
 fun CoroutineScope.launchFrequency(
-    frequency: Int = 50,
-    context: CoroutineContext = EmptyCoroutineContext,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.() -> Unit
+        frequency: Int = 50,
+        context: CoroutineContext = EmptyCoroutineContext,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> Unit
 ): Job {
     if (frequency <= 0) throw IllegalArgumentException("Frequency cannot be lower then 1!")
     return launch(context, start) {
@@ -18,7 +18,7 @@ fun CoroutineScope.launchFrequency(
 }
 
 suspend fun CoroutineScope.loopFrequency(frequency: Int = 50,
-                                           block: suspend CoroutineScope.() -> Unit) {
+                                         block: suspend CoroutineScope.() -> Unit) {
     val timeBetweenUpdate = TimeUnit.SECONDS.toNanos(1) / frequency
     // Stores when the next update should happen
     var nextNS = System.nanoTime() + timeBetweenUpdate

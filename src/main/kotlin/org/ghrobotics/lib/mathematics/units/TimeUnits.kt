@@ -72,14 +72,14 @@ interface Time : SIUnit<Time, TimeUnits> {
 }
 
 class AbstractTime(
-    value: Double,
-    prefix: SIPrefix,
-    type: TimeUnits
+        value: Double,
+        prefix: SIPrefix,
+        type: TimeUnits
 ) : AbstractSIUnit<Time, TimeUnits>(
-    value,
-    prefix,
-    type,
-    AbstractTime
+        value,
+        prefix,
+        type,
+        AbstractTime
 ), Time {
     override val second by convertUnit(TimeUnits.Second)
     override val minute by convertUnit(TimeUnits.Minute)
@@ -110,11 +110,11 @@ class AbstractTime(
     override val yoctosecond by convertMetric(SIPrefix.YOCTO)
 
     companion object : SIUnitConverter<Time, TimeUnits>(
-        TimeUnits.Second,
-        UnitMapper.timeMapper
+            TimeUnits.Second,
+            UnitMapper.timeMapper
     ) {
         override fun create(newValue: Double, newPrefix: SIPrefix, newType: TimeUnits): Time =
-            AbstractTime(newValue, newPrefix, newType)
+                AbstractTime(newValue, newPrefix, newType)
     }
 
 }

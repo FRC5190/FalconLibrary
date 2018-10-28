@@ -1,11 +1,11 @@
 package org.ghrobotics.lib.utils.observabletype
 
 fun <F, T> ObservableValue<F>.map(block: (F) -> T): ObservableValue<T> =
-    MappedObservableValueImpl(this, block)
+        MappedObservableValueImpl(this, block)
 
 private class MappedObservableValueImpl<F, T>(
-    val parent: ObservableValue<F>,
-    val mapper: (F) -> T
+        val parent: ObservableValue<F>,
+        val mapper: (F) -> T
 ) : ObservableValue<T>, SubscribableObservableValueImpl<T>() {
 
     override var value: T = mapper(parent.value)

@@ -32,7 +32,7 @@ enum class ElectricCurrentUnits {
 }
 
 interface ElectricCurrent :
-    SIUnit<ElectricCurrent, ElectricCurrentUnits> {
+        SIUnit<ElectricCurrent, ElectricCurrentUnits> {
     val amp: ElectricCurrent
 
     val yottaamp: ElectricCurrent
@@ -58,14 +58,14 @@ interface ElectricCurrent :
 }
 
 class AbstractElectricCurrent(
-    value: Double,
-    prefix: SIPrefix,
-    type: ElectricCurrentUnits
+        value: Double,
+        prefix: SIPrefix,
+        type: ElectricCurrentUnits
 ) : AbstractSIUnit<ElectricCurrent, ElectricCurrentUnits>(
-    value,
-    prefix,
-    type,
-    AbstractElectricCurrent
+        value,
+        prefix,
+        type,
+        AbstractElectricCurrent
 ), ElectricCurrent {
     override val amp by convertUnit(ElectricCurrentUnits.Amp)
 
@@ -91,11 +91,11 @@ class AbstractElectricCurrent(
     override val yoctoamp by convertMetric(SIPrefix.YOCTO)
 
     companion object : SIUnitConverter<ElectricCurrent, ElectricCurrentUnits>(
-        ElectricCurrentUnits.Amp,
-        UnitMapper.electricCurrentMapper
+            ElectricCurrentUnits.Amp,
+            UnitMapper.electricCurrentMapper
     ) {
         override fun create(newValue: Double, newPrefix: SIPrefix, newType: ElectricCurrentUnits): ElectricCurrent =
-            AbstractElectricCurrent(newValue, newPrefix, newType)
+                AbstractElectricCurrent(newValue, newPrefix, newType)
     }
 
 }

@@ -15,7 +15,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.utils.launchFrequency
 
 class TankDriveLocalization(
-    val driveSubsystem: TankDriveSubsystem
+        val driveSubsystem: TankDriveSubsystem
 ) {
 
     private val localizationScope = CoroutineScope(newSingleThreadContext("Localization"))

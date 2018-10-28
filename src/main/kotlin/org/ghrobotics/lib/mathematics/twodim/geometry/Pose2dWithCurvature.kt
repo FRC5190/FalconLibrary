@@ -18,27 +18,27 @@ import org.ghrobotics.lib.types.Interpolatable
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 data class Pose2dWithCurvature(
-    val pose: Pose2d,
-    val curvature: Curvature
+        val pose: Pose2d,
+        val curvature: Curvature
 ) : VaryInterpolatable<Pose2dWithCurvature> {
 
     val mirror
         get() = Pose2dWithCurvature(
-            pose.mirror,
-            -curvature
+                pose.mirror,
+                -curvature
         )
 
     override fun interpolate(endValue: Pose2dWithCurvature, t: Double) =
-        Pose2dWithCurvature(
-            pose.interpolate(endValue.pose, t),
-            curvature.interpolate(endValue.curvature, t)
-        )
+            Pose2dWithCurvature(
+                    pose.interpolate(endValue.pose, t),
+                    curvature.interpolate(endValue.curvature, t)
+            )
 
     override fun distance(other: Pose2dWithCurvature) = pose.distance(other.pose)
 
     operator fun plus(other: Pose2d) = Pose2dWithCurvature(
-        this.pose + other,
-        curvature
+            this.pose + other,
+            curvature
     )
 
 }
@@ -48,17 +48,17 @@ data class Pose2dWithCurvature(
  * @param dkds derivative of curvature
  */
 data class Curvature(
-    val curvature: Double,
-    val dkds: Double
+        val curvature: Double,
+        val dkds: Double
 ) : Interpolatable<Curvature> {
     override fun interpolate(endValue: Curvature, t: Double) =
-        Curvature(
-            curvature.lerp(endValue.curvature, t),
-            dkds.lerp(endValue.dkds, t)
-        )
+            Curvature(
+                    curvature.lerp(endValue.curvature, t),
+                    dkds.lerp(endValue.dkds, t)
+            )
 
     operator fun unaryMinus() = Curvature(
-        -curvature,
-        -dkds
+            -curvature,
+            -dkds
     )
 }

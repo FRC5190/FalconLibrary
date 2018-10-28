@@ -16,6 +16,6 @@ val NativeUnitVelocity.STUPer100ms: NativeUnitVelocity
     get() = adjustBottom(SIPrefix.DECI, TimeUnits.Second)
 
 fun <T : SIValue<T>> SIFrac11<T, Time>.fromModel(model: NativeUnitModel<T>): NativeUnitVelocity =
-    SIFrac11(model.fromModel(top), bottom)
+        SIFrac11(model.fromModel(top), bottom)
 
 fun <T : SIValue<T>> NativeUnitVelocity.toModel(model: NativeUnitModel<T>) = SIFrac11(top.toModel(model), bottom)

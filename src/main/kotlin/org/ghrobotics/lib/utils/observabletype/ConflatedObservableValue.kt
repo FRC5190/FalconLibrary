@@ -1,22 +1,17 @@
 package org.ghrobotics.lib.utils.observabletype
 
 import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.sendBlocking
 import kotlinx.coroutines.experimental.launch
-import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.coroutines.experimental.CoroutineContext
 
 fun <T> ObservableValue<T>.asConflated(scope: CoroutineScope): ObservableValue<T> =
         ConflatedObservableValueImpl(scope, this)
 
 private class ConflatedObservableValueImpl<T>(
-    val scope: CoroutineScope,
-    val parent: ObservableValue<T>
+        val scope: CoroutineScope,
+        val parent: ObservableValue<T>
 ) : ObservableValue<T>, SubscribableObservableValueImpl<T>() {
 
     override var value: T = parent.value
@@ -40,7 +35,7 @@ private class ConflatedObservableValueImpl<T>(
             buffer.sendBlocking(it)
         }
         job = scope.launch {
-            for(event in buffer)
+            for (event in buffer)
                 value = event
         }
     }

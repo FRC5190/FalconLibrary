@@ -20,9 +20,9 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
 }
 
 class PeriodicRunnableCommand(
-    private val runnable: suspend () -> Unit,
-    private val exitCondition: ObservableValue<Boolean>,
-    private val runnableFrequency: Int = DEFAULT_FREQUENCY
+        private val runnable: suspend () -> Unit,
+        private val exitCondition: ObservableValue<Boolean>,
+        private val runnableFrequency: Int = DEFAULT_FREQUENCY
 ) : FalconCommand() {
     override fun CreateCommandScope.create() {
         this.executeFrequency = runnableFrequency
@@ -33,7 +33,7 @@ class PeriodicRunnableCommand(
 }
 
 class ConditionCommand(
-    private val condition: ObservableValue<Boolean>
+        private val condition: ObservableValue<Boolean>
 ) : FalconCommand() {
     override fun CreateCommandScope.create() {
         finishCondition += condition
@@ -57,16 +57,16 @@ class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*
 }
 
 class ConditionalCommand(
-    val condition: BooleanSource,
-    val onTrue: FalconCommand?,
-    val onFalse: FalconCommand? = null
+        val condition: BooleanSource,
+        val onTrue: FalconCommand?,
+        val onFalse: FalconCommand? = null
 ) : FalconCommand() {
 
     override val wrappedValue: Command = WpiConditionalCommand()
 
     private inner class WpiConditionalCommand : edu.wpi.first.wpilibj.command.ConditionalCommand(
-        onTrue?.wrappedValue,
-        onFalse?.wrappedValue
+            onTrue?.wrappedValue,
+            onFalse?.wrappedValue
     ), IWpiCommand {
         override var timeout by observable(0.second) { _, _, newValue ->
             setTimeout(newValue.second.asDouble)

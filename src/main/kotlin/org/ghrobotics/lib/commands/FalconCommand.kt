@@ -15,7 +15,7 @@ import org.ghrobotics.lib.wrappers.Wrapper
 import kotlin.properties.Delegates.observable
 
 abstract class FalconCommand(
-    vararg requiredSubsystems: FalconSubsystem
+        vararg requiredSubsystems: FalconSubsystem
 ) : Wrapper<Command> {
 
     init {
@@ -57,7 +57,7 @@ abstract class FalconCommand(
     fun stop() = wrappedValue.cancel()
 
     protected class FinishCondition private constructor(
-        private val varReference: ObservableValueReference<Boolean>
+            private val varReference: ObservableValueReference<Boolean>
     ) : ObservableValue<Boolean> by varReference {
         constructor() : this(ObservableValueReference(ObservableValue(false)))
 
@@ -96,7 +96,7 @@ abstract class FalconCommand(
     }
 
     protected inner class WpiCommand(
-        requiredSubsystems: Array<out FalconSubsystem>
+            requiredSubsystems: Array<out FalconSubsystem>
     ) : Command(), IWpiCommand {
         init {
             requiredSubsystems.forEach { requires(it.wpiSubsystem) }

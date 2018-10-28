@@ -22,24 +22,24 @@ interface SIUnit<T : SIUnit<T, E>, E : Enum<E>> : SIValue<T> {
 }
 
 abstract class SIUnitConverter<T : SIUnit<T, E>, E : Enum<E>>(
-    val metricUnit: E,
-    val mapper: UnitMapper.SpecificUnitMapper<E>
+        val metricUnit: E,
+        val mapper: UnitMapper.SpecificUnitMapper<E>
 ) {
 
     abstract fun create(newValue: Double, newPrefix: SIPrefix, newType: E): T
 
     fun convertValue(value: T, to: E) =
-        mapper.convert(
-            value.asDouble,
-            value.type,
-            to
-        )
+            mapper.convert(
+                    value.asDouble,
+                    value.type,
+                    to
+            )
 
     fun convertTo(value: T, newPrefix: SIPrefix, newUnit: E): T {
         if (newUnit != metricUnit && newPrefix != SIPrefix.BASE) throw IllegalArgumentException("Only metric units can have prefixes!")
         val convertedValue = convertValue(value, newUnit)
         val prefixedValue =
-            SIPrefix.convertPrefix(convertedValue, value.prefix, newPrefix)
+                SIPrefix.convertPrefix(convertedValue, value.prefix, newPrefix)
         return create(prefixedValue, newPrefix, newUnit)
     }
 
@@ -52,10 +52,10 @@ abstract class SIUnitConverter<T : SIUnit<T, E>, E : Enum<E>>(
 }
 
 abstract class AbstractSIUnit<T : SIUnit<T, E>, E : Enum<E>>(
-    value: Double,
-    override val prefix: SIPrefix,
-    override val type: E,
-    val converter: SIUnitConverter<T, E>
+        value: Double,
+        override val prefix: SIPrefix,
+        override val type: E,
+        val converter: SIUnitConverter<T, E>
 ) : AbstractSIValue<T>(), SIUnit<T, E> {
 
     override val asDouble = value
@@ -84,25 +84,25 @@ abstract class AbstractSIUnit<T : SIUnit<T, E>, E : Enum<E>>(
     override fun compareTo(other: T) = operation(other) { one, two -> one.compareTo(two) }
 
     private fun mathOperation(other: T, block: (Double, Double) -> Double): T =
-        createAndAdjust(SIPrefix.BASE, operation(other, block))
+            createAndAdjust(SIPrefix.BASE, operation(other, block))
 
     private fun <V> operation(other: T, block: (Double, Double) -> V): V =
-        block(prefix.apply(asDouble), other.prefix.apply(convertValue(other)))
+            block(prefix.apply(asDouble), other.prefix.apply(convertValue(other)))
 
     protected fun convertMetric(newPrefix: SIPrefix) =
-        convertDelegate(newPrefix, converter.metricUnit)
+            convertDelegate(newPrefix, converter.metricUnit)
 
     protected fun convertUnit(newUnit: E) =
-        convertDelegate(SIPrefix.BASE, newUnit)
+            convertDelegate(SIPrefix.BASE, newUnit)
 
     private fun convertDelegate(
-        newPrefix: SIPrefix,
-        newUnit: E
+            newPrefix: SIPrefix,
+            newUnit: E
     ) = lazy { convertTo(newPrefix, newUnit) }
 
     override fun convertTo(newPrefix: SIPrefix, newUnit: E) =
-        @Suppress("UNCHECKED_CAST")
-        converter.convertTo(this as T, newPrefix, newUnit)
+            @Suppress("UNCHECKED_CAST")
+            converter.convertTo(this as T, newPrefix, newUnit)
 
     override fun toString() = buildString {
         append(asDouble)
@@ -142,8 +142,8 @@ enum class SIPrefix(val exponent: Int) {
         fun apply(value: Double, prefix: SIPrefix) = value * 10.0.pow(prefix.exponent)
 
         fun findOptimalPrefix(
-            value: Double,
-            currentPrefix: SIPrefix = BASE
+                value: Double,
+                currentPrefix: SIPrefix = BASE
         ): SIPrefix {
             val exponent = Math.log10(value).toInt() + currentPrefix.exponent
             return if (exponent > 0) {

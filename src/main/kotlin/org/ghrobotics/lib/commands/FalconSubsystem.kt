@@ -24,11 +24,12 @@ object SubsystemHandler {
     fun zeroOutputs() = subsystems.forEach { it.zeroOutputs() }
 }
 
-abstract class FalconSubsystem(val name: String = "FalconSubsystem ${subsystemId.incrementAndGet()}") {
+abstract class FalconSubsystem(name: String? = null) {
     companion object {
         private val subsystemId = AtomicLong()
     }
 
+    val name = name ?: "FalconSubsystem ${subsystemId.incrementAndGet()}"
     private val _wpiSubsystem = FalconWpiSubsystem()
     val wpiSubsystem: Subsystem = _wpiSubsystem
 

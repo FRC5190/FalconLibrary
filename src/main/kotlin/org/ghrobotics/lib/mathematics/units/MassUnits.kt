@@ -32,7 +32,7 @@ enum class MassUnits {
 }
 
 interface Mass :
-    SIUnit<Mass, MassUnits> {
+        SIUnit<Mass, MassUnits> {
     val gram: Mass
 
     val yottagram: Mass
@@ -58,14 +58,14 @@ interface Mass :
 }
 
 class AbstractMass(
-    value: Double,
-    prefix: SIPrefix,
-    type: MassUnits
+        value: Double,
+        prefix: SIPrefix,
+        type: MassUnits
 ) : AbstractSIUnit<Mass, MassUnits>(
-    value,
-    prefix,
-    type,
-    AbstractMass
+        value,
+        prefix,
+        type,
+        AbstractMass
 ), Mass {
     override val gram by convertUnit(MassUnits.Gram)
 
@@ -91,11 +91,11 @@ class AbstractMass(
     override val yoctogram by convertMetric(SIPrefix.YOCTO)
 
     companion object : SIUnitConverter<Mass, MassUnits>(
-        MassUnits.Gram,
-        UnitMapper.massMapper
+            MassUnits.Gram,
+            UnitMapper.massMapper
     ) {
         override fun create(newValue: Double, newPrefix: SIPrefix, newType: MassUnits): Mass =
-            AbstractMass(newValue, newPrefix, newType)
+                AbstractMass(newValue, newPrefix, newType)
     }
 
 }

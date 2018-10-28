@@ -6,8 +6,8 @@ import org.ghrobotics.lib.mathematics.units.second
 import kotlin.properties.Delegates.observable
 
 class FalconCommandGroup(
-    private val groupType: GroupType,
-    private val commands: List<Command>
+        private val groupType: GroupType,
+        private val commands: List<Command>
 ) : FalconCommand() {
 
     override val wrappedValue: CommandGroup = WpiCommandGroup()

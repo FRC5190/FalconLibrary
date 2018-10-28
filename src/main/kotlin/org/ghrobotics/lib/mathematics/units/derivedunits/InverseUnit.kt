@@ -6,7 +6,7 @@ import org.ghrobotics.lib.mathematics.units.SIValue
 import kotlin.math.absoluteValue
 
 operator fun <T : SIUnit<T, TE>, TE : Enum<TE>> Number.div(other: T): InverseUnit<T, TE> =
-    InverseUnitImpl(this.toDouble(), other)
+        InverseUnitImpl(this.toDouble(), other)
 
 interface InverseUnit<T : SIUnit<T, TE>, TE : Enum<TE>> : SIValue<InverseUnit<T, TE>> {
     val top: Double
@@ -14,8 +14,8 @@ interface InverseUnit<T : SIUnit<T, TE>, TE : Enum<TE>> : SIValue<InverseUnit<T,
 }
 
 class InverseUnitImpl<T : SIUnit<T, TE>, TE : Enum<TE>>(
-    override val top: Double,
-    override val bottom: T
+        override val top: Double,
+        override val bottom: T
 ) : AbstractSIValue<InverseUnit<T, TE>>(), InverseUnit<T, TE> {
 
     override val asDouble = top / bottom.asDouble

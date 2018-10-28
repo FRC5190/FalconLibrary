@@ -1,7 +1,10 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
 import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.fractions.*
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac11
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac12
+import org.ghrobotics.lib.mathematics.units.fractions.SIFrac13
+import org.ghrobotics.lib.mathematics.units.fractions.adjust
 
 val Length.velocity: Velocity
     get() = this per 1.second
@@ -17,14 +20,14 @@ typealias Jolt = Jerk
 
 val Velocity.feetPerSecond
     get() = adjust(
-        SIPrefix.BASE, LengthUnits.Feet,
-        SIPrefix.BASE, TimeUnits.Second
+            SIPrefix.BASE, LengthUnits.Feet,
+            SIPrefix.BASE, TimeUnits.Second
     )
 
 val Velocity.inchesPerSecond
     get() = adjust(
-        SIPrefix.BASE, LengthUnits.Inch,
-        SIPrefix.BASE, TimeUnits.Second
+            SIPrefix.BASE, LengthUnits.Inch,
+            SIPrefix.BASE, TimeUnits.Second
     )
 
 

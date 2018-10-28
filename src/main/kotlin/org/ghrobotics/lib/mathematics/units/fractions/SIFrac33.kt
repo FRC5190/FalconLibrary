@@ -6,11 +6,11 @@ import org.ghrobotics.lib.mathematics.units.expressions.SIExp3
 
 open class SIFrac33<TA : SIValue<TA>, TB : SIValue<TB>, TC : SIValue<TC>,
         BA : SIValue<BA>, BB : SIValue<BB>, BC : SIValue<BC>>(
-    top: SIExp3<TA, TB, TC>,
-    bottom: SIExp3<BA, BB, BC>
+        top: SIExp3<TA, TB, TC>,
+        bottom: SIExp3<BA, BB, BC>
 ) : AbstractSIFrac<SIExp3<TA, TB, TC>, SIExp3<BA, BB, BC>, SIFrac33<TA, TB, TC, BA, BB, BC>>(
-    top,
-    bottom
+        top,
+        bottom
 ), SIFracExpT3<TA, TB, TC>, SIFracExpB3<BA, BB, BC> {
     override val tA: TA get() = top.a
     override val tB: TB get() = top.b
@@ -22,13 +22,15 @@ open class SIFrac33<TA : SIValue<TA>, TB : SIValue<TB>, TC : SIValue<TC>,
     override fun create(newTop: SIExp3<TA, TB, TC>, newBottom: SIExp3<BA, BB, BC>) = SIFrac33(newTop, newBottom)
 
     override fun div(other: SIFrac33<TA, TB, TC, BA, BB, BC>) =
-        ((tA / other.tA) * (tB / other.tB) * (tC / other.tC)) * ((other.bA / bA) * (other.bB / bB) * (other.bC / bC))
+            ((tA / other.tA) * (tB / other.tB) * (tC / other.tC)) * ((other.bA / bA) * (other.bB / bB) * (other.bC / bC))
 
 
     @JvmName("timesEBA")
     operator fun times(other: BA) = timesBA(other)
+
     @JvmName("timesEBB")
     operator fun times(other: BB) = timesBB(other)
+
     @JvmName("timesEBC")
     operator fun times(other: BC) = timesBC(other)
 

@@ -60,9 +60,9 @@ class Rotation2dImpl : AbstractSIValue<Rotation2d>, Rotation2d {
     override fun unaryMinus() = Rotation2dImpl(cos, -sin, false)
 
     override fun plus(other: Rotation2d) = Rotation2dImpl(
-        cos * other.cos - sin * other.sin,
-        cos * other.sin + sin * other.cos,
-        true
+            cos * other.cos - sin * other.sin,
+            cos * other.sin + sin * other.cos,
+            true
     )
 
     override fun minus(other: Rotation2d) = plus(-other)

@@ -83,14 +83,14 @@ interface Length : SIUnit<Length, LengthUnits> {
 }
 
 class AbstractLength(
-    value: Double,
-    prefix: SIPrefix,
-    type: LengthUnits
+        value: Double,
+        prefix: SIPrefix,
+        type: LengthUnits
 ) : AbstractSIUnit<Length, LengthUnits>(
-    value,
-    prefix,
-    type,
-    AbstractLength
+        value,
+        prefix,
+        type,
+        AbstractLength
 ), Length {
     override val meter by convertUnit(LengthUnits.Meter)
     override val thou by convertUnit(LengthUnits.Thou)
@@ -125,11 +125,11 @@ class AbstractLength(
     override val yoctometer by convertMetric(SIPrefix.YOCTO)
 
     companion object : SIUnitConverter<Length, LengthUnits>(
-        LengthUnits.Meter,
-        UnitMapper.lengthMapper
+            LengthUnits.Meter,
+            UnitMapper.lengthMapper
     ) {
         override fun create(newValue: Double, newPrefix: SIPrefix, newType: LengthUnits): Length =
-            AbstractLength(newValue, newPrefix, newType)
+                AbstractLength(newValue, newPrefix, newType)
     }
 
 }

@@ -5,7 +5,7 @@ import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.mathematics.units.second
 
 abstract class TimedFalconCommand(
-    vararg requiredSubsystems: FalconSubsystem
+        vararg requiredSubsystems: FalconSubsystem
 ) : FalconCommand(*requiredSubsystems) {
 
     private var startTime: Long = 0L

@@ -3,22 +3,22 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp5<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>, E : SIValue<E>>(
-    val a: A,
-    val b: B,
-    val c: C,
-    val d: D,
-    val e: E
+        val a: A,
+        val b: B,
+        val c: C,
+        val d: D,
+        val e: E
 ) : SIExpression<SIExp5<A, B, C, D, E>>() {
     override val asDouble: Double
         get() = a.asDouble * b.asDouble * c.asDouble * d.asDouble * e.asDouble
     override val asMetric by lazy { SIExp5(a.asMetric, b.asMetric, c.asMetric, d.asMetric, e.asMetric) }
     override val absoluteValue by lazy {
         SIExp5(
-            a.absoluteValue,
-            b.absoluteValue,
-            c.absoluteValue,
-            d.absoluteValue,
-            e.absoluteValue
+                a.absoluteValue,
+                b.absoluteValue,
+                c.absoluteValue,
+                d.absoluteValue,
+                e.absoluteValue
         )
     }
 

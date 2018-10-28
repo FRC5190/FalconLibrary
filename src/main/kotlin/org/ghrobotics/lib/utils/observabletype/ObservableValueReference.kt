@@ -2,14 +2,14 @@ package org.ghrobotics.lib.utils.observabletype
 
 @Suppress("FunctionName")
 fun <T> ObservableValueReference(reference: ObservableValue<T>): ObservableValueReference<T> =
-    ObservableValueReferenceImpl(reference)
+        ObservableValueReferenceImpl(reference)
 
 interface ObservableValueReference<T> : ObservableValue<T> {
     var reference: ObservableValue<T>
 }
 
 private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : ObservableValueReference<T>,
-    SubscribableObservableValueImpl<T>() {
+        SubscribableObservableValueImpl<T>() {
 
     private var handle: ObservableHandle? = null
 
@@ -17,7 +17,7 @@ private class ObservableValueReferenceImpl<T>(reference: ObservableValue<T>) : O
         set(value) {
             field = value
             synchronized(running) {
-                if(handle != null) {
+                if (handle != null) {
                     stop()
                     start()
                 }

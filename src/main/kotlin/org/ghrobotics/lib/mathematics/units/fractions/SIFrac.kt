@@ -9,9 +9,9 @@ interface SIFrac<T : SIValue<T>, B : SIValue<B>, O : SIValue<O>> : SIValue<O> {
 }
 
 abstract class AbstractSIFrac<T : SIValue<T>, B : SIValue<B>, O : SIValue<O>>(
-    override val top: T,
-    override val bottom: B
-) : AbstractSIValue<O>(), SIFrac<T,B,O> {
+        override val top: T,
+        override val bottom: B
+) : AbstractSIValue<O>(), SIFrac<T, B, O> {
 
     override val asDouble: Double
         get() = top.asDouble / bottom.asDouble

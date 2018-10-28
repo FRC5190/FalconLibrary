@@ -81,14 +81,14 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
     companion object {
         private fun outputFromWheelStates(
-            drive: DifferentialDrive,
-            setpoint: DifferentialDrive.WheelState,
-            voltages: DifferentialDrive.WheelState
+                drive: DifferentialDrive,
+                setpoint: DifferentialDrive.WheelState,
+                voltages: DifferentialDrive.WheelState
         ) = Output(
-            lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
-            rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
-            lfVoltage = voltages.left.volt,
-            rfVoltage = voltages.right.volt
+                lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
+                rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
+                lfVoltage = voltages.left.volt,
+                rfVoltage = voltages.right.volt
         )
     }
 }

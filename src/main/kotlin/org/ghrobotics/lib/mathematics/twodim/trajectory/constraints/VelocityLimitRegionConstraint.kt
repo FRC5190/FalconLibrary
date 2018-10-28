@@ -20,26 +20,26 @@ import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.meter
 
 class VelocityLimitRegionConstraint(
-    val region: Rectangle2d,
-    val velocityLimitRaw: Double
+        val region: Rectangle2d,
+        val velocityLimitRaw: Double
 ) : TimingConstraint<Translation2d> {
 
     val velocityLimit
         get() = velocityLimitRaw.meter.velocity
 
     constructor(
-        region: Rectangle2d,
-        velocityLimit: Velocity
+            region: Rectangle2d,
+            velocityLimit: Velocity
     ) : this(
-        region,
-        velocityLimit.asMetric.asDouble
+            region,
+            velocityLimit.asMetric.asDouble
     )
 
     override fun getMaxVelocity(state: Translation2d) =
-        if (state in region) velocityLimitRaw else Double.POSITIVE_INFINITY
+            if (state in region) velocityLimitRaw else Double.POSITIVE_INFINITY
 
     override fun getMinMaxAcceleration(
-        state: Translation2d,
-        velocity: Double
+            state: Translation2d,
+            velocity: Double
     ) = TimingConstraint.MinMaxAcceleration.kNoLimits
 }

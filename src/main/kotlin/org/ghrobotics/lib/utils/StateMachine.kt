@@ -1,7 +1,7 @@
 package org.ghrobotics.lib.utils
 
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import kotlinx.coroutines.experimental.*
+import org.ghrobotics.lib.utils.observabletype.ObservableValue
 
 class StateMachine<T>(val state: ObservableValue<T>) {
 

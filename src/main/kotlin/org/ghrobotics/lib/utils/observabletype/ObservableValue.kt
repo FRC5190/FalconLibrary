@@ -21,7 +21,7 @@ interface ObservableValue<T> : ReadOnlyProperty<Any?, T> {
 
     fun invokeOnceOnSet(listener: ObservableListener<T>) = invokeOnSet(listener.thenDispose())
     fun invokeOnceOnSet(vararg values: T, listener: ObservableListener<T>) =
-        invokeOnSet(*values, listener = listener.thenDispose())
+            invokeOnSet(*values, listener = listener.thenDispose())
 
     // Invoke On Change
 
@@ -36,7 +36,7 @@ interface ObservableValue<T> : ReadOnlyProperty<Any?, T> {
     fun invokeOnceOnChange(listener: ObservableListener<T>) = invokeOnChange(listener.thenDispose())
 
     fun invokeOnChangeTo(vararg values: T, listener: ObservableListener<T>) =
-        invokeOnChangeTo(values.asList(), listener)
+            invokeOnChangeTo(values.asList(), listener)
 
     fun invokeOnChangeTo(values: List<T>, listener: ObservableListener<T>): ObservableHandle {
         var firstRun = true
@@ -80,7 +80,7 @@ interface ObservableValue<T> : ReadOnlyProperty<Any?, T> {
 
     fun invokeOnceWhen(listener: ObservableListener<T>) = invokeWhen(listener = listener.thenDispose())
     fun invokeOnceWhen(vararg values: T, listener: ObservableListener<T>) =
-        invokeWhen(*values, listener = listener.thenDispose())
+            invokeWhen(*values, listener = listener.thenDispose())
 
     fun asSource() = Source { value }
 
@@ -99,8 +99,8 @@ interface ObservableValue<T> : ReadOnlyProperty<Any?, T> {
     fun <F : Comparable<T>> compareTo(other: ObservableValue<F>) = compareToInternal(other) { it }
 
     private inline fun <F : Comparable<T>, R> compareToInternal(
-        other: ObservableValue<F>,
-        crossinline block: (Int) -> R
+            other: ObservableValue<F>,
+            crossinline block: (Int) -> R
     ): ObservableValue<R> = this.mergeWith(other) { one, two -> block(-two.compareTo(one)) }
 
     companion object {

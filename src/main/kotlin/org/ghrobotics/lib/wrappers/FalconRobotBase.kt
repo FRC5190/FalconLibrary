@@ -46,16 +46,16 @@ abstract class FalconRobotBase : RobotBase() {
     val modeStateMachine: StateMachine<Mode> = StateMachine(currentModeState)
 
     fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) =
-        modeStateMachine.onEnter(enterState.rawValues, listener)
+            modeStateMachine.onEnter(enterState.rawValues, listener)
 
     fun onLeave(leaveState: Mode, listener: SMLeaveListener<Mode>) =
-        modeStateMachine.onLeave(leaveState.rawValues, listener)
+            modeStateMachine.onLeave(leaveState.rawValues, listener)
 
     fun onTransition(fromState: Mode, toState: Mode, listener: SMTransitionListener<Mode>) =
-        modeStateMachine.onTransition(fromState.rawValues, toState.rawValues, listener)
+            modeStateMachine.onTransition(fromState.rawValues, toState.rawValues, listener)
 
     fun onWhile(whileState: Mode, frequency: Int = 50, listener: SMWhileListener<Mode>) =
-        modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
+            modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
 
     // Main Robot Code
 

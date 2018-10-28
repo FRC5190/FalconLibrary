@@ -12,8 +12,8 @@ import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 
 class FollowTrajectoryCommand(
-    val driveSubsystem: TankDriveSubsystem,
-    val trajectory: TimedTrajectory<Pose2dWithCurvature>
+        val driveSubsystem: TankDriveSubsystem,
+        val trajectory: TimedTrajectory<Pose2dWithCurvature>
 ) : TimedFalconCommand(driveSubsystem) {
 
     private val markers = mutableListOf<Pair<ObservableVariable<Boolean>, Time>>()
@@ -58,17 +58,17 @@ class FollowTrajectoryCommand(
         val output = trajectoryFollower.getOutputFromDynamics(robotPosition)
 
         driveSubsystem.leftMaster.set(
-            ControlMode.Velocity,
-            output.lSetpoint,
-            DemandType.ArbitraryFeedForward,
-            output.lfVoltage.asDouble / 12.0
+                ControlMode.Velocity,
+                output.lSetpoint,
+                DemandType.ArbitraryFeedForward,
+                output.lfVoltage.asDouble / 12.0
         )
 
         driveSubsystem.rightMaster.set(
-            ControlMode.Velocity,
-            output.rSetpoint,
-            DemandType.ArbitraryFeedForward,
-            output.rfVoltage.asDouble / 12.0
+                ControlMode.Velocity,
+                output.rSetpoint,
+                DemandType.ArbitraryFeedForward,
+                output.rfVoltage.asDouble / 12.0
         )
 
         // Update marker states

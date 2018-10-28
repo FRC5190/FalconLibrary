@@ -26,8 +26,8 @@ fun Rotation2d.toTranslation(): Translation2d {
 }
 
 data class Translation2d(
-    var xRaw: Double = 0.0,
-    var yRaw: Double = 0.0
+        var xRaw: Double = 0.0,
+        var yRaw: Double = 0.0
 ) : VaryInterpolatable<Translation2d> {
 
     var x: Length
@@ -43,11 +43,11 @@ data class Translation2d(
         }
 
     constructor(
-        x: Length,
-        y: Length
+            x: Length,
+            y: Length
     ) : this(
-        x.meter.asDouble,
-        y.meter.asDouble
+            x.meter.asDouble,
+            y.meter.asDouble
     )
 
     val norm
@@ -57,41 +57,41 @@ data class Translation2d(
         t <= 0 -> this
         t >= 1 -> endValue
         else -> Translation2d(
-            xRaw.lerp(endValue.xRaw, t),
-            yRaw.lerp(endValue.yRaw, t)
+                xRaw.lerp(endValue.xRaw, t),
+                yRaw.lerp(endValue.yRaw, t)
         )
     }
 
     override fun distance(other: Translation2d) = (-this + other).norm
 
     operator fun plus(other: Translation2d) = Translation2d(
-        xRaw + other.xRaw,
-        yRaw + other.yRaw
+            xRaw + other.xRaw,
+            yRaw + other.yRaw
     )
 
     operator fun minus(other: Translation2d) = Translation2d(
-        xRaw - other.xRaw,
-        yRaw - other.yRaw
+            xRaw - other.xRaw,
+            yRaw - other.yRaw
     )
 
     operator fun times(other: Rotation2d) = Translation2d(
-        xRaw * other.cos - yRaw * other.sin,
-        xRaw * other.sin + yRaw * other.cos
+            xRaw * other.cos - yRaw * other.sin,
+            xRaw * other.sin + yRaw * other.cos
     )
 
     operator fun times(other: Number): Translation2d {
         val factor = other.toDouble()
         return Translation2d(
-            xRaw * factor,
-            yRaw * factor
+                xRaw * factor,
+                yRaw * factor
         )
     }
 
     operator fun div(other: Number): Translation2d {
         val factor = other.toDouble()
         return Translation2d(
-            xRaw / factor,
-            yRaw / factor
+                xRaw / factor,
+                yRaw / factor
         )
     }
 

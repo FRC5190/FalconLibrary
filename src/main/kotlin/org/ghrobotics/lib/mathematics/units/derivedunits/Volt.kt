@@ -9,8 +9,8 @@ import org.ghrobotics.lib.mathematics.units.fractions.SIFrac35
 
 val Number.volt: Volt
     get() = SIFrac34(
-        SIExp3(this.gram, 1.meter, 1.meter),
-        SIExp4(1.second, 1.second, 1.second, 1.amp)
+            SIExp3(this.gram, 1.meter, 1.meter),
+            SIExp4(1.second, 1.second, 1.second, 1.amp)
     )
 
 typealias Volt = SIFrac34<Mass, Length, Length,

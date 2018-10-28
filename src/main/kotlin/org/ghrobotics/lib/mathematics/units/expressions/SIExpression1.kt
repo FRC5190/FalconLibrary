@@ -3,7 +3,7 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIUnit
 
 open class SIExpression1<A : SIUnit<A, *>>(
-    val a: A
+        val a: A
 ) : SIExpression<SIExpression1<A>>() {
     override val asDouble: Double
         get() = a.asDouble

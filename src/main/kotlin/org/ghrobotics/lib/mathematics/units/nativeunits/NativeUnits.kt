@@ -9,7 +9,7 @@ fun <T : SIValue<T>> T.fromModel(model: NativeUnitModel<T>) = model.fromModel(th
 val Number.STU: NativeUnit get() = NativeUnitImpl(toDouble())
 
 interface NativeUnit :
-    SIValue<NativeUnit> {
+        SIValue<NativeUnit> {
     fun <T : SIValue<T>> toModel(model: NativeUnitModel<T>): T
 
     fun <T : SIValue<T>> plus(other: T, model: NativeUnitModel<T>): NativeUnit
@@ -26,20 +26,20 @@ class NativeUnitImpl(value: Double) : AbstractSIValue<NativeUnit>(), NativeUnit 
     override val absoluteValue by lazy { NativeUnitImpl(value.absoluteValue) }
 
     override fun plus(other: NativeUnit) =
-        NativeUnitImpl(asDouble + other.asDouble)
+            NativeUnitImpl(asDouble + other.asDouble)
 
     override fun minus(other: NativeUnit) =
-        NativeUnitImpl(asDouble - other.asDouble)
+            NativeUnitImpl(asDouble - other.asDouble)
 
     override fun <T : SIValue<T>> plus(other: T, model: NativeUnitModel<T>): NativeUnit = plus(model.fromModel(other))
 
     override fun <T : SIValue<T>> minus(other: T, model: NativeUnitModel<T>): NativeUnit = minus(-other, model)
 
     override fun times(other: Number) =
-        NativeUnitImpl(asDouble * other.toDouble())
+            NativeUnitImpl(asDouble * other.toDouble())
 
     override fun div(other: Number) =
-        NativeUnitImpl(asDouble * other.toDouble())
+            NativeUnitImpl(asDouble * other.toDouble())
 
     override fun div(other: NativeUnit) = asDouble / other.asDouble
 

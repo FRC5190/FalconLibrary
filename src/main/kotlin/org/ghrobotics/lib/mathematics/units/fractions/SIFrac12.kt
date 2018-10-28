@@ -9,36 +9,36 @@ import org.ghrobotics.lib.mathematics.units.expressions.SIExp3
 fun <T : SIUnit<T, TE>, TE : Enum<TE>,
         BA : SIUnit<BA, BAE>, BAE : Enum<BAE>,
         BB : SIUnit<BB, BBE>, BBE : Enum<BBE>> SIFrac12<T, BA, BB>.adjust(
-    topPrefix: SIPrefix, topUnit: TE,
-    bottomAPrefix: SIPrefix, bottomAUnit: BAE,
-    bottomBPrefix: SIPrefix, bottomBUnit: BBE
+        topPrefix: SIPrefix, topUnit: TE,
+        bottomAPrefix: SIPrefix, bottomAUnit: BAE,
+        bottomBPrefix: SIPrefix, bottomBUnit: BBE
 ) = SIFrac12(
-    top.convertTo(topPrefix, topUnit),
-    SIExp2(
-        bottom.a.convertTo(bottomAPrefix, bottomAUnit),
-        bottom.b.convertTo(bottomBPrefix, bottomBUnit)
-    )
+        top.convertTo(topPrefix, topUnit),
+        SIExp2(
+                bottom.a.convertTo(bottomAPrefix, bottomAUnit),
+                bottom.b.convertTo(bottomBPrefix, bottomBUnit)
+        )
 )
 
 fun <T : SIValue<T>,
         BA : SIUnit<BA, BAE>, BAE : Enum<BAE>,
         BB : SIUnit<BB, BBE>, BBE : Enum<BBE>> SIFrac12<T, BA, BB>.adjustBottom(
-    bottomAPrefix: SIPrefix, bottomAUnit: BAE,
-    bottomBPrefix: SIPrefix, bottomBUnit: BBE
+        bottomAPrefix: SIPrefix, bottomAUnit: BAE,
+        bottomBPrefix: SIPrefix, bottomBUnit: BBE
 ) = SIFrac12(
-    top,
-    SIExp2(
-        bottom.a.convertTo(bottomAPrefix, bottomAUnit),
-        bottom.b.convertTo(bottomBPrefix, bottomBUnit)
-    )
+        top,
+        SIExp2(
+                bottom.a.convertTo(bottomAPrefix, bottomAUnit),
+                bottom.b.convertTo(bottomBPrefix, bottomBUnit)
+        )
 )
 
 open class SIFrac12<T : SIValue<T>, BA : SIValue<BA>, BB : SIValue<BB>>(
-    top: T,
-    bottom: SIExp2<BA, BB>
+        top: T,
+        bottom: SIExp2<BA, BB>
 ) : AbstractSIFrac<T, SIExp2<BA, BB>, SIFrac12<T, BA, BB>>(
-    top,
-    bottom
+        top,
+        bottom
 ), SIFracExpT1<T>, SIFracExpB2<BA, BB> {
     override val tA get() = top
     override val bA get() = bottom.a

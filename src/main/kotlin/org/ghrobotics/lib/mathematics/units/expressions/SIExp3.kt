@@ -3,9 +3,9 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp3<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>>(
-    val a: A,
-    val b: B,
-    val c: C
+        val a: A,
+        val b: B,
+        val c: C
 ) : SIExpression<SIExp3<A, B, C>>() {
     override val asDouble: Double
         get() = a.asDouble * b.asDouble * c.asDouble
