@@ -47,7 +47,18 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         conditionSource: BooleanSource,
         onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
         onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
-        pathMirrored: Boolean
+        pathMirrored: Boolean = false
+    ) = ConditionalCommand(
+        conditionSource,
+        followTrajectory(onTrueTrajectory, pathMirrored),
+        onFalseTrajectory?.let { followTrajectory(it, pathMirrored) }
+    )
+
+    fun followTrajectory(
+        conditionSource: BooleanSource,
+        onTrueTrajectory: TimedTrajectory<Pose2dWithCurvature>,
+        onFalseTrajectory: TimedTrajectory<Pose2dWithCurvature>?,
+        pathMirrored: BooleanSource
     ) = ConditionalCommand(
         conditionSource,
         followTrajectory(onTrueTrajectory, pathMirrored),
