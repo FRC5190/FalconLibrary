@@ -3,61 +3,47 @@ package org.ghrobotics.lib.utils
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
+typealias Source<T> = () -> T
+
 typealias DoubleSource = Source<Double>
 typealias BooleanSource = Source<Boolean>
 
-interface Source<T> {
-    val value: T
+fun <T, O, P> Source<T>.withMerge(
+    other: Source<O>,
+    block: (T, O) -> P
+): Source<P> = { block(this@withMerge(), other()) }
 
-    fun <O, P> withMerge(other: Source<O>, block: (T, O) -> P): Source<P> = of { block(this@Source.value, other.value) }
+fun <T, O> Source<T>.withEquals(other: O): BooleanSource = { this@withEquals() == other }
+fun <T, O> Source<T>.withEquals(other: Source<O>): BooleanSource = { this@withEquals() == other() }
 
-    fun <O> withEquals(other: O) = withEquals(of(other))
-    fun <O> withEquals(other: Source<O>): BooleanSource = of { this@Source.value == other.value }
+@Deprecated("Use map instead", ReplaceWith("map(block)"))
+fun <T, O> Source<T>.withProcessing(block: (T) -> O): Source<O> = map(block)
 
-    fun <O> withProcessing(block: (T) -> O): Source<O> = of { block(this@Source.value) }
-
-    companion object {
-        fun <T> of(value: T): Source<T> = ConstantSource(value)
-        fun <T> of(value: () -> T): Source<T> = VariableSource(value)
-    }
-}
-
-private class ConstantSource<T>(override val value: T) : Source<T>
-private class VariableSource<T>(val valueSource: () -> T) : Source<T> {
-    override val value: T
-        get() = valueSource()
-}
+fun <T, O> Source<T>.map(block: (T) -> O): Source<O> = { block(this@map()) }
 
 @Suppress("FunctionName")
-fun <T> Source(value: T) = Source.of(value)
+fun <T> Source(value: T): Source<T> = { value }
 
 @Suppress("FunctionName")
-fun <T> Source(value: () -> T) = Source.of(value)
+@Deprecated("Redundant", ReplaceWith("value"))
+fun <T> Source(value: () -> T): Source<T> = value
 
 fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(Source(trueMap), Source(falseMap))
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, Source(falseMap))
 fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(Source(trueMap), falseMap)
-fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = withProcessing { if (it) trueMap.value else falseMap.value }
+fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }
 
-@Deprecated("", ReplaceWith("Source(value)"))
-fun <T> constSource(value: T) = Source(value)
+fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = map { this@withThreshold() >= threshold }
 
-@Deprecated("", ReplaceWith("Source(value)"))
-fun <T> variableSource(value: () -> T) = Source(value)
-
-@Deprecated("", ReplaceWith("one.withMerge(two, value)"))
-fun <T, K> mergeSource(one: Source<out T>, two: Source<out T>, value: (T, T) -> K) = one.withMerge(two, value)
-
-fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = withProcessing {
-    val currentValue = this@withThreshold.value
-    currentValue >= threshold
-}
-
-fun DoubleSource.withDeadband(deadband: Double, scaleDeadband: Boolean = true, maxMagnitude: Double = 1.0): DoubleSource = withProcessing {
-    val currentValue = this@withDeadband.value
-    if (currentValue in (-deadband)..deadband) return@withProcessing 0.0 // in deadband
+fun DoubleSource.withDeadband(
+    deadband: Double,
+    scaleDeadband: Boolean = true,
+    maxMagnitude: Double = 1.0
+): DoubleSource = map {
+    val currentValue = this@withDeadband()
+    if (currentValue in (-deadband)..deadband) return@map 0.0 // in deadband
     // outside deadband
-    if (!scaleDeadband) return@withProcessing currentValue
+    if (!scaleDeadband) return@map currentValue
     // scale so deadband is effective 0
     ((currentValue.absoluteValue - deadband) / (maxMagnitude - deadband)) * currentValue.sign
 }

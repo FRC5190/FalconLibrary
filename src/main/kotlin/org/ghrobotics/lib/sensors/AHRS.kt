@@ -10,8 +10,7 @@ interface AHRSSensor : Source<Rotation2d> {
     var angleOffset: Rotation2d
     val correctedAngle: Rotation2d
     fun reset()
-    // Source Implementation
-    override val value get() = correctedAngle
+    override fun invoke() = correctedAngle
 }
 
 abstract class AHRSSensorImpl : AHRSSensor {

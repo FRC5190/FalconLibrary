@@ -11,10 +11,10 @@ class HIDButton(private val source: HIDSource,
         const val DEFAULT_THRESHOLD = 0.5
     }
 
-    private var lastValue = source.value >= threshold
+    private var lastValue = source() >= threshold
 
     override suspend fun update() {
-        val newValue = source.value >= threshold
+        val newValue = source() >= threshold
         if (lastValue != newValue) {
             // Value has changed
             if (newValue) {

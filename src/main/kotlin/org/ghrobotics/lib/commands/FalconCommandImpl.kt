@@ -46,7 +46,7 @@ class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 
     override suspend fun InitCommandScope.initialize() {
         executeFrequency = 0
-        withTimeout(delaySource.value)
+        withTimeout(delaySource())
     }
 }
 
@@ -72,7 +72,7 @@ class ConditionalCommand(
             setTimeout(newValue.second.asDouble)
         }
 
-        override fun condition(): Boolean = condition.value
+        override fun condition(): Boolean = condition.invoke()
 
         override fun isFinished() = super.isFinished() || finishCondition.value
     }

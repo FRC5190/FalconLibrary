@@ -57,7 +57,7 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) :
         FalconCommandGroup(FalconCommandGroup.GroupType.SEQUENTIAL,
             stateMap.entries.map { (key, command) ->
                 object : ConditionalCommand(command.wrappedValue) {
-                    override fun condition() = state.value == key
+                    override fun condition() = state() == key
                 }
             })
 }
