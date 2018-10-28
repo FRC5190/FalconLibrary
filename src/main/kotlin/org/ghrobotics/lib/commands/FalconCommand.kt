@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command
 import kotlinx.coroutines.experimental.*
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.loopFrequency
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
 import org.ghrobotics.lib.utils.observabletype.ObservableValueReference
@@ -63,6 +64,8 @@ abstract class FalconCommand(
         operator fun plusAssign(other: ObservableValue<Boolean>) {
             varReference.reference = varReference.reference or other
         }
+
+        operator fun plusAssign(other: BooleanSource) = plusAssign(GlobalScope.updatableValue(block = other))
 
         fun set(other: ObservableValue<Boolean>) {
             varReference.reference = other
@@ -124,6 +127,7 @@ abstract class FalconCommand(
     }
 
     fun withExit(condition: ObservableValue<Boolean>) = also { _finishCondition += condition }
+    fun withExit(condition: BooleanSource) = withExit(GlobalScope.updatableValue(block = condition))
     fun overrideExit(condition: ObservableValue<Boolean>) = also { _finishCondition.set(condition) }
     fun withTimeout(delay: Time) = also { (wrappedValue as IWpiCommand).timeout = delay }
 
