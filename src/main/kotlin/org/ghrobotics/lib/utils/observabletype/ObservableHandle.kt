@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.utils.observabletype
 
-import kotlinx.coroutines.experimental.DisposableHandle
+import kotlinx.coroutines.DisposableHandle
 
 typealias ObservableListener<T> = ObservableHandle.(T) -> Unit
 

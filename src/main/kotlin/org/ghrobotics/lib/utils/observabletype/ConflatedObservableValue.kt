@@ -1,10 +1,10 @@
 package org.ghrobotics.lib.utils.observabletype
 
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.sendBlocking
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.launch
 
 fun <T> ObservableValue<T>.asConflated(scope: CoroutineScope): ObservableValue<T> =
         ConflatedObservableValueImpl(scope, this)

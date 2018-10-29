@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.command.Scheduler
 import edu.wpi.first.wpilibj.hal.HAL
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import kotlinx.coroutines.experimental.isActive
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
 import org.ghrobotics.lib.utils.*

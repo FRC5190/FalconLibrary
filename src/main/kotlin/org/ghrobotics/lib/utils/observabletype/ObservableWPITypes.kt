@@ -1,7 +1,7 @@
 package org.ghrobotics.lib.utils.observabletype
 
 import edu.wpi.first.wpilibj.AnalogInput
-import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.CoroutineScope
 
 // Analog Input
 

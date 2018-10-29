@@ -1,7 +1,7 @@
 package org.ghrobotics.lib.utils.observabletype
 
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import org.ghrobotics.lib.utils.launchFrequency
 import java.util.concurrent.TimeUnit
 

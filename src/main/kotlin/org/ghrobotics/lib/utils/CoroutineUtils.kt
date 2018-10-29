@@ -1,9 +1,9 @@
 package org.ghrobotics.lib.utils
 
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.EmptyCoroutineContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 fun CoroutineScope.launchFrequency(
         frequency: Int = 50,
