@@ -18,4 +18,8 @@ class DeltaTime(startTime: Time = (-1).second) {
         currentTime = newTime
         return deltaTime
     }
+
+    fun reset() {
+        currentTime = (-1).second
+    }
 }

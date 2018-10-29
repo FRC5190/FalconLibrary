@@ -29,11 +29,6 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
         private set
 
-    fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
-        iterator = trajectory.iterator()
-        previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
-    }
-
     val referencePoint
         get() = iterator.currentState
 
@@ -45,6 +40,13 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
     // Loops
     private var deltaTimeController = DeltaTime()
+
+
+    fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
+        iterator = trajectory.iterator()
+        previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
+        deltaTimeController.reset()
+    }
 
 
     // Return output from kinematic calculations only. Robot dynamics are not taken into account.
