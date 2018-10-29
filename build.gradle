@@ -33,13 +33,14 @@ publishing {
             groupId = 'org.ghrobotics.lib'
             artifactId = 'FalconLibrary'
             version = '2018.10.29'
-            artifact jar
+            artifact fatJar
         }
     }
 }
 
-jar {
+task fatJar(type: Jar) {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    with jar
 }
 
 task wrapper(type: Wrapper) {
