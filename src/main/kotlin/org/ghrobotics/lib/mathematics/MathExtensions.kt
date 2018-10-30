@@ -11,6 +11,7 @@ import kotlin.math.absoluteValue
 fun Double.lerp(endValue: Double, t: Double) = this + (endValue - this) * t.coerceIn(0.0, 1.0)
 
 fun <T : Comparable<T>> min(a: T, b: T) = if (a < b) a else b
+fun <T : Comparable<T>> max(a: T, b: T) = if (a > b) a else b
 
 infix fun Double.epsilonEquals(other: Double): Boolean {
     return (this - other).absoluteValue < kEpsilon

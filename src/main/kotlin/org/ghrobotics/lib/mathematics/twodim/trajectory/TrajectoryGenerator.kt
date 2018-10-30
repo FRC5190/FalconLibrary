@@ -38,14 +38,10 @@ val DefaultTrajectoryGenerator = TrajectoryGenerator(
 )
 
 class TrajectoryGenerator(
-        kMaxDx: Length,
-        kMaxDy: Length,
-        kMaxDTheta: Rotation2d
+        val kMaxDx: Length,
+        val kMaxDy: Length,
+        val kMaxDTheta: Rotation2d
 ) {
-
-    val kMaxDx = kMaxDx.asMetric.asDouble
-    val kMaxDy = kMaxDy.asMetric.asDouble
-    val kMaxDTheta = kMaxDTheta.radian.asDouble
 
     fun generateTrajectory(
             wayPoints: List<Pose2d>,
@@ -79,11 +75,11 @@ class TrajectoryGenerator(
         return timeParameterizeTrajectory(
                 DistanceTrajectory(trajectory),
                 constraints,
-                startVelocity.asMetric.asDouble,
-                endVelocity.asMetric.asDouble,
-                maxVelocity.asMetric.asDouble,
-                maxAcceleration.asMetric.asDouble.absoluteValue,
-                kMaxDx,
+                startVelocity.value,
+                endVelocity.value,
+                maxVelocity.value,
+                maxAcceleration.value.absoluteValue,
+                kMaxDx.value,
                 reversed
         )
     }
@@ -158,14 +154,14 @@ class TrajectoryGenerator(
         }
 
         val distanceViewRange =
-                distanceTrajectory.firstInterpolant.asDouble..distanceTrajectory.lastInterpolant.asDouble
+                distanceTrajectory.firstInterpolant.value..distanceTrajectory.lastInterpolant.value
         val distanceViewSteps =
-                Math.ceil((distanceTrajectory.lastInterpolant.asDouble - distanceTrajectory.firstInterpolant.asDouble) / stepSize + 1)
+                Math.ceil((distanceTrajectory.lastInterpolant.value - distanceTrajectory.firstInterpolant.value) / stepSize + 1)
                         .toInt()
 
         val states = (0 until distanceViewSteps).map { step ->
             distanceTrajectory.sample(
-                    (step * stepSize + distanceTrajectory.firstInterpolant.asDouble).coerceIn(
+                    (step * stepSize + distanceTrajectory.firstInterpolant.value).coerceIn(
                             distanceViewRange
                     )
             )

@@ -10,7 +10,7 @@ class DeltaTime(startTime: Time = (-1).second) {
         private set
 
     fun updateTime(newTime: Time): Time {
-        deltaTime = if (currentTime.asDouble < 0.0) {
+        deltaTime = if (currentTime.value < 0.0) {
             0.second
         } else {
             newTime - currentTime

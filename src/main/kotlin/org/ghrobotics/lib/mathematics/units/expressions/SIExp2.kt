@@ -3,21 +3,14 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.SIValue
 
-open class SIExp2<A : SIValue<A>, B : SIValue<B>>(
-        val a: A,
-        val b: B
+class SIExp2<A : SIValue<A>, B : SIValue<B>>(
+        override val value: Double,
+        private val a: A,
+        private val b: B
 ) : SIExpression<SIExp2<A, B>>() {
-    override val asDouble: Double
-        get() = a.asDouble * b.asDouble
-    override val asMetric by lazy { SIExp2(a.asMetric, b.asMetric) }
-    override val absoluteValue by lazy { SIExp2(a.absoluteValue, b.absoluteValue) }
+    override fun createNew(newValue: Double) = SIExp2(newValue, a, b)
 
-    override fun unaryMinus() = SIExp2(-a, b)
-
-    override fun times(other: Number) = SIExp2(a * other, b)
-    override fun div(other: Number) = SIExp2(a / other, b)
-
-    operator fun <C : SIUnit<C, *>> times(other: C) = SIExp3(a, b, other)
+    operator fun <C : SIUnit<C>> times(other: C) = SIExp3(value * other.value, a, b, other)
 
     @JvmName("divOA")
     operator fun div(other: A): B = divA(other)
@@ -29,11 +22,9 @@ open class SIExp2<A : SIValue<A>, B : SIValue<B>>(
 
     fun divB(other: B) = a * (b / other)
 
-    override fun toString() = buildString {
-        append('(')
-        append(a)
-        append(" * ")
-        append(b)
-        append(')')
+    override fun toString() = "($a * $b)"
+
+    companion object {
+        fun <A : SIValue<A>, B : SIValue<B>> create(a: A, b: B) = SIExp2(a.value * b.value, a, b)
     }
 }

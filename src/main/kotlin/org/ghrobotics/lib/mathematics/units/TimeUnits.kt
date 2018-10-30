@@ -1,120 +1,63 @@
 package org.ghrobotics.lib.mathematics.units
 
-val Number.second by time(TimeUnits.Second)
-val Number.minute by time(TimeUnits.Minute)
-val Number.hour by time(TimeUnits.Hour)
-val Number.day by time(TimeUnits.Day)
-val Number.week by time(TimeUnits.Week)
-val Number.moment by time(TimeUnits.Moment)
+val Number.second get() = Time(toDouble())
+val Number.minute get() = (toDouble() * 60).second
+val Number.hour get() = (toDouble() * 60).minute
+val Number.day get() = (toDouble() * 24).hour
+val Number.week get() = (toDouble() * 7).day
+val Number.moment get() = (toDouble() * 90.0).second
 
-private fun time(type: TimeUnits) = AbstractTime.createDelegate(type)
+val Number.yottasecond get() = (toDouble() / 1e-24).second
+val Number.zettasecond get() = (toDouble() / 1e-21).second
+val Number.exasecond get() = (toDouble() / 1e-18).second
+val Number.petasecond get() = (toDouble() / 1e-15).second
+val Number.terasecond get() = (toDouble() / 1e-12).second
+val Number.gigasecond get() = (toDouble() / 1e-9).second
+val Number.megasecond get() = (toDouble() / 1e-6).second
+val Number.kilosecond get() = (toDouble() / 0.001).second
+val Number.hectosecond get() = (toDouble() / 0.01).second
+val Number.decasecond get() = (toDouble() / 0.1).second
+val Number.decisecond get() = (toDouble() / 10).second
+val Number.centisecond get() = (toDouble() / 100).second
+val Number.millisecond get() = (toDouble() / 1000).second
+val Number.microsecond get() = (toDouble() / 1000000).second
+val Number.nanosecond get() = (toDouble() / 1e+9).second
+val Number.picosecond get() = (toDouble() / 1e+12).second
+val Number.femtosecond get() = (toDouble() / 1e+15).second
+val Number.attosecond get() = (toDouble() / 1e+18).second
+val Number.zeptosecond get() = (toDouble() / 1e+21).second
+val Number.yoctosecond get() = (toDouble() / 1e+24).second
 
-val Number.yottasecond by second(SIPrefix.YOTTA)
-val Number.zettasecond by second(SIPrefix.ZETTA)
-val Number.exasecond by second(SIPrefix.EXA)
-val Number.petasecond by second(SIPrefix.PETA)
-val Number.terasecond by second(SIPrefix.TERA)
-val Number.gigasecond by second(SIPrefix.GIGA)
-val Number.megasecond by second(SIPrefix.MEGA)
-val Number.kilosecond by second(SIPrefix.KILO)
-val Number.hectosecond by second(SIPrefix.HECTO)
-val Number.decasecond by second(SIPrefix.DECA)
-val Number.decisecond by second(SIPrefix.DECI)
-val Number.centisecond by second(SIPrefix.CENTI)
-val Number.millisecond by second(SIPrefix.MILLI)
-val Number.microsecond by second(SIPrefix.MICRO)
-val Number.nanosecond by second(SIPrefix.NANO)
-val Number.picosecond by second(SIPrefix.PICO)
-val Number.femtosecond by second(SIPrefix.FEMTO)
-val Number.attosecond by second(SIPrefix.ATTO)
-val Number.zeptosecond by second(SIPrefix.ZEPTO)
-val Number.yoctosecond by second(SIPrefix.YOCTO)
+class Time(
+        override val value: Double
+) : SIUnit<Time> {
+    val second get() = value
+    val minute get() = second / 60
+    val hour get() = minute / 60
+    val day get() = hour / 24
+    val week get() = day / 7
+    val moment get() = second / 90
 
-private fun second(prefix: SIPrefix) = AbstractTime.createMetricDelegate(prefix)
+    val yottasecond get() = value * 1e-24
+    val zettasecond get() = value * 1e-21
+    val exasecond get() = value * 1e-18
+    val petasecond get() = value * 1e-15
+    val terasecond get() = value * 1e-12
+    val gigasecond get() = value * 1e-9
+    val megasecond get() = value * 1e-6
+    val kilosecond get() = value * 0.001
+    val hectosecond get() = value * 0.01
+    val decasecond get() = value * 0.1
+    val decisecond get() = value * 10
+    val centisecond get() = value * 100
+    val millisecond get() = value * 1000
+    val microsecond get() = value * 1000000
+    val nanosecond get() = value * 1e+9
+    val picosecond get() = value * 1e+12
+    val femtosecond get() = value * 1e+15
+    val attosecond get() = value * 1e+18
+    val zeptosecond get() = value * 1e+21
+    val yoctosecond get() = value * 1e+24
 
-enum class TimeUnits {
-    Second,
-    Minute,
-    Hour,
-    Day,
-    Week,
-    Moment
-}
-
-interface Time : SIUnit<Time, TimeUnits> {
-    val second: Time
-    val minute: Time
-    val hour: Time
-    val day: Time
-    val week: Time
-    val moment: Time
-
-    val yottasecond: Time
-    val zettasecond: Time
-    val exasecond: Time
-    val petasecond: Time
-    val terasecond: Time
-    val gigasecond: Time
-    val megasecond: Time
-    val kilosecond: Time
-    val hectosecond: Time
-    val decasecond: Time
-    val decisecond: Time
-    val centisecond: Time
-    val millisecond: Time
-    val microsecond: Time
-    val nanosecond: Time
-    val picosecond: Time
-    val femtosecond: Time
-    val attosecond: Time
-    val zeptosecond: Time
-    val yoctosecond: Time
-}
-
-class AbstractTime(
-        value: Double,
-        prefix: SIPrefix,
-        type: TimeUnits
-) : AbstractSIUnit<Time, TimeUnits>(
-        value,
-        prefix,
-        type,
-        AbstractTime
-), Time {
-    override val second by convertUnit(TimeUnits.Second)
-    override val minute by convertUnit(TimeUnits.Minute)
-    override val hour by convertUnit(TimeUnits.Hour)
-    override val day by convertUnit(TimeUnits.Day)
-    override val week by convertUnit(TimeUnits.Week)
-    override val moment by convertUnit(TimeUnits.Moment)
-
-    override val yottasecond by convertMetric(SIPrefix.YOTTA)
-    override val zettasecond by convertMetric(SIPrefix.ZETTA)
-    override val exasecond by convertMetric(SIPrefix.EXA)
-    override val petasecond by convertMetric(SIPrefix.PETA)
-    override val terasecond by convertMetric(SIPrefix.TERA)
-    override val gigasecond by convertMetric(SIPrefix.GIGA)
-    override val megasecond by convertMetric(SIPrefix.MEGA)
-    override val kilosecond by convertMetric(SIPrefix.KILO)
-    override val hectosecond by convertMetric(SIPrefix.HECTO)
-    override val decasecond by convertMetric(SIPrefix.DECA)
-    override val decisecond by convertMetric(SIPrefix.DECI)
-    override val centisecond by convertMetric(SIPrefix.CENTI)
-    override val millisecond by convertMetric(SIPrefix.MILLI)
-    override val microsecond by convertMetric(SIPrefix.MICRO)
-    override val nanosecond by convertMetric(SIPrefix.NANO)
-    override val picosecond by convertMetric(SIPrefix.PICO)
-    override val femtosecond by convertMetric(SIPrefix.FEMTO)
-    override val attosecond by convertMetric(SIPrefix.ATTO)
-    override val zeptosecond by convertMetric(SIPrefix.ZEPTO)
-    override val yoctosecond by convertMetric(SIPrefix.YOCTO)
-
-    companion object : SIUnitConverter<Time, TimeUnits>(
-            TimeUnits.Second,
-            UnitMapper.timeMapper
-    ) {
-        override fun create(newValue: Double, newPrefix: SIPrefix, newType: TimeUnits): Time =
-                AbstractTime(newValue, newPrefix, newType)
-    }
-
+    override fun createNew(newBaseValue: Double) = Time(newBaseValue)
 }

@@ -16,7 +16,7 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
         id: Int,
         timeout: Time
 ) : TalonSRX(id) {
-    protected val timeoutInt = timeout.millisecond.asInt
+    protected val timeoutInt = timeout.millisecond.toInt()
 
     var kP by Delegates.observable(0.0) { _, _, newValue -> config_kP(0, newValue, timeoutInt) }
     var kI by Delegates.observable(0.0) { _, _, newValue -> config_kI(0, newValue, timeoutInt) }
@@ -44,13 +44,13 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     }
     var softLimitForward by Delegates.observable(0.STU) { _, _, newValue ->
         configForwardSoftLimitThreshold(
-                newValue.asInt,
+                newValue.value.toInt(),
                 timeoutInt
         )
     }
     var softLimitReverse by Delegates.observable(0.STU) { _, _, newValue ->
         configReverseSoftLimitThreshold(
-                newValue.asInt,
+                newValue.value.toInt(),
                 timeoutInt
         )
     }
@@ -90,13 +90,13 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
 
     var openLoopRamp by Delegates.observable(0.second) { _, _, newValue ->
         configOpenloopRamp(
-                newValue.second.asDouble,
+                newValue.second,
                 timeoutInt
         )
     }
     val closedLoopRamp by Delegates.observable(0.second) { _, _, newValue ->
         configClosedloopRamp(
-                newValue.second.asDouble,
+                newValue.second,
                 timeoutInt
         )
     }
@@ -114,19 +114,19 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
 
     var peakCurrentLimit by Delegates.observable(0.amp) { _, _, newValue ->
         configPeakCurrentLimit(
-                newValue.amp.asInt,
+                newValue.amp.toInt(),
                 timeoutInt
         )
     }
     var peakCurrentLimitDuration by Delegates.observable(0.millisecond) { _, _, newValue ->
         configPeakCurrentDuration(
-                newValue.millisecond.asInt,
+                newValue.millisecond.toInt(),
                 timeoutInt
         )
     }
     var continuousCurrentLimit by Delegates.observable(0.amp) { _, _, newValue ->
         configContinuousCurrentLimit(
-                newValue.amp.asInt,
+                newValue.amp.toInt(),
                 timeoutInt
         )
     }
@@ -138,7 +138,7 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
 
     var voltageCompensationSaturation by Delegates.observable(12.volt) { _, _, newValue ->
         configVoltageCompSaturation(
-                newValue.asMetric.asDouble,
+                newValue.value,
                 timeoutInt
         )
     }

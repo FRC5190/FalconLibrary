@@ -13,11 +13,11 @@ class TimedTrajectory<S : VaryInterpolatable<S>>(
         points: List<TimedEntry<S>>
 ) : Trajectory<Time, TimedEntry<S>>(points) {
 
-    override fun sample(interpolant: Time) = sample(interpolant.asMetric.asDouble)
+    override fun sample(interpolant: Time) = sample(interpolant.value)
 
     fun sample(interpolant: Double) = when {
-        interpolant >= lastInterpolant.asDouble -> TrajectorySamplePoint(getPoint(points.size - 1))
-        interpolant <= firstInterpolant.asDouble -> TrajectorySamplePoint(getPoint(0))
+        interpolant >= lastInterpolant.value -> TrajectorySamplePoint(getPoint(points.size - 1))
+        interpolant <= firstInterpolant.value -> TrajectorySamplePoint(getPoint(0))
         else -> {
             val (index, entry) = points.asSequence()
                     .withIndex()

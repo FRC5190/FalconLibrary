@@ -20,10 +20,7 @@ import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
-fun Rotation2d.toTranslation(): Translation2d {
-    val radians = radian.asDouble
-    return Translation2d(Math.cos(radians), Math.sin(radians))
-}
+fun Rotation2d.toTranslation() = Translation2d(cos, sin)
 
 data class Translation2d(
         var xRaw: Double = 0.0,
@@ -33,21 +30,21 @@ data class Translation2d(
     var x: Length
         get() = xRaw.meter
         set(value) {
-            xRaw = value.meter.asDouble
+            xRaw = value.meter
         }
 
     var y: Length
         get() = yRaw.meter
         set(value) {
-            yRaw = value.meter.asDouble
+            yRaw = value.meter
         }
 
     constructor(
             x: Length,
             y: Length
     ) : this(
-            x.meter.asDouble,
-            y.meter.asDouble
+            x.meter,
+            y.meter
     )
 
     val norm

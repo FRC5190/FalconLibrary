@@ -1,101 +1,53 @@
 package org.ghrobotics.lib.mathematics.units
 
-val Number.amp by length(ElectricCurrentUnits.Amp)
+val Number.amp get() = ElectricCurrent(toDouble())
 
-private fun length(type: ElectricCurrentUnits) = AbstractElectricCurrent.createDelegate(type)
+val Number.yottaamp get() = (toDouble() / 1e-24).amp
+val Number.zettaamp get() = (toDouble() / 1e-21).amp
+val Number.exaamp get() = (toDouble() / 1e-18).amp
+val Number.petaamp get() = (toDouble() / 1e-15).amp
+val Number.teraamp get() = (toDouble() / 1e-12).amp
+val Number.gigaamp get() = (toDouble() / 1e-9).amp
+val Number.megaamp get() = (toDouble() / 1e-6).amp
+val Number.kiloamp get() = (toDouble() / 0.001).amp
+val Number.hectoamp get() = (toDouble() / 0.01).amp
+val Number.decaamp get() = (toDouble() / 0.1).amp
+val Number.deciamp get() = (toDouble() / 10).amp
+val Number.centiamp get() = (toDouble() / 100).amp
+val Number.milliamp get() = (toDouble() / 1000).amp
+val Number.microamp get() = (toDouble() / 1000000).amp
+val Number.nanoamp get() = (toDouble() / 1e+9).amp
+val Number.picoamp get() = (toDouble() / 1e+12).amp
+val Number.femtoamp get() = (toDouble() / 1e+15).amp
+val Number.attoamp get() = (toDouble() / 1e+18).amp
+val Number.zeptoamp get() = (toDouble() / 1e+21).amp
+val Number.yoctoamp get() = (toDouble() / 1e+24).amp
 
-val Number.yottaamp by amp(SIPrefix.YOTTA)
-val Number.zettaamp by amp(SIPrefix.ZETTA)
-val Number.exaamp by amp(SIPrefix.EXA)
-val Number.petaamp by amp(SIPrefix.PETA)
-val Number.teraamp by amp(SIPrefix.TERA)
-val Number.gigaamp by amp(SIPrefix.GIGA)
-val Number.megaamp by amp(SIPrefix.MEGA)
-val Number.kiloamp by amp(SIPrefix.KILO)
-val Number.hectoamp by amp(SIPrefix.HECTO)
-val Number.decaamp by amp(SIPrefix.DECA)
-val Number.deciamp by amp(SIPrefix.DECI)
-val Number.centiamp by amp(SIPrefix.CENTI)
-val Number.milliamp by amp(SIPrefix.MILLI)
-val Number.microamp by amp(SIPrefix.MICRO)
-val Number.nanoamp by amp(SIPrefix.NANO)
-val Number.picoamp by amp(SIPrefix.PICO)
-val Number.femtoamp by amp(SIPrefix.FEMTO)
-val Number.attoamp by amp(SIPrefix.ATTO)
-val Number.zeptoamp by amp(SIPrefix.ZEPTO)
-val Number.yoctoamp by amp(SIPrefix.YOCTO)
+class ElectricCurrent(
+        override val value: Double
+) : SIUnit<ElectricCurrent> {
+    val amp get() = value
 
-private fun amp(prefix: SIPrefix) = AbstractElectricCurrent.createMetricDelegate(prefix)
+    val yottaamp get() = value * 1e-24
+    val zettaamp get() = value * 1e-21
+    val exaamp get() = value * 1e-18
+    val petaamp get() = value * 1e-15
+    val teraamp get() = value * 1e-12
+    val gigaamp get() = value * 1e-9
+    val megaamp get() = value * 1e-6
+    val kiloamp get() = value * 0.001
+    val hectoamp get() = value * 0.01
+    val decaamp get() = value * 0.1
+    val deciamp get() = value * 10
+    val centiamp get() = value * 100
+    val milliamp get() = value * 1000
+    val microamp get() = value * 1000000
+    val nanoamp get() = value * 1e+9
+    val picoamp get() = value * 1e+12
+    val femtoamp get() = value * 1e+15
+    val attoamp get() = value * 1e+18
+    val zeptoamp get() = value * 1e+21
+    val yoctoamp get() = value * 1e+24
 
-enum class ElectricCurrentUnits {
-    Amp
-}
-
-interface ElectricCurrent :
-        SIUnit<ElectricCurrent, ElectricCurrentUnits> {
-    val amp: ElectricCurrent
-
-    val yottaamp: ElectricCurrent
-    val zettaamp: ElectricCurrent
-    val exaamp: ElectricCurrent
-    val petaamp: ElectricCurrent
-    val teraamp: ElectricCurrent
-    val gigaamp: ElectricCurrent
-    val megaamp: ElectricCurrent
-    val kiloamp: ElectricCurrent
-    val hectoamp: ElectricCurrent
-    val decaamp: ElectricCurrent
-    val deciamp: ElectricCurrent
-    val centiamp: ElectricCurrent
-    val milliamp: ElectricCurrent
-    val microamp: ElectricCurrent
-    val nanoamp: ElectricCurrent
-    val picoamp: ElectricCurrent
-    val femtoamp: ElectricCurrent
-    val attoamp: ElectricCurrent
-    val zeptoamp: ElectricCurrent
-    val yoctoamp: ElectricCurrent
-}
-
-class AbstractElectricCurrent(
-        value: Double,
-        prefix: SIPrefix,
-        type: ElectricCurrentUnits
-) : AbstractSIUnit<ElectricCurrent, ElectricCurrentUnits>(
-        value,
-        prefix,
-        type,
-        AbstractElectricCurrent
-), ElectricCurrent {
-    override val amp by convertUnit(ElectricCurrentUnits.Amp)
-
-    override val yottaamp by convertMetric(SIPrefix.YOTTA)
-    override val zettaamp by convertMetric(SIPrefix.ZETTA)
-    override val exaamp by convertMetric(SIPrefix.EXA)
-    override val petaamp by convertMetric(SIPrefix.PETA)
-    override val teraamp by convertMetric(SIPrefix.TERA)
-    override val gigaamp by convertMetric(SIPrefix.GIGA)
-    override val megaamp by convertMetric(SIPrefix.MEGA)
-    override val kiloamp by convertMetric(SIPrefix.KILO)
-    override val hectoamp by convertMetric(SIPrefix.HECTO)
-    override val decaamp by convertMetric(SIPrefix.DECA)
-    override val deciamp by convertMetric(SIPrefix.DECI)
-    override val centiamp by convertMetric(SIPrefix.CENTI)
-    override val milliamp by convertMetric(SIPrefix.MILLI)
-    override val microamp by convertMetric(SIPrefix.MICRO)
-    override val nanoamp by convertMetric(SIPrefix.NANO)
-    override val picoamp by convertMetric(SIPrefix.PICO)
-    override val femtoamp by convertMetric(SIPrefix.FEMTO)
-    override val attoamp by convertMetric(SIPrefix.ATTO)
-    override val zeptoamp by convertMetric(SIPrefix.ZEPTO)
-    override val yoctoamp by convertMetric(SIPrefix.YOCTO)
-
-    companion object : SIUnitConverter<ElectricCurrent, ElectricCurrentUnits>(
-            ElectricCurrentUnits.Amp,
-            UnitMapper.electricCurrentMapper
-    ) {
-        override fun create(newValue: Double, newPrefix: SIPrefix, newType: ElectricCurrentUnits): ElectricCurrent =
-                AbstractElectricCurrent(newValue, newPrefix, newType)
-    }
-
+    override fun createNew(newBaseValue: Double) = ElectricCurrent(newBaseValue)
 }

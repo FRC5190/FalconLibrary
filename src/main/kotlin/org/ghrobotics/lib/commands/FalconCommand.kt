@@ -103,7 +103,7 @@ abstract class FalconCommand(
         }
 
         override var timeout by observable(0.second) { _, _, newValue ->
-            setTimeout(newValue.second.asDouble)
+            setTimeout(newValue.second)
         }
 
         private lateinit var job: Job

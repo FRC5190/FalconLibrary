@@ -3,20 +3,13 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp4<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>>(
-        val a: A,
-        val b: B,
-        val c: C,
-        val d: D
+        override val value: Double,
+        internal val a: A,
+        internal val b: B,
+        internal val c: C,
+        internal val d: D
 ) : SIExpression<SIExp4<A, B, C, D>>() {
-    override val asDouble: Double
-        get() = a.asDouble * b.asDouble * c.asDouble * d.asDouble
-    override val asMetric by lazy { SIExp4(a.asMetric, b.asMetric, c.asMetric, d.asMetric) }
-    override val absoluteValue by lazy { SIExp4(a.absoluteValue, b.absoluteValue, c.absoluteValue, d.absoluteValue) }
-
-    override fun unaryMinus() = SIExp4(-a, b, c, d)
-
-    override fun times(other: Number) = SIExp4(a * other, b, c, d)
-    override fun div(other: Number) = SIExp4(a / other, b, c, d)
+    override fun createNew(newValue: Double) = SIExp4(newValue, a, b, c, d)
 
     @JvmName("divOA")
     operator fun div(other: A) = divA(other)
@@ -30,10 +23,15 @@ open class SIExp4<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>
     @JvmName("divOD")
     operator fun div(other: D) = divD(other)
 
-    fun divA(other: A) = SIExp3(b * (a / other), c, d)
-    fun divB(other: B) = SIExp3(a * (b / other), c, d)
-    fun divC(other: C) = SIExp3(a * (c / other), b, d)
-    fun divD(other: D) = SIExp3(a * (d / other), b, c)
+    fun divA(other: A) = SIExp3(value / other.value, b, c, d)
+    fun divB(other: B) = SIExp3(value / other.value, a, c, d)
+    fun divC(other: C) = SIExp3(value / other.value, a, b, d)
+    fun divD(other: D) = SIExp3(value / other.value, a, b, c)
 
     override fun toString() = "($a * $b * $c * $d)"
+
+    companion object {
+        fun <A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>> create(a: A, b: B, c: C, d: D) =
+                SIExp4(a.value * b.value * c.value * d.value, a, b, c, d)
+    }
 }

@@ -61,14 +61,14 @@ class FollowTrajectoryCommand(
                 ControlMode.Velocity,
                 output.lSetpoint,
                 DemandType.ArbitraryFeedForward,
-                output.lfVoltage.asDouble / 12.0
+                output.lfVoltage.value / 12.0
         )
 
         driveSubsystem.rightMaster.set(
                 ControlMode.Velocity,
                 output.rSetpoint,
                 DemandType.ArbitraryFeedForward,
-                output.rfVoltage.asDouble / 12.0
+                output.rfVoltage.value / 12.0
         )
 
         // Update marker states

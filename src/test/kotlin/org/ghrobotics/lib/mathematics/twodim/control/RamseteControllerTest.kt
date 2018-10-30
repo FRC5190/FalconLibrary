@@ -48,8 +48,8 @@ class RamseteControllerTest {
             val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                output.lSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble,
-                output.rSetpoint.asDouble * dt.second.asDouble / 3.inch.meter.asDouble
+                    output.lSetpoint * dt / 3.inch,
+                    output.rSetpoint * dt / 3.inch
             )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
@@ -57,26 +57,26 @@ class RamseteControllerTest {
             time += dt
 
             totalpose += Twist2d(
-                k.linear,
-                0.0,
-                k.angular * 1.05
+                    k.linear.meter,
+                    0.meter,
+                    k.angular.radian * 1.05
             ).asPose
 
 
-            xList.add(totalpose.translation.x.feet.asDouble)
-            yList.add(totalpose.translation.y.feet.asDouble)
+            xList.add(totalpose.translation.x.feet)
+            yList.add(totalpose.translation.y.feet)
 
-            refXList.add(pt.state.state.pose.translation.x.feet.asDouble)
-            refYList.add(pt.state.state.pose.translation.y.feet.asDouble)
+            refXList.add(pt.state.state.pose.translation.x.feet)
+            refYList.add(pt.state.state.pose.translation.y.feet)
 
             System.out.printf("Left Voltage: %3.3f, Right Voltage: %3.3f%n",
-                    output.lfVoltage.asDouble, output.rfVoltage.asDouble)
+                    output.lfVoltage.value, output.rfVoltage.value)
         }
 
-        val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second.asDouble)
+        val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second)
 
         val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
-            .xAxisTitle("X").yAxisTitle("Y").build()
+                .xAxisTitle("X").yAxisTitle("Y").build()
 
         chart.styler.markerSize = 8
         chart.styler.seriesColors = arrayOf(Color.ORANGE, Color(151, 60, 67))
@@ -107,12 +107,12 @@ class RamseteControllerTest {
         val terror = trajectory.lastState.state.pose.translation - totalpose.translation
         val rerror = trajectory.lastState.state.pose.rotation - totalpose.rotation
 
-        System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet.asDouble, terror.y.feet.asDouble)
+        System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
 
         assert(terror.norm.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
-        assert(rerror.degree.asDouble.also {
+        assert(rerror.degree.also {
             println("[Test] Rotational Error: $it degrees")
         } < 5.0)
 //

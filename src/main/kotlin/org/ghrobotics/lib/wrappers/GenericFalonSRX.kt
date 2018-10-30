@@ -14,31 +14,31 @@ class GenericFalonSRX(
     override var allowedClosedLoopError by observable(0.STU) { _, _, newValue ->
         configAllowableClosedloopError(
                 0,
-                newValue.asInt,
+                newValue.value.toInt(),
                 timeoutInt
         )
     }
     override var motionCruiseVelocity by observable(0.STUPer100ms) { _, _, newValue ->
         configMotionCruiseVelocity(
-                newValue.STUPer100ms.asInt,
+                newValue.STUPer100ms.toInt(),
                 timeoutInt
         )
     }
     override var motionAcceleration by observable(0.STUPer100msPerSecond) { _, _, newValue ->
         configMotionAcceleration(
-                newValue.STUPer100msPerSecond.asInt,
+                newValue.STUPer100msPerSecond.toInt(),
                 timeoutInt
         )
     }
     override var sensorPosition
         get() = getSelectedSensorPosition(0).STU
         set(value) {
-            setSelectedSensorPosition(value.asInt, 0, timeoutInt)
+            setSelectedSensorPosition(value.value.toInt(), 0, timeoutInt)
         }
     override val sensorVelocity: NativeUnitVelocity
         get() = getSelectedSensorVelocity(0).STUPer100ms
 
-    override fun set(controlMode: ControlMode, length: NativeUnit) = set(controlMode, length.asDouble)
+    override fun set(controlMode: ControlMode, length: NativeUnit) = set(controlMode, length.value)
 
     override fun set(controlMode: ControlMode, velocity: NativeUnitVelocity) =
             set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
@@ -48,7 +48,7 @@ class GenericFalonSRX(
             velocity: NativeUnitVelocity,
             demandType: DemandType,
             outputPercent: Double
-    ) = set(controlMode, velocity.STUPer100ms.asDouble, demandType, outputPercent)
+    ) = set(controlMode, velocity.STUPer100ms, demandType, outputPercent)
 
 }
 

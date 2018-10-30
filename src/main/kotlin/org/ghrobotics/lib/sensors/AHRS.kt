@@ -16,7 +16,7 @@ interface AHRSSensor : Source<Rotation2d> {
 abstract class AHRSSensorImpl : AHRSSensor {
     protected abstract val sensorYaw: Rotation2d
     override var angleOffset = 0.degree
-    override val correctedAngle: Rotation2d get() = (sensorYaw + angleOffset).degree
+    override val correctedAngle: Rotation2d get() = sensorYaw + angleOffset
 }
 
 fun PigeonIMU.toFalconSensor(): AHRSSensor = Pigeon(this)

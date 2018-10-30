@@ -14,18 +14,20 @@ package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Rotation2d
 import java.util.*
 
 object ParametricSplineGenerator {
-    private const val kMaxDX = 2.0
-    private const val kMaxDY = 0.05
-    private const val kMaxDTheta = 0.1
     private const val kMinSampleSize = 1
 
-
     private fun parameterizeSpline(
-            s: ParametricSpline, maxDx: Double = kMaxDX, maxDy: Double = kMaxDY, maxDTheta: Double = kMaxDTheta,
-            t0: Double = 0.0, t1: Double = 1.0
+            s: ParametricSpline,
+            maxDx: Length,
+            maxDy: Length,
+            maxDTheta: Rotation2d,
+            t0: Double = 0.0,
+            t1: Double = 1.0
     ): ArrayList<Pose2dWithCurvature> {
 
         val rv = ArrayList<Pose2dWithCurvature>()
@@ -40,8 +42,10 @@ object ParametricSplineGenerator {
     }
 
     fun parameterizeSplines(
-            splines: List<ParametricSpline>, maxDx: Double, maxDy: Double,
-            maxDTheta: Double
+            splines: List<ParametricSpline>,
+            maxDx: Length,
+            maxDy: Length,
+            maxDTheta: Rotation2d
     ): List<Pose2dWithCurvature> {
         val rv = ArrayList<Pose2dWithCurvature>()
         if (splines.isEmpty()) return rv
@@ -55,9 +59,13 @@ object ParametricSplineGenerator {
     }
 
     private fun getSegmentArc(
-            s: ParametricSpline, rv: MutableList<Pose2dWithCurvature>, t0: Double, t1: Double, maxDx: Double,
-            maxDy: Double,
-            maxDTheta: Double
+            s: ParametricSpline,
+            rv: MutableList<Pose2dWithCurvature>,
+            t0: Double,
+            t1: Double,
+            maxDx: Length,
+            maxDy: Length,
+            maxDTheta: Rotation2d
     ) {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)
@@ -65,7 +73,7 @@ object ParametricSplineGenerator {
         val r1 = s.getHeading(t1)
         val transformation = Pose2d((p1 - p0) * -r0, r1 + -r0)
         val twist = transformation.twist
-        if (twist.dyRaw > maxDy || twist.dxRaw > maxDx || twist.dThetaRaw > maxDTheta) {
+        if (twist.dy > maxDy || twist.dx > maxDx || twist.dTheta > maxDTheta) {
             getSegmentArc(s, rv, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta)
             getSegmentArc(s, rv, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
         } else {

@@ -25,7 +25,7 @@ class CentripetalAccelerationConstraint(
         get() = mMaxCentripetalAccelRaw.meter.acceleration
 
     constructor(mMaxCentripetalAccel: Acceleration) :
-            this(mMaxCentripetalAccel.asMetric.asDouble)
+            this(mMaxCentripetalAccel.value)
 
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
             Math.sqrt((mMaxCentripetalAccelRaw / state.curvature.curvature).absoluteValue)

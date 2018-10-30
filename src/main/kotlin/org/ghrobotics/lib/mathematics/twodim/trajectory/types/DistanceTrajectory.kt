@@ -19,10 +19,10 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
         distances = tempDistances
     }
 
-    override fun sample(interpolant: Length) = sample(interpolant.asMetric.asDouble)
+    override fun sample(interpolant: Length) = sample(interpolant.value)
 
     fun sample(interpolant: Double) = when {
-        interpolant >= lastInterpolant.asDouble -> TrajectorySamplePoint(getPoint(points.size - 1))
+        interpolant >= lastInterpolant.value -> TrajectorySamplePoint(getPoint(points.size - 1))
         interpolant <= 0.0 -> TrajectorySamplePoint(getPoint(0))
         else -> {
             val (index, entry) = points.asSequence()

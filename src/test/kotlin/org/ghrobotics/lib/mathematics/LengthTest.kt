@@ -15,7 +15,7 @@ class LengthTest {
 
         val three = one + two
 
-        assert(three.meter.asDouble epsilonEquals 1.3048)
+        assert(three.meter epsilonEquals 1.3048)
     }
 
     @Test
@@ -25,7 +25,7 @@ class LengthTest {
 
         val three = one + two
 
-        assert(three.millimeter.asDouble epsilonEquals 2000.0)
+        assert(three.millimeter epsilonEquals 2000.0)
     }
 
     @Test
@@ -35,8 +35,8 @@ class LengthTest {
         val two = one / 3
         val three = two * 3
 
-        assert(two.meter.asDouble epsilonEquals 4.0)
-        assert(three.meter.asDouble epsilonEquals 12.0)
+        assert(two.meter epsilonEquals 4.0)
+        assert(three.meter epsilonEquals 12.0)
     }
 
     @Test
@@ -45,7 +45,7 @@ class LengthTest {
 
         val two = one.millimeter
 
-        assert(two.asInt == 1016)
+        assert(two.toInt() == 1016)
     }
 
     @Test
@@ -54,7 +54,7 @@ class LengthTest {
 
         val two = one.inch
 
-        assert(two.asInt == 40)
+        assert(two.toInt() == 40)
     }
 
 }

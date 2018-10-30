@@ -27,7 +27,7 @@ open class RamseteController(
         val wd = vd * referencePoint.state.state.curvature.curvature
 
         val k1 = 2 * kZeta * sqrt(wd * wd + kBeta * vd * vd)
-        val angleError = error.rotation.radian.asDouble
+        val angleError = error.rotation.radian
 
         return DifferentialDrive.ChassisState(
                 linear = vd * error.rotation.cos + k1 * error.translation.xRaw,

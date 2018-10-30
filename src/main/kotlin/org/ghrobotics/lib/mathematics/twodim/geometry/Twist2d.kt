@@ -16,53 +16,34 @@ import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.radian
-import kotlin.math.absoluteValue
-
 
 class Twist2d(
-        val dxRaw: Double,
-        val dyRaw: Double,
-        val dThetaRaw: Double
+        val dx: Length,
+        val dy: Length,
+        val dTheta: Rotation2d
 ) {
 
-    constructor(
-            dx: Length,
-            dy: Length,
-            dTheta: Rotation2d
-    ) : this(
-            dx.asMetric.asDouble,
-            dy.asMetric.asDouble,
-            dTheta.radian.asDouble
-    )
-
-    val dx
-        get() = dxRaw.meter
-    val dy
-        get() = dyRaw.meter
-    val dTheta
-        get() = dThetaRaw.radian
-
     val norm
-        get() = if (dyRaw == 0.0) dxRaw.absoluteValue else Math.hypot(dxRaw, dyRaw)
+        get() = if (dy.value == 0.0) dx.absoluteValue else Math.hypot(dx.value, dy.value).meter
 
     val asPose: Pose2d
         get() {
-            val sinTheta = Math.sin(dThetaRaw)
-            val cosTheta = Math.cos(dThetaRaw)
+            val dTheta = this.dTheta.radian
+            val sinTheta = Math.sin(dTheta)
+            val cosTheta = Math.cos(dTheta)
 
-            val (s, c) = if (Math.abs(dThetaRaw) < kEpsilon) {
-                1.0 - 1.0 / 6.0 * dThetaRaw * dThetaRaw to .5 * dThetaRaw
+            val (s, c) = if (Math.abs(dTheta) < kEpsilon) {
+                1.0 - 1.0 / 6.0 * dTheta * dTheta to .5 * dTheta
             } else {
-                sinTheta / dThetaRaw to (1.0 - cosTheta) / dThetaRaw
+                sinTheta / dTheta to (1.0 - cosTheta) / dTheta
             }
             return Pose2d(
-                    Translation2d(dxRaw * s - dyRaw * c, dxRaw * c + dyRaw * s),
+                    Translation2d(dx * s - dy * c, dx * c + dy * s),
                     Rotation2d(cosTheta, sinTheta, false)
             )
         }
 
     operator fun times(scale: Double) =
-            Twist2d(dxRaw * scale, dyRaw * scale, dThetaRaw * scale)
+            Twist2d(dx * scale, dy * scale, dTheta * scale)
 
 }

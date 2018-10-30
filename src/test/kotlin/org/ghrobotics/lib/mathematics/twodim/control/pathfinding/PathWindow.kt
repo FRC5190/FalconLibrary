@@ -4,7 +4,6 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.DefaultTrajectoryGenerator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
@@ -27,13 +26,13 @@ object PathWindow {
     val LEFT_SWITCH = Rectangle2d(140.0 / 12.0, 85.25 / 12.0, 56.0 / 12.0, 153.5 / 12.0)
     val PLATFORM = Rectangle2d(261.47 / 12.0, 95.25 / 12.0, 125.06 / 12.0, 133.5 / 12.0)
     val RIGHT_SWITCH = Rectangle2d(
-        FIELD_LENGTH - (LEFT_SWITCH.xRaw + LEFT_SWITCH.wRaw),
-        LEFT_SWITCH.yRaw,
-        LEFT_SWITCH.wRaw,
-        LEFT_SWITCH.hRaw
+            FIELD_LENGTH - (LEFT_SWITCH.xRaw + LEFT_SWITCH.wRaw),
+            LEFT_SWITCH.yRaw,
+            LEFT_SWITCH.wRaw,
+            LEFT_SWITCH.hRaw
     )
     val BACK_SWITCH_CUBES =
-        Rectangle2d(LEFT_SWITCH.xRaw + LEFT_SWITCH.wRaw, LEFT_SWITCH.yRaw, 15.0 / 12.0, LEFT_SWITCH.hRaw)
+            Rectangle2d(LEFT_SWITCH.xRaw + LEFT_SWITCH.wRaw, LEFT_SWITCH.yRaw, 15.0 / 12.0, LEFT_SWITCH.hRaw)
 
     val changeSync = Any()
 
@@ -57,13 +56,13 @@ object PathWindow {
             field = value
             panel.repaint()
             trajectory = DefaultTrajectoryGenerator.generateTrajectory(
-                value,
-                arrayListOf(CentripetalAccelerationConstraint(4.0)),
-                0.feet.velocity,
-                0.0.feet.velocity,
-                10.0.feet.velocity,
-                4.0.feet.acceleration,
-                false
+                    value,
+                    arrayListOf(CentripetalAccelerationConstraint(4.0)),
+                    0.feet.velocity,
+                    0.0.feet.velocity,
+                    10.0.feet.velocity,
+                    4.0.feet.acceleration,
+                    false
             )
         }
 
@@ -72,8 +71,8 @@ object PathWindow {
         override fun paintComponent(g: Graphics) {
             g as Graphics2D
             g.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
             )
 
             g.background = Color.white
@@ -104,23 +103,23 @@ object PathWindow {
 
                     val scale = g.clipBounds.height / FIELD_WIDTH
 
-                    var xPoints = IntArray(points.size) { (points[it].x.feet.asDouble * scale).toInt() }
-                    var yPoints = IntArray(points.size) { (points[it].y.feet.asDouble * scale).toInt() }
+                    var xPoints = IntArray(points.size) { (points[it].x.feet * scale).toInt() }
+                    var yPoints = IntArray(points.size) { (points[it].y.feet * scale).toInt() }
 
                     g.drawPolyline(xPoints, yPoints, points.size)
 
                     g.color = Color.BLUE
                     g.stroke = BasicStroke(
-                        3.0f,
-                        BasicStroke.CAP_ROUND,
-                        BasicStroke.JOIN_ROUND,
-                        10.0f,
-                        arrayOf(10.0f).toFloatArray(),
-                        0.0f
+                            3.0f,
+                            BasicStroke.CAP_ROUND,
+                            BasicStroke.JOIN_ROUND,
+                            10.0f,
+                            arrayOf(10.0f).toFloatArray(),
+                            0.0f
                     )
 
-                    xPoints = IntArray(rawPath.size) { (rawPath[it].x.feet.asDouble * scale).toInt() }
-                    yPoints = IntArray(rawPath.size) { (rawPath[it].y.feet.asDouble * scale).toInt() }
+                    xPoints = IntArray(rawPath.size) { (rawPath[it].x.feet * scale).toInt() }
+                    yPoints = IntArray(rawPath.size) { (rawPath[it].y.feet * scale).toInt() }
 
                     g.drawPolyline(xPoints, yPoints, rawPath.size)
                 }
@@ -141,15 +140,15 @@ object PathWindow {
 
 private fun Graphics2D.drawLine(from: Translation2d, to: Translation2d) {
     val scale = clipBounds.height / FIELD_WIDTH
-    drawLine((from.x.feet.asDouble * scale).toInt(), (from.y.feet.asDouble * scale).toInt(), (to.x.feet.asDouble * scale).toInt(), (to.y.feet.asDouble * scale).toInt())
+    drawLine((from.x.feet * scale).toInt(), (from.y.feet * scale).toInt(), (to.x.feet * scale).toInt(), (to.y.feet * scale).toInt())
 }
 
 private fun Graphics2D.fillRect(rectangle: Rectangle2d) {
     val scale = clipBounds.height / FIELD_WIDTH
     fillRect(
-        (rectangle.xRaw * scale).toInt(),
-        (rectangle.yRaw * scale).toInt(),
-        (rectangle.wRaw * scale).toInt(),
-        (rectangle.hRaw * scale).toInt()
+            (rectangle.xRaw * scale).toInt(),
+            (rectangle.yRaw * scale).toInt(),
+            (rectangle.wRaw * scale).toInt(),
+            (rectangle.hRaw * scale).toInt()
     )
 }

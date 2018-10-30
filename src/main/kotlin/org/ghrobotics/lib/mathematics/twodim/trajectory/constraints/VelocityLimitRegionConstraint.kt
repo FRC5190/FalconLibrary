@@ -32,7 +32,7 @@ class VelocityLimitRegionConstraint(
             velocityLimit: Velocity
     ) : this(
             region,
-            velocityLimit.asMetric.asDouble
+            velocityLimit.value
     )
 
     override fun getMaxVelocity(state: Translation2d) =

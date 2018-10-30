@@ -14,7 +14,7 @@ class FalconCommandGroup(
 
     private inner class WpiCommandGroup : CommandGroup(), IWpiCommand {
         override var timeout by observable(0.second) { _, _, newValue ->
-            setTimeout(newValue.second.asDouble)
+            setTimeout(newValue.second)
         }
 
         init {

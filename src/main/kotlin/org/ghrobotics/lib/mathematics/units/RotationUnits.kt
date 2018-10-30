@@ -2,41 +2,24 @@ package org.ghrobotics.lib.mathematics.units
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
-import kotlin.math.absoluteValue
 
-val Number.degree: Rotation2d get() = Rotation2dImpl(toDouble(), false)
-val Number.radian: Rotation2d get() = Rotation2dImpl(toDouble(), true)
+val Number.radian get() = Rotation2d(toDouble())
+val Number.degree get() = Math.toRadians(toDouble()).radian
 
-interface Rotation2d : SIValue<Rotation2d> {
-    val degree: Rotation2d
-    val radian: Rotation2d
+class Rotation2d : SIUnit<Rotation2d> {
 
+    override val value: Double
     val cos: Double
     val sin: Double
 
-    fun isParallel(rotation: Rotation2d): Boolean
+    constructor(value: Double) {
+        this.value = value
 
-    companion object {
-        val kRotation = 360.degree
-    }
-}
-
-class Rotation2dImpl : AbstractSIValue<Rotation2d>, Rotation2d {
-    override val asDouble: Double
-    private val isRadian: Boolean
-    override val cos: Double
-    override val sin: Double
-
-    constructor(value: Double, isRadian: Boolean) : super() {
-        this.asDouble = value
-        this.isRadian = isRadian
-
-        val radianAngle = if (isRadian) value else Math.toRadians(value)
-        cos = Math.cos(radianAngle)
-        sin = Math.sin(radianAngle)
+        cos = Math.cos(value)
+        sin = Math.sin(value)
     }
 
-    constructor(x: Double, y: Double, normalize: Boolean) : super() {
+    constructor(x: Double, y: Double, normalize: Boolean) {
         if (normalize) {
             val magnitude = Math.hypot(x, y)
             if (magnitude > kEpsilon) {
@@ -50,32 +33,18 @@ class Rotation2dImpl : AbstractSIValue<Rotation2d>, Rotation2d {
             cos = x
             sin = y
         }
-        isRadian = true
-        asDouble = Math.atan2(sin, cos) % (Math.PI * 2)
+        value = Math.atan2(sin, cos)
     }
 
-    override val asMetric get() = radian
-    override val absoluteValue get() = Rotation2dImpl(asDouble.absoluteValue, isRadian)
+    val radian get() = value % (Math.PI * 2)
+    val degree get() = Math.toDegrees(value)
 
-    override fun unaryMinus() = Rotation2dImpl(cos, -sin, false)
 
-    override fun plus(other: Rotation2d) = Rotation2dImpl(
-            cos * other.cos - sin * other.sin,
-            cos * other.sin + sin * other.cos,
-            true
-    )
+    fun isParallel(rotation: Rotation2d) = (this - rotation).radian epsilonEquals 0.0
 
-    override fun minus(other: Rotation2d) = plus(-other)
+    override fun createNew(newBaseValue: Double) = Rotation2d(newBaseValue)
 
-    override fun div(other: Rotation2d) = radian.asDouble / other.radian.asDouble
-
-    override fun times(other: Number) = Rotation2dImpl(asDouble * other.toDouble(), isRadian)
-    override fun div(other: Number) = Rotation2dImpl(asDouble / other.toDouble(), isRadian)
-
-    override fun compareTo(other: Rotation2d) = radian.asDouble.compareTo(other.asDouble)
-
-    override val degree get() = if (isRadian) Rotation2dImpl(Math.toDegrees(asDouble), false) else this
-    override val radian get() = if (!isRadian) Rotation2dImpl(Math.toRadians(asDouble), true) else this
-
-    override fun isParallel(rotation: Rotation2d) = (this - rotation).asDouble epsilonEquals 0.0
+    companion object {
+        val kRotation = 360.degree
+    }
 }

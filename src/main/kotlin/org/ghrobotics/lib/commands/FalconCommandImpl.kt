@@ -69,7 +69,7 @@ class ConditionalCommand(
             onFalse?.wrappedValue
     ), IWpiCommand {
         override var timeout by observable(0.second) { _, _, newValue ->
-            setTimeout(newValue.second.asDouble)
+            setTimeout(newValue.second)
         }
 
         override fun condition(): Boolean = condition.invoke()

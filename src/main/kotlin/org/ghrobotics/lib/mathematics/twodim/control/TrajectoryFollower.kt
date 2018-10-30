@@ -70,7 +70,7 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         val chassisAcceleration = if (dt == 0.0.second) {
             DifferentialDrive.ChassisState(0.0, 0.0)
         } else {
-            (chassisVelocity - previousVelocity) / dt.second.asDouble
+            (chassisVelocity - previousVelocity) / dt.second
         }
 
         val dynamics = drive.solveInverseDynamics(chassisVelocity, chassisAcceleration)

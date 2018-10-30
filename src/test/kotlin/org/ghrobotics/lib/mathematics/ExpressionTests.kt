@@ -17,8 +17,8 @@ class ExpressionTests {
         val four = three.divA(one)
         val five = three.divB(two)
 
-        assert(four.meter.asDouble epsilonEquals 3.0)
-        assert(five.meter.asDouble epsilonEquals 5.0)
+        assert(four.meter epsilonEquals 3.0)
+        assert(five.meter epsilonEquals 5.0)
     }
 
     @Test
@@ -31,8 +31,8 @@ class ExpressionTests {
         val four = three / one
         val five = three / two
 
-        assert(four.second.asDouble epsilonEquals 3.0)
-        assert(five.meter.asDouble epsilonEquals 5.0)
+        assert(four.second epsilonEquals 3.0)
+        assert(five.meter epsilonEquals 5.0)
     }
 
     @Test
@@ -43,7 +43,7 @@ class ExpressionTests {
 
         val four = one * two * three
 
-        assert(four.asDouble epsilonEquals 30.0)
+        assert(four.value epsilonEquals 30.0)
     }
 
 }

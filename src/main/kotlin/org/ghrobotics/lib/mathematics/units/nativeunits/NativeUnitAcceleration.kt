@@ -1,22 +1,19 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.fractions.SIFrac12
-import org.ghrobotics.lib.mathematics.units.fractions.adjustBottom
+import org.ghrobotics.lib.mathematics.units.second
 
 typealias NativeUnitAcceleration = SIFrac12<NativeUnit, Time, Time>
 
-fun <T : SIValue<T>> SIFrac12<T, Time, Time>.fromModel(model: NativeUnitModel<T>): NativeUnitAcceleration =
-        SIFrac12(model.fromModel(top), bottom)
+fun <T : SIUnit<T>> SIFrac12<T, Time, Time>.fromModel(model: NativeUnitModel<T>): NativeUnitAcceleration =
+        (this * 1.second).fromModel(model) / 1.second
 
-fun <T : SIValue<T>> NativeUnitAcceleration.toModel(model: NativeUnitModel<T>): SIFrac12<T, Time, Time> =
-        SIFrac12(model.toModel(top), bottom)
+fun <T : SIUnit<T>> NativeUnitAcceleration.toModel(model: NativeUnitModel<T>): SIFrac12<T, Time, Time> =
+        (this * 1.second).toModel(model) / 1.second
 
 val Number.STUPer100msPerSecond: NativeUnitAcceleration
-    get() = STUPer100ms per 1.second
+    get() = STUPer100ms / 1.second
 
-val NativeUnitAcceleration.STUPer100msPerSecond: NativeUnitAcceleration
-    get() = adjustBottom(
-            SIPrefix.DECI, TimeUnits.Second,
-            SIPrefix.BASE, TimeUnits.Second
-    )
+val NativeUnitAcceleration.STUPer100msPerSecond get() = (this * 1.second).STUPer100ms

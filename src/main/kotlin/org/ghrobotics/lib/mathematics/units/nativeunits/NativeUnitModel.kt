@@ -23,7 +23,7 @@ class NativeUnitRotationModel(
             sensorUnitsPerRotation * (value / Rotation2d.kRotation)
 }
 
-abstract class NativeUnitModel<T : SIValue<T>>(
+abstract class NativeUnitModel<T : SIUnit<T>>(
         val sensorUnitsPerRotation: NativeUnit,
         val zero: T
 ) {
