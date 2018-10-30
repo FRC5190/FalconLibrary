@@ -32,7 +32,7 @@ data class Pose2d(
     constructor(
             x: Length,
             y: Length,
-            rotation: Rotation2d
+            rotation: Rotation2d = 0.degree
     ) : this(Translation2d(x, y), rotation)
 
     val twist: Twist2d

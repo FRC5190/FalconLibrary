@@ -16,9 +16,6 @@ fun <T, O, P> Source<T>.withMerge(
 fun <T, O> Source<T>.withEquals(other: O): BooleanSource = { this@withEquals() == other }
 fun <T, O> Source<T>.withEquals(other: Source<O>): BooleanSource = { this@withEquals() == other() }
 
-@Deprecated("Use map instead", ReplaceWith("map(block)"))
-fun <T, O> Source<T>.withProcessing(block: (T) -> O): Source<O> = map(block)
-
 fun <T, O> Source<T>.map(block: (T) -> O): Source<O> = { block(this@map()) }
 
 @Suppress("FunctionName")
@@ -32,6 +29,8 @@ fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(Source(trueMap), Source
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, Source(falseMap))
 fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(Source(trueMap), falseMap)
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }
+
+operator fun BooleanSource.not() = map { !it }
 
 fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = map { this@withThreshold() >= threshold }
 

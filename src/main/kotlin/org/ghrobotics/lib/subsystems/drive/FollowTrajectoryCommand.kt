@@ -4,38 +4,19 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.commands.TimedFalconCommand
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.second
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
+import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 
 class FollowTrajectoryCommand(
         val driveSubsystem: TankDriveSubsystem,
-        val trajectory: TimedTrajectory<Pose2dWithCurvature>
+        val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>
 ) : TimedFalconCommand(driveSubsystem) {
 
-    private val markers = mutableListOf<Pair<ObservableVariable<Boolean>, Time>>()
-
-    private val trajectorySamples = mutableListOf<Pair<Translation2d, Time>>()
-
-    fun addMarkerAt(location: Translation2d): ObservableValue<Boolean> {
-        if (trajectorySamples.isEmpty()) {
-            // Sample the used trajectory to find the best times for the markers
-            val usedDeltaTime = (1.0 / executeFrequency).second
-            val sampleIterator = trajectory.iterator()
-            while (!sampleIterator.isDone) {
-                val timedEntry = sampleIterator.advance(usedDeltaTime).state
-                trajectorySamples += timedEntry.state.pose.translation to timedEntry.t.second
-            }
-        }
-        return ObservableVariable(false).apply {
-            markers += this to trajectorySamples.minBy { location.distance(it.first) }!!.second
-        }
-    }
-
-    // Running specific variables
+    constructor(
+            driveSubsystem: TankDriveSubsystem,
+            trajectory: TimedTrajectory<Pose2dWithCurvature>
+    ) : this(driveSubsystem, Source(trajectory))
 
     private val trajectoryFinished = ObservableVariable(false)
 
@@ -46,9 +27,7 @@ class FollowTrajectoryCommand(
     }
 
     override suspend fun InitCommandScope.initialize() {
-        trajectorySamples.clear()
-
-        trajectoryFollower.resetTrajectory(trajectory)
+        trajectoryFollower.resetTrajectory(trajectorySource())
         trajectoryFinished.value = false
     }
 
@@ -70,11 +49,6 @@ class FollowTrajectoryCommand(
                 DemandType.ArbitraryFeedForward,
                 output.rfVoltage.value / 12.0
         )
-
-        // Update marker states
-        markers.forEach { (hasPassed, timeRequired) ->
-            hasPassed.value = timeElapsed >= timeRequired
-        }
 
         trajectoryFinished.value = trajectoryFollower.isFinished
     }

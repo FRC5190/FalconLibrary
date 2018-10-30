@@ -1,11 +1,13 @@
 package org.ghrobotics.lib.commands
 
 import edu.wpi.first.wpilibj.command.Command
+import kotlinx.coroutines.GlobalScope
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.observabletype.ObservableValue
+import org.ghrobotics.lib.utils.observabletype.updatableValue
 import kotlin.properties.Delegates.observable
 
 abstract class InstantCommand : FalconCommand() {
@@ -35,6 +37,8 @@ class PeriodicRunnableCommand(
 class ConditionCommand(
         private val condition: ObservableValue<Boolean>
 ) : FalconCommand() {
+    constructor(condition: BooleanSource) : this(GlobalScope.updatableValue(block = condition))
+
     override fun CreateCommandScope.create() {
         finishCondition += condition
     }
