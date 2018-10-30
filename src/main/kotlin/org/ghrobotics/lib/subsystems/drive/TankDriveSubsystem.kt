@@ -1,8 +1,10 @@
 package org.ghrobotics.lib.subsystems.drive
 
+import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
@@ -51,5 +53,14 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
             trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
             pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory))
+
+
+    // Region conditional command methods
+
+    fun withinRegion(region: Rectangle2d) =
+            withinRegion(Source(region))
+
+    fun withinRegion(region: Source<Rectangle2d>) =
+            ConditionCommand { region().contains(localization.robotPosition.translation) }
 
 }
