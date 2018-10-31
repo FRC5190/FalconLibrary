@@ -5,8 +5,6 @@ plugins {
     id "maven-publish"
 }
 
-def ROBOT_CLASS = "org.ghrobotics.robot.Robot"
-
 repositories {
     mavenCentral()
     maven { url "http://dl.bintray.com/kyonifer/maven" }
