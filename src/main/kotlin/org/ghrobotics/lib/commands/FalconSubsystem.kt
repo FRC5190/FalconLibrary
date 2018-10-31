@@ -16,6 +16,8 @@ object SubsystemHandler {
         println("[FalconSubsystem Handler] Added ${subsystem.javaClass.simpleName}")
     }
 
+    fun lateInit() = subsystems.forEach { it.lateInit() }
+
     fun autoReset() = subsystems.forEach { it.autoReset() }
 
     fun teleopReset() = subsystems.forEach { it.teleopReset() }
@@ -46,6 +48,7 @@ abstract class FalconSubsystem(name: String? = null) {
             field = value
         }
 
+    open fun lateInit() {}
     open fun autoReset() {}
     open fun teleopReset() {}
     open fun zeroOutputs() {}

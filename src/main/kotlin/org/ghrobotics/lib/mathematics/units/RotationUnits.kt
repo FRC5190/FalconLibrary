@@ -42,6 +42,16 @@ class Rotation2d : SIUnit<Rotation2d> {
 
     fun isParallel(rotation: Rotation2d) = (this - rotation).radian epsilonEquals 0.0
 
+    override fun plus(other: Rotation2d): Rotation2d {
+        return Rotation2d(
+                cos * other.cos - sin * other.sin,
+                cos * other.sin + sin * other.cos,
+                true
+        )
+    }
+
+    override fun minus(other: Rotation2d) = plus(-other)
+
     override fun createNew(newBaseValue: Double) = Rotation2d(newBaseValue)
 
     companion object {

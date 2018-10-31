@@ -12,6 +12,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest.Companion.trajectory
 import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -116,7 +117,7 @@ class RamseteControllerTest {
             println("[Test] Rotational Error: $it degrees")
         } < 5.0)
 //
-//        SwingWrapper(chart).displayChart()
-//        Thread.sleep(1000000)
+        // SwingWrapper(chart).displayChart()
+        // Thread.sleep(1000000)
     }
 }

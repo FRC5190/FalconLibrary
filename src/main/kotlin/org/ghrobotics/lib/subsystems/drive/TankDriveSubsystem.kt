@@ -22,7 +22,12 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     abstract val trajectoryFollower: TrajectoryFollower
 
     @Suppress("LeakingThis")
-    val localization = TankDriveLocalization(this)
+    lateinit var localization: TankDriveLocalization
+        private set
+
+    override fun lateInit() {
+        localization = TankDriveLocalization(this)
+    }
 
     // Pre-generated Trajectory Methods
 

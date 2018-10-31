@@ -87,6 +87,7 @@ abstract class FalconRobotBase : RobotBase() {
         onEnter(Mode.DISABLED) { SubsystemHandler.zeroOutputs() }
 
         initialize()
+        SubsystemHandler.lateInit()
         initialized = true
         // Start up the default command
         println("[Robot] Initialized")
