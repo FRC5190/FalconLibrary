@@ -24,7 +24,6 @@ private fun commandGroup(type: FalconCommandGroup.GroupType, block: BasicCommand
 fun <T> stateCommandGroup(state: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
         StateCommandGroupBuilder(state).apply(block).build()
 
-
 // Builders
 
 interface CommandGroupBuilder {
@@ -61,7 +60,6 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) :
                         }
                     })
 }
-
 
 @Suppress("FunctionName", "UNUSED_PARAMETER")
 infix fun FalconCommandGroup.S3ND(other: String) = this.start()

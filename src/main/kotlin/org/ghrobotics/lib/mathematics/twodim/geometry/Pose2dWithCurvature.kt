@@ -18,8 +18,8 @@ import org.ghrobotics.lib.types.Interpolatable
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 data class Pose2dWithCurvature(
-        val pose: Pose2d,
-        val curvature: Curvature
+    val pose: Pose2d,
+    val curvature: Curvature
 ) : VaryInterpolatable<Pose2dWithCurvature> {
 
     val mirror
@@ -40,7 +40,6 @@ data class Pose2dWithCurvature(
             this.pose + other,
             curvature
     )
-
 }
 
 /**
@@ -48,8 +47,8 @@ data class Pose2dWithCurvature(
  * @param dkds derivative of curvature
  */
 data class Curvature(
-        val curvature: Double,
-        val dkds: Double
+    val curvature: Double,
+    val dkds: Double
 ) : Interpolatable<Curvature> {
     override fun interpolate(endValue: Curvature, t: Double) =
             Curvature(

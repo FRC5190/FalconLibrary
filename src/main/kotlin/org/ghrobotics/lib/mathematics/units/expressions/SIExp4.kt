@@ -3,11 +3,11 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp4<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>>(
-        override val value: Double,
-        internal val a: A,
-        internal val b: B,
-        internal val c: C,
-        internal val d: D
+    override val value: Double,
+    internal val a: A,
+    internal val b: B,
+    internal val c: C,
+    internal val d: D
 ) : SIExpression<SIExp4<A, B, C, D>>() {
     override fun createNew(newValue: Double) = SIExp4(newValue, a, b, c, d)
 

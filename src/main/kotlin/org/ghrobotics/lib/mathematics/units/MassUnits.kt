@@ -24,7 +24,7 @@ val Number.zeptogram get() = (toDouble() / 1e+24).kilogram
 val Number.yoctogram get() = (toDouble() / 1e+27).kilogram
 
 class Mass(
-        override val value: Double
+    override val value: Double
 ) : SIUnit<Mass> {
     val kilogram get() = value
 

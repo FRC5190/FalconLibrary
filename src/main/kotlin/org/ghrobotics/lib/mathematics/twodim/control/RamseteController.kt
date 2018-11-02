@@ -15,9 +15,9 @@ import kotlin.math.sqrt
 // Equation 5.12
 
 open class RamseteController(
-        drive: DifferentialDrive,
-        private val kBeta: Double,
-        private val kZeta: Double
+    drive: DifferentialDrive,
+    private val kBeta: Double,
+    private val kZeta: Double
 ) : TrajectoryFollower(drive) {
 
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {

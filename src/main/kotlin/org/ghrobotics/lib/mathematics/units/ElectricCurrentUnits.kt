@@ -24,7 +24,7 @@ val Number.zeptoamp get() = (toDouble() / 1e+21).amp
 val Number.yoctoamp get() = (toDouble() / 1e+24).amp
 
 class ElectricCurrent(
-        override val value: Double
+    override val value: Double
 ) : SIUnit<ElectricCurrent> {
     val amp get() = value
 

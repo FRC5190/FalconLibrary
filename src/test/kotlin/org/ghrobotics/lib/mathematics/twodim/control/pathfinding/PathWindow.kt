@@ -1,3 +1,4 @@
+/* ktlint-disable no-wildcard-imports */
 import PathWindow.FIELD_WIDTH
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
@@ -135,7 +136,6 @@ object PathWindow {
         frame.isResizable = false
         frame.isVisible = true
     }
-
 }
 
 private fun Graphics2D.drawLine(from: Translation2d, to: Translation2d) {

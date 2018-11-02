@@ -41,13 +41,11 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     // Loops
     private var deltaTimeController = DeltaTime()
 
-
     fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
         iterator = trajectory.iterator()
         previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
         deltaTimeController.reset()
     }
-
 
     // Return output from kinematic calculations only. Robot dynamics are not taken into account.
     fun getOutputFromKinematics(robot: Pose2d, currentTime: Time = System.nanoTime().nanosecond): Output {
@@ -84,9 +82,9 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
     companion object {
         private fun outputFromWheelStates(
-                drive: DifferentialDrive,
-                setpoint: DifferentialDrive.WheelState,
-                voltages: DifferentialDrive.WheelState
+            drive: DifferentialDrive,
+            setpoint: DifferentialDrive.WheelState,
+            voltages: DifferentialDrive.WheelState
         ) = Output(
                 lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
                 rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,

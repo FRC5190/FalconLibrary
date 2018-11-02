@@ -60,5 +60,4 @@ class SourceTests {
         value = true
         assert(two())
     }
-
 }

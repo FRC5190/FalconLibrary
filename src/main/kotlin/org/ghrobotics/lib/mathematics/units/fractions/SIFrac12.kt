@@ -3,10 +3,10 @@ package org.ghrobotics.lib.mathematics.units.fractions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 class SIFrac12<T : SIValue<T>, BA : SIValue<BA>, BB : SIValue<BB>>(
-        override val value: Double,
-        internal val tA: T,
-        internal val bA: BA,
-        internal val bB: BB
+    override val value: Double,
+    internal val tA: T,
+    internal val bA: BA,
+    internal val bB: BB
 ) : SIFrac<SIFrac12<T, BA, BB>> {
     override fun createNew(newValue: Double) = SIFrac12(newValue, tA, bA, bB)
 
@@ -27,5 +27,3 @@ class SIFrac12<T : SIValue<T>, BA : SIValue<BA>, BB : SIValue<BB>>(
     fun timesBB(o: BB) = SIFrac11(value * o.value, tA, bA)
     fun <O : SIValue<O>> divO(o: O) = SIFrac13(value / o.value, tA, bA, bB, o)
 }
-
-

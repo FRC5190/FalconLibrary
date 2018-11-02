@@ -8,8 +8,8 @@ import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 class AStarOptimizer(
-        robotSize: Double,
-        vararg restrictedAreas: Rectangle2d
+    robotSize: Double,
+    vararg restrictedAreas: Rectangle2d
 ) {
 
     companion object {
@@ -157,9 +157,9 @@ class AStarOptimizer(
     }
 
     private fun optimizePoints(
-            start: Translation2d,
-            goal: Translation2d,
-            vararg restrictedAreas: Rectangle2d
+        start: Translation2d,
+        goal: Translation2d,
+        vararg restrictedAreas: Rectangle2d
     ): List<Translation2d>? {
         val effectiveRestrictedAreas = this.restrictedAreas + restrictedAreas
 
@@ -201,8 +201,8 @@ class AStarOptimizer(
                 val translatedRobotRectangle = neighborPoint.point.toRobotRectangle()
                 val neighborNode = nodeCache[neighborPoint.point.x][neighborPoint.point.y] ?: continue
                 // Check if point is within the field and not in the restricted areas
-                if (!FIELD_RECTANGLE.isWithin(translatedRobotRectangle)
-                        || effectiveRestrictedAreas.any { it.isIn(translatedRobotRectangle) }
+                if (!FIELD_RECTANGLE.isWithin(translatedRobotRectangle) ||
+                        effectiveRestrictedAreas.any { it.isIn(translatedRobotRectangle) }
                 ) {
                     closedSet += neighborNode
                     nodeCache[neighborPoint.point.x][neighborPoint.point.y] = null
@@ -243,9 +243,9 @@ class AStarOptimizer(
     )
 
     private class NeighborPoint(
-            val point: IntPoint,
-            val worth: Double,
-            val original: IntPoint = point
+        val point: IntPoint,
+        val worth: Double,
+        val original: IntPoint = point
     ) {
         operator fun plus(point: IntPoint) = NeighborPoint(this.point + point, worth, original)
 
@@ -257,9 +257,9 @@ class AStarOptimizer(
     }
 
     private class Node(
-            val point: IntPoint,
-            var cameFrom: Node? = null,
-            var gScore: Double = 0.0
+        val point: IntPoint,
+        var cameFrom: Node? = null,
+        var gScore: Double = 0.0
     ) {
         var fScore = Double.POSITIVE_INFINITY
 
@@ -271,15 +271,14 @@ class AStarOptimizer(
     }
 
     class Result(
-            val pathNodes: List<Translation2d>,
-            val path: List<Pose2d>
+        val pathNodes: List<Translation2d>,
+        val path: List<Pose2d>
     )
-
 }
 
 private data class IntPoint(
-        val x: Int,
-        val y: Int
+    val x: Int,
+    val y: Int
 ) {
     constructor(translation2d: Translation2d, pointsPerFoot: Int) : this(
             (translation2d.xRaw * pointsPerFoot).roundToInt(),
@@ -294,4 +293,3 @@ private data class IntPoint(
 
     operator fun plus(other: IntPoint) = IntPoint(x + other.x, y + other.y)
 }
-

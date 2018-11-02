@@ -10,22 +10,22 @@ import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 // PID Controller that follows velocity setpoints
-class VelocityPIDFController(private val kP: Double = 0.0,
-                             private val kI: Double = 0.0,
-                             private val kD: Double = 0.0,
-                             private val kV: Double = 0.0,
-                             private val kA: Double = 0.0,
-                             private val kS: Double = 0.0,
-                             private val kILimit: Double = 0.0,
-                             private val kDeadband: Double = 0.1,
-                             private val current: () -> Double) {
-
+class VelocityPIDFController(
+    private val kP: Double = 0.0,
+    private val kI: Double = 0.0,
+    private val kD: Double = 0.0,
+    private val kV: Double = 0.0,
+    private val kA: Double = 0.0,
+    private val kS: Double = 0.0,
+    private val kILimit: Double = 0.0,
+    private val kDeadband: Double = 0.1,
+    private val current: () -> Double
+) {
 
     // Stores PID related variables
     private var lastError = 0.0
     private var derivative = 0.0
     private var integral = 0.0
-
 
     // Looping related variables
     private var lastCallTime = -1.0
@@ -45,7 +45,6 @@ class VelocityPIDFController(private val kP: Double = 0.0,
             lastCallTime = timeSeconds
             return 0.0
         } else timeSeconds - lastCallTime
-
 
         // Calculate error
         val error = targetVelocity - current

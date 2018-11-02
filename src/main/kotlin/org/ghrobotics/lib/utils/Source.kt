@@ -9,8 +9,8 @@ typealias DoubleSource = Source<Double>
 typealias BooleanSource = Source<Boolean>
 
 fun <T, O, P> Source<T>.withMerge(
-        other: Source<O>,
-        block: (T, O) -> P
+    other: Source<O>,
+    block: (T, O) -> P
 ): Source<P> = { block(this@withMerge(), other()) }
 
 fun <T, O> Source<T>.withEquals(other: O): BooleanSource = { this@withEquals() == other }
@@ -28,9 +28,9 @@ fun <T> Source(value: () -> T): Source<T> = value
 fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = map { this@withThreshold() >= threshold }
 
 fun DoubleSource.withDeadband(
-        deadband: Double,
-        scaleDeadband: Boolean = true,
-        maxMagnitude: Double = 1.0
+    deadband: Double,
+    scaleDeadband: Boolean = true,
+    maxMagnitude: Double = 1.0
 ): DoubleSource = map {
     val currentValue = this@withDeadband()
     if (currentValue in (-deadband)..deadband) return@map 0.0 // in deadband
@@ -72,4 +72,3 @@ fun <T> Source<T>.equalTo(other: Source<Comparable<T>>) = other.compareTo(this).
 
 @JvmName("reversedLessThan")
 fun <T> Source<T>.lessThan(other: Source<Comparable<T>>) = other.compareTo(this).map { it > 0 }
-

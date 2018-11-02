@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
+/* ktlint-disable no-wildcard-imports */
 import com.team254.lib.physics.DCMotorTransmission
 import com.team254.lib.physics.DifferentialDrive
 import koma.platformsupport.assert
@@ -17,8 +18,8 @@ import kotlin.math.pow
 class TrajectoryGeneratorTest {
 
     companion object {
-        private const val kRobotLinearInertia = 60.0  // kg
-        private const val kRobotAngularInertia = 10.0  // kg m^2
+        private const val kRobotLinearInertia = 60.0 // kg
+        private const val kRobotAngularInertia = 10.0 // kg m^2
         private const val kRobotAngularDrag = 12.0  // N*m / (rad/sec)
         private const val kDriveVIntercept = 1.055  // V
         private const val kDriveKv = 0.135  // V per rad/s

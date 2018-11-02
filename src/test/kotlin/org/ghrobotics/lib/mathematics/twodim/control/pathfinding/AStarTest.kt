@@ -12,7 +12,6 @@ fun main(args: Array<String>) {
         PathWindow.LEFT_SWITCH, PathWindow.PLATFORM, PathWindow.RIGHT_SWITCH, PathWindow.BACK_SWITCH_CUBES
     )
 
-
     // ROBOT DIMENSIONS
     val kRobotWidth = 27.0 / 12.0
     val kRobotLength = 33.0 / 12.0
@@ -26,7 +25,6 @@ fun main(args: Array<String>) {
     val kPortalZoneBottomY = 27 - (29.69 / 12.0)
     val kRobotSideStartY = kPortalZoneBottomY - (kRobotWidth / 2.0) - kBumperLength
     val kRobotCenterStartY = kExchangeZoneBottomY - (kRobotWidth / 2.0) - kBumperLength
-
 
     val result = aStarTest.optimize(
         Pose2d(Translation2d(kRobotStartX, kRobotSideStartY), 0.degree),
@@ -53,5 +51,4 @@ fun main(args: Array<String>) {
 */
 
     //println(path)
-
 }

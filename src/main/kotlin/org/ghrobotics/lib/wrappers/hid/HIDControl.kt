@@ -1,11 +1,13 @@
 package org.ghrobotics.lib.wrappers.hid
 
-class HIDButton(private val source: HIDSource,
-                private val threshold: Double,
-                private val whileOff: List<HIDControlListener>,
-                private val whileOn: List<HIDControlListener>,
-                private val changeOn: List<HIDControlListener>,
-                private val changeOff: List<HIDControlListener>) : HIDControl {
+class HIDButton(
+    private val source: HIDSource,
+    private val threshold: Double,
+    private val whileOff: List<HIDControlListener>,
+    private val whileOn: List<HIDControlListener>,
+    private val changeOn: List<HIDControlListener>,
+    private val changeOff: List<HIDControlListener>
+) : HIDControl {
 
     companion object {
         const val DEFAULT_THRESHOLD = 0.5

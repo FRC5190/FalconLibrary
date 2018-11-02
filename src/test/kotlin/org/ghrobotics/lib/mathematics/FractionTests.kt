@@ -17,5 +17,4 @@ class FractionTests {
 
         println(three)
     }
-
 }

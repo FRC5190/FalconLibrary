@@ -5,10 +5,10 @@ import org.ghrobotics.lib.mathematics.units.SIValue
 import org.ghrobotics.lib.mathematics.units.fractions.SIFrac34
 
 open class SIExp3<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>>(
-        override val value: Double,
-        internal val a: A,
-        internal val b: B,
-        internal val c: C
+    override val value: Double,
+    internal val a: A,
+    internal val b: B,
+    internal val c: C
 ) : SIExpression<SIExp3<A, B, C>>() {
 
     override fun createNew(newValue: Double) = SIExp3(newValue, a, b, c)

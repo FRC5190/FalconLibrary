@@ -10,7 +10,7 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(
-        points: List<TimedEntry<S>>
+    points: List<TimedEntry<S>>
 ) : Trajectory<Time, TimedEntry<S>>(points) {
 
     override fun sample(interpolant: Time) = sample(interpolant.value)
@@ -43,14 +43,13 @@ class TimedTrajectory<S : VaryInterpolatable<S>>(
     override val lastInterpolant = lastState.t.second
 
     override fun iterator() = TimedIterator(this)
-
 }
 
 data class TimedEntry<S : VaryInterpolatable<S>>(
-        val state: S,
-        val t: Double = 0.0,
-        val velocity: Double = 0.0,
-        val acceleration: Double = 0.0
+    val state: S,
+    val t: Double = 0.0,
+    val velocity: Double = 0.0,
+    val acceleration: Double = 0.0
 ) : VaryInterpolatable<TimedEntry<S>> {
 
     override fun interpolate(endValue: TimedEntry<S>, interpolant: Double): TimedEntry<S> {
@@ -72,11 +71,10 @@ data class TimedEntry<S : VaryInterpolatable<S>>(
     }
 
     override fun distance(other: TimedEntry<S>) = state.distance(other.state)
-
 }
 
 class TimedIterator<S : VaryInterpolatable<S>>(
-        trajectory: TimedTrajectory<S>
+    trajectory: TimedTrajectory<S>
 ) : TrajectoryIterator<Time, TimedEntry<S>>(trajectory) {
     override fun addition(a: Time, b: Time) = a + b
 }

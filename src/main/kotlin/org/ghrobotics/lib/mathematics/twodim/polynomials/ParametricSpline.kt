@@ -9,7 +9,6 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Curvature

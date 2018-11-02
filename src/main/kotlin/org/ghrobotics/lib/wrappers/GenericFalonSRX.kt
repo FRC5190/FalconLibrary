@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.wrappers
 
+/* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.mathematics.units.Time
@@ -8,8 +9,8 @@ import org.ghrobotics.lib.mathematics.units.nativeunits.*
 import kotlin.properties.Delegates.observable
 
 class GenericFalonSRX(
-        id: Int,
-        timeout: Time = 10.millisecond
+    id: Int,
+    timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<NativeUnit>(id, timeout) {
     override var allowedClosedLoopError by observable(0.STU) { _, _, newValue ->
         configAllowableClosedloopError(
@@ -44,11 +45,9 @@ class GenericFalonSRX(
             set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(
-            controlMode: ControlMode,
-            velocity: NativeUnitVelocity,
-            demandType: DemandType,
-            outputPercent: Double
+        controlMode: ControlMode,
+        velocity: NativeUnitVelocity,
+        demandType: DemandType,
+        outputPercent: Double
     ) = set(controlMode, velocity.STUPer100ms, demandType, outputPercent)
-
 }
-

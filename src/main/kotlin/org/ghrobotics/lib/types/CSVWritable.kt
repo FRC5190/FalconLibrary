@@ -9,7 +9,6 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.types
 
 interface CSVWritable {

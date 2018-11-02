@@ -56,5 +56,4 @@ class LengthTest {
 
         assert(two.toInt() == 40)
     }
-
 }

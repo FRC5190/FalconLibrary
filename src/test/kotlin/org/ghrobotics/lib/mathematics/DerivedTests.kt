@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.mathematics
 
+/* ktlint-disable no-wildcard-imports */
 import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.derivedunits.*
 import org.ghrobotics.lib.mathematics.units.meter
@@ -109,5 +110,4 @@ class DerivedTests {
 
         assert(three.value epsilonEquals 0.4)
     }
-
 }

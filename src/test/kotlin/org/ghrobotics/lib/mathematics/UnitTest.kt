@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.mathematics
 
+/* ktlint-disable no-wildcard-imports */
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.meter
@@ -47,5 +48,4 @@ class UnitTest {
 
         assert(one.meter epsilonEquals 0.3048)
     }
-
 }

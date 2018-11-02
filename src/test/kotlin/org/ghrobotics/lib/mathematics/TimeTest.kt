@@ -25,5 +25,4 @@ class TimeTest {
 
         assert(three.minute epsilonEquals 8.5)
     }
-
 }

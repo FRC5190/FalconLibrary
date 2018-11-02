@@ -4,7 +4,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 abstract class Trajectory<U : Comparable<U>, S : VaryInterpolatable<S>>(
-        val points: List<S>
+    val points: List<S>
 ) {
     fun getPoint(index: Int) = TrajectoryPoint(index, points[index])
 
@@ -20,14 +20,14 @@ abstract class Trajectory<U : Comparable<U>, S : VaryInterpolatable<S>>(
 }
 
 data class TrajectoryPoint<S>(
-        val index: Int,
-        val state: S
+    val index: Int,
+    val state: S
 )
 
 data class TrajectorySamplePoint<S>(
-        val state: S,
-        val indexFloor: Int,
-        val indexCeil: Int
+    val state: S,
+    val indexFloor: Int,
+    val indexCeil: Int
 ) {
     constructor(point: TrajectoryPoint<S>) : this(
             point.state,

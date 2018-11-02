@@ -1,6 +1,7 @@
 package org.ghrobotics.lib.commands
 
 import edu.wpi.first.wpilibj.command.Command
+/* ktlint-disable no-wildcard-imports */
 import kotlinx.coroutines.*
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
@@ -13,7 +14,7 @@ import org.ghrobotics.lib.wrappers.Wrapper
 import kotlin.properties.Delegates.observable
 
 abstract class FalconCommand(
-        vararg requiredSubsystems: FalconSubsystem
+    vararg requiredSubsystems: FalconSubsystem
 ) : Wrapper<Command> {
 
     init {
@@ -38,7 +39,7 @@ abstract class FalconCommand(
     fun stop() = wrappedValue.cancel()
 
     protected class FinishCondition(
-            private var condition: BooleanSource
+        private var condition: BooleanSource
     ) : BooleanSource {
         override fun invoke() = condition()
 
@@ -58,7 +59,7 @@ abstract class FalconCommand(
     }
 
     protected inner class WpiCommand(
-            requiredSubsystems: Array<out FalconSubsystem>
+        requiredSubsystems: Array<out FalconSubsystem>
     ) : Command(), IWpiCommand {
         init {
             requiredSubsystems.forEach { requires(it.wpiSubsystem) }
@@ -107,6 +108,3 @@ abstract class FalconCommand(
         protected val commandScope = CoroutineScope(newFixedThreadPoolContext(2, "Command"))
     }
 }
-
-
-

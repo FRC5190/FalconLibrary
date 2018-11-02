@@ -9,7 +9,6 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
@@ -18,9 +17,9 @@ import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 
 class Twist2d(
-        val dx: Length,
-        val dy: Length,
-        val dTheta: Rotation2d
+    val dx: Length,
+    val dy: Length,
+    val dTheta: Rotation2d
 ) {
 
     val norm
@@ -45,5 +44,4 @@ class Twist2d(
 
     operator fun times(scale: Double) =
             Twist2d(dx * scale, dy * scale, dTheta * scale)
-
 }

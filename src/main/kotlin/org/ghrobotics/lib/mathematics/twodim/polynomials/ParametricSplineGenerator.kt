@@ -9,25 +9,25 @@
  * Team 254
  */
 
-
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Rotation2d
+/* ktlint-disable no-wildcard-imports */
 import java.util.*
 
 object ParametricSplineGenerator {
     private const val kMinSampleSize = 1
 
     private fun parameterizeSpline(
-            s: ParametricSpline,
-            maxDx: Length,
-            maxDy: Length,
-            maxDTheta: Rotation2d,
-            t0: Double = 0.0,
-            t1: Double = 1.0
+        s: ParametricSpline,
+        maxDx: Length,
+        maxDy: Length,
+        maxDTheta: Rotation2d,
+        t0: Double = 0.0,
+        t1: Double = 1.0
     ): ArrayList<Pose2dWithCurvature> {
 
         val rv = ArrayList<Pose2dWithCurvature>()
@@ -42,10 +42,10 @@ object ParametricSplineGenerator {
     }
 
     fun parameterizeSplines(
-            splines: List<ParametricSpline>,
-            maxDx: Length,
-            maxDy: Length,
-            maxDTheta: Rotation2d
+        splines: List<ParametricSpline>,
+        maxDx: Length,
+        maxDy: Length,
+        maxDTheta: Rotation2d
     ): List<Pose2dWithCurvature> {
         val rv = ArrayList<Pose2dWithCurvature>()
         if (splines.isEmpty()) return rv
@@ -59,13 +59,13 @@ object ParametricSplineGenerator {
     }
 
     private fun getSegmentArc(
-            s: ParametricSpline,
-            rv: MutableList<Pose2dWithCurvature>,
-            t0: Double,
-            t1: Double,
-            maxDx: Length,
-            maxDy: Length,
-            maxDTheta: Rotation2d
+        s: ParametricSpline,
+        rv: MutableList<Pose2dWithCurvature>,
+        t0: Double,
+        t1: Double,
+        maxDx: Length,
+        maxDy: Length,
+        maxDTheta: Rotation2d
     ) {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)
@@ -80,5 +80,4 @@ object ParametricSplineGenerator {
             rv.add(s.getPose2dWithCurvature(t1))
         }
     }
-
 }

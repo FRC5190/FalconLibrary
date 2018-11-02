@@ -18,7 +18,7 @@ import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.absoluteValue
 
 class CentripetalAccelerationConstraint(
-        val mMaxCentripetalAccelRaw: Double
+    val mMaxCentripetalAccelRaw: Double
 ) : TimingConstraint<Pose2dWithCurvature> {
 
     val mMaxCentripetalAccel
@@ -31,8 +31,7 @@ class CentripetalAccelerationConstraint(
             Math.sqrt((mMaxCentripetalAccelRaw / state.curvature.curvature).absoluteValue)
 
     override fun getMinMaxAcceleration(
-            state: Pose2dWithCurvature,
-            velocity: Double
+        state: Pose2dWithCurvature,
+        velocity: Double
     ) = TimingConstraint.MinMaxAcceleration.kNoLimits
-
 }

@@ -3,12 +3,12 @@ package org.ghrobotics.lib.mathematics.units.expressions
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIExp5<A : SIValue<A>, B : SIValue<B>, C : SIValue<C>, D : SIValue<D>, E : SIValue<E>>(
-        override val value: Double,
-        private val a: A,
-        private val b: B,
-        private val c: C,
-        private val d: D,
-        private val e: E
+    override val value: Double,
+    private val a: A,
+    private val b: B,
+    private val c: C,
+    private val d: D,
+    private val e: E
 ) : SIExpression<SIExp5<A, B, C, D, E>>() {
     override fun createNew(newValue: Double) = SIExp5(value, a, b, c, d, e)
 

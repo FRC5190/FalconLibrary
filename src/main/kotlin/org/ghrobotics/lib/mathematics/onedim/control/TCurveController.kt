@@ -3,8 +3,11 @@ package org.ghrobotics.lib.mathematics.onedim.control
 import kotlin.math.pow
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-class TCurveController(val distance: Double,
-                       val maxVelocity: Double, val maxAcceleration: Double) : IKinematicController {
+class TCurveController(
+    val distance: Double,
+    val maxVelocity: Double,
+    val maxAcceleration: Double
+) : IKinematicController {
 
     private var cruiseVelocity = maxVelocity
 

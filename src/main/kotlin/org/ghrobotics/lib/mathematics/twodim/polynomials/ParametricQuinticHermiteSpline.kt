@@ -19,20 +19,19 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import kotlin.math.pow
 
-
 class ParametricQuinticHermiteSpline(
-        private val x0: Double,
-        private val x1: Double,
-        private val dx0: Double,
-        private val dx1: Double,
-        private var ddx0: Double,
-        private var ddx1: Double,
-        private val y0: Double,
-        private val y1: Double,
-        private val dy0: Double,
-        private val dy1: Double,
-        private var ddy0: Double,
-        private var ddy1: Double
+    private val x0: Double,
+    private val x1: Double,
+    private val dx0: Double,
+    private val dx1: Double,
+    private var ddx0: Double,
+    private var ddx1: Double,
+    private val y0: Double,
+    private val y1: Double,
+    private val dy0: Double,
+    private val dy1: Double,
+    private var ddy0: Double,
+    private var ddy1: Double
 ) : ParametricSpline() {
 
     constructor(start: Pose2d, end: Pose2d) : this(
@@ -49,7 +48,6 @@ class ParametricQuinticHermiteSpline(
             ddy0 = 0.0,
             ddy1 = 0.0
     )
-
 
     private var xCoefficients = mat[0.0, 0.0, 0.0, 0.0, 0.0, 0.0].T
     private var yCoefficients = mat[0.0, 0.0, 0.0, 0.0, 0.0, 0.0].T
@@ -167,7 +165,6 @@ class ParametricQuinticHermiteSpline(
         return sum
     }
 
-
     companion object {
         private const val kEpsilon = 1e-5
         private const val kStepSize = 1.0
@@ -179,7 +176,6 @@ class ParametricQuinticHermiteSpline(
             var ddx: Double = 0.toDouble()
             var ddy: Double = 0.toDouble()
         }
-
 
         private fun sumDCurvature2(splines: List<ParametricQuinticHermiteSpline>): Double {
             var sum = 0.0

@@ -9,7 +9,6 @@
  * Team 254
  */
 
-
 @file:Suppress("KDocUnresolvedReference", "EqualsOrHashCode")
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
@@ -23,8 +22,8 @@ import org.ghrobotics.lib.types.VaryInterpolatable
 fun Rotation2d.toTranslation() = Translation2d(cos, sin)
 
 data class Translation2d(
-        var xRaw: Double = 0.0,
-        var yRaw: Double = 0.0
+    var xRaw: Double = 0.0,
+    var yRaw: Double = 0.0
 ) : VaryInterpolatable<Translation2d> {
 
     var x: Length
@@ -40,8 +39,8 @@ data class Translation2d(
         }
 
     constructor(
-            x: Length,
-            y: Length
+        x: Length,
+        y: Length
     ) : this(
             x.meter,
             y.meter

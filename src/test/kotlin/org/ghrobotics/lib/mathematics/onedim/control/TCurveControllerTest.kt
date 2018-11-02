@@ -3,8 +3,6 @@ package org.ghrobotics.lib.mathematics.onedim.control
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.onedim.geometry.Displacement1d
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
-import org.knowm.xchart.XYChartBuilder
 import kotlin.math.absoluteValue
 
 class TCurveControllerTest {
@@ -64,6 +62,5 @@ class TCurveControllerTest {
 //        SwingWrapper(chart).displayChart("T Curve Controller Test")
 //
 //        Thread.sleep(10000000)
-
     }
 }

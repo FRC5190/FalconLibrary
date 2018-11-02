@@ -11,14 +11,14 @@ fun xboxController(port: Int, block: FalconXboxBuilder.() -> Unit): FalconXboxCo
         XboxController(port).mapControls(block)
 
 fun FalconXboxBuilder.button(
-        button: XboxButton,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+    button: XboxButton,
+    block: FalconHIDButtonBuilder.() -> Unit = {}
 ) = button(button.value, block)
 
 fun FalconXboxBuilder.triggerAxisButton(
-        hand: GenericHID.Hand,
-        threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+    hand: GenericHID.Hand,
+    threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+    block: FalconHIDButtonBuilder.() -> Unit = {}
 ) = axisButton(yTriggerAxisToRawAxis(hand), threshold, block)
 
 // Source Helpers

@@ -38,19 +38,19 @@ val DefaultTrajectoryGenerator = TrajectoryGenerator(
 )
 
 class TrajectoryGenerator(
-        val kMaxDx: Length,
-        val kMaxDy: Length,
-        val kMaxDTheta: Rotation2d
+    val kMaxDx: Length,
+    val kMaxDy: Length,
+    val kMaxDTheta: Rotation2d
 ) {
 
     fun generateTrajectory(
-            wayPoints: List<Pose2d>,
-            constraints: List<TimingConstraint<Pose2dWithCurvature>>,
-            startVelocity: Velocity,
-            endVelocity: Velocity,
-            maxVelocity: Velocity,
-            maxAcceleration: Acceleration,
-            reversed: Boolean
+        wayPoints: List<Pose2d>,
+        constraints: List<TimingConstraint<Pose2dWithCurvature>>,
+        startVelocity: Velocity,
+        endVelocity: Velocity,
+        maxVelocity: Velocity,
+        maxAcceleration: Acceleration,
+        reversed: Boolean
     ): TimedTrajectory<Pose2dWithCurvature> {
         val flippedPosition = Pose2d(rotation = 180.degree)
 
@@ -85,7 +85,7 @@ class TrajectoryGenerator(
     }
 
     private fun trajectoryFromSplineWaypoints(
-            wayPoints: Sequence<Pose2d>
+        wayPoints: Sequence<Pose2d>
     ): IndexedTrajectory<Pose2dWithCurvature> {
         val splines = wayPoints.zipWithNext { a, b -> ParametricQuinticHermiteSpline(a, b) }.toMutableList()
         ParametricQuinticHermiteSpline.optimizeSpline(splines)
@@ -93,7 +93,7 @@ class TrajectoryGenerator(
     }
 
     private fun trajectoryFromSplines(
-            splines: List<ParametricSpline>
+        splines: List<ParametricSpline>
     ) = IndexedTrajectory(
             ParametricSplineGenerator.parameterizeSplines(
                     splines,
@@ -104,14 +104,14 @@ class TrajectoryGenerator(
     )
 
     private fun <S : VaryInterpolatable<S>> timeParameterizeTrajectory(
-            distanceTrajectory: DistanceTrajectory<S>,
-            constraints: List<TimingConstraint<S>>,
-            startVelocity: Double,
-            endVelocity: Double,
-            maxVelocity: Double,
-            maxAcceleration: Double,
-            stepSize: Double,
-            reversed: Boolean
+        distanceTrajectory: DistanceTrajectory<S>,
+        constraints: List<TimingConstraint<S>>,
+        startVelocity: Double,
+        endVelocity: Double,
+        maxVelocity: Double,
+        maxAcceleration: Double,
+        stepSize: Double,
+        reversed: Boolean
     ): TimedTrajectory<S> {
 
         class ConstrainedState<S : VaryInterpolatable<S>> {
@@ -121,7 +121,6 @@ class TrajectoryGenerator(
             var minAcceleration: Double = 0.0
             var maxAcceleration: Double = 0.0
 
-
             override fun toString(): String {
                 return state.toString() + ", distance: " + distance + ", maxVelocity: " + maxVelocity + ", " +
                         "minAcceleration: " + minAcceleration + ", maxAcceleration: " + maxAcceleration
@@ -129,8 +128,9 @@ class TrajectoryGenerator(
         }
 
         fun enforceAccelerationLimits(
-                reverse: Boolean, constraints: List<TimingConstraint<S>>,
-                constraintState: ConstrainedState<S>
+            reverse: Boolean,
+            constraints: List<TimingConstraint<S>>,
+            constraintState: ConstrainedState<S>
         ) {
 
             for (constraint in constraints) {
@@ -150,7 +150,6 @@ class TrajectoryGenerator(
                         if (reverse) -minMaxAccel.minAcceleration else minMaxAccel.maxAcceleration
                 )
             }
-
         }
 
         val distanceViewRange =
@@ -183,7 +182,6 @@ class TrajectoryGenerator(
         predecessor.maxVelocity = startVelocity
         predecessor.minAcceleration = -maxAcceleration
         predecessor.maxAcceleration = maxAcceleration
-
 
         for (i in states.indices) {
             // Add the new state.
@@ -343,5 +341,4 @@ class TrajectoryGenerator(
         }
         return TimedTrajectory(timedStates)
     }
-
 }

@@ -29,7 +29,7 @@ val Number.zeptosecond get() = (toDouble() / 1e+21).second
 val Number.yoctosecond get() = (toDouble() / 1e+24).second
 
 class Time(
-        override val value: Double
+    override val value: Double
 ) : SIUnit<Time> {
     val second get() = value
     val minute get() = second / 60

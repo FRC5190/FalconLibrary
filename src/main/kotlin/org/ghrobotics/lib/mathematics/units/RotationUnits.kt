@@ -39,7 +39,6 @@ class Rotation2d : SIUnit<Rotation2d> {
     val radian get() = value % (Math.PI * 2)
     val degree get() = Math.toDegrees(value)
 
-
     fun isParallel(rotation: Rotation2d) = (this - rotation).radian epsilonEquals 0.0
 
     override fun plus(other: Rotation2d): Rotation2d {

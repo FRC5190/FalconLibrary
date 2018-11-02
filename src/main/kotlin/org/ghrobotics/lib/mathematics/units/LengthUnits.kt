@@ -32,7 +32,7 @@ val Number.zeptometer get() = (toDouble() / 1e+21).meter
 val Number.yoctometer get() = (toDouble() / 1e+24).meter
 
 class Length(
-        override val value: Double
+    override val value: Double
 ) : SIUnit<Length> {
     val meter get() = value
     val thou get() = inch * 1000

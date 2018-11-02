@@ -19,7 +19,7 @@ import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.utils.launchFrequency
 
 class TankDriveLocalization(
-        val driveSubsystem: TankDriveSubsystem
+    val driveSubsystem: TankDriveSubsystem
 ) {
 
     private val localizationScope = CoroutineScope(newSingleThreadContext("Localization"))
@@ -65,5 +65,4 @@ class TankDriveLocalization(
         val dx = (leftDelta + rightDelta) / 2.0
         return Twist2d(dx, 0.meter, rotationDelta)
     }
-
 }

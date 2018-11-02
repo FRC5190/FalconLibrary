@@ -8,13 +8,13 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.utils.Source
 
 class FollowTrajectoryCommand(
-        val driveSubsystem: TankDriveSubsystem,
-        val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>
+    val driveSubsystem: TankDriveSubsystem,
+    val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>
 ) : FalconCommand(driveSubsystem) {
 
     constructor(
-            driveSubsystem: TankDriveSubsystem,
-            trajectory: TimedTrajectory<Pose2dWithCurvature>
+        driveSubsystem: TankDriveSubsystem,
+        trajectory: TimedTrajectory<Pose2dWithCurvature>
     ) : this(driveSubsystem, Source(trajectory))
 
     private var trajectoryFinished = false
@@ -56,5 +56,4 @@ class FollowTrajectoryCommand(
         driveSubsystem.leftMaster.set(ControlMode.PercentOutput, 0.0)
         driveSubsystem.rightMaster.set(ControlMode.PercentOutput, 0.0)
     }
-
 }

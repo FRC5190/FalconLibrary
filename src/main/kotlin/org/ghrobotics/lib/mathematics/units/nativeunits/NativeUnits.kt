@@ -7,7 +7,7 @@ fun <T : SIUnit<T>> T.fromModel(model: NativeUnitModel<T>) = model.fromModel(thi
 val Number.STU get() = NativeUnit(toDouble())
 
 class NativeUnit(
-        override val value: Double
+    override val value: Double
 ) : SIUnit<NativeUnit> {
     override fun createNew(newValue: Double) = NativeUnit(newValue)
 

@@ -32,33 +32,32 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     // Pre-generated Trajectory Methods
 
     fun followTrajectory(
-            trajectory: TimedTrajectory<Pose2dWithCurvature>
+        trajectory: TimedTrajectory<Pose2dWithCurvature>
     ) = FollowTrajectoryCommand(this, trajectory)
 
     fun followTrajectory(
-            trajectory: TimedTrajectory<Pose2dWithCurvature>,
-            pathMirrored: Boolean = false
+        trajectory: TimedTrajectory<Pose2dWithCurvature>,
+        pathMirrored: Boolean = false
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
     })
 
     fun followTrajectory(
-            trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
-            pathMirrored: Boolean = false
+        trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
+        pathMirrored: Boolean = false
     ) = FollowTrajectoryCommand(this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     })
 
     fun followTrajectory(
-            trajectory: TimedTrajectory<Pose2dWithCurvature>,
-            pathMirrored: BooleanSource
+        trajectory: TimedTrajectory<Pose2dWithCurvature>,
+        pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory))
 
     fun followTrajectory(
-            trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
-            pathMirrored: BooleanSource
+        trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
+        pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory))
-
 
     // Region conditional command methods
 
@@ -67,5 +66,4 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
 
     fun withinRegion(region: Source<Rectangle2d>) =
             ConditionCommand { region().contains(localization.robotPosition.translation) }
-
 }

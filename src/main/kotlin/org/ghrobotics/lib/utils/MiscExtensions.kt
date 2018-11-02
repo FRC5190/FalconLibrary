@@ -18,4 +18,3 @@ fun CANifier.setLEDOutput(r: Int, g: Int, b: Int) {
 
 val Pair<Double, Double>.l get() = this.first
 val Pair<Double, Double>.r get() = this.second
-

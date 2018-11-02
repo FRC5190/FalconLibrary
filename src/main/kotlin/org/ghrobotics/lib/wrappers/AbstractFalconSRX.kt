@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
+/* ktlint-disable no-wildcard-imports */
 import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.fractions.SIFrac11
@@ -13,8 +14,8 @@ import org.ghrobotics.lib.mathematics.units.nativeunits.STU
 import kotlin.properties.Delegates
 
 abstract class AbstractFalconSRX<T : SIValue<T>>(
-        id: Int,
-        timeout: Time
+    id: Int,
+    timeout: Time
 ) : TalonSRX(id) {
     protected val timeoutInt = timeout.millisecond.toInt()
 
@@ -156,9 +157,9 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     abstract fun set(controlMode: ControlMode, velocity: SIFrac11<T, Time>)
 
     abstract fun set(
-            controlMode: ControlMode,
-            velocity: SIFrac11<T, Time>,
-            demandType: DemandType,
-            outputPercent: Double
+        controlMode: ControlMode,
+        velocity: SIFrac11<T, Time>,
+        demandType: DemandType,
+        outputPercent: Double
     )
 }

@@ -4,9 +4,9 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 class SIExp2<A : SIValue<A>, B : SIValue<B>>(
-        override val value: Double,
-        private val a: A,
-        private val b: B
+    override val value: Double,
+    private val a: A,
+    private val b: B
 ) : SIExpression<SIExp2<A, B>>() {
     override fun createNew(newValue: Double) = SIExp2(newValue, a, b)
 

@@ -19,9 +19,9 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
 }
 
 class PeriodicRunnableCommand(
-        private val runnable: suspend () -> Unit,
-        exitCondition: BooleanSource,
-        runnableFrequency: Int = -1
+    private val runnable: suspend () -> Unit,
+    exitCondition: BooleanSource,
+    runnableFrequency: Int = -1
 ) : FalconCommand() {
     init {
         this.executeFrequency = runnableFrequency
@@ -32,7 +32,7 @@ class PeriodicRunnableCommand(
 }
 
 class ConditionCommand(
-        condition: BooleanSource
+    condition: BooleanSource
 ) : FalconCommand() {
     init {
         executeFrequency = 0
@@ -60,9 +60,9 @@ class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*
 }
 
 class ConditionalCommand(
-        val condition: BooleanSource,
-        val onTrue: FalconCommand?,
-        val onFalse: FalconCommand? = null
+    val condition: BooleanSource,
+    val onTrue: FalconCommand?,
+    val onFalse: FalconCommand? = null
 ) : FalconCommand() {
 
     override val wrappedValue: Command = WpiConditionalCommand()
@@ -79,5 +79,4 @@ class ConditionalCommand(
 
         override fun isFinished() = super.isFinished() || finishCondition()
     }
-
 }

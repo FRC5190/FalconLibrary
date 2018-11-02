@@ -5,6 +5,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.control
 
+/* ktlint-disable no-wildcard-imports */
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
@@ -12,7 +13,6 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest.Companion.trajectory
 import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -62,7 +62,6 @@ class RamseteControllerTest {
                     0.meter,
                     k.angular.radian * 1.05
             ).asPose
-
 
             xList.add(totalpose.translation.x.feet)
             yList.add(totalpose.translation.y.feet)

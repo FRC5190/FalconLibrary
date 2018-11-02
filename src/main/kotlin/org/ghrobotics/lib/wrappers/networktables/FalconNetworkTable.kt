@@ -20,8 +20,10 @@ fun NetworkTableEntry.delegate(defaultValue: String = "") = delegate { this.getS
 
 private fun <T> NetworkTableEntry.delegate(get: () -> T) = NetworkTableEntryDelegate(this, get)
 
-class NetworkTableEntryDelegate<T>(private val entry: NetworkTableEntry,
-                                   private val get: () -> T) {
+class NetworkTableEntryDelegate<T>(
+    private val entry: NetworkTableEntry,
+    private val get: () -> T
+) {
     operator fun setValue(networkInterface: Any, property: KProperty<*>, value: T) {
         entry.setValue(value)
     }

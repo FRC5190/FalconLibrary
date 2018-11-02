@@ -4,7 +4,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class IndexedTrajectory<S : VaryInterpolatable<S>>(
-        points: List<S>
+    points: List<S>
 ) : Trajectory<Double, S>(points) {
 
     override fun sample(interpolant: Double) = when {
@@ -33,11 +33,10 @@ class IndexedTrajectory<S : VaryInterpolatable<S>>(
     override val lastInterpolant = (points.size - 1.0).coerceAtLeast(0.0)
 
     override fun iterator() = IndexedIterator(this)
-
 }
 
 class IndexedIterator<S : VaryInterpolatable<S>>(
-        trajectory: IndexedTrajectory<S>
+    trajectory: IndexedTrajectory<S>
 ) : TrajectoryIterator<Double, S>(trajectory) {
     override fun addition(a: Double, b: Double) = a + b
 }

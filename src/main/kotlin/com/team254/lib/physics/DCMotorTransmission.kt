@@ -14,11 +14,9 @@ import org.ghrobotics.lib.mathematics.kEpsilon
  */
 class DCMotorTransmission(
         // All units must be SI!
-        val speedPerVolt: Double  // rad/s per V (no load)
-        ,
-        private val torquePerVolt: Double  // N m per V (stall)
-        ,
-        val frictionVoltage: Double  // V
+    val speedPerVolt: Double, // rad/s per V (no load),
+    private val torquePerVolt: Double, // N m per V (stall),
+    val frictionVoltage: Double // V
 ) {
 
     fun getFreeSpeedAtVoltage(voltage: Double): Double {

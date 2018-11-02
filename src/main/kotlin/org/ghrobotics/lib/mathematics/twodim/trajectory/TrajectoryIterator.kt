@@ -18,7 +18,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TrajectorySamplePo
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 abstract class TrajectoryIterator<U : Comparable<U>, S : VaryInterpolatable<S>>(
-        val trajectory: Trajectory<U, S>
+    val trajectory: Trajectory<U, S>
 ) {
 
     protected abstract fun addition(a: U, b: U): U

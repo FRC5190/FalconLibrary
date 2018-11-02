@@ -7,7 +7,7 @@ import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class DistanceTrajectory<S : VaryInterpolatable<S>>(
-        points: List<S>
+    points: List<S>
 ) : Trajectory<Length, S>(points) {
 
     private val distances: List<Double>
@@ -52,11 +52,10 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
     override val lastInterpolant = distances.last().meter
 
     override fun iterator() = DistanceIterator(this)
-
 }
 
 class DistanceIterator<S : VaryInterpolatable<S>>(
-        trajectory: DistanceTrajectory<S>
+    trajectory: DistanceTrajectory<S>
 ) : TrajectoryIterator<Length, S>(trajectory) {
     override fun addition(a: Length, b: Length) = a + b
 }

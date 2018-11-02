@@ -25,14 +25,14 @@ import kotlin.math.absoluteValue
 // Stores a pose on the field. Contains a translation and a rotation
 
 data class Pose2d(
-        val translation: Translation2d = Translation2d(),
-        val rotation: Rotation2d = 0.degree
+    val translation: Translation2d = Translation2d(),
+    val rotation: Rotation2d = 0.degree
 ) : VaryInterpolatable<Pose2d> {
 
     constructor(
-            x: Length,
-            y: Length,
-            rotation: Rotation2d = 0.degree
+        x: Length,
+        y: Length,
+        rotation: Rotation2d = 0.degree
     ) : this(Translation2d(x, y), rotation)
 
     val twist: Twist2d
@@ -83,5 +83,4 @@ data class Pose2d(
     }
 
     override fun distance(other: Pose2d) = (-this + other).twist.norm.value
-
 }

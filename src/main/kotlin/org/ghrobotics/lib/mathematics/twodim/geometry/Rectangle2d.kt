@@ -6,10 +6,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 data class Rectangle2d(
-        val xRaw: Double,
-        val yRaw: Double,
-        val wRaw: Double,
-        val hRaw: Double
+    val xRaw: Double,
+    val yRaw: Double,
+    val wRaw: Double,
+    val hRaw: Double
 ) {
 
     val topLeft = Translation2d(xRaw, yRaw + hRaw)
@@ -30,8 +30,8 @@ data class Rectangle2d(
         get() = hRaw.meter
 
     constructor(
-            xRange: ClosedFloatingPointRange<Double>,
-            yRange: ClosedFloatingPointRange<Double>
+        xRange: ClosedFloatingPointRange<Double>,
+        yRange: ClosedFloatingPointRange<Double>
     ) : this(
             xRange.start,
             yRange.start,

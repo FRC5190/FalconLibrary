@@ -45,5 +45,4 @@ class ExpressionTests {
 
         assert(four.value epsilonEquals 30.0)
     }
-
 }

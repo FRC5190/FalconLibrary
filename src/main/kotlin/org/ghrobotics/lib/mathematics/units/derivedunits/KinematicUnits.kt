@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
+/* ktlint-disable no-wildcard-imports */
 import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.fractions.SIFrac11
 import org.ghrobotics.lib.mathematics.units.fractions.SIFrac12

@@ -4,6 +4,7 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.types.CSVWritable
 import java.text.DecimalFormat
+/* ktlint-disable no-wildcard-imports */
 import java.util.*
 
 /*
@@ -23,28 +24,26 @@ class DifferentialDrive(
         // Equivalent mass when accelerating purely linearly, in kg.
         // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
         // Measure by doing drivetrain acceleration characterization in a straight line.
-        private val mass: Double,
+    private val mass: Double,
         // Equivalent moment of inertia when accelerating purely angularly, in kg*m^2.
         // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
         // Measure by doing drivetrain acceleration characterization while turning in place.
-        private val moi: Double,
+    private val moi: Double,
         // Drag torque (proportional to angular velocity) that resists turning, in N*m/rad/s
         // Empirical testing of our drivebase showed that there was an unexplained loss in torque ~proportional to angular
         // velocity, likely due to scrub of wheels.
         // NOTE: this may not be a purely linear term, and we have done limited testing, but this factor helps our model to
         // better match reality.  For future seasons, we should investigate what's going on here...
-        private val angularDrag: Double,
+    private val angularDrag: Double,
         // Self-explanatory.  Measure by rolling the robot a known distance and counting encoder ticks.
-        val wheelRadius: Double  // m
-        ,
+    val wheelRadius: Double, // m,
         // "Effective" kinematic wheelbase radius.  Might be larger than theoretical to compensate for skid steer.  Measure
         // by turning the robot in place several times and figuring out what the equivalent wheelbase radius is.
-        private val effectiveWheelBaseRadius: Double  // m
-        ,
+    private val effectiveWheelBaseRadius: Double, // m
         // Transmissions for both sides of the drive.
-        private val leftTransmission: DCMotorTransmission,
-        private val rightTransmission: DCMotorTransmission) {
-
+    private val leftTransmission: DCMotorTransmission,
+    private val rightTransmission: DCMotorTransmission
+) {
 
     // Input/demand could be either velocity or acceleration...the math is the same.
     fun solveForwardKinematics(wheelMotion: WheelState): ChassisState {
@@ -333,18 +332,18 @@ class DifferentialDrive(
     // Full state dynamics of the drivetrain.
     // TODO maybe make these all optional fields and have a single solveDynamics() method that fills in the blanks?
     class DriveDynamics : CSVWritable {
-        var curvature = 0.0  // m^-1
-        var dcurvature = 0.0  // m^-1/m
-        var chassisVelocity = ChassisState()  // m/s
-        var chassisAcceleration = ChassisState()  // m/s^2
-        var wheelVelocity = WheelState()  // rad/s
-        var wheelAcceleration = WheelState()  // rad/s^2
-        var voltage = WheelState()  // V
-        var wheelTorque = WheelState()  // N m
+        var curvature = 0.0 // m^-1
+        var dcurvature = 0.0 // m^-1/m
+        var chassisVelocity = ChassisState() // m/s
+        var chassisAcceleration = ChassisState() // m/s^2
+        var wheelVelocity = WheelState() // rad/s
+        var wheelAcceleration = WheelState() // rad/s^2
+        var voltage = WheelState() // V
+        var wheelTorque = WheelState() // N m
 
         override fun toCSV(): String {
-            return (curvature.toString() + "," + dcurvature + "," + chassisVelocity + ", " + chassisAcceleration + ", " + wheelVelocity + ", " + wheelAcceleration
-                    + ", " + voltage + ", " + wheelTorque)
+            return (curvature.toString() + "," + dcurvature + "," + chassisVelocity + ", " + chassisAcceleration + ", " + wheelVelocity + ", " + wheelAcceleration +
+                    ", " + voltage + ", " + wheelTorque)
         }
     }
 }

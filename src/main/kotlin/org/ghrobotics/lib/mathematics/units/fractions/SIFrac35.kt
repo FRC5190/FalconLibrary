@@ -4,16 +4,16 @@ import org.ghrobotics.lib.mathematics.units.SIValue
 
 open class SIFrac35<TA : SIValue<TA>, TB : SIValue<TB>, TC : SIValue<TC>,
         BA : SIValue<BA>, BB : SIValue<BB>, BC : SIValue<BC>, BD : SIValue<BD>, BE : SIValue<BE>>(
-        override val value: Double,
-        internal val tA: TA,
-        internal val tB: TB,
-        internal val tC: TC,
-        internal val bA: BA,
-        internal val bB: BB,
-        internal val bC: BC,
-        internal val bD: BD,
-        internal val bE: BE
-) : SIFrac<SIFrac35<TA, TB, TC, BA, BB, BC, BD, BE>> {
+            override val value: Double,
+            internal val tA: TA,
+            internal val tB: TB,
+            internal val tC: TC,
+            internal val bA: BA,
+            internal val bB: BB,
+            internal val bC: BC,
+            internal val bD: BD,
+            internal val bE: BE
+        ) : SIFrac<SIFrac35<TA, TB, TC, BA, BB, BC, BD, BE>> {
     override fun createNew(newValue: Double) = SIFrac35(newValue, tA, tB, tC, bA, bB, bC, bD, bE)
 
     @JvmName("timesEBA")
@@ -37,5 +37,3 @@ open class SIFrac35<TA : SIValue<TA>, TB : SIValue<TB>, TC : SIValue<TC>,
     fun timesBD(other: BD) = SIFrac34(value * other.value, tA, tB, tC, bA, bB, bC, bE)
     fun timesBE(other: BE) = SIFrac34(value * other.value, tA, tB, tC, bA, bB, bC, bD)
 }
-
-

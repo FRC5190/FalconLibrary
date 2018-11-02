@@ -116,8 +116,8 @@ abstract class FalconRobotBase : RobotBase() {
                 }
                 // Transition
                 for ((modes, listener) in onTransitionListeners) {
-                    if ((modes.first == currentMode || modes.first == Mode.ANY)
-                            && (modes.second == newMode || modes.second == Mode.ANY)) {
+                    if ((modes.first == currentMode || modes.first == Mode.ANY) &&
+                            (modes.second == newMode || modes.second == Mode.ANY)) {
                         listener()
                     }
                 }

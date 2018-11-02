@@ -2,8 +2,12 @@ package org.ghrobotics.lib.mathematics.onedim.control
 
 import kotlin.math.pow
 
-class SCurveController(val distance: Double, maxVelocity: Double,
-                       private val maxAcceleration: Double, private val jerk: Double) : IKinematicController {
+class SCurveController(
+    val distance: Double,
+    maxVelocity: Double,
+    private val maxAcceleration: Double,
+    private val jerk: Double
+) : IKinematicController {
 
     private var cruiseVelocity: Double
     private val maxAccelTime = maxAcceleration / jerk
@@ -41,7 +45,6 @@ class SCurveController(val distance: Double, maxVelocity: Double,
         t6.t = t4.t + t2.t
         t7.t = t6.t + maxAccelTime
 
-
         // Concave up
         t1.x = x(t1.t, 0.0, 0.0, 0.0, jerk)
         t1.v = v(t1.t, 0.0, 0.0, jerk)
@@ -75,7 +78,6 @@ class SCurveController(val distance: Double, maxVelocity: Double,
     private var lastCallTime = -1.0
     private var dt = -1.0
     private var elapsed = 0.0
-
 
     override fun getVelocity(nanotime: Long): PVAData {
         dt = if (lastCallTime < 0) 0.0 else nanotime / 1E9 - lastCallTime

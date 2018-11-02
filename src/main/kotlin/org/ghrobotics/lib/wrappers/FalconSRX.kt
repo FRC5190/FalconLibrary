@@ -5,6 +5,7 @@
 
 package org.ghrobotics.lib.wrappers
 
+/* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.mathematics.units.*
@@ -16,9 +17,9 @@ import kotlin.properties.Delegates.observable
 typealias FalconLengthSRX = FalconSRX<Length>
 
 class FalconSRX<T : SIUnit<T>>(
-        id: Int,
-        val nativeUnitModel: NativeUnitModel<T>,
-        timeout: Time = 10.millisecond
+    id: Int,
+    val nativeUnitModel: NativeUnitModel<T>,
+    timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<T>(id, timeout) {
     override var allowedClosedLoopError: T by observable(nativeUnitModel.zero) { _, _, newValue ->
         configAllowableClosedloopError(
@@ -58,13 +59,9 @@ class FalconSRX<T : SIUnit<T>>(
             set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(
-            controlMode: ControlMode,
-            velocity: SIFrac11<T, Time>,
-            demandType: DemandType,
-            outputPercent: Double
+        controlMode: ControlMode,
+        velocity: SIFrac11<T, Time>,
+        demandType: DemandType,
+        outputPercent: Double
     ) = set(controlMode, velocity.fromModel(nativeUnitModel).STUPer100ms, demandType, outputPercent)
-
-
 }
-
-

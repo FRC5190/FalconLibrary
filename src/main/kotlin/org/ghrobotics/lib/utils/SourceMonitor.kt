@@ -3,7 +3,7 @@ package org.ghrobotics.lib.utils
 val <T> Source<T>.monitor get() = SourceMonitor(this)
 
 class SourceMonitor<T>(
-        val source: Source<T>
+    val source: Source<T>
 ) {
     var lastValue = source()
 
@@ -17,7 +17,6 @@ class SourceMonitor<T>(
         if (lastValue == value) block()
         onChange { if (it == value) block() }
     }
-
 }
 
 fun SourceMonitor<Boolean>.onChangeToTrue(block: () -> Unit) = onChange { if (it) block() }

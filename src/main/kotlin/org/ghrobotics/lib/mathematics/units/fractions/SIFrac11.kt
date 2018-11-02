@@ -4,9 +4,9 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.SIValue
 
 class SIFrac11<T : SIValue<T>, B : SIValue<B>>(
-        override val value: Double,
-        internal val tA: T,
-        internal val bA: B
+    override val value: Double,
+    internal val tA: T,
+    internal val bA: B
 ) : SIFrac<SIFrac11<T, B>> {
     override fun createNew(newValue: Double) = SIFrac11(newValue, tA, bA)
 
@@ -26,5 +26,3 @@ class SIFrac11<T : SIValue<T>, B : SIValue<B>>(
     @JvmName("divEFBB")
     operator fun <O : SIUnit<O>> div(other: SIFrac12<T, B, O>) = other.bB.createNew(value / other.value)
 }
-
-
