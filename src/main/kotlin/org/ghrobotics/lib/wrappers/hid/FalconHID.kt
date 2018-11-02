@@ -4,12 +4,6 @@ import edu.wpi.first.wpilibj.GenericHID
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
-
-fun <T : GenericHID> controller(
-        genericHID: T,
-        block: FalconHIDBuilder<T>.() -> Unit
-): FalconHID<T> = genericHID.mapControls(block)
 
 fun <T : GenericHID> T.mapControls(
         block: FalconHIDBuilder<T>.() -> Unit
@@ -17,7 +11,7 @@ fun <T : GenericHID> T.mapControls(
 
 class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
     private val controlBuilders = mutableListOf<FalconHIDControlBuilder>()
-    private val stateControlBuilders = mutableMapOf<ObservableValue<Boolean>, FalconHIDBuilder<T>>()
+    private val stateControlBuilders = mutableMapOf<BooleanSource, FalconHIDBuilder<T>>()
 
     fun button(
             buttonId: Int,
@@ -34,7 +28,7 @@ class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
     fun pov(pov: Int, angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) =
             button(HIDPOVSource(genericHID, pov, angle), block = block)
 
-    fun state(state: ObservableValue<Boolean>, block: FalconHIDBuilder<T>.() -> Unit) =
+    fun state(state: BooleanSource, block: FalconHIDBuilder<T>.() -> Unit) =
             stateControlBuilders.compute(state) { _, _ -> FalconHIDBuilder(genericHID).also(block) }
 
     fun button(
@@ -83,7 +77,7 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
 class FalconHID<T : GenericHID>(
         private val genericHID: T,
         private val controls: List<HIDControl>,
-        private val stateControls: Map<ObservableValue<Boolean>, FalconHID<T>>
+        private val stateControls: Map<BooleanSource, FalconHID<T>>
 ) {
 
     fun getRawAxis(axisId: Int): DoubleSource = HIDAxisSource(genericHID, axisId)
@@ -92,7 +86,7 @@ class FalconHID<T : GenericHID>(
     suspend fun update() {
         controls.forEach { it.update() }
         for ((state, controller) in stateControls) {
-            if (state.value) controller.update()
+            if (state()) controller.update()
         }
     }
 

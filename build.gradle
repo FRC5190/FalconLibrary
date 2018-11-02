@@ -46,6 +46,7 @@ wrapper {
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
     }
 }
 

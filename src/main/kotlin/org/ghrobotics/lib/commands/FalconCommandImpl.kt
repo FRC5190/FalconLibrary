@@ -1,32 +1,29 @@
 package org.ghrobotics.lib.commands
 
 import edu.wpi.first.wpilibj.command.Command
-import kotlinx.coroutines.GlobalScope
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
-import org.ghrobotics.lib.utils.observabletype.updatableValue
 import kotlin.properties.Delegates.observable
 
 abstract class InstantCommand : FalconCommand() {
-    override fun CreateCommandScope.create() {
+    init {
         executeFrequency = 0
-        finishCondition += ObservableValue(true)
+        finishCondition += { true }
     }
 }
 
 class InstantRunnableCommand(private val runnable: suspend () -> Unit) : InstantCommand() {
-    override suspend fun InitCommandScope.initialize() = runnable()
+    override suspend fun initialize() = runnable()
 }
 
 class PeriodicRunnableCommand(
         private val runnable: suspend () -> Unit,
-        private val exitCondition: ObservableValue<Boolean>,
-        private val runnableFrequency: Int = DEFAULT_FREQUENCY
+        exitCondition: BooleanSource,
+        runnableFrequency: Int = -1
 ) : FalconCommand() {
-    override fun CreateCommandScope.create() {
+    init {
         this.executeFrequency = runnableFrequency
         finishCondition += exitCondition
     }
@@ -35,11 +32,10 @@ class PeriodicRunnableCommand(
 }
 
 class ConditionCommand(
-        private val condition: ObservableValue<Boolean>
+        condition: BooleanSource
 ) : FalconCommand() {
-    constructor(condition: BooleanSource) : this(GlobalScope.updatableValue(block = condition))
-
-    override fun CreateCommandScope.create() {
+    init {
+        executeFrequency = 0
         finishCondition += condition
     }
 }
@@ -48,14 +44,17 @@ class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 
     constructor(delay: Time) : this(Source(delay))
 
-    override suspend fun InitCommandScope.initialize() {
+    init {
         executeFrequency = 0
+    }
+
+    override suspend fun initialize() {
         withTimeout(delaySource())
     }
 }
 
 class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*requiredSubsystems) {
-    override suspend fun InitCommandScope.initialize() {
+    init {
         executeFrequency = 0
     }
 }
@@ -78,7 +77,7 @@ class ConditionalCommand(
 
         override fun condition(): Boolean = condition.invoke()
 
-        override fun isFinished() = super.isFinished() || finishCondition.value
+        override fun isFinished() = super.isFinished() || finishCondition()
     }
 
 }

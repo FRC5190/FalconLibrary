@@ -24,7 +24,7 @@ class FalconCommandGroup(
             }
         }
 
-        override fun isFinished() = super.isFinished() || finishCondition.value
+        override fun isFinished() = super.isFinished() || finishCondition()
     }
 
     enum class GroupType {

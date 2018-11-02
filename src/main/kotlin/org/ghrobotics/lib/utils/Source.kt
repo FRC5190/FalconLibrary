@@ -25,13 +25,6 @@ fun <T> Source(value: T): Source<T> = { value }
 @Deprecated("Redundant", ReplaceWith("value"))
 fun <T> Source(value: () -> T): Source<T> = value
 
-fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(Source(trueMap), Source(falseMap))
-fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, Source(falseMap))
-fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(Source(trueMap), falseMap)
-fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }
-
-operator fun BooleanSource.not() = map { !it }
-
 fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = map { this@withThreshold() >= threshold }
 
 fun DoubleSource.withDeadband(
@@ -46,3 +39,37 @@ fun DoubleSource.withDeadband(
     // scale so deadband is effective 0
     ((currentValue.absoluteValue - deadband) / (maxMagnitude - deadband)) * currentValue.sign
 }
+
+// Boolean Sources
+
+fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(Source(trueMap), Source(falseMap))
+fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap, Source(falseMap))
+fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(Source(trueMap), falseMap)
+fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }
+
+operator fun BooleanSource.not() = map { !it }
+infix fun BooleanSource.and(other: BooleanSource) = withMerge(other) { one, two -> one and two }
+infix fun BooleanSource.or(other: BooleanSource) = withMerge(other) { one, two -> one or two }
+infix fun BooleanSource.xor(other: BooleanSource) = withMerge(other) { one, two -> one or two }
+
+// Comparable Sources
+
+fun <T> Source<Comparable<T>>.compareTo(other: T) = map { it.compareTo(other) }
+fun <T> Source<Comparable<T>>.compareTo(other: Source<T>) = withMerge(other) { one, two -> one.compareTo(two) }
+
+fun <T> Source<Comparable<T>>.greaterThan(other: T) = compareTo(other).map { it > 0 }
+fun <T> Source<Comparable<T>>.equalTo(other: T) = compareTo(other).map { it == 0 }
+fun <T> Source<Comparable<T>>.lessThan(other: T) = compareTo(other).map { it < 0 }
+fun <T> Source<Comparable<T>>.greaterThan(other: Source<T>) = compareTo(other).map { it > 0 }
+fun <T> Source<Comparable<T>>.equalTo(other: Source<T>) = compareTo(other).map { it == 0 }
+fun <T> Source<Comparable<T>>.lessThan(other: Source<T>) = compareTo(other).map { it < 0 }
+
+@JvmName("reversedGreaterThan")
+fun <T> Source<T>.greaterThan(other: Source<Comparable<T>>) = other.compareTo(this).map { it < 0 }
+
+@JvmName("reversedEqualTo")
+fun <T> Source<T>.equalTo(other: Source<Comparable<T>>) = other.compareTo(this).map { it == 0 }
+
+@JvmName("reversedLessThan")
+fun <T> Source<T>.lessThan(other: Source<Comparable<T>>) = other.compareTo(this).map { it > 0 }
+

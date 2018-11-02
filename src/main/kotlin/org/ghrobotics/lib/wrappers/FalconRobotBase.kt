@@ -9,9 +9,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
-import org.ghrobotics.lib.utils.*
-import org.ghrobotics.lib.utils.observabletype.ObservableValue
-import org.ghrobotics.lib.utils.observabletype.ObservableVariable
 import org.ghrobotics.lib.wrappers.hid.FalconHID
 
 abstract class FalconRobotBase : RobotBase() {
@@ -40,22 +37,21 @@ abstract class FalconRobotBase : RobotBase() {
         val rawValues by lazy { if (any) enumValues<Mode>().toList() else listOf(this@Mode) }
     }
 
+    var currentMode = Mode.NONE
+        private set
+
     // State Machine
-    private val currentModeState = ObservableVariable(Mode.NONE)
-    val currentModeStateValue: ObservableValue<Mode> = currentModeState
-    val modeStateMachine: StateMachine<Mode> = StateMachine(currentModeState)
+    private val onEnterListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
+    private val onLeaveListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
+    private val onTransitionListeners = mutableListOf<Pair<Pair<Mode, Mode>, suspend () -> Unit>>()
+    private val onWhileListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
 
-    fun onEnter(enterState: Mode, listener: SMEnterListener<Mode>) =
-            modeStateMachine.onEnter(enterState.rawValues, listener)
+    fun onEnter(enterState: Mode, listener: suspend () -> Unit) = onEnterListeners.add(enterState to listener)
+    fun onLeave(leaveState: Mode, listener: suspend () -> Unit) = onLeaveListeners.add(leaveState to listener)
+    fun onTransition(fromState: Mode, toState: Mode, listener: suspend () -> Unit) =
+            onTransitionListeners.add((fromState to toState) to listener)
 
-    fun onLeave(leaveState: Mode, listener: SMLeaveListener<Mode>) =
-            modeStateMachine.onLeave(leaveState.rawValues, listener)
-
-    fun onTransition(fromState: Mode, toState: Mode, listener: SMTransitionListener<Mode>) =
-            modeStateMachine.onTransition(fromState.rawValues, toState.rawValues, listener)
-
-    fun onWhile(whileState: Mode, frequency: Int = 50, listener: SMWhileListener<Mode>) =
-            modeStateMachine.onWhile(whileState.rawValues, frequency, listener)
+    fun onWhile(whileState: Mode, listener: suspend () -> Unit) = onWhileListeners.add(whileState to listener)
 
     // Main Robot Code
 
@@ -110,7 +106,34 @@ abstract class FalconRobotBase : RobotBase() {
                 isTest -> Mode.TEST
                 else -> TODO("Robot in invalid mode!")
             }
-            currentModeState.value = newMode
+
+            if (newMode != currentMode) {
+                // Leave previous mode
+                for ((mode, listener) in onLeaveListeners) {
+                    if (mode == currentMode || mode == Mode.ANY) {
+                        listener()
+                    }
+                }
+                // Transition
+                for ((modes, listener) in onTransitionListeners) {
+                    if ((modes.first == currentMode || modes.first == Mode.ANY)
+                            && (modes.second == newMode || modes.second == Mode.ANY)) {
+                        listener()
+                    }
+                }
+                // Enter new mode
+                for ((mode, listener) in onEnterListeners) {
+                    if (mode == newMode || mode == Mode.ANY) {
+                        listener()
+                    }
+                }
+            }
+            // On while
+            for ((mode, listener) in onWhileListeners) {
+                if (mode == newMode || mode == Mode.ANY) {
+                    listener()
+                }
+            }
         }
     }
 
