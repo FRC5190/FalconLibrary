@@ -12,12 +12,7 @@ class Rotation2d : SIUnit<Rotation2d> {
     val cos: Double
     val sin: Double
 
-    constructor(value: Double) {
-        this.value = value
-
-        cos = Math.cos(value)
-        sin = Math.sin(value)
-    }
+    constructor(value: Double) : this(Math.cos(value), Math.sin(value), true)
 
     constructor(x: Double, y: Double, normalize: Boolean) {
         if (normalize) {
