@@ -46,7 +46,6 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         resetTrajectory(DefaultTrajectoryGenerator.baseline)
     }
 
-
     fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
         iterator = trajectory.iterator()
         previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
