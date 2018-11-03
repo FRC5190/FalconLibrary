@@ -21,12 +21,11 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.DistanceTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
-import org.ghrobotics.lib.mathematics.units.degree
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
-import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -42,6 +41,16 @@ class TrajectoryGenerator(
     val kMaxDy: Length,
     val kMaxDTheta: Rotation2d
 ) {
+
+    val baseline = generateTrajectory(
+        listOf(Pose2d(0.meter, 0.meter, 0.degree), Pose2d(10.feet, 0.meter, 0.degree)),
+        listOf(),
+        0.meter.velocity,
+        0.meter.velocity,
+        10.feet.velocity,
+        4.feet.acceleration,
+        false
+    )
 
     fun generateTrajectory(
         wayPoints: List<Pose2d>,

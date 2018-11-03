@@ -97,7 +97,7 @@ abstract class FalconCommand(
             dispose0()
         }
 
-        override fun isFinished() = finishCondition()
+        override fun isFinished() = super.isTimedOut() || finishCondition()
     }
 
     fun withExit(condition: BooleanSource) = also { finishCondition += condition }

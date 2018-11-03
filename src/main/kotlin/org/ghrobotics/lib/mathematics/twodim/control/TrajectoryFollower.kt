@@ -8,6 +8,7 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.twodim.trajectory.DefaultTrajectoryGenerator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Time
@@ -40,6 +41,11 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
     // Loops
     private var deltaTimeController = DeltaTime()
+
+    init {
+        resetTrajectory(DefaultTrajectoryGenerator.baseline)
+    }
+
 
     fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
         iterator = trajectory.iterator()
@@ -86,10 +92,10 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
             setpoint: DifferentialDrive.WheelState,
             voltages: DifferentialDrive.WheelState
         ) = Output(
-                lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
-                rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
-                lfVoltage = voltages.left.volt,
-                rfVoltage = voltages.right.volt
+            lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
+            rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
+            lfVoltage = voltages.left.volt,
+            rfVoltage = voltages.right.volt
         )
     }
 }

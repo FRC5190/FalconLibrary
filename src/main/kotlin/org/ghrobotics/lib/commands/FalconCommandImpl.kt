@@ -68,8 +68,8 @@ class ConditionalCommand(
     override val wrappedValue: Command = WpiConditionalCommand()
 
     private inner class WpiConditionalCommand : edu.wpi.first.wpilibj.command.ConditionalCommand(
-            onTrue?.wrappedValue,
-            onFalse?.wrappedValue
+        onTrue?.wrappedValue,
+        onFalse?.wrappedValue
     ), IWpiCommand {
         override var timeout by observable(0.second) { _, _, newValue ->
             setTimeout(newValue.second)
@@ -77,6 +77,6 @@ class ConditionalCommand(
 
         override fun condition(): Boolean = condition.invoke()
 
-        override fun isFinished() = super.isFinished() || finishCondition()
+        override fun isFinished() = super.isTimedOut() || super.isFinished() || finishCondition()
     }
 }

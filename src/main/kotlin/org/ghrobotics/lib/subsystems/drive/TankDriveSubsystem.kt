@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive
 
+import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
@@ -21,12 +22,10 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     abstract val ahrsSensor: AHRSSensor
     abstract val trajectoryFollower: TrajectoryFollower
 
-    @Suppress("LeakingThis")
-    lateinit var localization: TankDriveLocalization
-        private set
+    val localization = TankDriveLocalization()
 
     override fun lateInit() {
-        localization = TankDriveLocalization(this)
+        runBlocking { localization.lateInit(this@TankDriveSubsystem) }
     }
 
     // Pre-generated Trajectory Methods
@@ -62,8 +61,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     // Region conditional command methods
 
     fun withinRegion(region: Rectangle2d) =
-            withinRegion(Source(region))
+        withinRegion(Source(region))
 
     fun withinRegion(region: Source<Rectangle2d>) =
-            ConditionCommand { region().contains(localization.robotPosition.translation) }
+        ConditionCommand { region().contains(localization.robotPosition.translation) }
 }

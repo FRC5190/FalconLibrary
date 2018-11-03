@@ -7,7 +7,6 @@ package org.ghrobotics.lib.subsystems.drive
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
@@ -18,9 +17,9 @@ import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.utils.launchFrequency
 
-class TankDriveLocalization(
-    val driveSubsystem: TankDriveSubsystem
-) {
+class TankDriveLocalization {
+
+    private lateinit var driveSubsystem: TankDriveSubsystem
 
     private val localizationScope = CoroutineScope(newSingleThreadContext("Localization"))
     private val localizationMutex = Mutex()
@@ -32,8 +31,9 @@ class TankDriveLocalization(
     private var prevR = 0.meter
     private var prevA = 0.degree
 
-    init {
-        runBlocking { reset() }
+    internal suspend fun lateInit(driveSubsystem: TankDriveSubsystem) {
+        this.driveSubsystem = driveSubsystem
+        reset()
         localizationScope.launchFrequency(100) { run() }
     }
 
