@@ -171,10 +171,10 @@ object CharacterizationCalculator {
          * Next, use the average of the absolute value of the two wheel accelerations to compute the average
          * angular velocity in rad/s/s
          *
-         * angular_acceleration = r(angular_left - angular_right)/d
-         * angular_acceleration = r(angular_left - angular_right)/(2r)
+         * angular_acceleration = r(angular_right - angular_left)/d
+         * angular_acceleration = r(angular_right - angular_left)/(2r)
          *
-         * Here avgAbsAngularAcceleration = (angular_left - angular_right) / 2
+         * Here avgAbsAngularAcceleration = (angular_right - angular_left) / 2
          */
         val angularAcceleration = wheelRadius.value * avgAbsAngularAcceleration / trackWidthRadius.value
 
