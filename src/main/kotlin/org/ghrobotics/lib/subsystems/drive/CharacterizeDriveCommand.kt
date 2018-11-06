@@ -12,7 +12,6 @@ import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.DeltaTime
 
-
 class CharacterizeVelocityCommand(
     private val driveSubsystem: TankDriveSubsystem,
     private val wheelRadius: Length,
@@ -63,6 +62,10 @@ class CharacterizeAccelerationCommand(
 
     init {
         withTimeout(timeout)
+    }
+
+    override suspend fun initialize() {
+        deltaTime.reset()
     }
 
     override suspend fun execute() {
@@ -123,6 +126,5 @@ class CharacterizationCalculator(
 
         println("kV: $kV, kA: $kA, kS: $kS")
         println("Velocity R^2: ${velocityRegression.rSquare}, Acceleration R^2: ${accelerationRegression.rSquare}")
-
     }
 }
