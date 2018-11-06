@@ -9,6 +9,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Mass
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.sensors.AHRSSensor
 import org.ghrobotics.lib.utils.BooleanSource
@@ -67,15 +68,35 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     fun withinRegion(region: Source<Rectangle2d>) =
         ConditionCommand { region().contains(localization.robotPosition.translation) }
 
-    open fun characterizeDrive(wheelRadius: Length): FalconCommandGroup = sequential {
 
-        val velocityData = ArrayList<CharacterizeVelocityCommand.Data>()
-        val accelerationData = ArrayList<CharacterizeAccelerationCommand.Data>()
+    open fun characterizeDrive(wheelRadius: Length, trackWidthRadius: Length, robotMass: Mass): FalconCommandGroup =
+        sequential {
+            // ArrayLists to store raw data
+            val linearVelocityData = ArrayList<CharacterizeVelocityCommand.Data>()
+            val angularVelocityData = ArrayList<CharacterizeVelocityCommand.Data>()
+            val linearAccelerationData = ArrayList<CharacterizeAccelerationCommand.Data>()
+            val angularAccelerationData = ArrayList<CharacterizeAccelerationCommand.Data>()
 
-        +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, velocityData)
-        +DelayCommand(2.0.second) // wait for robot to come to rest
-        +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, accelerationData)
+            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, false, linearVelocityData)
+            +DelayCommand(2.second)
+            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, false, linearAccelerationData)
+            +DelayCommand(2.second)
+            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true, angularVelocityData)
+            +DelayCommand(2.second)
+            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, true, angularAccelerationData)
 
-        +InstantRunnableCommand { CharacterizationCalculator(velocityData, accelerationData).getConstants() }
-    }
+            +InstantRunnableCommand {
+                System.out.println(
+                    CharacterizationCalculator.getDifferentialDriveConstants(
+                        wheelRadius = wheelRadius,
+                        effectiveWheelBaseRadius = trackWidthRadius,
+                        robotMass = robotMass,
+                        linearVelocityData = linearVelocityData,
+                        angularVelocityData = angularVelocityData,
+                        linearAccelerationData = linearAccelerationData,
+                        angularAccelerationData = angularAccelerationData
+                    )
+                )
+            }
+        }
 }
