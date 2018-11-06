@@ -104,12 +104,14 @@ object CharacterizationCalculator {
     fun computeKv(velocityData: ArrayList<CharacterizeVelocityCommand.Data>): Double {
         val regression = SimpleRegression()
         velocityData.forEach { regression.addData(it.radPerSec, it.voltage) }
+        println("computeKv() R^2: ${regression.rSquare}")
         return regression.slope
     }
 
     fun computeKs(velocityData: ArrayList<CharacterizeVelocityCommand.Data>): Double {
         val regression = SimpleRegression()
         velocityData.forEach { regression.addData(it.radPerSec, it.voltage) }
+        println("computeKs() R^2: ${regression.rSquare}")
         return regression.intercept
     }
 
@@ -129,13 +131,14 @@ object CharacterizationCalculator {
             )
         }
 
+        println("computeKa() R^2: ${regression.rSquare}")
         return regression.slope
     }
 
 
     fun getDifferentialDriveConstants(
         wheelRadius: Length,
-        effectiveWheelBaseRadius: Length,
+        trackWidthRadius: Length,
         robotMass: Mass,
         linearVelocityData: ArrayList<CharacterizeVelocityCommand.Data>,
         angularVelocityData: ArrayList<CharacterizeVelocityCommand.Data>,
@@ -150,21 +153,50 @@ object CharacterizationCalculator {
         val linearKa = computeKa(linearAccelerationData, linearVelocityData)
         val angularKa = computeKa(angularAccelerationData, angularVelocityData)
 
-        // Get a value for linear acceleration by finding the maximum acceleration
-        val linearAcceleration = linearAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec * wheelRadius.value
+        /**
+         * Get a value for the linear acceleration by finding the maximum acceleration during the time interval.
+         * Convert the radians per second to meters per second to use in the torque calculation.
+         *
+         * v = omega * r
+         */
+        val linearAcceleration =
+            linearAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec * wheelRadius.value
 
-        // Get a value for angular acceleration by finding the maximum acceleration
-        val angularAcceleration = angularAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec
+        /**
+         * Get a value for the average of the absolute value of the angular accelerations for each wheel.
+         */
+        val avgAbsAngularAcceleration = angularAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec
 
-        // Calculate the torque required for the acceleration in the linear case.
-        // This relationship is linear.
-        // torque / wheel radius = mass * linear acceleration.
+        /**
+         * Next, use the average of the absolute value of the two wheel accelerations to compute the average
+         * angular velocity in rad/s/s
+         *
+         * angular_acceleration = r(angular_left - angular_right)/d
+         * angular_acceleration = r(angular_left - angular_right)/(2r)
+         *
+         * Here avgAbsAngularAcceleration = (angular_left - angular_right) / 2
+         */
+        val angularAcceleration = wheelRadius.value * avgAbsAngularAcceleration / trackWidthRadius.value
+
+        /**
+         * Calculate the torque required to accelerate in this linear straight-line case.
+         *
+         * torque = Force * radius
+         * Force = mass * acceleration
+         *
+         * torque / radius = mass * acceleration
+         */
         val torque = robotMass.value * wheelRadius.value * linearAcceleration
 
-        // Assume the same amount of torque is available in the angular case.
-        // Use this assumption to calculate the moment of inertia.
-        // Torque / wheel radius * effective track width radius = angular acceleration * robot moi
-        val momentOfInertia = torque / wheelRadius.value * effectiveWheelBaseRadius.value / angularAcceleration
+
+        /**
+         * Assume the same amount of torque is available in the angular case.
+         * Now compute the moment of inertia required for the measured angular acceleration.
+         *
+         * torque = moment of inertia * angular acceleration
+         * moment of inertia = torque / angular acceleration
+         */
+        val momentOfInertia = torque / angularAcceleration
 
         return CharacterizationData(
             linearKv, computeKs(linearVelocityData),
@@ -173,8 +205,8 @@ object CharacterizationCalculator {
     }
 
     data class CharacterizationData(
-        val linearKv: Double, val linearKs: Double, val linearKa: Double,
-        val angularKa: Double, val momentOfInertia: Double
+        val linearKv: Double, val linearKs: Double, val linearKa: Double, val angularKa: Double,
+        val momentOfInertia: Double
     )
 
 }

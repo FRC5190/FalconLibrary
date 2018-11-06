@@ -199,7 +199,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
                 System.out.println(
                     CharacterizationCalculator.getDifferentialDriveConstants(
                         wheelRadius = wheelRadius,
-                        effectiveWheelBaseRadius = trackWidthRadius,
+                        trackWidthRadius = trackWidthRadius,
                         robotMass = robotMass,
                         linearVelocityData = linearVelocityData,
                         angularVelocityData = angularVelocityData,
