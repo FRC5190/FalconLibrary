@@ -159,7 +159,7 @@ object CharacterizationCalculator {
         // Calculate the torque required for the acceleration in the linear case.
         // This relationship is linear.
         // torque / wheel radius = mass * linear acceleration.
-        val torque = robotMass.value * wheelRadius.value * wheelRadius.value * linearAcceleration
+        val torque = robotMass.value * wheelRadius.value * linearAcceleration
 
         // Assume the same amount of torque is available in the angular case.
         // Use this assumption to calculate the moment of inertia.
