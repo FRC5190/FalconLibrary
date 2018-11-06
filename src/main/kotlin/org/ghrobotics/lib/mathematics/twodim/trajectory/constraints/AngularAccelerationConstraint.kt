@@ -17,6 +17,4 @@ class AngularAccelerationConstraint(val maxAngularAcceleration: Double) : Timing
         val maxAbsAcceleration = maxAngularAcceleration / state.curvature.curvature
         return TimingConstraint.MinMaxAcceleration(-maxAbsAcceleration, maxAbsAcceleration)
     }
-
-
 }

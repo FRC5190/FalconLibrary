@@ -2,6 +2,7 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
+/* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
 import org.apache.commons.math3.stat.regression.SimpleRegression
 import org.ghrobotics.lib.commands.FalconCommand
@@ -135,7 +136,6 @@ object CharacterizationCalculator {
         return regression.slope
     }
 
-
     fun getDifferentialDriveConstants(
         wheelRadius: Length,
         trackWidthRadius: Length,
@@ -188,7 +188,6 @@ object CharacterizationCalculator {
          */
         val torque = robotMass.value * wheelRadius.value * linearAcceleration
 
-
         /**
          * Assume the same amount of torque is available in the angular case.
          * Now compute the moment of inertia required for the measured angular acceleration.
@@ -205,8 +204,10 @@ object CharacterizationCalculator {
     }
 
     data class CharacterizationData(
-        val linearKv: Double, val linearKs: Double, val linearKa: Double, val angularKa: Double,
+        val linearKv: Double,
+        val linearKs: Double,
+        val linearKa: Double,
+        val angularKa: Double,
         val momentOfInertia: Double
     )
-
 }

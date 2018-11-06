@@ -178,7 +178,6 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     fun withinRegion(region: Source<Rectangle2d>) =
         ConditionCommand { region().contains(localization.robotPosition.translation) }
 
-
     open fun characterizeDrive(wheelRadius: Length, trackWidthRadius: Length, robotMass: Mass): FalconCommandGroup =
         sequential {
             // ArrayLists to store raw data
