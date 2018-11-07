@@ -162,18 +162,19 @@ object CharacterizationCalculator {
         val angularKa = computeKa(angularAccelerationData, angularVelocityData)
 
         /**
-         * Get a value for the linear acceleration by finding the maximum acceleration during the time interval.
+         * Get a value for the linear acceleration by finding the average acceleration during the time interval.
          * Convert the radians per second to meters per second to use in the torque calculation.
          *
          * v = omega * r
          */
         val linearAcceleration =
-            linearAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec * wheelRadius.value
+            linearAccelerationData.sumByDouble { it.radPerSecPerSec } * wheelRadius.value / linearAccelerationData.size
 
         /**
          * Get a value for the average of the absolute value of the angular accelerations for each wheel.
          */
-        val avgAbsAngularAcceleration = angularAccelerationData.maxBy { it.radPerSecPerSec }!!.radPerSecPerSec
+        val avgAbsAngularAcceleration =
+            angularAccelerationData.sumByDouble { it.radPerSecPerSec } / angularAccelerationData.size
 
         /**
          * Next, use the average of the absolute value of the two wheel accelerations to compute the average
