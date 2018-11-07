@@ -39,9 +39,10 @@ publishing {
         maven(MavenPublication) {
             groupId = 'org.ghrobotics.lib'
             artifactId = 'FalconLibrary'
-            version = '2018.11.06'
+            version = '2018.11.2'
 
             from components.java
+            
         }
     }
 }

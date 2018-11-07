@@ -188,11 +188,15 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
 
             +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, false, linearVelocityData)
             +DelayCommand(2.second)
+            +InstantRunnableCommand { println("Finished 1 ") }
             +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, false, linearAccelerationData)
             +DelayCommand(2.second)
-            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true, angularVelocityData)
+            +InstantRunnableCommand { println("Finished 2 ") }
+            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true, angularVelocityData).withTimeout(3.0.second)
             +DelayCommand(2.second)
+            +InstantRunnableCommand { println("Finished 3 ") }
             +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, true, angularAccelerationData)
+            +InstantRunnableCommand { println("Finished 4 ") }
 
             +InstantRunnableCommand {
                 System.out.println(
@@ -205,6 +209,12 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
                         linearAccelerationData = linearAccelerationData,
                         angularAccelerationData = angularAccelerationData
                     )
+                )
+            }
+
+            +InstantRunnableCommand {
+                println(
+                        linearAccelerationData
                 )
             }
         }

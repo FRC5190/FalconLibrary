@@ -28,6 +28,10 @@ class CharacterizeVelocityCommand(
         executeFrequency = 1 // Hertz
     }
 
+    override suspend fun initialize() {
+        commandedVoltage = 0.0
+    }
+
     override suspend fun execute() {
         val speed =
             (driveSubsystem.leftMaster.sensorVelocity.value.absoluteValue +
@@ -43,6 +47,8 @@ class CharacterizeVelocityCommand(
             ControlMode.PercentOutput,
             if (turnInPlace) -1.0 else 1.0 * commandedVoltage / 12.0
         )
+
+        commandedVoltage += 0.25
     }
 
     override suspend fun dispose() {
@@ -56,7 +62,7 @@ class CharacterizeAccelerationCommand(
     private val wheelRadius: Length,
     private val turnInPlace: Boolean,
     private val dataReference: ArrayList<CharacterizeAccelerationCommand.Data>,
-    private val voltage: Double = 10.0,
+    private val voltage: Double = 6.0,
     timeout: Time = 2.second
 ) : FalconCommand(driveSubsystem) {
 
@@ -88,7 +94,9 @@ class CharacterizeAccelerationCommand(
         val acceleration = (speed - previousSpeed) / dt.second
         previousSpeed = speed
 
-        dataReference.add(CharacterizeAccelerationCommand.Data(voltage, speed, acceleration))
+        if (acceleration.isFinite()) {
+            dataReference.add(CharacterizeAccelerationCommand.Data(voltage, speed, acceleration))
+        }
 
         driveSubsystem.leftMaster.set(ControlMode.PercentOutput, voltage / 12.0)
         driveSubsystem.rightMaster.set(ControlMode.PercentOutput, if (turnInPlace) -1.0 else 1.0 * voltage / 12.0)
