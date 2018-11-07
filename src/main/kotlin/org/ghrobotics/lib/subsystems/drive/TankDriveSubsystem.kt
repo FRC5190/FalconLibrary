@@ -2,6 +2,7 @@ package org.ghrobotics.lib.subsystems.drive
 
 /* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.*
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
@@ -214,13 +215,13 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
 
             +InstantRunnableCommand {
                 println(
-                        linearAccelerationData
+                    linearAccelerationData
                 )
             }
         }
 
     companion object {
-        const val kQuickStopThreshold = 0.2
-        const val kQuickStopAlpha = 0.1
+        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
+        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
     }
 }
