@@ -1,63 +1,71 @@
 package org.ghrobotics.lib.mathematics.units
 
-val Number.second get() = Time(toDouble())
-val Number.minute get() = (toDouble() * 60).second
-val Number.hour get() = (toDouble() * 60).minute
-val Number.day get() = (toDouble() * 24).hour
-val Number.week get() = (toDouble() * 7).day
-val Number.moment get() = (toDouble() * 90.0).second
+val Number.minute get() = Time(toDouble() * SITimeConstants.kMinuteToSecond)
+val Number.hour get() = Time(toDouble() * SITimeConstants.kHourToSecond)
+val Number.day get() = Time(toDouble() * SITimeConstants.kDayToSecond)
+val Number.week get() = Time(toDouble() * SITimeConstants.kWeekToSecond)
+val Number.moment get() = Time(toDouble() * SITimeConstants.kMomentToSecond)
 
-val Number.yottasecond get() = (toDouble() / 1e-24).second
-val Number.zettasecond get() = (toDouble() / 1e-21).second
-val Number.exasecond get() = (toDouble() / 1e-18).second
-val Number.petasecond get() = (toDouble() / 1e-15).second
-val Number.terasecond get() = (toDouble() / 1e-12).second
-val Number.gigasecond get() = (toDouble() / 1e-9).second
-val Number.megasecond get() = (toDouble() / 1e-6).second
-val Number.kilosecond get() = (toDouble() / 0.001).second
-val Number.hectosecond get() = (toDouble() / 0.01).second
-val Number.decasecond get() = (toDouble() / 0.1).second
-val Number.decisecond get() = (toDouble() / 10).second
-val Number.centisecond get() = (toDouble() / 100).second
-val Number.millisecond get() = (toDouble() / 1000).second
-val Number.microsecond get() = (toDouble() / 1000000).second
-val Number.nanosecond get() = (toDouble() / 1e+9).second
-val Number.picosecond get() = (toDouble() / 1e+12).second
-val Number.femtosecond get() = (toDouble() / 1e+15).second
-val Number.attosecond get() = (toDouble() / 1e+18).second
-val Number.zeptosecond get() = (toDouble() / 1e+21).second
-val Number.yoctosecond get() = (toDouble() / 1e+24).second
+val Number.yottasecond get() = Time(toDouble() * SIConstants.kYotta)
+val Number.zettasecond get() = Time(toDouble() * SIConstants.kZetta)
+val Number.exasecond get() = Time(toDouble() * SIConstants.kExa)
+val Number.petasecond get() = Time(toDouble() * SIConstants.kPeta)
+val Number.terasecond get() = Time(toDouble() * SIConstants.kTera)
+val Number.gigasecond get() = Time(toDouble() * SIConstants.kGiga)
+val Number.megasecond get() = Time(toDouble() * SIConstants.kMega)
+val Number.kilosecond get() = Time(toDouble() * SIConstants.kKilo)
+val Number.hectosecond get() = Time(toDouble() * SIConstants.kHecto)
+val Number.decasecond get() = Time(toDouble() * SIConstants.kDeca)
+val Number.second get() = Time(toDouble())
+val Number.decisecond get() = Time(toDouble() * SIConstants.kDeci)
+val Number.centisecond get() = Time(toDouble() * SIConstants.kCenti)
+val Number.millisecond get() = Time(toDouble() * SIConstants.kMilli)
+val Number.microsecond get() = Time(toDouble() * SIConstants.kMicro)
+val Number.nanosecond get() = Time(toDouble() * SIConstants.kNano)
+val Number.picosecond get() = Time(toDouble() * SIConstants.kPico)
+val Number.femtosecond get() = Time(toDouble() * SIConstants.kFemto)
+val Number.attosecond get() = Time(toDouble() * SIConstants.kAtto)
+val Number.zeptosecond get() = Time(toDouble() * SIConstants.kZepto)
+val Number.yoctosecond get() = Time(toDouble() * SIConstants.kYocto)
+
+object SITimeConstants {
+    const val kMinuteToSecond = 60
+    const val kHourToSecond = kMinuteToSecond * 60
+    const val kDayToSecond = kHourToSecond * 24
+    const val kWeekToSecond = kDayToSecond * 7
+    const val kMomentToSecond = 90
+}
 
 class Time(
     override val value: Double
 ) : SIUnit<Time> {
-    val second get() = value
-    val minute get() = second / 60
-    val hour get() = minute / 60
-    val day get() = hour / 24
-    val week get() = day / 7
-    val moment get() = second / 90
+    val minute get() = value / SITimeConstants.kMinuteToSecond
+    val hour get() = value / SITimeConstants.kHourToSecond
+    val day get() = value / SITimeConstants.kDayToSecond
+    val week get() = value / SITimeConstants.kWeekToSecond
+    val moment get() = value / SITimeConstants.kMomentToSecond
 
-    val yottasecond get() = value * 1e-24
-    val zettasecond get() = value * 1e-21
-    val exasecond get() = value * 1e-18
-    val petasecond get() = value * 1e-15
-    val terasecond get() = value * 1e-12
-    val gigasecond get() = value * 1e-9
-    val megasecond get() = value * 1e-6
-    val kilosecond get() = value * 0.001
-    val hectosecond get() = value * 0.01
-    val decasecond get() = value * 0.1
-    val decisecond get() = value * 10
-    val centisecond get() = value * 100
-    val millisecond get() = value * 1000
-    val microsecond get() = value * 1000000
-    val nanosecond get() = value * 1e+9
-    val picosecond get() = value * 1e+12
-    val femtosecond get() = value * 1e+15
-    val attosecond get() = value * 1e+18
-    val zeptosecond get() = value * 1e+21
-    val yoctosecond get() = value * 1e+24
+    val yottasecond get() = value / SIConstants.kYotta
+    val zettasecond get() = value / SIConstants.kZetta
+    val exasecond get() = value / SIConstants.kExa
+    val petasecond get() = value / SIConstants.kPeta
+    val terasecond get() = value / SIConstants.kTera
+    val gigasecond get() = value / SIConstants.kGiga
+    val megasecond get() = value / SIConstants.kMega
+    val kilosecond get() = value / SIConstants.kKilo
+    val hectosecond get() = value / SIConstants.kHecto
+    val decasecond get() = value / SIConstants.kDeca
+    val second get() = value
+    val decisecond get() = value / SIConstants.kDeci
+    val centisecond get() = value / SIConstants.kCenti
+    val millisecond get() = value / SIConstants.kMilli
+    val microsecond get() = value / SIConstants.kMicro
+    val nanosecond get() = value / SIConstants.kNano
+    val picosecond get() = value / SIConstants.kPico
+    val femtosecond get() = value / SIConstants.kFemto
+    val attosecond get() = value / SIConstants.kAtto
+    val zeptosecond get() = value / SIConstants.kZepto
+    val yoctosecond get() = value / SIConstants.kYocto
 
     override fun createNew(newBaseValue: Double) = Time(newBaseValue)
 }

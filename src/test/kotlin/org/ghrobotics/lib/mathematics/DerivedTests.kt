@@ -2,7 +2,9 @@ package org.ghrobotics.lib.mathematics
 
 /* ktlint-disable no-wildcard-imports */
 import org.ghrobotics.lib.mathematics.units.amp
-import org.ghrobotics.lib.mathematics.units.derivedunits.*
+import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerMinute
+import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerSecond
+import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
@@ -14,7 +16,7 @@ class DerivedTests {
         val one = 5.meter
         val two = 2.second
 
-        val three: Velocity = one / two
+        val three = one / two
 
         assert(three.value == 2.5)
     }
@@ -24,7 +26,7 @@ class DerivedTests {
         val one = 5.meter
         val two = 2.second
 
-        val three: Velocity = one / two
+        val three = one / two
 
         val four = three.feetPerMinute
 
@@ -33,17 +35,17 @@ class DerivedTests {
 
     @Test
     fun testAcceleration() {
-        val one: Acceleration = 10.meter / 2.second / 4.second
+        val one = 10.meter / 2.second / 4.second
 
         assert(one.value == 1.25)
     }
 
     @Test
     fun testAccelerationToVelocity() {
-        val one: Acceleration = 10.meter / 1.6.second / 2.second
+        val one = 10.meter / 1.6.second / 2.second
         val two = 5.second
 
-        val three: Velocity = one * two
+        val three = one * two
 
         val four = three.feetPerSecond
 
@@ -52,7 +54,7 @@ class DerivedTests {
 
     @Test
     fun testVelocityToLength() {
-        val one: Velocity = 5.meter / 2.second
+        val one = 5.meter / 2.second
         val two = 6.second
 
         val three = one * two
@@ -63,8 +65,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityAndAccelerationToTime() {
-        val one: Velocity = 22.meter / 2.second
-        val two: Acceleration = 18.meter / 0.5.second / 4.second
+        val one = 22.meter / 2.second
+        val two = 18.meter / 0.5.second / 4.second
 
         val three = one / two
 
@@ -73,8 +75,8 @@ class DerivedTests {
 
     @Test
     fun testAccelerationDividedByAcceleration() {
-        val one: Acceleration = 33.meter / 1.second / 1.second
-        val two: Acceleration = 22.meter / 2.second / 1.second
+        val one = 33.meter / 1.second / 1.second
+        val two = 22.meter / 2.second / 1.second
 
         val three = one / two
 
@@ -83,8 +85,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityDividedByVelocity() {
-        val one: Velocity = 33.meter / 1.second
-        val two: Velocity = 22.meter / 2.second
+        val one = 33.meter / 1.second
+        val two = 22.meter / 2.second
 
         val three = one / two
 
@@ -96,7 +98,7 @@ class DerivedTests {
         val one = 1.volt
         val two = 5.amp
 
-        val three: Watt = one * two
+        val three = one * two
 
         assert(three.value epsilonEquals 5.0)
     }
@@ -106,7 +108,7 @@ class DerivedTests {
         val one = 2.volt
         val two = 5.amp
 
-        val three: Ohm = one / two
+        val three = one / two
 
         assert(three.value epsilonEquals 0.4)
     }

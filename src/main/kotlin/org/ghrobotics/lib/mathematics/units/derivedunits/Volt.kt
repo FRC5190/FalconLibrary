@@ -1,19 +1,38 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
 /* ktlint-disable no-wildcard-imports */
-import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.fractions.SIFrac33
-import org.ghrobotics.lib.mathematics.units.fractions.SIFrac34
-import org.ghrobotics.lib.mathematics.units.fractions.SIFrac35
+import org.ghrobotics.lib.mathematics.units.ElectricCurrent
+import org.ghrobotics.lib.mathematics.units.SIConstants
+import org.ghrobotics.lib.mathematics.units.SIValue
 
-val Number.volt: Volt
-    get() = (this.kilogram * 1.meter * 1.meter) / (1.second * 1.second * 1.second * 1.amp)
+val Number.volt get() = Volt(toDouble())
 
-typealias Volt = SIFrac34<Mass, Length, Length,
-        Time, Time, Time, ElectricCurrent>
+val Number.yottavolt get() = Volt(toDouble() * SIConstants.kYotta)
+val Number.zettavolt get() = Volt(toDouble() * SIConstants.kZetta)
+val Number.exavolt get() = Volt(toDouble() * SIConstants.kExa)
+val Number.petavolt get() = Volt(toDouble() * SIConstants.kPeta)
+val Number.teravolt get() = Volt(toDouble() * SIConstants.kTera)
+val Number.gigavolt get() = Volt(toDouble() * SIConstants.kGiga)
+val Number.megavolt get() = Volt(toDouble() * SIConstants.kMega)
+val Number.kilovolt get() = Volt(toDouble() * SIConstants.kKilo)
+val Number.hectovolt get() = Volt(toDouble() * SIConstants.kHecto)
+val Number.decavolt get() = Volt(toDouble() * SIConstants.kDeca)
+val Number.decivolt get() = Volt(toDouble() * SIConstants.kDeci)
+val Number.centivolt get() = Volt(toDouble() * SIConstants.kCenti)
+val Number.millivolt get() = Volt(toDouble() * SIConstants.kMilli)
+val Number.microvolt get() = Volt(toDouble() * SIConstants.kMicro)
+val Number.nanovolt get() = Volt(toDouble() * SIConstants.kNano)
+val Number.picovolt get() = Volt(toDouble() * SIConstants.kPico)
+val Number.femtovolt get() = Volt(toDouble() * SIConstants.kFemto)
+val Number.attovolt get() = Volt(toDouble() * SIConstants.kAtto)
+val Number.zeptovolt get() = Volt(toDouble() * SIConstants.kZepto)
+val Number.yoctovolt get() = Volt(toDouble() * SIConstants.kYocto)
 
-typealias Watt = SIFrac33<Mass, Length, Length,
-        Time, Time, Time>
+class Volt(
+    override val value: Double
+) : SIValue<Volt> {
+    override fun createNew(newValue: Double) = Volt(value)
 
-typealias Ohm = SIFrac35<Mass, Length, Length,
-        Time, Time, Time, ElectricCurrent, ElectricCurrent>
+    operator fun times(other: ElectricCurrent) = Watt(value * other.value)
+    operator fun div(other: ElectricCurrent) = Ohm(value / other.value)
+}
