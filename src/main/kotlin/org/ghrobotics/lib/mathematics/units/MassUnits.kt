@@ -1,53 +1,51 @@
 package org.ghrobotics.lib.mathematics.units
 
+val Number.yottagram get() = Mass(toDouble() * SIConstants.kYottaOffsetKilo)
+val Number.zettagram get() = Mass(toDouble() * SIConstants.kZettaOffsetKilo)
+val Number.exagram get() = Mass(toDouble() * SIConstants.kExaOffsetKilo)
+val Number.petagram get() = Mass(toDouble() * SIConstants.kPetaOffsetKilo)
+val Number.teragram get() = Mass(toDouble() * SIConstants.kTeraOffsetKilo)
+val Number.gigagram get() = Mass(toDouble() * SIConstants.kGigaOffsetKilo)
+val Number.megagram get() = Mass(toDouble() * SIConstants.kMegaOffsetKilo)
 val Number.kilogram get() = Mass(toDouble())
-
-val Number.yottagram get() = (toDouble() / 1e-21).kilogram
-val Number.zettagram get() = (toDouble() / 1e-18).kilogram
-val Number.exagram get() = (toDouble() / 1e-15).kilogram
-val Number.petagram get() = (toDouble() / 1e-12).kilogram
-val Number.teragram get() = (toDouble() / 1e-9).kilogram
-val Number.gigagram get() = (toDouble() / 1e-6).kilogram
-val Number.megagram get() = (toDouble() / 1e-3).kilogram
-val Number.gram get() = (toDouble() / 1000).kilogram
-val Number.hectogram get() = (toDouble() / 10).kilogram
-val Number.decagram get() = (toDouble() / 100).kilogram
-val Number.decigram get() = (toDouble() / 10000).kilogram
-val Number.centigram get() = (toDouble() / 100000).kilogram
-val Number.milligram get() = (toDouble() / 1000000).kilogram
-val Number.microgram get() = (toDouble() / 1e+9).kilogram
-val Number.nanogram get() = (toDouble() / 1e+12).kilogram
-val Number.picogram get() = (toDouble() / 1e+15).kilogram
-val Number.femtogram get() = (toDouble() / 1e+18).kilogram
-val Number.attogram get() = (toDouble() / 1e+21).kilogram
-val Number.zeptogram get() = (toDouble() / 1e+24).kilogram
-val Number.yoctogram get() = (toDouble() / 1e+27).kilogram
+val Number.hectogram get() = Mass(toDouble() * SIConstants.kHectoOffsetKilo)
+val Number.decagram get() = Mass(toDouble() * SIConstants.kDecaOffsetKilo)
+val Number.gram get() = Mass(toDouble() * SIConstants.kBaseOffsetKilo)
+val Number.decigram get() = Mass(toDouble() * SIConstants.kDeciOffsetKilo)
+val Number.centigram get() = Mass(toDouble() * SIConstants.kCentiOffsetKilo)
+val Number.milligram get() = Mass(toDouble() * SIConstants.kMilliOffsetKilo)
+val Number.microgram get() = Mass(toDouble() * SIConstants.kMicroOffsetKilo)
+val Number.nanogram get() = Mass(toDouble() * SIConstants.kNanoOffsetKilo)
+val Number.picogram get() = Mass(toDouble() * SIConstants.kPicoOffsetKilo)
+val Number.femtogram get() = Mass(toDouble() * SIConstants.kFemtoOffsetKilo)
+val Number.attogram get() = Mass(toDouble() * SIConstants.kAttoOffsetKilo)
+val Number.zeptogram get() = Mass(toDouble() * SIConstants.kZeptoOffsetKilo)
+val Number.yoctogram get() = Mass(toDouble() * SIConstants.kYoctoOffsetKilo)
 
 class Mass(
     override val value: Double
 ) : SIUnit<Mass> {
+    val yottagram get() = value / SIConstants.kYottaOffsetKilo
+    val zettagram get() = value / SIConstants.kZettaOffsetKilo
+    val exagram get() = value / SIConstants.kExaOffsetKilo
+    val petagram get() = value / SIConstants.kPetaOffsetKilo
+    val teragram get() = value / SIConstants.kTeraOffsetKilo
+    val gigagram get() = value / SIConstants.kGigaOffsetKilo
+    val megagram get() = value / SIConstants.kMegaOffsetKilo
     val kilogram get() = value
-
-    val yottagram get() = value * 1e-21
-    val zettagram get() = value * 1e-18
-    val exagram get() = value * 1e-15
-    val petagram get() = value * 1e-12
-    val teragram get() = value * 1e-9
-    val gigagram get() = value * 1e-6
-    val megagram get() = value * 1e-3
-    val gram get() = value / 1000
-    val hectogram get() = value * 10
-    val decagram get() = value * 100
-    val decigram get() = value * 10000
-    val centigram get() = value * 100000
-    val milligram get() = value * 1000000
-    val microgram get() = value * 1e+9
-    val nanogram get() = value * 1e+12
-    val picogram get() = value * 1e+15
-    val femtogram get() = value * 1e+18
-    val attogram get() = value * 1e+21
-    val zeptogram get() = value * 1e+24
-    val yoctogram get() = value * 1e+27
+    val hectogram get() = value / SIConstants.kHectoOffsetKilo
+    val decagram get() = value / SIConstants.kDecaOffsetKilo
+    val gram get() = value / SIConstants.kBaseOffsetKilo
+    val decigram get() = value / SIConstants.kDeciOffsetKilo
+    val centigram get() = value / SIConstants.kCentiOffsetKilo
+    val milligram get() = value / SIConstants.kMilliOffsetKilo
+    val microgram get() = value / SIConstants.kMicroOffsetKilo
+    val nanogram get() = value / SIConstants.kNanoOffsetKilo
+    val picogram get() = value / SIConstants.kPicoOffsetKilo
+    val femtogram get() = value / SIConstants.kFemtoOffsetKilo
+    val attogram get() = value / SIConstants.kAttoOffsetKilo
+    val zeptogram get() = value / SIConstants.kZeptoOffsetKilo
+    val yoctogram get() = value / SIConstants.kYoctoOffsetKilo
 
     override fun createNew(newBaseValue: Double) = Mass(newBaseValue)
 }

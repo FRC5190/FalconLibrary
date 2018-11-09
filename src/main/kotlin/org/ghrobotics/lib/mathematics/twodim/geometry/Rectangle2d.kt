@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
+import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.utils.safeRangeTo
 import kotlin.math.max
@@ -17,6 +18,8 @@ data class Rectangle2d(
     val bottomLeft = Translation2d(xRaw, yRaw)
     val bottomRight = Translation2d(xRaw + wRaw, yRaw)
 
+    val center = Translation2d(xRaw + wRaw / 2, yRaw + hRaw / 2)
+
     val maxCorner = topRight
     val minCorner = bottomLeft
 
@@ -33,32 +36,30 @@ data class Rectangle2d(
         xRange: ClosedFloatingPointRange<Double>,
         yRange: ClosedFloatingPointRange<Double>
     ) : this(
-            xRange.start,
-            yRange.start,
-            xRange.endInclusive - xRange.start,
-            yRange.endInclusive - yRange.start
+        xRange.start,
+        yRange.start,
+        xRange.endInclusive - xRange.start,
+        yRange.endInclusive - yRange.start
     )
 
     constructor(one: Translation2d, two: Translation2d) : this(
-            one.xRaw.safeRangeTo(two.xRaw),
-            one.yRaw.safeRangeTo(two.yRaw)
+        one.xRaw.safeRangeTo(two.xRaw),
+        one.yRaw.safeRangeTo(two.yRaw)
     )
 
     fun isIn(r: Rectangle2d) =
-            xRaw < r.xRaw + r.wRaw && xRaw + wRaw > r.xRaw && yRaw < r.yRaw + r.hRaw && yRaw + hRaw > r.yRaw
+        xRaw < r.xRaw + r.wRaw && xRaw + wRaw > r.xRaw && yRaw < r.yRaw + r.hRaw && yRaw + hRaw > r.yRaw
 
     fun isWithin(r: Rectangle2d) = r.xRaw in xRaw..(xRaw + wRaw - r.wRaw) && r.yRaw in yRaw..(yRaw + hRaw - r.hRaw)
 
     operator fun contains(p: Translation2d) = p.xRaw in xRaw..(xRaw + wRaw) && p.yRaw in yRaw..(yRaw + hRaw)
 
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation.xRaw == 0.0 && translation.yRaw == 0.0) return false
+        if (translation.xRaw epsilonEquals 0.0 && translation.yRaw epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
-                if (translation.xRaw > 0) rectangle.xRaw else rectangle.xRaw + translation.xRaw,
-                if (translation.yRaw > 0) rectangle.xRaw else rectangle.xRaw + translation.yRaw,
-                if (translation.xRaw > 0) translation.xRaw + rectangle.wRaw else rectangle.wRaw - translation.xRaw,
-                if (translation.yRaw > 0) translation.yRaw + rectangle.hRaw else rectangle.hRaw - translation.yRaw
+            min(rectangle.xRaw, rectangle.xRaw + translation.xRaw)..max(rectangle.xRaw + rectangle.wRaw, rectangle.xRaw + rectangle.wRaw + translation.xRaw),
+            min(rectangle.yRaw, rectangle.yRaw + translation.yRaw)..max(rectangle.yRaw + rectangle.hRaw, rectangle.yRaw + rectangle.hRaw + translation.yRaw)
         )
         //println(boxRect)
         if (!boxRect.isIn(this)) return false
@@ -87,14 +88,14 @@ data class Rectangle2d(
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation.xRaw == 0.0) {
+        if (translation.xRaw epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
             xEntry = xInvEntry / translation.xRaw
             xExit = xInvExit / translation.xRaw
         }
-        if (translation.yRaw == 0.0) {
+        if (translation.yRaw epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {

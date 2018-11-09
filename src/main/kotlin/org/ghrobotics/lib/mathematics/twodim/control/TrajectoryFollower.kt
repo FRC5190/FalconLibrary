@@ -12,7 +12,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.DefaultTrajectoryGenerat
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.Volt
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
@@ -83,7 +83,12 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         return outputFromWheelStates(drive, dynamics.wheelVelocity, dynamics.voltage)
     }
 
-    data class Output(val lSetpoint: Velocity, val rSetpoint: Velocity, val lfVoltage: Volt, val rfVoltage: Volt)
+    data class Output(
+        val lSetpoint: LinearVelocity,
+        val rSetpoint: LinearVelocity,
+        val lfVoltage: Volt,
+        val rfVoltage: Volt
+    )
 
     companion object {
         private fun outputFromWheelStates(

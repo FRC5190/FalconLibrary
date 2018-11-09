@@ -15,7 +15,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.meter
 
@@ -29,7 +29,7 @@ class VelocityLimitRegionConstraint(
 
     constructor(
         region: Rectangle2d,
-        velocityLimit: Velocity
+        velocityLimit: LinearVelocity
     ) : this(
             region,
             velocityLimit.value
