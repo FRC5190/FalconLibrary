@@ -3,16 +3,20 @@ package org.ghrobotics.lib.subsystems.drive
 /* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
 import kotlinx.coroutines.runBlocking
-import org.ghrobotics.lib.commands.*
+import org.ghrobotics.lib.commands.ConditionCommand
+import org.ghrobotics.lib.commands.FalconCommandGroup
+import org.ghrobotics.lib.commands.FalconSubsystem
+import org.ghrobotics.lib.commands.sequential
+import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Mass
-import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.sensors.AHRSSensor
+import org.ghrobotics.lib.subsystems.drive.characterization.CharacterizeAccelerationCommand
+import org.ghrobotics.lib.subsystems.drive.characterization.CharacterizeVelocityCommand
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -178,45 +182,24 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     fun withinRegion(region: Source<Rectangle2d>) =
         ConditionCommand { region().contains(localization.robotPosition.translation) }
 
-    open fun characterizeDrive(wheelRadius: Length, trackWidthRadius: Length, robotMass: Mass): FalconCommandGroup =
+    open fun characterizeDrive(wheelRadius: Length): FalconCommandGroup =
         sequential {
-            // ArrayLists to store raw data
-            val linearVelocityData = ArrayList<CharacterizeVelocityCommand.Data>()
-            val angularVelocityData = ArrayList<CharacterizeVelocityCommand.Data>()
-            val linearAccelerationData = ArrayList<CharacterizeAccelerationCommand.Data>()
-            val angularAccelerationData = ArrayList<CharacterizeAccelerationCommand.Data>()
-
-            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, false, linearVelocityData)
-            +DelayCommand(2.second)
-            +InstantRunnableCommand { println("Finished 1 ") }
-            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, false, linearAccelerationData)
-            +DelayCommand(2.second)
-            +InstantRunnableCommand { println("Finished 2 ") }
-            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true, angularVelocityData).withTimeout(3.0.second)
-            +DelayCommand(2.second)
-            +InstantRunnableCommand { println("Finished 3 ") }
-            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, true, angularAccelerationData)
-            +InstantRunnableCommand { println("Finished 4 ") }
-
-            +InstantRunnableCommand {
-                System.out.println(
-                    CharacterizationCalculator.getDifferentialDriveConstants(
-                        wheelRadius = wheelRadius,
-                        trackWidthRadius = trackWidthRadius,
-                        robotMass = robotMass,
-                        linearVelocityData = linearVelocityData,
-                        angularVelocityData = angularVelocityData,
-                        linearAccelerationData = linearAccelerationData,
-                        angularAccelerationData = angularAccelerationData
-                    )
-                )
+            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +ConditionCommand {
+                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
+                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-
-            +InstantRunnableCommand {
-                println(
-                        linearAccelerationData
-                )
+            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +ConditionCommand {
+                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
+                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
+            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true)
+            +ConditionCommand {
+                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
+                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+            }
+            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, true)
         }
 
     companion object {
