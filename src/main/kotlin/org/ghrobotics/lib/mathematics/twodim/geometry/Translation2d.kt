@@ -13,87 +13,61 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
-fun Rotation2d.toTranslation() = Translation2d(cos, sin)
+fun Rotation2d.toTranslation() = Translation2d(cos.meter, sin.meter)
 
 data class Translation2d(
-    var xRaw: Double = 0.0,
-    var yRaw: Double = 0.0
+    val x: Length = 0.meter,
+    val y: Length = 0.meter
 ) : VaryInterpolatable<Translation2d> {
 
-    var x: Length
-        get() = xRaw.meter
-        set(value) {
-            xRaw = value.meter
-        }
-
-    var y: Length
-        get() = yRaw.meter
-        set(value) {
-            yRaw = value.meter
-        }
-
-    constructor(
-        x: Length,
-        y: Length
-    ) : this(
-            x.meter,
-            y.meter
-    )
-
-    val norm
-        get() = Math.hypot(xRaw, yRaw)
+    val norm get() = Math.hypot(x.value, y.value).meter
 
     override fun interpolate(endValue: Translation2d, t: Double) = when {
         t <= 0 -> this
         t >= 1 -> endValue
         else -> Translation2d(
-                xRaw.lerp(endValue.xRaw, t),
-                yRaw.lerp(endValue.yRaw, t)
+            x.lerp(endValue.x, t),
+            y.lerp(endValue.y, t)
         )
     }
 
-    override fun distance(other: Translation2d) = (-this + other).norm
+    override fun distance(other: Translation2d) = (-this + other).norm.value
 
     operator fun plus(other: Translation2d) = Translation2d(
-            xRaw + other.xRaw,
-            yRaw + other.yRaw
+        x + other.x,
+        y + other.y
     )
 
     operator fun minus(other: Translation2d) = Translation2d(
-            xRaw - other.xRaw,
-            yRaw - other.yRaw
+        x - other.x,
+        y - other.y
     )
 
     operator fun times(other: Rotation2d) = Translation2d(
-            xRaw * other.cos - yRaw * other.sin,
-            xRaw * other.sin + yRaw * other.cos
+        x * other.cos - y * other.sin,
+        x * other.sin + y * other.cos
     )
 
     operator fun times(other: Number): Translation2d {
         val factor = other.toDouble()
         return Translation2d(
-                xRaw * factor,
-                yRaw * factor
+            x * factor,
+            y * factor
         )
     }
 
     operator fun div(other: Number): Translation2d {
         val factor = other.toDouble()
         return Translation2d(
-                xRaw / factor,
-                yRaw / factor
+            x / factor,
+            y / factor
         )
     }
 
-    operator fun unaryMinus() = Translation2d(-xRaw, -yRaw)
-
-    companion object {
-        fun cross(a: Translation2d, b: Translation2d) = a.xRaw * b.yRaw - a.yRaw * b.xRaw
-    }
+    operator fun unaryMinus() = Translation2d(-x, -y)
 }

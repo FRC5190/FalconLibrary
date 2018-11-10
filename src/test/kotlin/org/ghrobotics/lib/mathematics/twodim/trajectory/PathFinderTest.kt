@@ -38,12 +38,12 @@ class PathFinderTest {
                 Pose2d(1.54.feet, 23.234167.feet, 0.degree),
                 Pose2d(23.7.feet, (27 - 20.2).feet, 0.degree),
                 Rectangle2d(
-                    Translation2d(0.0, 0.0),
+                    Translation2d(0.feet, 0.feet),
                     Translation2d(10.feet, 10.feet)
                 )
             )!!
             println(path.joinToString(separator = "\n") {
-                "${it.translation.xRaw}\t${it.translation.yRaw}\t${it.rotation.degree}"
+                "${it.translation.x.value}\t${it.translation.y.value}\t${it.rotation.degree}"
             })
         }
         println("Generated Nodes in $nodeCreationTime ms")

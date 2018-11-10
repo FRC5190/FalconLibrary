@@ -1,12 +1,13 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.units.derivedunits.AngularAcceleration
 
-class AngularAccelerationConstraint(val maxAngularAcceleration: Double) : TimingConstraint<Pose2dWithCurvature> {
+class AngularAccelerationConstraint(
+    private val maxAngularAcceleration: AngularAcceleration
+) : TimingConstraint<Pose2dWithCurvature> {
 
-    override fun getMaxVelocity(state: Pose2dWithCurvature): Double {
-        return Double.POSITIVE_INFINITY
-    }
+    override fun getMaxVelocity(state: Pose2dWithCurvature) = Double.POSITIVE_INFINITY
 
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,
@@ -14,7 +15,7 @@ class AngularAccelerationConstraint(val maxAngularAcceleration: Double) : Timing
     ): TimingConstraint.MinMaxAcceleration {
         // a = alpha * r
         // a * curvature = alpha
-        val maxAbsAcceleration = maxAngularAcceleration / state.curvature.curvature
+        val maxAbsAcceleration = maxAngularAcceleration.value / state.curvature.curvature.value
         return TimingConstraint.MinMaxAcceleration(-maxAbsAcceleration, maxAbsAcceleration)
     }
 }

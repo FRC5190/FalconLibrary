@@ -13,22 +13,14 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.absoluteValue
 
 class CentripetalAccelerationConstraint(
-    val mMaxCentripetalAccelRaw: Double
+    private val mMaxCentripetalAcceleration: LinearAcceleration
 ) : TimingConstraint<Pose2dWithCurvature> {
 
-    val mMaxCentripetalAccel
-        get() = mMaxCentripetalAccelRaw.meter.acceleration
-
-    constructor(mMaxCentripetalAccel: LinearAcceleration) :
-            this(mMaxCentripetalAccel.value)
-
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
-            Math.sqrt((mMaxCentripetalAccelRaw / state.curvature.curvature).absoluteValue)
+        Math.sqrt((mMaxCentripetalAcceleration.value / state.curvature.curvature.value).absoluteValue)
 
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,

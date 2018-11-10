@@ -1,65 +1,70 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.utils.safeRangeTo
+import org.ghrobotics.lib.mathematics.max
+import org.ghrobotics.lib.mathematics.min
+import org.ghrobotics.lib.mathematics.units.Length
 import kotlin.math.max
 import kotlin.math.min
 
+@Suppress("FunctionName")
+fun Rectangle2d(
+    one: Translation2d,
+    two: Translation2d
+): Rectangle2d {
+    val minX = min(one.x, two.x)
+    val minY = min(one.y, two.y)
+    val maxX = max(one.x, two.x)
+    val maxY = max(one.y, two.y)
+    return Rectangle2d(
+        minX, minY,
+        maxX - minX, maxY - minY
+    )
+}
+
+fun Rectangle2d(
+    vararg pointsToInclude: Translation2d
+): Rectangle2d {
+    val minX = pointsToInclude.minBy { it.x }!!.x
+    val minY = pointsToInclude.minBy { it.y }!!.y
+    val maxX = pointsToInclude.maxBy { it.x }!!.x
+    val maxY = pointsToInclude.maxBy { it.y }!!.y
+    return Rectangle2d(
+        minX, minY,
+        maxX - minX, maxY - minY
+    )
+}
+
 data class Rectangle2d(
-    val xRaw: Double,
-    val yRaw: Double,
-    val wRaw: Double,
-    val hRaw: Double
+    val x: Length,
+    val y: Length,
+    val w: Length,
+    val h: Length
 ) {
 
-    val topLeft = Translation2d(xRaw, yRaw + hRaw)
-    val topRight = Translation2d(xRaw + wRaw, yRaw + hRaw)
-    val bottomLeft = Translation2d(xRaw, yRaw)
-    val bottomRight = Translation2d(xRaw + wRaw, yRaw)
+    val topLeft = Translation2d(x, y + h)
+    val topRight = Translation2d(x + w, y + h)
+    val bottomLeft = Translation2d(x, y)
+    val bottomRight = Translation2d(x + w, y)
 
-    val center = Translation2d(xRaw + wRaw / 2, yRaw + hRaw / 2)
+    val center = Translation2d(x + w / 2, y + h / 2)
 
     val maxCorner = topRight
     val minCorner = bottomLeft
 
-    val x
-        get() = xRaw.meter
-    val y
-        get() = yRaw.meter
-    val w
-        get() = wRaw.meter
-    val h
-        get() = hRaw.meter
-
-    constructor(
-        xRange: ClosedFloatingPointRange<Double>,
-        yRange: ClosedFloatingPointRange<Double>
-    ) : this(
-        xRange.start,
-        yRange.start,
-        xRange.endInclusive - xRange.start,
-        yRange.endInclusive - yRange.start
-    )
-
-    constructor(one: Translation2d, two: Translation2d) : this(
-        one.xRaw.safeRangeTo(two.xRaw),
-        one.yRaw.safeRangeTo(two.yRaw)
-    )
-
     fun isIn(r: Rectangle2d) =
-        xRaw < r.xRaw + r.wRaw && xRaw + wRaw > r.xRaw && yRaw < r.yRaw + r.hRaw && yRaw + hRaw > r.yRaw
+        x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y
 
-    fun isWithin(r: Rectangle2d) = r.xRaw in xRaw..(xRaw + wRaw - r.wRaw) && r.yRaw in yRaw..(yRaw + hRaw - r.hRaw)
+    fun isWithin(r: Rectangle2d) = r.x in x..(x + w - r.w) && r.y in y..(y + h - r.h)
 
-    operator fun contains(p: Translation2d) = p.xRaw in xRaw..(xRaw + wRaw) && p.yRaw in yRaw..(yRaw + hRaw)
+    operator fun contains(p: Translation2d) = p.x in x..(x + w) && p.y in y..(y + h)
 
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation.xRaw epsilonEquals 0.0 && translation.yRaw epsilonEquals 0.0) return false
+        if (translation.x.value epsilonEquals 0.0 && translation.y.value epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
-            min(rectangle.xRaw, rectangle.xRaw + translation.xRaw)..max(rectangle.xRaw + rectangle.wRaw, rectangle.xRaw + rectangle.wRaw + translation.xRaw),
-            min(rectangle.yRaw, rectangle.yRaw + translation.yRaw)..max(rectangle.yRaw + rectangle.hRaw, rectangle.yRaw + rectangle.hRaw + translation.yRaw)
+            rectangle.topLeft, rectangle.bottomRight,
+            rectangle.topLeft + translation, rectangle.bottomRight + translation
         )
         //println(boxRect)
         if (!boxRect.isIn(this)) return false
@@ -69,38 +74,38 @@ data class Rectangle2d(
         val xInvExit: Double
         val yInvEntry: Double
         val yInvExit: Double
-        if (translation.xRaw > 0.0) {
-            xInvEntry = (xRaw - (rectangle.xRaw + rectangle.wRaw))
-            xInvExit = ((xRaw + wRaw) - rectangle.xRaw)
+        if (translation.x.value > 0.0) {
+            xInvEntry = (x.value - (rectangle.x.value + rectangle.w.value))
+            xInvExit = ((x.value + w.value) - rectangle.x.value)
         } else {
-            xInvEntry = ((xRaw + wRaw) - rectangle.xRaw)
-            xInvExit = (xRaw - (rectangle.xRaw + rectangle.wRaw))
+            xInvEntry = ((x.value + w.value) - rectangle.x.value)
+            xInvExit = (x.value - (rectangle.x.value + rectangle.w.value))
         }
-        if (translation.yRaw > 0.0) {
-            yInvEntry = (yRaw - (rectangle.yRaw + rectangle.hRaw))
-            yInvExit = ((yRaw + hRaw) - rectangle.yRaw)
+        if (translation.y.value > 0.0) {
+            yInvEntry = (y.value - (rectangle.y.value + rectangle.h.value))
+            yInvExit = ((y.value + h.value) - rectangle.y.value)
         } else {
-            yInvEntry = ((yRaw + hRaw) - rectangle.yRaw)
-            yInvExit = (yRaw - (rectangle.yRaw + rectangle.hRaw))
+            yInvEntry = ((y.value + h.value) - rectangle.y.value)
+            yInvExit = (y.value - (rectangle.y.value + rectangle.h.value))
         }
         // Find time of collisions
         val xEntry: Double
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation.xRaw epsilonEquals 0.0) {
+        if (translation.x.value epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
-            xEntry = xInvEntry / translation.xRaw
-            xExit = xInvExit / translation.xRaw
+            xEntry = xInvEntry / translation.x.value
+            xExit = xInvExit / translation.x.value
         }
-        if (translation.yRaw epsilonEquals 0.0) {
+        if (translation.y.value epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {
-            yEntry = yInvEntry / translation.yRaw
-            yExit = yInvExit / translation.yRaw
+            yEntry = yInvEntry / translation.y.value
+            yExit = yInvExit / translation.y.value
         }
         val entryTime = max(xEntry, yEntry)
         val exitTime = min(xExit, yExit)

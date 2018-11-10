@@ -23,15 +23,15 @@ open class RamseteController(
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
         val error = referencePose inFrameOfReferenceOf robotPose
-        val vd = referencePoint.state.velocity
-        val wd = vd * referencePoint.state.state.curvature.curvature
+        val vd = referencePoint.state.velocity.value
+        val wd = vd * referencePoint.state.state.curvature.curvature.value
 
         val k1 = 2 * kZeta * sqrt(wd * wd + kBeta * vd * vd)
         val angleError = error.rotation.radian
 
         return DifferentialDrive.ChassisState(
-                linear = vd * error.rotation.cos + k1 * error.translation.xRaw,
-                angular = wd + kBeta * vd * sinc(angleError) * error.translation.yRaw + k1 * angleError
+            linear = vd * error.rotation.cos + k1 * error.translation.x.value,
+            angular = wd + kBeta * vd * sinc(angleError) * error.translation.y.value + k1 * angleError
         )
     }
 

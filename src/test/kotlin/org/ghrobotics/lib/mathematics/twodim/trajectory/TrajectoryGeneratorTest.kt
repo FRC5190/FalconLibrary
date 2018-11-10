@@ -29,19 +29,19 @@ class TrajectoryGeneratorTest {
         private val kWheelBaseDiameter = 29.5.inch
 
         private val transmission = DCMotorTransmission(
-                speedPerVolt = 1 / kDriveKv,
-                torquePerVolt = kDriveWheelRadiusInches.value.pow(2) * kRobotLinearInertia / (2.0 * kDriveKa),
-                frictionVoltage = kDriveVIntercept
+            speedPerVolt = 1 / kDriveKv,
+            torquePerVolt = kDriveWheelRadiusInches.value.pow(2) * kRobotLinearInertia / (2.0 * kDriveKa),
+            frictionVoltage = kDriveVIntercept
         )
 
         val drive = DifferentialDrive(
-                mass = kRobotLinearInertia,
-                moi = kRobotAngularInertia,
-                angularDrag = kRobotAngularDrag,
-                wheelRadius = kDriveWheelRadiusInches.value,
-                effectiveWheelBaseRadius = kWheelBaseDiameter.value / 2.0,
-                leftTransmission = transmission,
-                rightTransmission = transmission
+            mass = kRobotLinearInertia,
+            moi = kRobotAngularInertia,
+            angularDrag = kRobotAngularDrag,
+            wheelRadius = kDriveWheelRadiusInches.value,
+            effectiveWheelBaseRadius = kWheelBaseDiameter.value / 2.0,
+            leftTransmission = transmission,
+            rightTransmission = transmission
         )
 
         private val kMaxCentripetalAcceleration = 4.feet.acceleration
@@ -54,22 +54,22 @@ class TrajectoryGeneratorTest {
         private val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.degree)
 
         val trajectory = DefaultTrajectoryGenerator.generateTrajectory(
-                listOf(
-                        kSideStart,
-                        kSideStart + Pose2d((-13).feet, 0.feet, 0.degree),
-                        kSideStart + Pose2d((-19.5).feet, 5.feet, (-90).degree),
-                        kSideStart + Pose2d((-19.5).feet, 14.feet, (-90).degree),
-                        kNearScaleEmpty.mirror
-                ),
-                listOf(
-                        CentripetalAccelerationConstraint(kMaxCentripetalAcceleration),
-                        DifferentialDriveDynamicsConstraint(drive, 9.0.volt)
-                ),
-                0.0.feet.velocity,
-                0.0.feet.velocity,
-                kMaxVelocity,
-                kMaxAcceleration,
-                true
+            listOf(
+                kSideStart,
+                kSideStart + Pose2d((-13).feet, 0.feet, 0.degree),
+                kSideStart + Pose2d((-19.5).feet, 5.feet, (-90).degree),
+                kSideStart + Pose2d((-19.5).feet, 14.feet, (-90).degree),
+                kNearScaleEmpty.mirror
+            ),
+            listOf(
+                CentripetalAccelerationConstraint(kMaxCentripetalAcceleration),
+                DifferentialDriveDynamicsConstraint(drive, 9.0.volt)
+            ),
+            0.0.feet.velocity,
+            0.0.feet.velocity,
+            kMaxVelocity,
+            kMaxAcceleration,
+            true
         )
     }
 
@@ -84,11 +84,11 @@ class TrajectoryGeneratorTest {
             val pt = iterator.advance(dt)
             time += dt
 
-            val ac = pt.state.velocity.pow(2) * pt.state.state.curvature.curvature
+            val ac = pt.state.velocity.value.pow(2) * pt.state.state.curvature.curvature.value
 
             assert(ac <= kMaxCentripetalAcceleration.value + kTolerance)
-            assert(pt.state.velocity.absoluteValue < kMaxVelocity.value + kTolerance)
-            assert(pt.state.acceleration.absoluteValue < kMaxAcceleration.value + kTolerance)
+            assert(pt.state.velocity.value.absoluteValue < kMaxVelocity.value + kTolerance)
+            assert(pt.state.acceleration.value.absoluteValue < kMaxAcceleration.value + kTolerance)
         }
     }
 }

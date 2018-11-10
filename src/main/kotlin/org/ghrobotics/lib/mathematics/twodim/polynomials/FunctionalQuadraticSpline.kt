@@ -7,8 +7,8 @@ class FunctionalQuadraticSpline(
     private val p2: Translation2d,
     private val p3: Translation2d
 ) {
-    private val a get() = p3.xRaw * (p2.yRaw - p1.yRaw) + p2.xRaw * (p1.yRaw - p3.yRaw) + p1.xRaw * (p3.yRaw - p2.yRaw)
-    private val b get() = p3.xRaw * p3.xRaw * (p1.yRaw - p2.yRaw) + p2.xRaw * p2.xRaw * (p3.yRaw - p1.yRaw) + p1.xRaw * p1.xRaw * (p2.yRaw - p3.yRaw)
+    private val a get() = p3.x.value * (p2.y.value - p1.y.value) + p2.x.value * (p1.y.value - p3.y.value) + p1.x.value * (p3.y.value - p2.y.value)
+    private val b get() = p3.x.value * p3.x.value * (p1.y.value - p2.y.value) + p2.x.value * p2.x.value * (p3.y.value - p1.y.value) + p1.x.value * p1.x.value * (p2.y.value - p3.y.value)
 
     val vertexXCoordinate get() = -b / (2 * a)
 }

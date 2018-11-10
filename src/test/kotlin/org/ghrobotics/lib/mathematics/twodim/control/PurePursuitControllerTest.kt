@@ -104,7 +104,7 @@ class PurePursuitControllerTest {
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
 
-        assert(terror.norm.also {
+        assert(terror.norm.value.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
         assert(rerror.degree.also {

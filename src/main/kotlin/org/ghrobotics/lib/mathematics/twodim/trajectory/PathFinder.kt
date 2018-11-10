@@ -8,10 +8,7 @@ import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.radian
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.utils.*
 import java.lang.Math.sqrt
 import kotlin.math.pow
@@ -134,8 +131,8 @@ class PathFinder(
     )
 
     private fun Vector2D.toRobotRectangle() = Rectangle2d(
-        x - robotSize.value / 3, y - robotSize.value / 3,
-        robotSize.value / 3 * 2, robotSize.value / 3 * 2
+        (x - robotSize.value / 3).meter, (y - robotSize.value / 3).meter,
+        (robotSize.value / 3 * 2).meter, (robotSize.value / 3 * 2).meter
     )
 
     private fun createNodes(restrictedAreas: Set<Rectangle2d>): Set<Vector2D> {
@@ -192,8 +189,8 @@ class PathFinder(
         return restrictedWallLines.mapToSet { it.third }.plusToSet(restrictedBetweenLines)
     }
 
-    private fun Translation2d.toVector2d() = Vector2D(xRaw, yRaw)
-    private fun Vector2D.toTranslation2d() = Translation2d(x, y)
+    private fun Translation2d.toVector2d() = Vector2D(x.value, y.value)
+    private fun Vector2D.toTranslation2d() = Translation2d(x.meter, y.meter)
 
     companion object {
         private val kFieldRectangle = Rectangle2d(

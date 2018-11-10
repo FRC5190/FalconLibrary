@@ -47,22 +47,22 @@ data class Pose2d(
                 -(halfDTheta * rotation.sin) / cosMinusOne
             }
             val translationPart = translation *
-                    Rotation2d(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
+                Rotation2d(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
             return Twist2d(translationPart.x, translationPart.y, rotation)
         }
 
     val mirror
-        get() = Pose2d(Translation2d(translation.xRaw, 27.feet.meter - translation.yRaw), -rotation)
+        get() = Pose2d(Translation2d(translation.x, 27.feet - translation.y), -rotation)
 
     infix fun inFrameOfReferenceOf(fieldRelativeOrigin: Pose2d) = (-fieldRelativeOrigin) + this
 
     operator fun plus(other: Pose2d) = transformBy(other)
 
     fun transformBy(other: Pose2d) =
-            Pose2d(
-                    translation + (other.translation * rotation),
-                    rotation + other.rotation
-            )
+        Pose2d(
+            translation + (other.translation * rotation),
+            rotation + other.rotation
+        )
 
     operator fun unaryMinus(): Pose2d {
         val invertedRotation = -rotation
