@@ -47,8 +47,8 @@ class PurePursuitControllerTest {
             val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                    output.lSetpoint * dt / 3.inch,
-                    output.rSetpoint * dt / 3.inch
+                    output.leftSetPoint * dt / 3.inch,
+                    output.rightSetPoint * dt / 3.inch
             )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)

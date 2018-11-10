@@ -54,10 +54,10 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         val chassisVelocity = calculateChassisVelocity(robot)
 
         val wheelVelocities = drive.solveInverseKinematics(chassisVelocity)
-        val feedforwardVoltages = drive.getVoltagesFromkV(wheelVelocities)
+        val feedForwardVoltages = drive.getVoltagesFromkV(wheelVelocities)
 
         iterator.advance(dt)
-        return outputFromWheelStates(drive, wheelVelocities, feedforwardVoltages)
+        return outputFromWheelStates(drive, wheelVelocities, feedForwardVoltages)
     }
 
     // Return output from dynamic calculations. Robot dynamics are taken into account.
@@ -79,22 +79,22 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     }
 
     data class Output(
-        val lSetpoint: LinearVelocity,
-        val rSetpoint: LinearVelocity,
-        val lfVoltage: Volt,
-        val rfVoltage: Volt
+        val leftSetPoint: LinearVelocity,
+        val rightSetPoint: LinearVelocity,
+        val leftVoltage: Volt,
+        val rightVoltage: Volt
     )
 
     companion object {
         private fun outputFromWheelStates(
             drive: DifferentialDrive,
-            setpoint: DifferentialDrive.WheelState,
+            setPoint: DifferentialDrive.WheelState,
             voltages: DifferentialDrive.WheelState
         ) = Output(
-            lSetpoint = (setpoint.left * drive.wheelRadius).meter.velocity,
-            rSetpoint = (setpoint.right * drive.wheelRadius).meter.velocity,
-            lfVoltage = voltages.left.volt,
-            rfVoltage = voltages.right.volt
+            leftSetPoint = (setPoint.left * drive.wheelRadius).meter.velocity,
+            rightSetPoint = (setPoint.right * drive.wheelRadius).meter.velocity,
+            leftVoltage = voltages.left.volt,
+            rightVoltage = voltages.right.volt
         )
     }
 }

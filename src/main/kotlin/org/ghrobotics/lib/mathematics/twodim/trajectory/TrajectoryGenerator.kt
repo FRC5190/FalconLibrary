@@ -107,8 +107,8 @@ class TrajectoryGenerator(
     ) = IndexedTrajectory(
         ParametricSplineGenerator.parameterizeSplines(
             splines,
-            kMaxDx,
-            kMaxDy,
+            kMaxDx.value,
+            kMaxDy.value,
             kMaxDTheta
         )
     )

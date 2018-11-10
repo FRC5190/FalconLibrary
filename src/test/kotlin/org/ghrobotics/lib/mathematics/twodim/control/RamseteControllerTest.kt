@@ -49,8 +49,8 @@ class RamseteControllerTest {
             val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                    output.lSetpoint * dt / 3.inch,
-                    output.rSetpoint * dt / 3.inch
+                    output.leftSetPoint * dt / 3.inch,
+                    output.rightSetPoint * dt / 3.inch
             )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
@@ -70,7 +70,7 @@ class RamseteControllerTest {
             refYList.add(pt.state.state.pose.translation.y.feet)
 
             System.out.printf("Left Voltage: %3.3f, Right Voltage: %3.3f%n",
-                    output.lfVoltage.value, output.rfVoltage.value)
+                    output.leftVoltage.value, output.rightVoltage.value)
         }
 
         val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second)
