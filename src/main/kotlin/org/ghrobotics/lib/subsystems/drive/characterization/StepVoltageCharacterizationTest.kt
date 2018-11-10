@@ -3,10 +3,11 @@ package org.ghrobotics.lib.subsystems.drive.characterization
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.subsystems.drive.TankDriveSubsystem
 import org.ghrobotics.lib.utils.DeltaTime
 
-class CharacterizeVelocityCommand(
+class StepVoltageCharacterizationTest(
     private val driveSubsystem: TankDriveSubsystem,
     private val wheelRadius: Length,
     private val turnInPlace: Boolean
@@ -15,23 +16,19 @@ class CharacterizeVelocityCommand(
     private val data = ArrayList<CharacterizationData>()
     private val dtController = DeltaTime()
 
-    private var startTime = 0.millisecond
-    private var commandedVoltage = 0.0 // V
-
     init {
-        finishCondition += { commandedVoltage >= kMaxVoltage }
+        withTimeout(kTimeout)
+        executeFrequency = 10 // Hz
     }
 
     override suspend fun initialize() {
-        startTime = System.currentTimeMillis().millisecond
         dtController.reset()
     }
 
     override suspend fun execute() {
-        commandedVoltage = kRampRate * (System.currentTimeMillis().millisecond - startTime).second
         val dt = dtController.updateTime(System.currentTimeMillis().millisecond)
 
-        driveSubsystem.tankDrive(commandedVoltage, commandedVoltage * if (turnInPlace) -1 else 1)
+        driveSubsystem.tankDrive(kStepVoltage / 12.0, kStepVoltage / 12.0 * if (turnInPlace) -1 else 1)
 
         val avgCompensatedVoltage =
             (driveSubsystem.leftMaster.motorOutputVoltage + driveSubsystem.rightMaster.motorOutputVoltage) / 2.0
@@ -44,13 +41,13 @@ class CharacterizeVelocityCommand(
     }
 
     override suspend fun dispose() {
-        println("VELOCITY DATA")
+        println("ACCELERATION DATA")
         data.forEach { System.out.println(it.toCSV()) }
     }
 
     companion object {
-        private const val kRampRate = 0.15 // V per sec
-        private const val kMaxVoltage = 0.40 // V
+        private val kTimeout = 2.second
+        private const val kStepVoltage = 6.0
     }
 
 }

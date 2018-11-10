@@ -13,8 +13,8 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.sensors.AHRSSensor
-import org.ghrobotics.lib.subsystems.drive.characterization.CharacterizeAccelerationCommand
-import org.ghrobotics.lib.subsystems.drive.characterization.CharacterizeVelocityCommand
+import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationTest
+import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationTest
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -182,22 +182,22 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
 
     open fun characterizeDrive(wheelRadius: Length): FalconCommandGroup =
         sequential {
-            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +QuasistaticCharacterizationTest(this@TankDriveSubsystem, wheelRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +StepVoltageCharacterizationTest(this@TankDriveSubsystem, wheelRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +CharacterizeVelocityCommand(this@TankDriveSubsystem, wheelRadius, true)
+            +QuasistaticCharacterizationTest(this@TankDriveSubsystem, wheelRadius, true)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +CharacterizeAccelerationCommand(this@TankDriveSubsystem, wheelRadius, true)
+            +StepVoltageCharacterizationTest(this@TankDriveSubsystem, wheelRadius, true)
         }
 
     companion object {
