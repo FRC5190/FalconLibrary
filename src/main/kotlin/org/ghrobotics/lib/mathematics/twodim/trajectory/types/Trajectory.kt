@@ -29,9 +29,6 @@ data class TrajectorySamplePoint<S>(
     val indexFloor: Int,
     val indexCeil: Int
 ) {
-    constructor(point: TrajectoryPoint<S>) : this(
-            point.state,
-            point.index,
-            point.index
-    )
+    constructor(point: TrajectoryPoint<S>) :
+        this(point.state, point.index, point.index)
 }

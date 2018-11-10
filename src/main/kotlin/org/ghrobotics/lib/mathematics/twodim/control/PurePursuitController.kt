@@ -15,11 +15,11 @@ class PurePursuitController(
 
         val lookaheadState = iterator.preview(kLookaheadTime)
         val lookaheadTransform = lookaheadState.state.state.pose inFrameOfReferenceOf robotPose
-        val xError = (referencePose inFrameOfReferenceOf robotPose).translation.x.value
-        val vd = referencePoint.state.velocity.value
+        val xError = (referencePose inFrameOfReferenceOf robotPose).translation._x
+        val vd = referencePoint.state._velocity
 
-        val l = lookaheadTransform.translation.norm.value
-        val curvature = 2 * lookaheadTransform.translation.y.value / l.pow(2)
+        val l = lookaheadTransform.translation._norm
+        val curvature = 2 * lookaheadTransform.translation._y / l.pow(2)
 
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
 

@@ -1,9 +1,8 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.max
-import org.ghrobotics.lib.mathematics.min
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.max
 import kotlin.math.min
 
@@ -12,10 +11,10 @@ fun Rectangle2d(
     one: Translation2d,
     two: Translation2d
 ): Rectangle2d {
-    val minX = min(one.x, two.x)
-    val minY = min(one.y, two.y)
-    val maxX = max(one.x, two.x)
-    val maxY = max(one.y, two.y)
+    val minX = min(one._x, two._x)
+    val minY = min(one._y, two._y)
+    val maxX = max(one._x, two._x)
+    val maxY = max(one._y, two._y)
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
@@ -25,42 +24,50 @@ fun Rectangle2d(
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {
-    val minX = pointsToInclude.minBy { it.x }!!.x
-    val minY = pointsToInclude.minBy { it.y }!!.y
-    val maxX = pointsToInclude.maxBy { it.x }!!.x
-    val maxY = pointsToInclude.maxBy { it.y }!!.y
+    val minX = pointsToInclude.minBy { it._x }!!._x
+    val minY = pointsToInclude.minBy { it._y }!!._y
+    val maxX = pointsToInclude.maxBy { it._x }!!._x
+    val maxY = pointsToInclude.maxBy { it._y }!!._y
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
     )
 }
 
-data class Rectangle2d(
-    val x: Length,
-    val y: Length,
-    val w: Length,
-    val h: Length
+data class Rectangle2d internal constructor(
+    internal val _x: Double,
+    internal val _y: Double,
+    internal val _w: Double,
+    internal val _h: Double
 ) {
 
-    val topLeft = Translation2d(x, y + h)
-    val topRight = Translation2d(x + w, y + h)
-    val bottomLeft = Translation2d(x, y)
-    val bottomRight = Translation2d(x + w, y)
+    val x get() = _x.meter
+    val y get() = _y.meter
+    val w get() = _w.meter
+    val h get() = _h.meter
 
-    val center = Translation2d(x + w / 2, y + h / 2)
+    constructor(x: Length, y: Length, w: Length, h: Length) :
+        this(x.value, y.value, w.value, h.value)
+
+    val topLeft = Translation2d(_x, _y + _h)
+    val topRight = Translation2d(_x + _w, _y + _h)
+    val bottomLeft = Translation2d(_x, _y)
+    val bottomRight = Translation2d(_x + _w, _y)
+
+    val center = Translation2d(_x + _w / 2, _y + _h / 2)
 
     val maxCorner = topRight
     val minCorner = bottomLeft
 
     fun isIn(r: Rectangle2d) =
-        x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y
+        _x < r._x + r._w && _x + _w > r._x && _y < r._y + r._h && _y + _h > r._y
 
-    fun isWithin(r: Rectangle2d) = r.x in x..(x + w - r.w) && r.y in y..(y + h - r.h)
+    fun isWithin(r: Rectangle2d) = r._x in _x..(_x + _w - r._w) && r._y in _y..(_y + _h - r._h)
 
-    operator fun contains(p: Translation2d) = p.x in x..(x + w) && p.y in y..(y + h)
+    operator fun contains(p: Translation2d) = p._x in _x..(_x + _w) && p._y in _y..(_y + _h)
 
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation.x.value epsilonEquals 0.0 && translation.y.value epsilonEquals 0.0) return false
+        if (translation._x epsilonEquals 0.0 && translation._y epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
             rectangle.topLeft, rectangle.bottomRight,
@@ -74,38 +81,38 @@ data class Rectangle2d(
         val xInvExit: Double
         val yInvEntry: Double
         val yInvExit: Double
-        if (translation.x.value > 0.0) {
-            xInvEntry = (x.value - (rectangle.x.value + rectangle.w.value))
-            xInvExit = ((x.value + w.value) - rectangle.x.value)
+        if (translation._x > 0.0) {
+            xInvEntry = (_x - (rectangle._x + rectangle._w))
+            xInvExit = ((_x + _w) - rectangle._x)
         } else {
-            xInvEntry = ((x.value + w.value) - rectangle.x.value)
-            xInvExit = (x.value - (rectangle.x.value + rectangle.w.value))
+            xInvEntry = ((_x + _w) - rectangle._x)
+            xInvExit = (_x - (rectangle._x + rectangle._w))
         }
-        if (translation.y.value > 0.0) {
-            yInvEntry = (y.value - (rectangle.y.value + rectangle.h.value))
-            yInvExit = ((y.value + h.value) - rectangle.y.value)
+        if (translation._y > 0.0) {
+            yInvEntry = (_y - (rectangle._y + rectangle._h))
+            yInvExit = ((_y + _h) - rectangle._y)
         } else {
-            yInvEntry = ((y.value + h.value) - rectangle.y.value)
-            yInvExit = (y.value - (rectangle.y.value + rectangle.h.value))
+            yInvEntry = ((_y + _h) - rectangle._y)
+            yInvExit = (_y - (rectangle._y + rectangle._h))
         }
         // Find time of collisions
         val xEntry: Double
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation.x.value epsilonEquals 0.0) {
+        if (translation._x epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
-            xEntry = xInvEntry / translation.x.value
-            xExit = xInvExit / translation.x.value
+            xEntry = xInvEntry / translation._x
+            xExit = xInvExit / translation._x
         }
-        if (translation.y.value epsilonEquals 0.0) {
+        if (translation._y epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {
-            yEntry = yInvEntry / translation.y.value
-            yExit = yInvExit / translation.y.value
+            yEntry = yInvEntry / translation._y
+            yExit = yInvExit / translation._y
         }
         val entryTime = max(xEntry, yEntry)
         val exitTime = min(xExit, yExit)

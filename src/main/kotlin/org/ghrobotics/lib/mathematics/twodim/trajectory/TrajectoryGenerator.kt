@@ -324,7 +324,7 @@ class TrajectoryGenerator(
             var dt = 0.0
             if (i > 0) {
                 timedStates[i - 1] = timedStates[i - 1].copy(
-                    acceleration = (if (reversed) -accel else accel).meter.acceleration
+                    _acceleration = if (reversed) -accel else accel
                 )
 
                 dt = when {
@@ -343,9 +343,9 @@ class TrajectoryGenerator(
             timedStates.add(
                 TimedEntry(
                     constrainedState.state,
-                    t.second,
-                    (if (reversed) -v else v).meter.velocity,
-                    (if (reversed) -accel else accel).meter.acceleration
+                    t,
+                    if (reversed) -v else v,
+                    if (reversed) -accel else accel
                 )
             )
         }

@@ -18,19 +18,19 @@ class IndexedTrajectory<S : VaryInterpolatable<S>>(
                 percent <= Double.MIN_VALUE -> TrajectorySamplePoint(getPoint(index))
                 percent >= 1.0 - Double.MIN_VALUE -> TrajectorySamplePoint(getPoint(index + 1))
                 else -> TrajectorySamplePoint(
-                        points[index].interpolate(points[index], percent),
-                        index,
-                        index + 1
+                    points[index].interpolate(points[index], percent),
+                    index,
+                    index + 1
                 )
             }
         }
     }
 
-    override val firstState = points.first()
-    override val lastState = points.last()
+    override val firstState get() = points.first()
+    override val lastState get() = points.last()
 
-    override val firstInterpolant = 0.0
-    override val lastInterpolant = (points.size - 1.0).coerceAtLeast(0.0)
+    override val firstInterpolant get() = 0.0
+    override val lastInterpolant get() = (points.size - 1.0).coerceAtLeast(0.0)
 
     override fun iterator() = IndexedIterator(this)
 }

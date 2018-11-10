@@ -26,30 +26,28 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
         interpolant <= 0.0 -> TrajectorySamplePoint(getPoint(0))
         else -> {
             val (index, entry) = points.asSequence()
-                    .withIndex()
-                    .first { (index, _) -> index != 0 && distances[index] >= interpolant }
+                .withIndex()
+                .first { (index, _) -> index != 0 && distances[index] >= interpolant }
 
             val prevEntry = points[index - 1]
-            if (distances[index] epsilonEquals distances[index - 1]) TrajectorySamplePoint(
+            if (distances[index] epsilonEquals distances[index - 1])
+                TrajectorySamplePoint(entry, index, index)
+            else TrajectorySamplePoint(
+                prevEntry.interpolate(
                     entry,
-                    index,
-                    index
-            ) else TrajectorySamplePoint(
-                    prevEntry.interpolate(
-                            entry,
-                            (interpolant - distances[index - 1]) / (distances[index] - distances[index - 1])
-                    ),
-                    index - 1,
-                    index
+                    (interpolant - distances[index - 1]) / (distances[index] - distances[index - 1])
+                ),
+                index - 1,
+                index
             )
         }
     }
 
-    override val firstState = points.first()
-    override val lastState = points.last()
+    override val firstState get() = points.first()
+    override val lastState get() = points.last()
 
-    override val firstInterpolant = 0.meter
-    override val lastInterpolant = distances.last().meter
+    override val firstInterpolant get() = 0.meter
+    override val lastInterpolant get() = distances.last().meter
 
     override fun iterator() = DistanceIterator(this)
 }

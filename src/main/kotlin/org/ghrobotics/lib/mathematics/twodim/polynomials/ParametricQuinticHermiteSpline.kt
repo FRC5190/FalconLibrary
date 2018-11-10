@@ -17,7 +17,6 @@ import koma.mat
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
-import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.pow
 
 class ParametricQuinticHermiteSpline(
@@ -36,14 +35,14 @@ class ParametricQuinticHermiteSpline(
 ) : ParametricSpline() {
 
     constructor(start: Pose2d, end: Pose2d) : this(
-        x0 = start.translation.x.value,
-        x1 = end.translation.x.value,
+        x0 = start.translation._x,
+        x1 = end.translation._x,
         dx0 = 1.2 * start.translation.distance(end.translation) * start.rotation.cos,
         dx1 = 1.2 * start.translation.distance(end.translation) * end.rotation.cos,
         ddx0 = 0.0,
         ddx1 = 0.0,
-        y0 = start.translation.y.value,
-        y1 = end.translation.y.value,
+        y0 = start.translation._y,
+        y1 = end.translation._y,
         dy0 = 1.2 * start.translation.distance(end.translation) * start.rotation.sin,
         dy1 = 1.2 * start.translation.distance(end.translation) * end.rotation.sin,
         ddy0 = 0.0,
@@ -67,11 +66,8 @@ class ParametricQuinticHermiteSpline(
     private val ey get() = yCoefficients[4]
     private val fy get() = yCoefficients[5]
 
-    val startPose
-        get() = Pose2d(Translation2d(x0.meter, y0.meter), Rotation2d(dx0, dy0, true))
-
-    val endPose
-        get() = Pose2d(Translation2d(x1.meter, y1.meter), Rotation2d(dx1, dy1, true))
+    val startPose get() = Pose2d(Translation2d(x0, y0), Rotation2d(dx0, dy0, true))
+    val endPose get() = Pose2d(Translation2d(x1, y1), Rotation2d(dx1, dy1, true))
 
     init {
         computeCoefficients()
@@ -98,7 +94,7 @@ class ParametricQuinticHermiteSpline(
     override fun getPoint(t: Double): Translation2d {
         val x = ax * t.pow(5) + bx * t.pow(4) + cx * t.pow(3) + dx * t.pow(2) + ex * t + fx
         val y = ay * t.pow(5) + by * t.pow(4) + cy * t.pow(3) + dy * t.pow(2) + ey * t + fy
-        return Translation2d(x.meter, y.meter)
+        return Translation2d(x, y)
     }
 
     private fun dx(t: Double): Double {
@@ -275,7 +271,7 @@ class ParametricQuinticHermiteSpline(
 
             //minimize along the direction of the gradient
             //first calculate 3 points along the direction of the gradient
-            val p2 = Translation2d(0.meter, sumDCurvature2(splines).meter) //middle point is at the current location
+            val p2 = Translation2d(0.0, sumDCurvature2(splines)) //middle point is at the current location
 
             for (i in 0 until splines.size - 1) { //first point is offset from the middle location by -stepSize
                 if (splines[i].startPose.isCollinear(splines[i + 1].startPose) || splines[i].endPose.isCollinear(splines[i + 1].endPose)) {
@@ -295,7 +291,7 @@ class ParametricQuinticHermiteSpline(
                 splines[i].computeCoefficients()
                 splines[i + 1].computeCoefficients()
             }
-            val p1 = Translation2d((-kStepSize).meter, sumDCurvature2(splines).meter)
+            val p1 = Translation2d(-kStepSize, sumDCurvature2(splines))
 
             for (i in 0 until splines.size - 1) { //last point is offset from the middle location by +stepSize
                 if (splines[i].startPose.isCollinear(splines[i + 1].startPose) || splines[i].endPose.isCollinear(splines[i + 1].endPose)) {
@@ -313,7 +309,7 @@ class ParametricQuinticHermiteSpline(
                 splines[i + 1].computeCoefficients()
             }
 
-            val p3 = Translation2d(kStepSize.meter, sumDCurvature2(splines).meter)
+            val p3 = Translation2d(kStepSize, sumDCurvature2(splines))
 
             val stepSize = FunctionalQuadraticSpline(
                 p1,

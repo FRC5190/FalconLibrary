@@ -30,14 +30,9 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
         private set
 
-    val referencePoint
-        get() = iterator.currentState
-
-    val referencePose
-        get() = referencePoint.state.state.pose
-
-    val isFinished
-        get() = iterator.isDone
+    val referencePoint get() = iterator.currentState
+    val referencePose get() = referencePoint.state.state.pose
+    val isFinished get() = iterator.isDone
 
     // Loops
     private var deltaTimeController = DeltaTime()
