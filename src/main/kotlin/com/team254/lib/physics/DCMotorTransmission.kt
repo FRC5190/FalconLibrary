@@ -13,12 +13,16 @@ import org.ghrobotics.lib.mathematics.kEpsilon
  * and efficiency losses).  The motor is assumed to be symmetric forward/reverse.
  */
 class DCMotorTransmission(
-        // All units must be SI!
     val speedPerVolt: Double, // rad/s per V (no load),
     private val torquePerVolt: Double, // N m per V (stall),
     val frictionVoltage: Double // V
 ) {
 
+    /**
+     * Returns the free speed of the motor at the specified voltage
+     * @param voltage specified voltage
+     * @return free speed
+     */
     fun getFreeSpeedAtVoltage(voltage: Double): Double {
         return when {
             voltage > kEpsilon -> Math.max(0.0, voltage - frictionVoltage) * speedPerVolt
@@ -27,6 +31,13 @@ class DCMotorTransmission(
         }
     }
 
+
+    /**
+     * Returns the torque produced by the motor
+     * @param output_speed The speed that is being outputted by the motor
+     * @param voltage The voltage through the motor
+     * @return torque
+     */
     fun getTorqueForVoltage(output_speed: Double, voltage: Double): Double {
         var effectiveVoltage = voltage
         when {
@@ -44,8 +55,15 @@ class DCMotorTransmission(
         return torquePerVolt * (-output_speed / speedPerVolt + effectiveVoltage)
     }
 
+
+    /**
+     * Returns the voltage going through the motor
+     * @param output_speed The speed that is being outputted by the motor
+     * @param torque Torque produced by the motor
+     * @return voltage
+     */
     fun getVoltageForTorque(output_speed: Double, torque: Double): Double {
-        val frictionVoltage2: Double = when {
+        val fv: Double = when {
             output_speed > kEpsilon -> // Forward motion, rolling friction.
                 frictionVoltage
             output_speed < -kEpsilon -> // Reverse motion, rolling friction.
@@ -57,6 +75,6 @@ class DCMotorTransmission(
             else -> // System is idle.
                 return 0.0
         }
-        return torque / torquePerVolt + output_speed / speedPerVolt + frictionVoltage2
+        return torque / torquePerVolt + output_speed / speedPerVolt + fv
     }
 }

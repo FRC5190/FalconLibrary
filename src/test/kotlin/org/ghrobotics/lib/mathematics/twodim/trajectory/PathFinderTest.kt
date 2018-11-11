@@ -15,6 +15,7 @@ import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -109,7 +110,7 @@ class PathFinderTest {
             refList.map { it.x.feet }.toDoubleArray(),
             refList.map { it.y.feet }.toDoubleArray()
         )
-        //SwingWrapper(chart).displayChart()
-        //Thread.sleep(1000000)
+//        SwingWrapper(chart).displayChart()
+//        Thread.sleep(1000000)
     }
 }
