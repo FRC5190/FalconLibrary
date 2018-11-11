@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
-object SubsystemHandler {
+internal object SubsystemHandler {
 
     private val subsystems = CopyOnWriteArrayList<FalconSubsystem>()
 
@@ -26,6 +26,10 @@ object SubsystemHandler {
     fun zeroOutputs() = subsystems.forEach { it.zeroOutputs() }
 }
 
+/**
+ *  Kotlin Wrapper for [WPI's Subsystem][Subsystem]
+ *  @param name the name of the subsystem
+ */
 abstract class FalconSubsystem(name: String? = null) {
     companion object {
         private val subsystemId = AtomicLong()
@@ -33,6 +37,9 @@ abstract class FalconSubsystem(name: String? = null) {
 
     val name = name ?: "FalconSubsystem ${subsystemId.incrementAndGet()}"
     private val _wpiSubsystem = FalconWpiSubsystem()
+    /**
+     * Wrapped WPI subsystem
+     */
     val wpiSubsystem: Subsystem = _wpiSubsystem
 
     private inner class FalconWpiSubsystem : Subsystem(name) {
@@ -41,6 +48,9 @@ abstract class FalconSubsystem(name: String? = null) {
         }
     }
 
+    /**
+     * The default command, this is run when nothing else is currently requiring the subsystem
+     */
     @Suppress("LeakingThis")
     var defaultCommand: FalconCommand = EmptyCommand(this)
         protected set(value) {
@@ -48,8 +58,23 @@ abstract class FalconSubsystem(name: String? = null) {
             field = value
         }
 
+    /**
+     * Called after all subsystems can be initialized
+     */
     open fun lateInit() {}
+
+    /**
+     * Called when autonomous mode starts
+     */
     open fun autoReset() {}
+
+    /**
+     * Called when Tele-Operated mode starts
+     */
     open fun teleopReset() {}
+
+    /**
+     * Called when no mode is enabled
+     */
     open fun zeroOutputs() {}
 }

@@ -13,6 +13,10 @@ import org.ghrobotics.lib.wrappers.FalconRobotBase
 import org.ghrobotics.lib.wrappers.Wrapper
 import kotlin.properties.Delegates.observable
 
+/**
+ *  Kotlin Wrapper for [WPI's Command][Command]
+ *  @param requiredSubsystems subsystems this command requires in order to run
+ */
 abstract class FalconCommand(
     vararg requiredSubsystems: FalconSubsystem
 ) : Wrapper<Command> {
@@ -22,20 +26,49 @@ abstract class FalconCommand(
             println("[FalconCommand} [WARNING] It is not recommended to create commands after the robot has initialized!")
     }
 
+    /**
+     *  Wrapped WPI command
+     */
     override val wrappedValue: Command = WpiCommand(requiredSubsystems)
 
+    /**
+     *  When this is true the command will end
+     */
     protected val finishCondition = FinishCondition(Source(false))
+    /**
+     * The frequency the command will run
+     * -1 -> will use WPI's internal command loop
+     * 0 -> will not call the execute block
+     */
     protected var executeFrequency = -1
 
     internal open suspend fun initialize0() = initialize()
     internal open suspend fun execute0() = execute()
     internal open suspend fun dispose0() = dispose()
 
+    /**
+     * Called when the command starts
+     */
     protected open suspend fun initialize() {}
+
+    /**
+     * Called every command loop while the command is running
+     */
     protected open suspend fun execute() {}
+
+    /**
+     * Called when the command stops
+     */
     protected open suspend fun dispose() {}
 
+    /**
+     * Starts the command
+     */
     fun start() = wrappedValue.start()
+
+    /**
+     * Stops the command, if running
+     */
     fun stop() = wrappedValue.cancel()
 
     protected class FinishCondition(
@@ -43,10 +76,18 @@ abstract class FalconCommand(
     ) : BooleanSource {
         override fun invoke() = condition()
 
+        /**
+         *  Adds another possible Finish Condition
+         *  @param other possible finish condition
+         */
         operator fun plusAssign(other: BooleanSource) {
             condition = condition or other
         }
 
+        /**
+         * Overrides the finish condition
+         * @param other the new finish condition
+         */
         fun set(other: BooleanSource) {
             condition = other
         }
@@ -100,9 +141,23 @@ abstract class FalconCommand(
         override fun isFinished() = super.isTimedOut() || finishCondition()
     }
 
+    /**
+     *  Adds another possible finish condition to the command
+     *  @param condition possible finish condition
+     */
     fun withExit(condition: BooleanSource) = also { finishCondition += condition }
+
+    /**
+     * Overrides the finish condition
+     * @param condition the new finish condition
+     */
     fun overrideExit(condition: BooleanSource) = also { finishCondition.set(condition) }
-    fun withTimeout(delay: Time) = also { (wrappedValue as IWpiCommand).timeout = delay }
+
+    /**
+     * Sets the timeout for the command
+     * @param timeout the timeout for the command, the command will never run longer then this timeout
+     */
+    fun withTimeout(timeout: Time) = also { (wrappedValue as IWpiCommand).timeout = timeout }
 
     companion object {
         protected val commandScope = CoroutineScope(newFixedThreadPoolContext(2, "Command"))

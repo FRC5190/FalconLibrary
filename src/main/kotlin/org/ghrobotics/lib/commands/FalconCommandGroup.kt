@@ -5,6 +5,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup
 import org.ghrobotics.lib.mathematics.units.second
 import kotlin.properties.Delegates.observable
 
+/**
+ *  Kotlin Wrapper for [WPI's Command Group][CommandGroup]
+ *  @param groupType the type of command group
+ *  @param commands the commands the group will run
+ */
 class FalconCommandGroup(
     private val groupType: GroupType,
     private val commands: List<Command>
@@ -28,7 +33,13 @@ class FalconCommandGroup(
     }
 
     enum class GroupType {
+        /**
+         * All Commands will run in Parallel
+         */
         PARALLEL,
+        /**
+         * All Commands will run Sequentially
+         */
         SEQUENTIAL
     }
 }

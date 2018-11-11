@@ -7,6 +7,9 @@ import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import kotlin.properties.Delegates.observable
 
+/**
+ * Command will end the moment it begins
+ */
 abstract class InstantCommand : FalconCommand() {
     init {
         executeFrequency = 0
@@ -14,10 +17,18 @@ abstract class InstantCommand : FalconCommand() {
     }
 }
 
+/**
+ * Runs [runnable] once and ends the command when its done
+ */
 class InstantRunnableCommand(private val runnable: suspend () -> Unit) : InstantCommand() {
     override suspend fun initialize() = runnable()
 }
 
+/**
+ * Calls [runnable] with a given frequency until the exit condition is true
+ * @param exitCondition command will end when this is true
+ * @param runnableFrequency command will run at the this frequency
+ */
 class PeriodicRunnableCommand(
     private val runnable: suspend () -> Unit,
     exitCondition: BooleanSource,
@@ -31,6 +42,10 @@ class PeriodicRunnableCommand(
     override suspend fun execute() = runnable()
 }
 
+/**
+ * Waits until a condition is true
+ * @param condition command will end when this is true
+ */
 class ConditionCommand(
     condition: BooleanSource
 ) : FalconCommand() {
@@ -40,8 +55,16 @@ class ConditionCommand(
     }
 }
 
+/**
+ * Waits for a given amount of time
+ * @param delaySource the time to wait
+ */
 class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 
+    /**
+     * Waits for a given amount of time
+     * @param delay the time to wait
+     */
     constructor(delay: Time) : this(Source(delay))
 
     init {
@@ -53,12 +76,20 @@ class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
     }
 }
 
+/**
+ * Empty as empty can be
+ */
 class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*requiredSubsystems) {
     init {
         executeFrequency = 0
     }
 }
 
+/**
+ * Runs one of two commands based on the current [condition]
+ * @param onTrue ran when [condition] is true
+ * @param onFalse ran when [condition] is false
+ */
 class ConditionalCommand(
     val condition: BooleanSource,
     val onTrue: FalconCommand?,
