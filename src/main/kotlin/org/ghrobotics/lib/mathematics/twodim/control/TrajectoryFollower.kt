@@ -21,15 +21,24 @@ import org.ghrobotics.lib.mathematics.units.nanosecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.DeltaTime
 
+/**
+ * Follows a smooth trajectory.
+ *
+ * @param drive Instance of the differential drive that represents the dynamics of the drivetrain.
+ */
 abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
 
+    // Calculate chassis velocity based on the specific algorithm.
     abstract fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState
 
+    // Store the previous velocity for acceleration calculations.
     private var previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
 
+    // Trajectory iterator
     protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
         private set
 
+    // Current reference point, pose, and variable to store if the iterator has finished.
     val referencePoint get() = iterator.currentState
     val referencePose get() = referencePoint.state.state.pose
     val isFinished get() = iterator.isDone
@@ -41,13 +50,23 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         resetTrajectory(DefaultTrajectoryGenerator.baseline)
     }
 
+    /**
+     * Reset the iterator with a new trajectory.
+     *
+     * @param trajectory The new trajectory to renew the iterator.
+     */
     fun resetTrajectory(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
         iterator = trajectory.iterator()
         previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
         deltaTimeController.reset()
     }
 
-    // Return output from kinematic calculations only. Robot dynamics are not taken into account.
+    /**
+     * Return output from kinematic calculations only. Robot dynamics are not taken into account.
+     *
+     * @param robot Current robot pose
+     * @param currentTime Current time
+     */
     fun getOutputFromKinematics(robot: Pose2d, currentTime: Time = System.nanoTime().nanosecond): Output {
         val dt = deltaTimeController.updateTime(currentTime)
 
@@ -60,7 +79,12 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
         return outputFromWheelStates(drive, wheelVelocities, feedForwardVoltages)
     }
 
-    // Return output from dynamic calculations. Robot dynamics are taken into account.
+    /**
+     *  Return output from dynamic calculations. Robot dynamics are taken into account.
+     *
+     *  @param robot Current robot pose
+     *  @param currentTime Current time
+     */
     fun getOutputFromDynamics(robot: Pose2d, currentTime: Time = System.nanoTime().nanosecond): Output {
         val dt = deltaTimeController.updateTime(currentTime)
 
