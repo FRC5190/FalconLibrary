@@ -44,27 +44,43 @@ class PathFinder(
 
         val interpolator = SplineInterpolator()
 
-        val indexArray = pathNodes.indices.map { it.toDouble() }.toDoubleArray()
+        val samples = 4
 
-        val funcX = interpolator.interpolate(indexArray, pathNodes.map { it.x }.toDoubleArray())
-            .derivative()
-        val funcY = interpolator.interpolate(indexArray, pathNodes.map { it.y }.toDoubleArray())
-            .derivative()
+        val distances = mutableListOf<Double>()
+        distances.add(0.0)
 
-        return pathNodes.mapIndexed { index, point ->
-            when (index) {
-                0 -> start
-                pathNodes.size - 1 -> end
-                else -> {
-                    val dx = funcX.value(index.toDouble())
-                    val dy = funcY.value(index.toDouble())
-
-                    val angle = Math.atan2(dy, dx).radian
-
-                    Pose2d(point.toTranslation2d(), angle)
-                }
-            }
+        pathNodes.asSequence().zipWithNext().forEach { (a, b) ->
+            distances += distances.last() + a.distance(b)
         }
+
+        val distanceDelta = distances.last() / samples
+
+        val splineX = interpolator.interpolate(distances.toDoubleArray(), pathNodes.map { it.x }.toDoubleArray())
+        val splineDx = splineX.derivative()
+        val splineY = interpolator.interpolate(distances.toDoubleArray(), pathNodes.map { it.y }.toDoubleArray())
+        val splineDy = splineY.derivative()
+
+        val interpolatedNodes =  (1 until (samples - 1)).map { index ->
+            val distanceTraveled = distanceDelta * index
+
+            Pose2d(
+                Translation2d(
+                    splineX.value(distanceTraveled),
+                    splineY.value(distanceTraveled)
+                ),
+                Rotation2d(
+                    splineDx.value(distanceTraveled),
+                    splineDy.value(distanceTraveled),
+                    true
+                )
+            )
+        }.toTypedArray()
+
+        return listOf(
+            start,
+            *interpolatedNodes,
+            end
+        )
     }
 
     fun findPath(
@@ -174,7 +190,7 @@ class PathFinder(
             }.mapToSet { pair ->
                 Triple(pair.first, pair.second, Line(pair.first, pair.second, kEpsilon))
             }
-        val restrictedBetweenLines = restrictedWallLines
+        return restrictedWallLines
             .combinationPairs()
             .mapNotNullToSet { (line1, line2) ->
                 if (!line1.third.isParallelTo(line2.third) ||
@@ -186,7 +202,6 @@ class PathFinder(
                     kEpsilon
                 )
             }
-        return restrictedWallLines.mapToSet { it.third }.plusToSet(restrictedBetweenLines)
     }
 
     private fun Translation2d.toVector2d() = Vector2D(x.value, y.value)

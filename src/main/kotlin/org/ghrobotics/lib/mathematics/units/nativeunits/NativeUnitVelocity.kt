@@ -8,7 +8,7 @@ import org.ghrobotics.lib.mathematics.units.millisecond
 
 typealias NativeUnitVelocity = Velocity<NativeUnit>
 
-val Number.STUPer100ms get() = STU / 100.millisecond
+val Number.STUPer100ms: NativeUnitVelocity get() = STU / 100.millisecond
 
 operator fun NativeUnit.div(other: Time) = NativeUnitVelocity(value / other.value, this)
 

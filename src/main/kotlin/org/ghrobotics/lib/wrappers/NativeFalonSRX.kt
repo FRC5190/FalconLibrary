@@ -8,41 +8,30 @@ import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.nativeunits.*
 import kotlin.properties.Delegates.observable
 
-class GenericFalonSRX(
+class NativeFalonSRX(
     id: Int,
     timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<NativeUnit>(id, timeout) {
     override var allowedClosedLoopError by observable(0.STU) { _, _, newValue ->
-        configAllowableClosedloopError(
-                0,
-                newValue.value.toInt(),
-                timeoutInt
-        )
+        configAllowableClosedloopError(0, newValue.value.toInt(), timeoutInt)
     }
     override var motionCruiseVelocity by observable(0.STUPer100ms) { _, _, newValue ->
-        configMotionCruiseVelocity(
-                newValue.STUPer100ms.toInt(),
-                timeoutInt
-        )
+        configMotionCruiseVelocity(newValue.STUPer100ms.toInt(), timeoutInt)
     }
     override var motionAcceleration by observable(0.STUPer100msPerSecond) { _, _, newValue ->
-        configMotionAcceleration(
-                newValue.STUPer100msPerSecond.toInt(),
-                timeoutInt
-        )
+        configMotionAcceleration(newValue.STUPer100msPerSecond.toInt(), timeoutInt)
     }
     override var sensorPosition
         get() = getSelectedSensorPosition(0).STU
         set(value) {
             setSelectedSensorPosition(value.value.toInt(), 0, timeoutInt)
         }
-    override val sensorVelocity: NativeUnitVelocity
-        get() = getSelectedSensorVelocity(0).STUPer100ms
+    override val sensorVelocity get() = getSelectedSensorVelocity(0).STUPer100ms
 
     override fun set(controlMode: ControlMode, length: NativeUnit) = set(controlMode, length.value)
 
     override fun set(controlMode: ControlMode, velocity: NativeUnitVelocity) =
-            set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
+        set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(
         controlMode: ControlMode,

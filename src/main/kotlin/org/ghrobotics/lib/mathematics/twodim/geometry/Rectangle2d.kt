@@ -21,6 +21,7 @@ fun Rectangle2d(
     )
 }
 
+@Suppress("FunctionName")
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {

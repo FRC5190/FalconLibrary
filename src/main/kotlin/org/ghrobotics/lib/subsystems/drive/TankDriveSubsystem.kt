@@ -19,13 +19,14 @@ import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
 import org.ghrobotics.lib.wrappers.FalconSRX
+import org.ghrobotics.lib.wrappers.LinearFalconSRX
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
 
 abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
-    abstract val leftMaster: FalconSRX<Length>
-    abstract val rightMaster: FalconSRX<Length>
+    abstract val leftMaster: LinearFalconSRX
+    abstract val rightMaster: LinearFalconSRX
 
     abstract val ahrsSensor: AHRSSensor
     abstract val trajectoryFollower: TrajectoryFollower
