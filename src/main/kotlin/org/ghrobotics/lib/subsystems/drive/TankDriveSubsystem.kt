@@ -1,10 +1,12 @@
 package org.ghrobotics.lib.subsystems.drive
 
-/* ktlint-disable no-wildcard-imports */
 import com.ctre.phoenix.motorcontrol.ControlMode
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import kotlinx.coroutines.runBlocking
-import org.ghrobotics.lib.commands.*
+import org.ghrobotics.lib.commands.ConditionCommand
+import org.ghrobotics.lib.commands.FalconCommandGroup
+import org.ghrobotics.lib.commands.FalconSubsystem
+import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
@@ -13,20 +15,24 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.sensors.AHRSSensor
-import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationTest
-import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationTest
+import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
+import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
-import org.ghrobotics.lib.wrappers.FalconSRX
 import org.ghrobotics.lib.wrappers.LinearFalconSRX
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
 
+/**
+ * Represents a standard tank drive subsystem
+ */
 abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
+
     abstract val leftMaster: LinearFalconSRX
     abstract val rightMaster: LinearFalconSRX
+
 
     abstract val ahrsSensor: AHRSSensor
     abstract val trajectoryFollower: TrajectoryFollower
@@ -35,12 +41,25 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
 
     private var quickStopAccumulator = 0.0
 
+    /**
+     * Initialize odometry
+     */
     override fun lateInit() {
         runBlocking { localization.lateInit(this@TankDriveSubsystem) }
     }
 
-    // Common drive types
+    /**
+     * Zero the outputs of the drivetrain.
+     */
+    override fun zeroOutputs() {
+        tankDrive(0.0, 0.0)
+    }
 
+    // COMMON DRIVE TYPES
+
+    /**
+     * Arcade drive control
+     */
     fun arcadeDrive(
         linearPercent: Double,
         rotationPercent: Double
@@ -74,6 +93,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         tankDrive(leftMotorOutput, rightMotorOutput)
     }
 
+    /**
+     * Curvature or cheezy drive control
+     */
     fun curvatureDrive(
         linearPercent: Double,
         curvaturePercent: Double,
@@ -135,6 +157,10 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         tankDrive(leftMotorOutput, rightMotorOutput)
     }
 
+
+    /**
+     * Tank drive control
+     */
     fun tankDrive(
         leftPercent: Double,
         rightPercent: Double
@@ -143,12 +169,25 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         rightMaster.set(ControlMode.PercentOutput, rightPercent.coerceIn(-1.0, 1.0))
     }
 
-    // Pre-generated Trajectory Methods
 
+
+    // PRE GENERATED TRAJECTORY METHODS
+
+    /**
+     * Returns the follow trajectory command
+     *
+     * @param trajectory The trajectory to follow
+     */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>
     ) = FollowTrajectoryCommand(this, trajectory)
 
+    /**
+     * Returns the follow trajectory command
+     *
+     * @param trajectory The trajectory to follow
+     * @param pathMirrored Whether to mirror the path or not
+     */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>,
         pathMirrored: Boolean = false
@@ -156,6 +195,12 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         if (pathMirrored) it.mirror() else it
     })
 
+    /**
+     * Returns the follow trajectory command
+     *
+     * @param trajectory Source with the trajectory to follow
+     * @param pathMirrored Whether to mirror the path or not
+     */
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
         pathMirrored: Boolean = false
@@ -163,42 +208,74 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         if (pathMirrored) it.mirror() else it
     })
 
+    /**
+     * Returns the follow trajectory command
+     *
+     * @param trajectory The trajectory to follow
+     * @param pathMirrored Source with whether to mirror the path or not
+     */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>,
         pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory))
 
+    /**
+     * Returns the follow trajectory command
+     *
+     * @param trajectory Source with yhe trajectory to follow
+     * @param pathMirrored Source with whether to mirror the path or not
+     */
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
         pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory))
 
-    // Region conditional command methods
 
+
+    // REGIONAL CONDITIONAL COMMAND METHODS
+
+    /**
+     * Returns a condition command that checks if the robot is in a specified region
+     *
+     * @param region The region to check if the robot is in.
+     */
     fun withinRegion(region: Rectangle2d) =
         withinRegion(Source(region))
 
+
+    /**
+     * Returns a condition command that checks if the robot is in a specified region
+     *
+     * @param region Source with the region to check if the robot is in.
+     */
     fun withinRegion(region: Source<Rectangle2d>) =
         ConditionCommand { region().contains(localization.robotPosition.translation) }
 
+
+    // DRIVE CHARACTERIZATION
+
+    /**
+     * Characterizes the drivetrain and prints out CSV data to the console.
+     * All linear and angular Kv and Ka parameters can be found by calling this method.
+     */
     open fun characterizeDrive(wheelRadius: Length): FalconCommandGroup =
         sequential {
-            +QuasistaticCharacterizationTest(this@TankDriveSubsystem, wheelRadius, false)
+            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +StepVoltageCharacterizationTest(this@TankDriveSubsystem, wheelRadius, false)
+            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +QuasistaticCharacterizationTest(this@TankDriveSubsystem, wheelRadius, true)
+            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, true)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +StepVoltageCharacterizationTest(this@TankDriveSubsystem, wheelRadius, true)
+            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, true)
         }
 
     companion object {

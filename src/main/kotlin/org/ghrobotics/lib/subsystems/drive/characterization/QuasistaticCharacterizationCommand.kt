@@ -6,7 +6,14 @@ import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.subsystems.drive.TankDriveSubsystem
 import org.ghrobotics.lib.utils.DeltaTime
 
-class QuasistaticCharacterizationTest(
+/**
+ * Runs a quasistatic test by ramping voltage slowly to measure Kv.
+ *
+ * @param driveSubsystem The drive subsystem
+ * @param wheelRadius Wheel radius
+ * @param turnInPlace Whether the test should move forward for linear Kv or turn in place for angular Kv
+ */
+class QuasistaticCharacterizationCommand(
     private val driveSubsystem: TankDriveSubsystem,
     private val wheelRadius: Length,
     private val turnInPlace: Boolean

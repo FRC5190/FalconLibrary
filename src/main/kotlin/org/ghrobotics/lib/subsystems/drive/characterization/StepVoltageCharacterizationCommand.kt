@@ -7,7 +7,15 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.subsystems.drive.TankDriveSubsystem
 import org.ghrobotics.lib.utils.DeltaTime
 
-class StepVoltageCharacterizationTest(
+
+/**
+ * Runs a step voltage test by setting a constant voltage to measure Ka
+ *
+ * @param driveSubsystem The drive subsystem
+ * @param wheelRadius Wheel radius
+ * @param turnInPlace Whether the test should move forward for linear Ka or turn in place for angular Ka
+ */
+class StepVoltageCharacterizationCommand(
     private val driveSubsystem: TankDriveSubsystem,
     private val wheelRadius: Length,
     private val turnInPlace: Boolean
