@@ -93,7 +93,7 @@ class ParametricQuinticHermiteSpline(
         ax = -6 * x0 - 3 * dx0 - 0.5 * ddx0 + 0.5 * ddx1 - 3 * dx1 + 6 * x1
         bx = 15 * x0 + 8 * dx0 + 1.5 * ddx0 - ddx1 + 7 * dx1 - 15 * x1
         cx = -10 * x0 - 6 * dx0 - 1.5 * ddx0 + 0.5 * ddx1 - 4 * dx1 + 10 * x1
-        cx = 0.5 * ddx0
+        dx = 0.5 * ddx0
         ex = dx0
         fx = x0
 
