@@ -62,7 +62,7 @@ class PurePursuitController(
 
                 return@let lookaheadPose.transformBy(
                     Pose2d(
-                        Translation2d(remaining * if (iterator.reversed) -1 else 1, 0)
+                        Translation2d(remaining * if (iterator.reversed) -1 else 1, 0.0)
                     )
                 )
             }
