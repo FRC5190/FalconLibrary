@@ -99,9 +99,7 @@ class TrajectoryGenerator(
     ): IndexedTrajectory<Pose2dWithCurvature> {
         val splines = wayPoints.zipWithNext { a, b -> ParametricQuinticHermiteSpline(a, b) }.toMutableList()
 
-        // ParametricQuinticHermiteSpline.optimizeSpline(splines)
-        // TODO: Something weird is happening with this. We'll figure this out later. Kids, don't blindly copy 254 code.
-
+        ParametricQuinticHermiteSpline.optimizeSpline(splines)
 
         return trajectoryFromSplines(splines)
     }
