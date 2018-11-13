@@ -11,9 +11,6 @@
 
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
-import koma.end
-import koma.extensions.get
-import koma.mat
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
@@ -49,22 +46,24 @@ class ParametricQuinticHermiteSpline(
         ddy1 = 0.0
     )
 
+    /*
     private var xCoefficients = mat[0.0, 0.0, 0.0, 0.0, 0.0, 0.0].T
     private var yCoefficients = mat[0.0, 0.0, 0.0, 0.0, 0.0, 0.0].T
+    */
 
-    private val ax get() = xCoefficients[0]
-    private val bx get() = xCoefficients[1]
-    private val cx get() = xCoefficients[2]
-    private val dx get() = xCoefficients[3]
-    private val ex get() = xCoefficients[4]
-    private val fx get() = xCoefficients[5]
+    private var ax = 0.0
+    private var bx = 0.0
+    private var cx = 0.0
+    private var dx = 0.0
+    private var ex = 0.0
+    private var fx = 0.0
 
-    private val ay get() = yCoefficients[0]
-    private val by get() = yCoefficients[1]
-    private val cy get() = yCoefficients[2]
-    private val dy get() = yCoefficients[3]
-    private val ey get() = yCoefficients[4]
-    private val fy get() = yCoefficients[5]
+    private var ay = 0.0
+    private var by = 0.0
+    private var cy = 0.0
+    private var dy = 0.0
+    private var ey = 0.0
+    private var fy = 0.0
 
     val startPose get() = Pose2d(Translation2d(x0, y0), Rotation2d(dx0, dy0, true))
     val endPose get() = Pose2d(Translation2d(x1, y1), Rotation2d(dx1, dy1, true))
@@ -75,8 +74,9 @@ class ParametricQuinticHermiteSpline(
 
     // Perform hermite matrix multiplication to compute polynomial coefficients
     private fun computeCoefficients() {
+        /*
         val hermite = mat[
-            -06.0, -03.0, -00.5, +00.5, -03.0, +06.0 end
+                -06.0, -03.0, -00.5, +00.5, -03.0, +06.0 end
                 +15.0, +08.0, +01.5, -01.0, +07.0, -15.0 end
                 -10.0, -06.0, -01.5, +00.5, -04.0, +10.0 end
                 +00.0, +00.0, +00.5, +00.0, +00.0, +00.0 end
@@ -88,6 +88,21 @@ class ParametricQuinticHermiteSpline(
 
         xCoefficients = hermite * x
         yCoefficients = hermite * y
+        */
+
+        ax = -6 * x0 - 3 * dx0 - 0.5 * ddx0 + 0.5 * ddx1 - 3 * dx1 + 6 * x1
+        bx = 15 * x0 + 8 * dx0 + 1.5 * ddx0 - ddx1 + 7 * dx1 - 15 * x1
+        cx = -10 * x0 - 6 * dx0 - 1.5 * ddx0 + 0.5 * ddx1 - 4 * dx1 + 10 * x1
+        cx = 0.5 * ddx0
+        ex = dx0
+        fx = x0
+
+        ay = -6 * y0 - 3 * dy0 - 0.5 * ddy0 + 0.5 * ddy1 - 3 * dy1 + 6 * y1
+        by = 15 * y0 + 8 * dy0 + 1.5 * ddy0 - ddy1 + 7 * dy1 - 15 * y1
+        cy = -10 * y0 - 6 * dy0 - 1.5 * ddy0 + 0.5 * ddy1 - 4 * dy1 + 10 * y1
+        dy = 0.5 * ddy0
+        ey = dy0
+        fy = y0
     }
 
     // Get point at a specified t
