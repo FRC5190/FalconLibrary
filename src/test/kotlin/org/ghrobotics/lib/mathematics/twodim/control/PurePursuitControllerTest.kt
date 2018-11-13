@@ -17,19 +17,21 @@ class PurePursuitControllerTest {
     private lateinit var trajectoryFollower: TrajectoryFollower
 
     private val kLat = 4.0
-    private val kLookaheadTime = 0.3.second
+    private val kLookaheadTime = 0.4.second
+    private val kMinLookaheadDistance = 24.inch
 
     @Test
     fun testTrajectoryFollower() {
         val iterator = TrajectoryGeneratorTest.trajectory.iterator()
         trajectoryFollower = PurePursuitController(
-                TrajectoryGeneratorTest.drive,
-                kLat,
-                kLookaheadTime
+            TrajectoryGeneratorTest.drive,
+            kLat,
+            kLookaheadTime,
+            kMinLookaheadDistance
         )
         trajectoryFollower.resetTrajectory(TrajectoryGeneratorTest.trajectory)
 
-        val error = Pose2d(1.feet, 50.inch, 5.degree)
+        val error = Pose2d()
         var totalpose = iterator.currentState.state.state.pose.transformBy(error)
 
         var time = 0.second
@@ -47,8 +49,8 @@ class PurePursuitControllerTest {
             val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
 
             val wheelstate = DifferentialDrive.WheelState(
-                    output.leftSetPoint * dt / 3.inch,
-                    output.rightSetPoint * dt / 3.inch
+                output.leftSetPoint * dt / 3.inch,
+                output.rightSetPoint * dt / 3.inch
             )
 
             val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
@@ -56,9 +58,9 @@ class PurePursuitControllerTest {
             time += dt
 
             totalpose += Twist2d(
-                    k.linear.meter,
-                    0.meter,
-                    k.angular.radian * 1.05
+                k.linear.meter,
+                0.meter,
+                k.angular.radian * 1.05
             ).asPose
 
             xList.add(totalpose.translation.x.feet)
@@ -71,7 +73,7 @@ class PurePursuitControllerTest {
         val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second)
 
         val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
-                .xAxisTitle("X").yAxisTitle("Y").build()
+            .xAxisTitle("X").yAxisTitle("Y").build()
 
         chart.styler.markerSize = 8
         chart.styler.seriesColors = arrayOf(Color.ORANGE, Color(151, 60, 67))
@@ -109,7 +111,7 @@ class PurePursuitControllerTest {
         } < 0.50)
         assert(rerror.degree.also {
             println("[Test] Rotational Error: $it degrees")
-        } < 10.0)
+        } < 20.0)
 ////
 //        SwingWrapper(chart).displayChart()
 //        Thread.sleep(1000000)

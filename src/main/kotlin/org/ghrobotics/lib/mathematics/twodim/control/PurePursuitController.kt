@@ -2,8 +2,8 @@ package org.ghrobotics.lib.mathematics.twodim.control
 
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
+import org.ghrobotics.lib.mathematics.units.*
 import kotlin.math.pow
 
 
@@ -14,7 +14,7 @@ import kotlin.math.pow
  * @param drive Instance of the differential drive that represents the dynamics of the drivetrain.
  * @param kLat Constant of latitude error. Increase this for more aggressive velocity correction if the robot falls behind.
  * @param kLookaheadTime Constant for lookahead time. Larger values mean slower but more stable convergence.
- * @param kMinLookaheadDistance Constant for minimum lookahead distance. Should help with more stability, especially toward the end of 
+ * @param kMinLookaheadDistance Constant for minimum lookahead distance. Should help with more stability, especially toward the end of
  * the path.
  */
 class PurePursuitController(
@@ -30,10 +30,46 @@ class PurePursuitController(
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
         // Compute the lookahead state.
-        val lookaheadState = iterator.preview(kLookaheadTime)
+        val lookaheadState: Pose2d = iterator.preview(kLookaheadTime).state.state.pose.let {
 
-        // Transform the lookahead into the robot's coordinate frame.
-        val lookaheadTransform = lookaheadState.state.state.pose inFrameOfReferenceOf robotPose
+            // The lookahead point is farther from the robot than the minimum lookahead distance.
+            // Therefore we can use this point.
+            if ((it inFrameOfReferenceOf robotPose).translation._norm >= kMinLookaheadDistance.value) {
+                it
+            }
+
+            // We need to find a point that is at least the minimum lookahead distance away.
+            else {
+                var lookaheadPose = iterator.currentState.state.state.pose
+                var previewedTime = 0.second
+
+                // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
+                // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
+                while (iterator.progress > previewedTime) {
+                    previewedTime += 0.02.second
+
+                    lookaheadPose = iterator.preview(previewedTime).state.state.pose
+                    val lookaheadDistance = (lookaheadPose inFrameOfReferenceOf robotPose).translation._norm
+
+                    if (lookaheadDistance > kMinLookaheadDistance.value) {
+                        return@let lookaheadPose
+                    }
+                }
+
+                // Extend the trajectory.
+                val remaining =
+                    kMinLookaheadDistance.value - (lookaheadPose inFrameOfReferenceOf robotPose).translation._norm
+
+                return@let lookaheadPose.transformBy(
+                    Pose2d(
+                        Translation2d(remaining.meter * if (iterator.reversed) -1 else 1, 0.meter)
+                    )
+                )
+            }
+        }
+
+        // Find the appropriate lookahead point.
+        val lookaheadTransform = (lookaheadState inFrameOfReferenceOf robotPose)
 
         // Calculate latitude error.
         val xError = (referencePose inFrameOfReferenceOf robotPose).translation._x

@@ -13,7 +13,8 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(
-    points: List<TimedEntry<S>>
+    points: List<TimedEntry<S>>,
+    val reversed: Boolean
 ) : Trajectory<Time, TimedEntry<S>>(points) {
 
     override fun sample(interpolant: Time) = sample(interpolant.value)
@@ -84,11 +85,12 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
 class TimedIterator<S : VaryInterpolatable<S>>(
     trajectory: TimedTrajectory<S>
 ) : TrajectoryIterator<Time, TimedEntry<S>>(trajectory) {
+    val reversed = trajectory.reversed
     override fun addition(a: Time, b: Time) = a + b
 }
 
 fun TimedTrajectory<Pose2dWithCurvature>.mirror() =
-    TimedTrajectory(points.map { TimedEntry(it.state.mirror, it._t, it._velocity, it._acceleration) })
+    TimedTrajectory(points.map { TimedEntry(it.state.mirror, it._t, it._velocity, it._acceleration) }, this.reversed)
 
 fun TimedTrajectory<Pose2dWithCurvature>.transform(transform: Pose2d) =
-    TimedTrajectory(points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) })
+    TimedTrajectory(points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) }, this.reversed)

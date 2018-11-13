@@ -23,7 +23,7 @@ abstract class TrajectoryIterator<U : Comparable<U>, S : VaryInterpolatable<S>>(
 
     protected abstract fun addition(a: U, b: U): U
 
-    private var progress = trajectory.firstInterpolant
+    var progress = trajectory.firstInterpolant
     private var sample = trajectory.sample(progress)
 
     val isDone get() = progress >= trajectory.lastInterpolant

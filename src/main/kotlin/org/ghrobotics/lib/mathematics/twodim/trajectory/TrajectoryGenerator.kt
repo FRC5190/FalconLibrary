@@ -351,6 +351,6 @@ class TrajectoryGenerator(
                 )
             )
         }
-        return TimedTrajectory(timedStates)
+        return TimedTrajectory(timedStates, reversed)
     }
 }
