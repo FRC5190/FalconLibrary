@@ -58,17 +58,17 @@ class FollowTrajectoryCommand(
 
         // Set outputs
         driveSubsystem.leftMaster.set(
-                ControlMode.Velocity,
-                output.leftSetPoint,
-                DemandType.ArbitraryFeedForward,
-                output.leftVoltage.value / 12.0
+            ControlMode.Velocity,
+            output.leftSetPoint,
+            DemandType.ArbitraryFeedForward,
+            output.leftVoltage.value / 12.0
         )
 
         driveSubsystem.rightMaster.set(
-                ControlMode.Velocity,
-                output.rightSetPoint,
-                DemandType.ArbitraryFeedForward,
-                output.rightVoltage.value / 12.0
+            ControlMode.Velocity,
+            output.rightSetPoint,
+            DemandType.ArbitraryFeedForward,
+            output.rightVoltage.value / 12.0
         )
 
         trajectoryFinished = trajectoryFollower.isFinished

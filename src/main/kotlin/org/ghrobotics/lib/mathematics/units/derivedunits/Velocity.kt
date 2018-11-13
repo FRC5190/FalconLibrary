@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
-/* ktlint-disable no-wildcard-imports */
+
 import org.ghrobotics.lib.mathematics.units.*
 
 val <T : SIValue<T>> T.velocity: Velocity<T> get() = Velocity(value, this)

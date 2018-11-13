@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
-/* ktlint-disable no-wildcard-imports */
+
 import org.ghrobotics.lib.mathematics.units.SIConstants
 import org.ghrobotics.lib.mathematics.units.SIValue
 

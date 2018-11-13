@@ -22,9 +22,9 @@ abstract class WorldObject(model: Model) : Disposable {
 
         val matrix = Matrix4().set(position.cpy().sub(collisionObjectOffset), quaternion)
 
-        if(collisionObject is btRigidBody) {
+        if (collisionObject is btRigidBody) {
             collisionObject.proceedToTransform(matrix)
-        }else{
+        } else {
             collisionObject.worldTransform = matrix
         }
     }

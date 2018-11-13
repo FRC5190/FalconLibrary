@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-/* ktlint-disable no-wildcard-imports */
+
 import com.team254.lib.physics.DCMotorTransmission
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d

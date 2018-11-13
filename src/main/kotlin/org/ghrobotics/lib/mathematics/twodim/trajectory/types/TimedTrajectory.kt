@@ -93,4 +93,7 @@ fun TimedTrajectory<Pose2dWithCurvature>.mirror() =
     TimedTrajectory(points.map { TimedEntry(it.state.mirror, it._t, it._velocity, it._acceleration) }, this.reversed)
 
 fun TimedTrajectory<Pose2dWithCurvature>.transform(transform: Pose2d) =
-    TimedTrajectory(points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) }, this.reversed)
+    TimedTrajectory(
+        points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) },
+        this.reversed
+    )

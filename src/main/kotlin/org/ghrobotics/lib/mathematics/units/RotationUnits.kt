@@ -38,9 +38,9 @@ class Rotation2d : SIUnit<Rotation2d> {
 
     override fun plus(other: Rotation2d): Rotation2d {
         return Rotation2d(
-                cos * other.cos - sin * other.sin,
-                cos * other.sin + sin * other.cos,
-                true
+            cos * other.cos - sin * other.sin,
+            cos * other.sin + sin * other.cos,
+            true
         )
     }
 

@@ -5,7 +5,7 @@
 
 package org.ghrobotics.lib.wrappers
 
-/* ktlint-disable no-wildcard-imports */
+
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.mathematics.units.*

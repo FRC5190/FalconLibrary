@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-/* ktlint-disable no-wildcard-imports */
+
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.apache.commons.math3.geometry.euclidean.twod.Line
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
@@ -60,7 +60,7 @@ class PathFinder(
         val splineY = interpolator.interpolate(distances.toDoubleArray(), pathNodes.map { it.y }.toDoubleArray())
         val splineDy = splineY.derivative()
 
-        val interpolatedNodes =  (1 until (samples - 1)).map { index ->
+        val interpolatedNodes = (1 until (samples - 1)).map { index ->
             val distanceTraveled = distanceDelta * index
 
             Pose2d(
