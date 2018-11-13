@@ -3,6 +3,7 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.Length
 import kotlin.math.pow
 
 
@@ -13,11 +14,14 @@ import kotlin.math.pow
  * @param drive Instance of the differential drive that represents the dynamics of the drivetrain.
  * @param kLat Constant of latitude error. Increase this for more aggressive velocity correction if the robot falls behind.
  * @param kLookaheadTime Constant for lookahead time. Larger values mean slower but more stable convergence.
+ * @param kMinLookaheadDistance Constant for minimum lookahead distance. Should help with more stability, especially toward the end of 
+ * the path.
  */
 class PurePursuitController(
     drive: DifferentialDrive,
     private val kLat: Double,
-    private val kLookaheadTime: Time
+    private val kLookaheadTime: Time,
+    private val kMinLookaheadDistance: Length = 1.meter
 ) : TrajectoryFollower(drive) {
 
     /**
