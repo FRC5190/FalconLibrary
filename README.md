@@ -8,7 +8,6 @@ Falcon Library is the backend library that is used on all FRC Team 5190 robots. 
  * Wrapped WPILib Commands and Subsystems with Kotlin Coroutines asynchronous optimzation.
 
  * High level mathematics for path generation, tracking, custom typesafe units of measure, etc.
-    * One-dimensional trapezoid and s-curve velocity profile generation.
     * Two-dimensional parametric and functional splines.
     * Arc length of parametric quintic hermite splines evaluated using recursive arc subdivision (from Team 254).
     * Trajectory generation that respects constraints (i.e. centripetal acceleration, motor voltage).
