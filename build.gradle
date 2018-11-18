@@ -27,6 +27,10 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
+maven {
+    url 'https://pkgs.dev.azure.com/frc5190/_packaging/FalconLibraryMavenPublish/maven/v1'
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
