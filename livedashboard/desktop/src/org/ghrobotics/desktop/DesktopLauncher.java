@@ -5,8 +5,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import org.ghrobotics.Visualizer;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new Visualizer(), config);
-	}
+    public static void main(String[] arg) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        new LwjglApplication(new Visualizer(), config);
+    }
 }

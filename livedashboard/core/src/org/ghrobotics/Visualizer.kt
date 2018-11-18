@@ -61,7 +61,7 @@ class Visualizer : ApplicationAdapter() {
 
         environment = Environment()
         environment.set(ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f))
-        shadowLight = DirectionalShadowLight(1024, 1024, Constants.FIELD_LENGTH,  Constants.FIELD_LENGTH, 1f, 100f)
+        shadowLight = DirectionalShadowLight(1024, 1024, Constants.FIELD_LENGTH, Constants.FIELD_LENGTH, 1f, 100f)
         shadowLight.set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f)
         environment.add(shadowLight)
         environment.shadowMap = shadowLight
@@ -76,11 +76,15 @@ class Visualizer : ApplicationAdapter() {
 
         fieldModel = objLoader.loadModel(Gdx.files.internal("field/field2.obj"))
 
-        robotModel = modelBuilder.createBox(Constants.ROBOT_WIDTH, 1f, Constants.ROBOT_LENGTH, Material(ColorAttribute.createDiffuse(Color.BLUE)),
-                VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong())
+        robotModel = modelBuilder.createBox(
+            Constants.ROBOT_WIDTH, 1f, Constants.ROBOT_LENGTH, Material(ColorAttribute.createDiffuse(Color.BLUE)),
+            VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong()
+        )
 
-        robotHistoryModel = modelBuilder.createSphere(0.1f, 0.1f, 0.1f, 5, 5, Material(ColorAttribute.createDiffuse(Color.RED)),
-                VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong())
+        robotHistoryModel = modelBuilder.createSphere(
+            0.1f, 0.1f, 0.1f, 5, 5, Material(ColorAttribute.createDiffuse(Color.RED)),
+            VertexAttributes.Usage.Position.toLong() or VertexAttributes.Usage.Normal.toLong()
+        )
 
         val freeTypeFontGenerator = FreeTypeFontGenerator(Gdx.files.internal("font/Kanit-Regular.ttf"))
         val freeTypeParameter = FreeTypeFontGenerator.FreeTypeFontParameter()
@@ -112,7 +116,8 @@ class Visualizer : ApplicationAdapter() {
         robot = Robot(robotModel)
         robotHistory = ModelInstance(robotHistoryModel)
 
-        field.collisionObject.worldTransform = Matrix4().setToTranslation(Vector3(Constants.FIELD_LENGTH / 2f, 0f, Constants.FIELD_WIDTH / 2f))
+        field.collisionObject.worldTransform =
+            Matrix4().setToTranslation(Vector3(Constants.FIELD_LENGTH / 2f, 0f, Constants.FIELD_WIDTH / 2f))
         robot.collisionObject.worldTransform = Matrix4().setToTranslation(Vector3(0f, 10f, 0f))
 
         world.addToWorld(field)
@@ -134,8 +139,10 @@ class Visualizer : ApplicationAdapter() {
         RobotTracker.update()
 
         val currentSegment = RobotTracker.currentRobotSegment
-        robot.proceedToTransform(Vector3(currentSegment.location.x, 0f, currentSegment.location.y),
-                Quaternion().setEulerAnglesRad(currentSegment.angle.toFloat() + Math.PI.toFloat() / 2f, 0f, 0f))
+        robot.proceedToTransform(
+            Vector3(currentSegment.location.x, 0f, currentSegment.location.y),
+            Quaternion().setEulerAnglesRad(currentSegment.angle.toFloat() + Math.PI.toFloat() / 2f, 0f, 0f)
+        )
 
         world.update()
 
@@ -174,10 +181,12 @@ class Visualizer : ApplicationAdapter() {
         spriteBatch.projectionMatrix = guiCamera.combined
         spriteBatch.begin()
         kanitFont.color = Color.BLACK
-        kanitFont.draw(spriteBatch,
-                "Robot X: ${Communications.robotX}\n" +
-                        "Robot Y: ${Communications.robotY}",
-                -guiCamera.viewportWidth / 2f, guiCamera.viewportHeight / 3f)
+        kanitFont.draw(
+            spriteBatch,
+            "Robot X: ${Communications.robotX}\n" +
+                "Robot Y: ${Communications.robotY}",
+            -guiCamera.viewportWidth / 2f, guiCamera.viewportHeight / 3f
+        )
         spriteBatch.end()
 
     }

@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics
 
-/* ktlint-disable no-wildcard-imports */
+
 import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerMinute
 import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerSecond

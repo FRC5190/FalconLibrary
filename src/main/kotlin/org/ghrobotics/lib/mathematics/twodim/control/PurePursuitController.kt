@@ -3,7 +3,10 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.second
 import kotlin.math.pow
 
 

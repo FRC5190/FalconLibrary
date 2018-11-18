@@ -11,7 +11,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
-/* ktlint-disable no-wildcard-imports */
+
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.units.Rotation2d

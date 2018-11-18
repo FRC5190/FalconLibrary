@@ -8,7 +8,7 @@ typealias FalconXboxBuilder = FalconHIDBuilder<XboxController>
 
 // Builder Helpers
 fun xboxController(port: Int, block: FalconXboxBuilder.() -> Unit): FalconXboxController =
-        XboxController(port).mapControls(block)
+    XboxController(port).mapControls(block)
 
 fun FalconXboxBuilder.button(
     button: XboxButton,

@@ -16,7 +16,13 @@ class Robot(model: Model) : WorldObject(model) {
 
     init {
         val boundingBox = modelInstance.calculateBoundingBox(BoundingBox())
-        collisionObject = btRigidBody(btRigidBody.btRigidBodyConstructionInfo(70f, null, btBoxShape(Vector3(boundingBox.width / 2f, boundingBox.height / 2f, boundingBox.depth / 2f))))
+        collisionObject = btRigidBody(
+            btRigidBody.btRigidBodyConstructionInfo(
+                70f,
+                null,
+                btBoxShape(Vector3(boundingBox.width / 2f, boundingBox.height / 2f, boundingBox.depth / 2f))
+            )
+        )
 
         collisionObjectOffset = Vector3(0f, -boundingBox.height / 2f, 0f)
     }

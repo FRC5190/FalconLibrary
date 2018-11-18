@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.wrappers
 
-/* ktlint-disable no-wildcard-imports */
+
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.mathematics.units.Time
@@ -8,7 +8,7 @@ import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.nativeunits.*
 import kotlin.properties.Delegates.observable
 
-class NativeFalonSRX(
+class NativeFalconSRX(
     id: Int,
     timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<NativeUnit>(id, timeout) {

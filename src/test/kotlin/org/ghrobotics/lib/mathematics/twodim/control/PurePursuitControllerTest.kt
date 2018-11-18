@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
-/* ktlint-disable no-wildcard-imports */
+
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d

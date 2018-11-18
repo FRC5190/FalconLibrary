@@ -1,9 +1,8 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-/* ktlint-disable no-wildcard-imports */
+
 import com.team254.lib.physics.DCMotorTransmission
 import com.team254.lib.physics.DifferentialDrive
-import koma.platformsupport.assert
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint

@@ -170,7 +170,6 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     }
 
 
-
     // PRE GENERATED TRAJECTORY METHODS
 
     /**
@@ -229,7 +228,6 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
         pathMirrored: BooleanSource
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory))
-
 
 
     // REGIONAL CONDITIONAL COMMAND METHODS

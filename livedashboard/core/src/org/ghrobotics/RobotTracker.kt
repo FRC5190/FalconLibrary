@@ -12,12 +12,18 @@ object RobotTracker {
 
     fun update() {
         currentRobotSegment = RobotHistorySegment(
-                Vector2(Communications.robotX.toFloat() / 3f, Constants.FIELD_WIDTH - Communications.effectiveRobotY.toFloat() / 3f),
-                Communications.effectiveRobotHeading
+            Vector2(
+                Communications.robotX.toFloat() / 3f,
+                Constants.FIELD_WIDTH - Communications.effectiveRobotY.toFloat() / 3f
+            ),
+            Communications.effectiveRobotHeading
         )
         val currentPathSegment = RobotHistorySegment(
-                Vector2(Communications.pathX.toFloat() / 3f, Constants.FIELD_WIDTH - Communications.effectivePathY.toFloat() / 3f),
-                Communications.effectivePathHeading
+            Vector2(
+                Communications.pathX.toFloat() / 3f,
+                Constants.FIELD_WIDTH - Communications.effectivePathY.toFloat() / 3f
+            ),
+            Communications.effectivePathHeading
         )
         robotHistory.addIfDifferent(currentRobotSegment)
         pathHistory.addIfDifferent(currentPathSegment)

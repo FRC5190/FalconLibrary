@@ -49,7 +49,7 @@ abstract class FalconRobotBase : RobotBase() {
     fun onEnter(enterState: Mode, listener: suspend () -> Unit) = onEnterListeners.add(enterState to listener)
     fun onLeave(leaveState: Mode, listener: suspend () -> Unit) = onLeaveListeners.add(leaveState to listener)
     fun onTransition(fromState: Mode, toState: Mode, listener: suspend () -> Unit) =
-            onTransitionListeners.add((fromState to toState) to listener)
+        onTransitionListeners.add((fromState to toState) to listener)
 
     fun onWhile(whileState: Mode, listener: suspend () -> Unit) = onWhileListeners.add(whileState to listener)
 
@@ -117,7 +117,8 @@ abstract class FalconRobotBase : RobotBase() {
                 // Transition
                 for ((modes, listener) in onTransitionListeners) {
                     if ((modes.first == currentMode || modes.first == Mode.ANY) &&
-                            (modes.second == newMode || modes.second == Mode.ANY)) {
+                        (modes.second == newMode || modes.second == Mode.ANY)
+                    ) {
                         listener()
                     }
                 }

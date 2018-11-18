@@ -26,10 +26,10 @@ class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
 
     fun pov(angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = pov(0, angle, block)
     fun pov(pov: Int, angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) =
-            button(HIDPOVSource(genericHID, pov, angle), block = block)
+        button(HIDPOVSource(genericHID, pov, angle), block = block)
 
     fun state(state: BooleanSource, block: FalconHIDBuilder<T>.() -> Unit) =
-            stateControlBuilders.compute(state) { _, _ -> FalconHIDBuilder(genericHID).also(block) }
+        stateControlBuilders.compute(state) { _, _ -> FalconHIDBuilder(genericHID).also(block) }
 
     fun button(
         source: HIDSource,
