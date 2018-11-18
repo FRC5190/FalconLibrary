@@ -24,11 +24,14 @@ dependencies {
     testImplementation "junit:junit:4.12"
 }
 
-maven {
-    url 'https://pkgs.dev.azure.com/frc5190/_packaging/FalconLibraryMavenPublish/maven/v1'
-}
 
 publishing {
+    repositories {
+        maven {
+            url 'https://pkgs.dev.azure.com/frc5190/_packaging/FalconLibraryMavenPublish/maven/v1'
+        }
+    }
+
     publications {
         maven(MavenPublication) {
             groupId = 'org.ghrobotics.lib'
@@ -38,6 +41,8 @@ publishing {
             from components.java
 
         }
+
+
     }
 }
 
