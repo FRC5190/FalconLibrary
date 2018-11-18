@@ -26,16 +26,6 @@ dependencies {
 
 
 publishing {
-    repositories {
-        maven {
-            url 'https://pkgs.dev.azure.com/frc5190/_packaging/FalconLibraryMavenPublish/maven/v1'
-            credentials {
-                username "VSTS"
-                password System.getenv("VSTS_ENV_ACCESS_TOKEN")
-            }
-        }
-    }
-
     publications {
         maven(MavenPublication) {
             groupId = 'org.ghrobotics.lib'
