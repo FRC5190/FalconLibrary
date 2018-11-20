@@ -29,7 +29,7 @@ suspend fun CoroutineScope.loopFrequency(
         block(this)
         val delayNeeded = nextNS - System.nanoTime()
         nextNS += timeBetweenUpdate
-        delay(delayNeeded, TimeUnit.NANOSECONDS)
+        delay(delayNeeded / 1000000L)
     }
 }
 
