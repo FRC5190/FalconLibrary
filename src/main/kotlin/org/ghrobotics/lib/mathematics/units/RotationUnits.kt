@@ -46,7 +46,7 @@ class Rotation2d : SIUnit<Rotation2d> {
 
     override fun minus(other: Rotation2d) = plus(-other)
 
-    override fun createNew(newBaseValue: Double) = Rotation2d(newBaseValue)
+    override fun createNew(newValue: Double) = Rotation2d(newValue)
 
     companion object {
         val kRotation = 360.degree

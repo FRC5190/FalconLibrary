@@ -47,5 +47,5 @@ class ElectricCurrent(
     val zeptoamp get() = value / SIConstants.kZepto
     val yoctoamp get() = value / SIConstants.kYocto
 
-    override fun createNew(newBaseValue: Double) = ElectricCurrent(newBaseValue)
+    override fun createNew(newValue: Double) = ElectricCurrent(newValue)
 }

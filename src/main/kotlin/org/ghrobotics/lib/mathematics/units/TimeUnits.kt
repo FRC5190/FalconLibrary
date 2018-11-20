@@ -67,5 +67,5 @@ class Time(
     val zeptosecond get() = value / SIConstants.kZepto
     val yoctosecond get() = value / SIConstants.kYocto
 
-    override fun createNew(newBaseValue: Double) = Time(newBaseValue)
+    override fun createNew(newValue: Double) = Time(newValue)
 }

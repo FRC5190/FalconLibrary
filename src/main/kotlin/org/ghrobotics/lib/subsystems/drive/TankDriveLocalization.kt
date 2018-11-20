@@ -6,6 +6,7 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -22,6 +23,7 @@ class TankDriveLocalization {
 
     private lateinit var driveSubsystem: TankDriveSubsystem
 
+    @ObsoleteCoroutinesApi
     private val localizationScope = CoroutineScope(newSingleThreadContext("Localization"))
     private val localizationMutex = Mutex()
 
@@ -41,6 +43,7 @@ class TankDriveLocalization {
     /**
      * Initialize odometry with the specified drive subsystem.
      */
+    @ObsoleteCoroutinesApi
     internal suspend fun lateInit(driveSubsystem: TankDriveSubsystem) {
         this.driveSubsystem = driveSubsystem
         reset()

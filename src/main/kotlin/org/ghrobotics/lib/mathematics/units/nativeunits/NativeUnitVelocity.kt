@@ -10,6 +10,7 @@ typealias NativeUnitVelocity = Velocity<NativeUnit>
 
 val Number.STUPer100ms: NativeUnitVelocity get() = STU / 100.millisecond
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 operator fun NativeUnit.div(other: Time) = NativeUnitVelocity(value / other.value, this)
 
 val NativeUnitVelocity.STUPer100ms get() = value / 10

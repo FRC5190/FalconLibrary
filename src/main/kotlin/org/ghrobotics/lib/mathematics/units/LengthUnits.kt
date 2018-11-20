@@ -79,5 +79,5 @@ class Length(
     val zeptometer get() = value / SIConstants.kZepto
     val yoctometer get() = value / SIConstants.kYocto
 
-    override fun createNew(newBaseValue: Double) = Length(newBaseValue)
+    override fun createNew(newValue: Double) = Length(newValue)
 }

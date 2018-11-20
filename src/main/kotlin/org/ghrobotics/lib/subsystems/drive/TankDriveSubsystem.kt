@@ -2,6 +2,7 @@ package org.ghrobotics.lib.subsystems.drive
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
@@ -44,6 +45,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     /**
      * Initialize odometry
      */
+    @ObsoleteCoroutinesApi
     override fun lateInit() {
         runBlocking { localization.lateInit(this@TankDriveSubsystem) }
     }

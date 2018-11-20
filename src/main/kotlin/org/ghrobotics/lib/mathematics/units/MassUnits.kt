@@ -47,5 +47,5 @@ class Mass(
     val zeptogram get() = value / SIConstants.kZeptoOffsetKilo
     val yoctogram get() = value / SIConstants.kYoctoOffsetKilo
 
-    override fun createNew(newBaseValue: Double) = Mass(newBaseValue)
+    override fun createNew(newValue: Double) = Mass(newValue)
 }

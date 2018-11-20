@@ -113,6 +113,7 @@ abstract class FalconCommand(
         private var job: Job? = null
         private var useCommandLoop = false
 
+        @ObsoleteCoroutinesApi
         override fun initialize() {
             val frequency = executeFrequency
             if (frequency > 0) {
@@ -160,6 +161,7 @@ abstract class FalconCommand(
     fun withTimeout(timeout: Time) = also { (wrappedValue as IWpiCommand).timeout = timeout }
 
     companion object {
+        @ObsoleteCoroutinesApi
         protected val commandScope = CoroutineScope(newFixedThreadPoolContext(2, "Command"))
     }
 }

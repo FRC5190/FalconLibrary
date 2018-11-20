@@ -61,10 +61,10 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
     val velocity get() = _velocity.meter.velocity
     val acceleration get() = _acceleration.meter.acceleration
 
-    override fun interpolate(endValue: TimedEntry<S>, interpolant: Double): TimedEntry<S> {
-        val newT = _t.lerp(endValue._t, interpolant)
-        val deltaT = newT - t.value
-        if (deltaT < 0.0) return endValue.interpolate(this, 1.0 - interpolant)
+    override fun interpolate(endValue: TimedEntry<S>, t: Double): TimedEntry<S> {
+        val newT = _t.lerp(endValue._t, t)
+        val deltaT = newT - this.t.value
+        if (deltaT < 0.0) return endValue.interpolate(this, 1.0 - t)
 
         val reversing = _velocity < 0.0 || _velocity epsilonEquals 0.0 && _acceleration < 0.0
 
