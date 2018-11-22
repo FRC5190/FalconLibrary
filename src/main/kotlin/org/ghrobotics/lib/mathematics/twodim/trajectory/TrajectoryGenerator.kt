@@ -13,6 +13,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricQuinticHermiteSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSpline
@@ -72,12 +73,13 @@ class TrajectoryGenerator(
         var trajectory = trajectoryFromSplineWaypoints(newWayPoints).points
 
         // After trajectory generation, flip theta back so it's relative to the field.
-        // Also fix curvature and its derivative
+        // Also fix curvature.
+        // Derivative of curvature should stay the same because the change in curvature will be the same.
         if (reversed) {
             trajectory = trajectory.map { state ->
                 Pose2dWithCurvature(
                     pose = state.pose + flippedPosition,
-                    curvature = -state.curvature
+                    curvature = Pose2dCurvature(-state.curvature._curvature, state.curvature.dkds)
                 )
             }
         }
