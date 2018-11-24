@@ -26,7 +26,7 @@ class DCMotorTransmission(
     fun getFreeSpeedAtVoltage(voltage: Double): Double {
         return when {
             voltage > kEpsilon -> Math.max(0.0, voltage - frictionVoltage) * speedPerVolt
-            voltage < kEpsilon -> Math.min(0.0, voltage + frictionVoltage) * speedPerVolt
+            voltage < -kEpsilon -> Math.min(0.0, voltage + frictionVoltage) * speedPerVolt
             else -> 0.0
         }
     }
