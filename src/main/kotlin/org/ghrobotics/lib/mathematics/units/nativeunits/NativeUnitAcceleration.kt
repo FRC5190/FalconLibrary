@@ -2,16 +2,15 @@ package org.ghrobotics.lib.mathematics.units.nativeunits
 
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.second
 
 typealias NativeUnitAcceleration = Acceleration<NativeUnit>
 
 fun <T : SIUnit<T>> Acceleration<T>.fromModel(model: NativeUnitModel<T>): NativeUnitAcceleration =
-    model.fromModel(type.createNew(value)).acceleration
+    NativeUnitAcceleration(model.fromModel(value), NativeUnit(0.0))
 
 fun <T : SIUnit<T>> NativeUnitAcceleration.toModel(model: NativeUnitModel<T>): Acceleration<T> =
-    model.toModel(type.createNew(value)).acceleration
+    Acceleration(model.toModel(value), model.zero)
 
 val Number.STUPer100msPerSecond: NativeUnitAcceleration
     get() = STUPer100ms / 1.second

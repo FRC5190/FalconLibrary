@@ -24,7 +24,7 @@ class FalconSRX<T : SIUnit<T>>(
     timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<T>(id, timeout) {
     override var allowedClosedLoopError by observable(model.zero) { _, _, newValue ->
-        configAllowableClosedloopError(0, model.fromModel(newValue).value.toInt(), timeoutInt)
+        configAllowableClosedloopError(0, model.fromModel(newValue.value).toInt(), timeoutInt)
     }
     override var motionCruiseVelocity by observable(model.zero.velocity) { _, _, newValue ->
         configMotionCruiseVelocity(newValue.fromModel(model).STUPer100ms.toInt(), timeoutInt)

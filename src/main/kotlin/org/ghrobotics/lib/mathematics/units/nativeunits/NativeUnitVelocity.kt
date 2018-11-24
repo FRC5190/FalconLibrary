@@ -3,7 +3,6 @@ package org.ghrobotics.lib.mathematics.units.nativeunits
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.millisecond
 
 typealias NativeUnitVelocity = Velocity<NativeUnit>
@@ -16,7 +15,7 @@ operator fun NativeUnit.div(other: Time) = NativeUnitVelocity(value / other.valu
 val NativeUnitVelocity.STUPer100ms get() = value / 10
 
 fun <T : SIUnit<T>> Velocity<T>.fromModel(model: NativeUnitModel<T>): NativeUnitVelocity =
-    model.fromModel(type.createNew(value)).velocity
+    Velocity(model.fromModel(value), NativeUnit(0.0))
 
 fun <T : SIUnit<T>> NativeUnitVelocity.toModel(model: NativeUnitModel<T>) =
-    model.toModel(type.createNew(value)).velocity
+    Velocity(model.toModel(value), model.zero)
