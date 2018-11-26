@@ -3,6 +3,7 @@ package org.ghrobotics.lib.subsystems.drive
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.commands.FalconCommand
+import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.utils.Source
@@ -43,6 +44,9 @@ class FollowTrajectoryCommand(
     override suspend fun initialize() {
         trajectoryFollower.resetTrajectory(trajectorySource())
         trajectoryFinished = false
+
+        // Reset Path on Live Dashboard
+        LiveDashboard.pathReset = true
     }
 
     /**
@@ -55,6 +59,11 @@ class FollowTrajectoryCommand(
 
         // Get the trajectory follower output.
         val output = trajectoryFollower.getOutputFromDynamics(robotPosition)
+
+        // Update Current Path Location on Live Dashboard
+        LiveDashboard.pathX = trajectoryFollower.referencePose.translation.x.feet
+        LiveDashboard.pathY = trajectoryFollower.referencePose.translation.y.feet
+        LiveDashboard.pathHeading = trajectoryFollower.referencePose.rotation.degree
 
         // Set outputs
         driveSubsystem.leftMaster.set(

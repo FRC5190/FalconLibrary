@@ -17,6 +17,8 @@ object FalconNetworkTable {
 operator fun NetworkTable.get(name: String) = getEntry(name)!!
 
 fun NetworkTableEntry.delegate(defaultValue: String = "") = delegate { this.getString(defaultValue)!! }
+fun NetworkTableEntry.delegate(defaultValue: Double = 0.0) = delegate { this.getDouble(defaultValue) }
+fun NetworkTableEntry.delegate(defaultValue: Boolean = false) = delegate { this.getBoolean(defaultValue) }
 
 private fun <T> NetworkTableEntry.delegate(get: () -> T) = NetworkTableEntryDelegate(this, get)
 

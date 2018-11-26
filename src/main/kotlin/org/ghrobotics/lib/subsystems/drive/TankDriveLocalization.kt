@@ -10,6 +10,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
@@ -75,6 +76,11 @@ class TankDriveLocalization {
 
         // Add the recorded motion of the robot during this iteration to the global robot pose.
         robotPosition += forwardKinematics(deltaL, deltaR, deltaA).asPose
+
+        // Report new position to Live Dashboard
+        LiveDashboard.robotHeading = angA.degree
+        LiveDashboard.robotX = robotPosition.translation.x.feet
+        LiveDashboard.robotY = robotPosition.translation.y.feet
 
         prevL = posL
         prevR = posR
