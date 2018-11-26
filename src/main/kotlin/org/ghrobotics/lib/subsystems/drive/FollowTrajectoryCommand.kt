@@ -63,7 +63,7 @@ class FollowTrajectoryCommand(
         // Update Current Path Location on Live Dashboard
         LiveDashboard.pathX = trajectoryFollower.referencePose.translation.x.feet
         LiveDashboard.pathY = trajectoryFollower.referencePose.translation.y.feet
-        LiveDashboard.pathHeading = trajectoryFollower.referencePose.rotation.degree
+        LiveDashboard.pathHeading = trajectoryFollower.referencePose.rotation.radian
 
         // Set outputs
         driveSubsystem.leftMaster.set(

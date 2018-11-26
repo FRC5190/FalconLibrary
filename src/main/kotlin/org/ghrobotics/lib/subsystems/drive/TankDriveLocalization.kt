@@ -78,7 +78,7 @@ class TankDriveLocalization {
         robotPosition += forwardKinematics(deltaL, deltaR, deltaA).asPose
 
         // Report new position to Live Dashboard
-        LiveDashboard.robotHeading = angA.degree
+        LiveDashboard.robotHeading = angA.radian
         LiveDashboard.robotX = robotPosition.translation.x.feet
         LiveDashboard.robotY = robotPosition.translation.y.feet
 
