@@ -3,7 +3,6 @@ package org.ghrobotics.lib.subsystems.drive
 import com.ctre.phoenix.motorcontrol.ControlMode
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
@@ -15,9 +14,9 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.sensors.AHRSSensor
 import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
 import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
+import org.ghrobotics.lib.subsystems.drive.localization.Localization
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -34,11 +33,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     abstract val leftMaster: LinearFalconSRX
     abstract val rightMaster: LinearFalconSRX
 
+    abstract val localization: Localization
 
-    abstract val ahrsSensor: AHRSSensor
     abstract val trajectoryFollower: TrajectoryFollower
-
-    val localization = TankDriveLocalization()
 
     private var quickStopAccumulator = 0.0
 
@@ -47,7 +44,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      */
     @ObsoleteCoroutinesApi
     override fun lateInit() {
-        runBlocking { localization.lateInit(this@TankDriveSubsystem) }
+        localization.start()
     }
 
     /**
