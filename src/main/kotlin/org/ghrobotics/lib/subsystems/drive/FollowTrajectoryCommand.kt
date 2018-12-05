@@ -44,9 +44,7 @@ class FollowTrajectoryCommand(
     override suspend fun initialize() {
         trajectoryFollower.resetTrajectory(trajectorySource())
         trajectoryFinished = false
-
-        // Reset Path on Live Dashboard
-        LiveDashboard.pathReset = true
+        LiveDashboard.isFollowingPath = true
     }
 
     /**
@@ -88,5 +86,6 @@ class FollowTrajectoryCommand(
      */
     override suspend fun dispose() {
         driveSubsystem.zeroOutputs()
+        LiveDashboard.isFollowingPath = false
     }
 }

@@ -50,7 +50,7 @@ abstract class Localization(
             robotPosition += update(deltaHeading)
 
             // Report new position to Live Dashboard
-            LiveDashboard.robotHeading = newHeading.radian
+            LiveDashboard.robotHeading = robotPosition.rotation.radian
             LiveDashboard.robotX = robotPosition.translation.x.feet
             LiveDashboard.robotY = robotPosition.translation.y.feet
 
