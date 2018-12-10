@@ -53,7 +53,7 @@ class FollowTrajectoryCommand(
      */
     override suspend fun execute() {
         // Get the robot position from odometry.
-        val robotPosition = driveSubsystem.localization.robotPosition
+        val robotPosition = driveSubsystem.localization()
 
         // Get the trajectory follower output.
         val output = trajectoryFollower.getOutputFromDynamics(robotPosition)

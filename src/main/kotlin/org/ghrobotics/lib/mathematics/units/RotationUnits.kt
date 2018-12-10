@@ -48,6 +48,10 @@ class Rotation2d : SIUnit<Rotation2d> {
 
     override fun createNew(newValue: Double) = Rotation2d(newValue)
 
+    override fun equals(other: Any?): Boolean {
+        return other is Rotation2d && this.value epsilonEquals other.value
+    }
+
     companion object {
         val kRotation = 360.degree
     }
