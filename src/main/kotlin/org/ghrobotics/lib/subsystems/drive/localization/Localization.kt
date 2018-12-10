@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.launchFrequency
 
@@ -27,7 +28,7 @@ abstract class Localization(
      * Stores the previous 100 states so that we can interpolate if needed.
      * Especially useful for Vision
      */
-    private val interpolatableLocalizationBuffer = InterpolatableLocalizationBuffer()
+    private val interpolatableLocalizationBuffer = TimeInterpolatableBuffer<Pose2d>()
 
     /**
      * Stores the previous state of the robot.
@@ -72,7 +73,6 @@ abstract class Localization(
 
     override fun invoke() = robotPosition
 
-    operator fun get(timestamp: Double): Pose2d {
-        return interpolatableLocalizationBuffer.getInterpolated(timestamp)!!
-    }
+    operator fun get(timestamp: Time) = get(timestamp.second)
+    internal operator fun get(timestamp: Double) = interpolatableLocalizationBuffer[timestamp]
 }
