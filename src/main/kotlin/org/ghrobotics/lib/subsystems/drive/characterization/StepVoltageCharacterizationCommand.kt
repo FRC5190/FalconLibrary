@@ -52,7 +52,7 @@ class StepVoltageCharacterizationCommand(
         val avgSpd: Double = if (turnInPlace) {
             (wheelMotion.right - wheelMotion.left) / (2.0 * effectiveWheelBaseRadius.value)
         } else {
-            (wheelMotion.right - wheelMotion.left)
+            (wheelMotion.right + wheelMotion.left) / 2.0
         }
 
         data.add(CharacterizationData(avgCompensatedVoltage, avgSpd, dt.second))
