@@ -57,7 +57,7 @@ class QuasistaticCharacterizationCommand(
 
         // Return robot speed in meters per second if linear, radians per second if angular
         val avgSpd: Double = if (turnInPlace) {
-            wheelRadius.value * (wheelMotion.right - wheelMotion.left) / (2.0 * effectiveWheelBaseRadius.value)
+            (wheelMotion.right - wheelMotion.left) / (2.0 * effectiveWheelBaseRadius.value)
         } else {
             (wheelMotion.right - wheelMotion.left)
         }
