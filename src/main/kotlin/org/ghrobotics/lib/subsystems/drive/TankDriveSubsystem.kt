@@ -246,7 +246,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      * @param region Source with the region to check if the robot is in.
      */
     fun withinRegion(region: Source<Rectangle2d>) =
-        ConditionCommand { region().contains(localization.robotPosition.translation) }
+        ConditionCommand { region().contains(localization().translation) }
 
 
     // DRIVE CHARACTERIZATION

@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive.localization
 
+import edu.wpi.first.wpilibj.Timer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
@@ -12,7 +13,7 @@ import org.ghrobotics.lib.utils.launchFrequency
 
 abstract class Localization(
     val robotHeading: Source<Rotation2d>
-) {
+) : Source<Pose2d> {
 
     @ObsoleteCoroutinesApi
     private val localizationContext = newSingleThreadContext("Localization")
@@ -20,8 +21,13 @@ abstract class Localization(
     /**
      * The robot position relative to the field.
      */
-    var robotPosition = Pose2d()
-        private set
+    private var robotPosition = Pose2d()
+
+    /**
+     * Stores the previous 100 states so that we can interpolate if needed.
+     * Especially useful for Vision
+     */
+    private val interpolatableLocalizationBuffer = InterpolatableLocalizationBuffer()
 
     /**
      * Stores the previous state of the robot.
@@ -37,6 +43,7 @@ abstract class Localization(
     protected open fun resetInternal(newPosition: Pose2d) {
         robotPosition = newPosition
         prevHeading = robotHeading()
+        interpolatableLocalizationBuffer.clear()
     }
 
     @ObsoleteCoroutinesApi
@@ -55,9 +62,17 @@ abstract class Localization(
             LiveDashboard.robotY = robotPosition.translation.y.feet
 
             prevHeading = newHeading
+
+            // Add the global robot pose to the interpolatable buffer
+            interpolatableLocalizationBuffer[Timer.getFPGATimestamp()] = robotPosition
         }
     }
 
     protected abstract fun update(deltaHeading: Rotation2d): Pose2d
 
+    override fun invoke() = robotPosition
+
+    operator fun get(timestamp: Double): Pose2d {
+        return interpolatableLocalizationBuffer.getInterpolated(timestamp)!!
+    }
 }
