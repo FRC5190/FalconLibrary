@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive.characterization
 
+import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.millisecond
@@ -16,12 +17,17 @@ import org.ghrobotics.lib.utils.DeltaTime
 class QuasistaticCharacterizationCommand(
     private val driveSubsystem: TankDriveSubsystem,
     private val wheelRadius: Length,
+    private val effectiveWheelBaseRadius: Length,
     private val turnInPlace: Boolean
 ) : FalconCommand(driveSubsystem) {
 
+    // Holds the characterization data
     private val data = ArrayList<CharacterizationData>()
+
+    // Controller that takes care of the delta time
     private val dtController = DeltaTime()
 
+    // Some variables to keep track
     private var startTime = 0.millisecond
     private var commandedVoltage = 0.0 // V
 
@@ -44,9 +50,17 @@ class QuasistaticCharacterizationCommand(
         val avgCompensatedVoltage =
             (driveSubsystem.leftMaster.motorOutputVoltage + driveSubsystem.rightMaster.motorOutputVoltage) / 2.0
 
-        val avgSpd =
-            (driveSubsystem.leftMaster.sensorVelocity + driveSubsystem.rightMaster.sensorVelocity).value /
-                2.0 / wheelRadius.value
+        val wheelMotion = DifferentialDrive.WheelState(
+            driveSubsystem.leftMaster.sensorVelocity.value,
+            driveSubsystem.rightMaster.sensorVelocity.value
+        )
+
+        // Return robot speed in meters per second if linear, radians per second if angular
+        val avgSpd: Double = if (turnInPlace) {
+            wheelRadius.value * (wheelMotion.right - wheelMotion.left) / (2.0 * effectiveWheelBaseRadius.value)
+        } else {
+            (wheelMotion.right - wheelMotion.left)
+        }
 
         data.add(CharacterizationData(avgCompensatedVoltage, avgSpd, dt.second))
     }

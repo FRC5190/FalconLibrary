@@ -255,24 +255,24 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      * Characterizes the drivetrain and prints out CSV data to the console.
      * All linear and angular Kv and Ka parameters can be found by calling this method.
      */
-    open fun characterizeDrive(wheelRadius: Length): FalconCommandGroup =
+    open fun characterizeDrive(wheelRadius: Length, effectiveWheelBaseRadius: Length): FalconCommandGroup =
         sequential {
-            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, false)
+            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, true)
+            +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
                 leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
                     rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
             }
-            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, true)
+            +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }
 
     companion object {
