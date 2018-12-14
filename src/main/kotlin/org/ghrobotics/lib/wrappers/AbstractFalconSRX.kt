@@ -71,9 +71,9 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     abstract var motionCruiseVelocity: Velocity<T>
     abstract var motionAcceleration: Acceleration<T>
 
-    var feedbackSensor by observable(FeedbackDevice.None) { _, _, newValue ->
+    var feedbackSensor by observable(FeedbackDevice.QuadEncoder) { _, _, newValue ->
         configSelectedFeedbackSensor(newValue, 0, timeoutInt)
-    }
+    } // no feedback sensor is not an option anymore
 
     var peakCurrentLimit by observable(0.amp) { _, _, newValue ->
         configPeakCurrentLimit(newValue.amp.toInt(), timeoutInt)

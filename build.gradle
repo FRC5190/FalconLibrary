@@ -1,6 +1,6 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.10"
-    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
+    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-2a"
     id "maven"
     id "maven-publish"
 }
@@ -11,9 +11,10 @@ repositories {
 }
 
 dependencies {
-    implementation wpilib()
-    implementation ctre()
-    implementation navx()
+    compile wpilib()
+    compile javaVendorLibraries()
+    nativeZip jniRoboRIOVendorLibraries()
+    nativeDesktopZip jniDesktopVendorLibraries()
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
@@ -30,13 +31,10 @@ publishing {
         maven(MavenPublication) {
             groupId = 'org.ghrobotics.lib'
             artifactId = 'FalconLibrary'
-            version = '2018.11.13'
+            version = '2019.01.05'
 
             from components.java
-
         }
-
-
     }
 }
 
