@@ -30,6 +30,8 @@ data class Translation2d internal constructor(
     val x get() = _x.meter
     val y get() = _y.meter
 
+    constructor() : this(0.0, 0.0)
+
     constructor(
         x: Length = 0.meter,
         y: Length = 0.meter
