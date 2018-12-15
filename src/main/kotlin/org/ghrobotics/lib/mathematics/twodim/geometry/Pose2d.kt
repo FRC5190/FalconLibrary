@@ -57,6 +57,8 @@ data class Pose2d(
 
     operator fun plus(other: Pose2d) = transformBy(other)
 
+    operator fun minus(other: Pose2d) =  this + -other
+
     fun transformBy(other: Pose2d) =
         Pose2d(
             translation + (other.translation * rotation),
