@@ -31,6 +31,10 @@ abstract class Localization(
      */
     private val interpolatableLocalizationBuffer = TimeInterpolatableBuffer<Pose2d>()
 
+    init {
+        interpolatableLocalizationBuffer.set(0.0, Pose2d())
+    }
+
     /**
      * Stores the previous state of the robot.
      */
