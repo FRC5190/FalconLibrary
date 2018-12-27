@@ -4,7 +4,7 @@ import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
     kotlin("jvm") version "1.3.11"
-    id("edu.wpi.first.GradleRIO") version "2019.1.1-beta-4"
+    id("edu.wpi.first.GradleRIO") version "2019.1.1-beta-4b"
     maven
     `maven-publish`
 }
@@ -17,22 +17,11 @@ repositories {
 dependencies {
     // Kotlin Standard Library and Coroutines
     compile(kotlin("stdlib"))
-    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.0.1")
+    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.1.0")
 
     // WPILib
     wpi.deps.wpilib().forEach { compile(it) }
-
-    // wpi.deps.vendor.java().forEach { compile(it) }
-
-    // This is the ugly workaround for the commented code that should work above.
-    // Until https://github.com/wpilibsuite/GradleRIO/pull/267 gets merged, we will have to use this.
-
-    wpi.deps.vendor.dependencies.map { dep ->
-        dep.javaDependencies.map { art ->
-            "${art.groupId}:${art.artifactId}:${WPIVendorDepsExtension.getVersion(art.version, wpi.deps.vendor.wpiExt)}"
-        }
-    }.forEach { it.forEach { compile(it) } }
-
+    wpi.deps.vendor.java().forEach { compile(it) }
     wpi.deps.vendor.jni(NativePlatforms.roborio).forEach { nativeZip(it) }
     wpi.deps.vendor.jni(NativePlatforms.desktop).forEach { nativeDesktopZip(it) }
 
