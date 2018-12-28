@@ -3,7 +3,7 @@
  * Green Hope Falcons
  */
 
-package org.ghrobotics.lib.wrappers
+package org.ghrobotics.lib.wrappers.ctre
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode

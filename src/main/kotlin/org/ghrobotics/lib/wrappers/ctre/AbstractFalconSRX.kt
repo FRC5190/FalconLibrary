@@ -1,4 +1,4 @@
-package org.ghrobotics.lib.wrappers
+package org.ghrobotics.lib.wrappers.ctre
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode
@@ -108,4 +108,10 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
         demandType: DemandType,
         outputPercent: Double
     )
+
+    init {
+        // Clear all redundant settings.
+        @Suppress("LeakingThis")
+        configFactoryDefault()
+    }
 }

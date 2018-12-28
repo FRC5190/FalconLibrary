@@ -20,7 +20,7 @@ import org.ghrobotics.lib.subsystems.drive.localization.Localization
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
-import org.ghrobotics.lib.wrappers.LinearFalconSRX
+import org.ghrobotics.lib.wrappers.ctre.LinearFalconSRX
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
