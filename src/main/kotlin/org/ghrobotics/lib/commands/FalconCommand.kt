@@ -10,7 +10,6 @@ import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.loopFrequency
 import org.ghrobotics.lib.utils.or
 import org.ghrobotics.lib.wrappers.FalconRobotBase
-import org.ghrobotics.lib.wrappers.Wrapper
 import kotlin.properties.Delegates.observable
 
 /**
@@ -19,7 +18,7 @@ import kotlin.properties.Delegates.observable
  */
 abstract class FalconCommand(
     requiredSubsystems: Iterable<FalconSubsystem>
-) : Wrapper<Command> {
+) {
 
     constructor(vararg requiredSubsystems: FalconSubsystem) : this(requiredSubsystems.asIterable())
 
@@ -32,7 +31,7 @@ abstract class FalconCommand(
     /**
      *  Wrapped WPI command
      */
-    override val wrappedValue: Command = WpiCommand(requiredSubsystems)
+    open val wrappedValue: Command = WpiCommand(requiredSubsystems)
 
     /**
      *  When this is true the command will end

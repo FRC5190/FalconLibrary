@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.command.Scheduler
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.runBlocking
+import javafx.beans.property.ReadOnlyObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
-import org.ghrobotics.lib.wrappers.hid.FalconHID
+import org.ghrobotics.lib.utils.addEnterListener
 
 abstract class FalconRobotBase : RobotBase() {
 
@@ -27,77 +27,44 @@ abstract class FalconRobotBase : RobotBase() {
         DEBUG = false
     }
 
-    enum class Mode(private val any: Boolean = false) {
+    enum class Mode {
         NONE,
-        ANY(true),
         DISABLED,
         AUTONOMOUS,
         TELEOP,
         TEST;
-
-        val rawValues by lazy { if (any) enumValues<Mode>().toList() else listOf(this@Mode) }
     }
 
-    var currentMode = Mode.NONE
-        private set
-
-    // State Machine
-    private val onEnterListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
-    private val onLeaveListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
-    private val onTransitionListeners = mutableListOf<Pair<Pair<Mode, Mode>, suspend () -> Unit>>()
-    private val onWhileListeners = mutableListOf<Pair<Mode, suspend () -> Unit>>()
-
-    fun onEnter(enterState: Mode, listener: suspend () -> Unit) = onEnterListeners.add(enterState to listener)
-    fun onLeave(leaveState: Mode, listener: suspend () -> Unit) = onLeaveListeners.add(leaveState to listener)
-    fun onTransition(fromState: Mode, toState: Mode, listener: suspend () -> Unit) =
-        onTransitionListeners.add((fromState to toState) to listener)
-
-    fun onWhile(whileState: Mode, listener: suspend () -> Unit) = onWhileListeners.add(whileState to listener)
+    private val _currentMode = SimpleObjectProperty<Mode>(Mode.NONE)
+    val currentMode: ReadOnlyObjectProperty<Mode> = _currentMode
 
     // Main Robot Code
 
     var initialized = false
         private set
 
-    abstract suspend fun initialize()
+    protected abstract fun initialize()
+
+    protected open fun periodic() {}
 
     @Suppress("ComplexMethod")
-    override fun startCompetition() = runBlocking {
+    override fun startCompetition() {
         LiveWindow.setEnabled(false)
-        // Disabled
-        onWhile(Mode.DISABLED) { HAL.observeUserProgramDisabled() }
-        // Autonomous
-        onWhile(Mode.AUTONOMOUS) { HAL.observeUserProgramAutonomous() }
-        // TeleOp
-        onWhile(Mode.TELEOP) { HAL.observeUserProgramTeleop() }
-        // Test
-        onEnter(Mode.TEST) { LiveWindow.setEnabled(true) }
-        onWhile(Mode.TEST) { HAL.observeUserProgramTest() }
-        onLeave(Mode.TEST) { LiveWindow.setEnabled(false) }
-        // Update Values
-        onWhile(Mode.ANY) {
-            SmartDashboard.updateValues()
-            //            LiveWindow.updateValues()
-        }
 
-        onEnter(Mode.AUTONOMOUS) { SubsystemHandler.autoReset() }
-        onEnter(Mode.TELEOP) { SubsystemHandler.teleopReset() }
-        onEnter(Mode.DISABLED) { SubsystemHandler.zeroOutputs() }
+        currentMode.addEnterListener(Mode.AUTONOMOUS) { SubsystemHandler.autoReset() }
+        currentMode.addEnterListener(Mode.TELEOP) { SubsystemHandler.teleopReset() }
+        currentMode.addEnterListener(Mode.DISABLED) { SubsystemHandler.zeroOutputs() }
 
         initialize()
         SubsystemHandler.lateInit()
         initialized = true
         // Start up the default command
         println("[Robot] Initialized")
-        // Update Commands
-        onWhile(Mode.ANY) {
-            Scheduler.getInstance().run()
-        }
 
         // Tell the DS that the robot is ready to be enabled
         HAL.observeUserProgramStarting()
 
-        while (isActive) {
+        while (true) {
             // Wait for new data to arrive
             m_ds.waitForData()
 
@@ -108,41 +75,29 @@ abstract class FalconRobotBase : RobotBase() {
                 isTest -> Mode.TEST
                 else -> TODO("Robot in invalid mode!")
             }
+            _currentMode.value = newMode
 
-            if (newMode != currentMode) {
-                // Leave previous mode
-                for ((mode, listener) in onLeaveListeners) {
-                    if (mode == currentMode || mode == Mode.ANY) {
-                        listener()
-                    }
-                }
-                // Transition
-                for ((modes, listener) in onTransitionListeners) {
-                    @Suppress("ComplexCondition")
-                    if ((modes.first == currentMode || modes.first == Mode.ANY) &&
-                        (modes.second == newMode || modes.second == Mode.ANY)
-                    ) {
-                        listener()
-                    }
-                }
-                // Enter new mode
-                for ((mode, listener) in onEnterListeners) {
-                    if (mode == newMode || mode == Mode.ANY) {
-                        listener()
-                    }
-                }
+            // Report robot state
+            when (newMode) {
+                Mode.DISABLED -> HAL.observeUserProgramDisabled()
+                Mode.AUTONOMOUS -> HAL.observeUserProgramAutonomous()
+                Mode.TELEOP -> HAL.observeUserProgramTeleop()
+                Mode.TEST -> HAL.observeUserProgramTest()
+                Mode.NONE -> throw IllegalStateException("Mode cannot be NONE.")
             }
-            // On while
-            for ((mode, listener) in onWhileListeners) {
-                if (mode == newMode || mode == Mode.ANY) {
-                    listener()
-                }
-            }
+
+            // Update Values
+            SmartDashboard.updateValues()
+            // LiveWindow.updateValues()
+
+            // Update Commands
+            Scheduler.getInstance().run()
+
+            periodic()
         }
     }
 
     // Helpers
     protected operator fun FalconSubsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
 
-    protected suspend operator fun FalconHID<*>.unaryPlus() = onWhile(Mode.TELEOP) { update() }
 }
