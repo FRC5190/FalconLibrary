@@ -26,8 +26,9 @@ class TimeInterpolatableBuffer<T : Interpolatable<T>>(
         val currentTime = timeSource().second
         val iterator = bufferMap.iterator()
         iterator.forEach {
-            if (currentTime - it.key >= historySpan)
+            if (currentTime - it.key >= historySpan) {
                 iterator.remove()
+            }
         }
     }
 

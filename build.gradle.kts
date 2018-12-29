@@ -1,10 +1,11 @@
-import edu.wpi.first.gradlerio.wpi.dependencies.WPIVendorDepsExtension
 import edu.wpi.first.toolchain.NativePlatforms
 import org.gradle.api.publish.maven.MavenPublication
+import io.gitlab.arturbosch.detekt.detekt
 
 plugins {
     kotlin("jvm") version "1.3.11"
     id("edu.wpi.first.GradleRIO") version "2019.1.1-beta-4b"
+    id("io.gitlab.arturbosch.detekt") version "1.0.0-RC12"
     maven
     `maven-publish`
 }
@@ -34,13 +35,28 @@ dependencies {
 }
 
 publishing {
-    publications.withType<MavenPublication> {
-        from(components["java"])
-        groupId = "org.ghrobotics"
-        artifactId = "FalconLibrary"
-        version = "2019.01.05"
+    publications {
+        create<MavenPublication>("mavenLocal") {
+            groupId = "org.ghrobotics"
+            artifactId = "FalconLibrary"
+            version = "2019.01.05"
+
+            from(components["java"])
+        }
     }
 }
+
+detekt {
+    config = files("$projectDir/detekt-config.yml")
+
+    reports {
+        html {
+            enabled = true
+            destination = file("$rootDir/detekt.html")
+        }
+    }
+}
+
 tasks.withType<Wrapper>().configureEach {
     gradleVersion = "5.0"
 }

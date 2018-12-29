@@ -30,16 +30,18 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
                 .first { (index, _) -> index != 0 && distances[index] >= interpolant }
 
             val prevEntry = points[index - 1]
-            if (distances[index] epsilonEquals distances[index - 1])
+            if (distances[index] epsilonEquals distances[index - 1]) {
                 TrajectorySamplePoint(entry, index, index)
-            else TrajectorySamplePoint(
-                prevEntry.interpolate(
-                    entry,
-                    (interpolant - distances[index - 1]) / (distances[index] - distances[index - 1])
-                ),
-                index - 1,
-                index
-            )
+            } else {
+                TrajectorySamplePoint(
+                    prevEntry.interpolate(
+                        entry,
+                        (interpolant - distances[index - 1]) / (distances[index] - distances[index - 1])
+                    ),
+                    index - 1,
+                    index
+                )
+            }
         }
     }
 

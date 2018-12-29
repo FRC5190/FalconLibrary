@@ -57,7 +57,7 @@ data class Pose2d(
 
     operator fun plus(other: Pose2d) = transformBy(other)
 
-    operator fun minus(other: Pose2d) =  this + -other
+    operator fun minus(other: Pose2d) = this + -other
 
     fun transformBy(other: Pose2d) =
         Pose2d(
@@ -77,8 +77,11 @@ data class Pose2d(
     }
 
     override fun interpolate(endValue: Pose2d, t: Double): Pose2d {
-        if (t <= 0) return Pose2d(this.translation, this.rotation)
-        else if (t >= 1) return Pose2d(endValue.translation, endValue.rotation)
+        if (t <= 0) {
+            return Pose2d(this.translation, this.rotation)
+        } else if (t >= 1) {
+            return Pose2d(endValue.translation, endValue.rotation)
+        }
         val twist = (-this + endValue).twist
         return this + (twist * t).asPose
     }

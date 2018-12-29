@@ -9,7 +9,6 @@ import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.second
 import kotlin.math.pow
 
-
 /**
  * Uses an adaptive pure pursuit controller to steer the robot back onto the desired trajectory.
  * From https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf
@@ -33,46 +32,10 @@ class PurePursuitController(
     override fun calculateChassisVelocity(robotPose: Pose2d): DifferentialDrive.ChassisState {
 
         // Compute the lookahead state.
-        val lookaheadState: Pose2d = iterator.preview(kLookaheadTime).state.state.pose.let {
-
-            // The lookahead point is farther from the robot than the minimum lookahead distance.
-            // Therefore we can use this point.
-            if ((it inFrameOfReferenceOf robotPose).translation._norm >= kMinLookaheadDistance.value) {
-                it
-            }
-
-            // We need to find a point that is at least the minimum lookahead distance away.
-            else {
-                var lookaheadPose = iterator.currentState.state.state.pose
-                var previewedTime = 0.second
-
-                // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
-                // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
-                while (iterator.progress > previewedTime) {
-                    previewedTime += 0.02.second
-
-                    lookaheadPose = iterator.preview(previewedTime).state.state.pose
-                    val lookaheadDistance = (lookaheadPose inFrameOfReferenceOf robotPose).translation._norm
-
-                    if (lookaheadDistance > kMinLookaheadDistance.value) {
-                        return@let lookaheadPose
-                    }
-                }
-
-                // Extend the trajectory.
-                val remaining =
-                    kMinLookaheadDistance.value - (lookaheadPose inFrameOfReferenceOf robotPose).translation._norm
-
-                return@let lookaheadPose.transformBy(
-                    Pose2d(
-                        Translation2d(remaining * if (iterator.reversed) -1 else 1, 0.0)
-                    )
-                )
-            }
-        }
+        val lookaheadState: Pose2d = calculateLookaheadPose2d(robotPose)
 
         // Find the appropriate lookahead point.
-        val lookaheadTransform = (lookaheadState inFrameOfReferenceOf robotPose)
+        val lookaheadTransform = lookaheadState inFrameOfReferenceOf robotPose
 
         // Calculate latitude error.
         val xError = (referencePose inFrameOfReferenceOf robotPose).translation._x
@@ -93,6 +56,42 @@ class PurePursuitController(
             linear = adjustedLinearVelocity,
             // v * curvature = omega
             angular = adjustedLinearVelocity * curvature
+        )
+    }
+
+    private fun calculateLookaheadPose2d(robotPose: Pose2d): Pose2d {
+        val lookaheadPoseByTime = iterator.preview(kLookaheadTime).state.state.pose
+
+        // The lookahead point is farther from the robot than the minimum lookahead distance.
+        // Therefore we can use this point.
+        if ((lookaheadPoseByTime inFrameOfReferenceOf robotPose).translation._norm >= kMinLookaheadDistance.value) {
+            return lookaheadPoseByTime
+        }
+
+        var lookaheadPoseByDistance = iterator.currentState.state.state.pose
+        var previewedTime = 0.second
+
+        // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
+        // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
+        while (iterator.progress > previewedTime) {
+            previewedTime += 0.02.second
+
+            lookaheadPoseByDistance = iterator.preview(previewedTime).state.state.pose
+            val lookaheadDistance = (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation._norm
+
+            if (lookaheadDistance > kMinLookaheadDistance.value) {
+                return lookaheadPoseByDistance
+            }
+        }
+
+        // Extend the trajectory.
+        val remaining =
+            kMinLookaheadDistance.value - (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation._norm
+
+        return lookaheadPoseByDistance.transformBy(
+            Pose2d(
+                Translation2d(remaining * if (iterator.reversed) -1 else 1, 0.0)
+            )
         )
     }
 }

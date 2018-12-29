@@ -34,16 +34,16 @@ class DCMotorTransmission(
 
     /**
      * Returns the torque produced by the motor
-     * @param output_speed The speed that is being outputted by the motor
+     * @param outputSpeed The speed that is being outputted by the motor
      * @param voltage The voltage through the motor
      * @return torque
      */
-    fun getTorqueForVoltage(output_speed: Double, voltage: Double): Double {
+    fun getTorqueForVoltage(outputSpeed: Double, voltage: Double): Double {
         var effectiveVoltage = voltage
         when {
-            output_speed > kEpsilon -> // Forward motion, rolling friction.
+            outputSpeed > kEpsilon -> // Forward motion, rolling friction.
                 effectiveVoltage -= frictionVoltage
-            output_speed < -kEpsilon -> // Reverse motion, rolling friction.
+            outputSpeed < -kEpsilon -> // Reverse motion, rolling friction.
                 effectiveVoltage += frictionVoltage
             voltage > kEpsilon -> // System is static, forward torque.
                 effectiveVoltage = Math.max(0.0, voltage - frictionVoltage)
@@ -52,21 +52,21 @@ class DCMotorTransmission(
             else -> // System is idle.
                 return 0.0
         }
-        return torquePerVolt * (-output_speed / speedPerVolt + effectiveVoltage)
+        return torquePerVolt * (-outputSpeed / speedPerVolt + effectiveVoltage)
     }
 
 
     /**
      * Returns the voltage going through the motor
-     * @param output_speed The speed that is being outputted by the motor
+     * @param outputSpeed The speed that is being outputted by the motor
      * @param torque Torque produced by the motor
      * @return voltage
      */
-    fun getVoltageForTorque(output_speed: Double, torque: Double): Double {
+    fun getVoltageForTorque(outputSpeed: Double, torque: Double): Double {
         val fv: Double = when {
-            output_speed > kEpsilon -> // Forward motion, rolling friction.
+            outputSpeed > kEpsilon -> // Forward motion, rolling friction.
                 frictionVoltage
-            output_speed < -kEpsilon -> // Reverse motion, rolling friction.
+            outputSpeed < -kEpsilon -> // Reverse motion, rolling friction.
                 -frictionVoltage
             torque > kEpsilon -> // System is static, forward torque.
                 frictionVoltage
@@ -75,6 +75,6 @@ class DCMotorTransmission(
             else -> // System is idle.
                 return 0.0
         }
-        return torque / torquePerVolt + output_speed / speedPerVolt + fv
+        return torque / torquePerVolt + outputSpeed / speedPerVolt + fv
     }
 }

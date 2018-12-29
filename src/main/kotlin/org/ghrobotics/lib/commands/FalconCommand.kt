@@ -18,12 +18,15 @@ import kotlin.properties.Delegates.observable
  *  @param requiredSubsystems subsystems this command requires in order to run
  */
 abstract class FalconCommand(
-    vararg requiredSubsystems: FalconSubsystem
+    requiredSubsystems: Iterable<FalconSubsystem>
 ) : Wrapper<Command> {
 
+    constructor(vararg requiredSubsystems: FalconSubsystem) : this(requiredSubsystems.asIterable())
+
     init {
-        if (!FalconRobotBase.DEBUG && FalconRobotBase.INSTANCE.initialized)
+        if (!FalconRobotBase.DEBUG && FalconRobotBase.INSTANCE.initialized) {
             println("[FalconCommand} [WARNING] It is not recommended to create commands after the robot has initialized!")
+        }
     }
 
     /**
@@ -100,7 +103,7 @@ abstract class FalconCommand(
     }
 
     protected inner class WpiCommand(
-        requiredSubsystems: Array<out FalconSubsystem>
+        requiredSubsystems: Iterable<FalconSubsystem>
     ) : Command(), IWpiCommand {
         init {
             requiredSubsystems.forEach { requires(it.wpiSubsystem) }
@@ -158,7 +161,7 @@ abstract class FalconCommand(
      * Sets the timeout for the command
      * @param timeout the timeout for the command, the command will never run longer then this timeout
      */
-    fun withTimeout(timeout: Time) = also { (wrappedValue as IWpiCommand).timeout = timeout }
+    fun withTimeout(timeout: Time) = also { (wrappedValue as? IWpiCommand)?.timeout = timeout }
 
     companion object {
         @ObsoleteCoroutinesApi

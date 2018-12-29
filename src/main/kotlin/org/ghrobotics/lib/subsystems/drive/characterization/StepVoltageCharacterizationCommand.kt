@@ -8,7 +8,6 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.subsystems.drive.TankDriveSubsystem
 import org.ghrobotics.lib.utils.DeltaTime
 
-
 /**
  * Runs a step voltage test by setting a constant voltage to measure Ka
  *

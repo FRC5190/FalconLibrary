@@ -112,37 +112,28 @@ class ParametricQuinticHermiteSpline(
         return Translation2d(x, y)
     }
 
-    private fun dx(t: Double): Double {
-        return 5.0 * ax * t.pow(4) + 4.0 * bx * t.pow(3) + 3.0 * cx * t.pow(2) + 2.0 * dx * t + ex
-    }
+    private fun dx(t: Double) =
+        5.0 * ax * t.pow(4) + 4.0 * bx * t.pow(3) + 3.0 * cx * t.pow(2) + 2.0 * dx * t + ex
 
-    private fun dy(t: Double): Double {
-        return 5.0 * ay * t.pow(4) + 4.0 * by * t.pow(3) + 3.0 * cy * t.pow(2) + 2.0 * dy * t + ey
-    }
+    private fun dy(t: Double) =
+        5.0 * ay * t.pow(4) + 4.0 * by * t.pow(3) + 3.0 * cy * t.pow(2) + 2.0 * dy * t + ey
 
-    private fun ddx(t: Double): Double {
-        return 20.0 * ax * t.pow(3) + 12.0 * bx * t.pow(2) + 6.0 * cx * t + 2 * dx
-    }
+    private fun ddx(t: Double) =
+        20.0 * ax * t.pow(3) + 12.0 * bx * t.pow(2) + 6.0 * cx * t + 2 * dx
 
-    private fun ddy(t: Double): Double {
-        return 20.0 * ay * t.pow(3) + 12.0 * by * t.pow(2) + 6.0 * cy * t + 2 * dy
-    }
+    private fun ddy(t: Double) =
+        20.0 * ay * t.pow(3) + 12.0 * by * t.pow(2) + 6.0 * cy * t + 2 * dy
 
-    private fun dddx(t: Double): Double {
-        return 60.0 * ax * t.pow(2) + 24.0 * bx * t + 6 * cx
-    }
+    private fun dddx(t: Double) =
+        60.0 * ax * t.pow(2) + 24.0 * bx * t + 6 * cx
 
-    private fun dddy(t: Double): Double {
-        return 60.0 * ay * t.pow(2) + 24.0 * by * t + 6 * cy
-    }
+    private fun dddy(t: Double) =
+        60.0 * ay * t.pow(2) + 24.0 * by * t + 6 * cy
 
-    override fun getVelocity(t: Double): Double {
-        return Math.hypot(dx(t), dy(t))
-    }
+    override fun getVelocity(t: Double) = Math.hypot(dx(t), dy(t))
 
-    override fun getCurvature(t: Double): Double {
-        return (dx(t) * ddy(t) - ddx(t) * dy(t)) / ((dx(t) * dx(t) + dy(t) * dy(t)) * getVelocity(t))
-    }
+    override fun getCurvature(t: Double) =
+        (dx(t) * ddy(t) - ddx(t) * dy(t)) / ((dx(t) * dx(t) + dy(t) * dy(t)) * getVelocity(t))
 
     override fun getDCurvature(t: Double): Double {
         val dx2dy2 = dx(t) * dx(t) + dy(t) * dy(t)
@@ -162,9 +153,7 @@ class ParametricQuinticHermiteSpline(
         return num * num / (dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2 * dx2dy2)
     }
 
-    override fun getHeading(t: Double): Rotation2d {
-        return Rotation2d(dx(t), dy(t), true)
-    }
+    override fun getHeading(t: Double) = Rotation2d(dx(t), dy(t), true)
 
     private fun sumDCurvature2(): Double {
         val dt = 1.0 / kSamples
@@ -204,14 +193,14 @@ class ParametricQuinticHermiteSpline(
             while (count < kMaxIterations) {
                 runOptimizationIteration(splines)
                 val current = sumDCurvature2(splines)
-                if (prev - current < kMinDelta)
-                    return current
+                if (prev - current < kMinDelta) return current
                 prev = current
                 count++
             }
             return prev
         }
 
+        @Suppress("ComplexMethod")
         private fun runOptimizationIteration(splines: MutableList<ParametricQuinticHermiteSpline>) {
             //can't optimize anything with less than 2 splines
             if (splines.size <= 1) {

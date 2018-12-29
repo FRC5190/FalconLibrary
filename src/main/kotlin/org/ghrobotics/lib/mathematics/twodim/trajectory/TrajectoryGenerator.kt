@@ -11,7 +11,6 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
@@ -54,6 +53,7 @@ class TrajectoryGenerator(
         false
     )
 
+    @Suppress("LongParameterList")
     fun generateTrajectory(
         wayPoints: List<Pose2d>,
         constraints: List<TimingConstraint<Pose2dWithCurvature>>,
@@ -117,6 +117,15 @@ class TrajectoryGenerator(
         )
     )
 
+    @Suppress(
+        "ComplexMethod",
+        "LongMethod",
+        "NestedBlockDepth",
+        "ThrowsCount",
+        "LongParameterList",
+        "TooGenericExceptionThrown",
+        "LoopWithTooManyJumpStatements"
+    )
     private fun <S : VaryInterpolatable<S>> timeParameterizeTrajectory(
         distanceTrajectory: DistanceTrajectory<S>,
         constraints: List<TimingConstraint<S>>,
@@ -128,6 +137,7 @@ class TrajectoryGenerator(
         reversed: Boolean
     ): TimedTrajectory<S> {
 
+        @Suppress("VarCouldBeVal", "LateinitUsage")
         class ConstrainedState<S : VaryInterpolatable<S>> {
             lateinit var state: S
             var distance: Double = 0.0

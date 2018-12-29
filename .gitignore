@@ -26,3 +26,4 @@ build/
 .idea/
 *.iml
 out/
+detekt.html

@@ -67,12 +67,17 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) :
     /**
      * Run [block] when the state matches any [states]
      */
-    fun state(vararg states: T, block: () -> FalconCommand) = state(states = *states, command = block())
+    fun state(vararg states: T, block: () -> FalconCommand) = states(states, block())
 
     /**
      * Run [command] when the state matches any [states]
      */
-    fun state(vararg states: T, command: FalconCommand) = states.forEach { state(it, command) }
+    fun state(vararg states: T, command: FalconCommand) = states(states, command)
+
+    /**
+     * Run [command] when the state matches any [states]
+     */
+    fun states(states: Array<out T>, command: FalconCommand) = states.forEach { state(it, command) }
 
     /**
      * Run [block] when the state is [state]

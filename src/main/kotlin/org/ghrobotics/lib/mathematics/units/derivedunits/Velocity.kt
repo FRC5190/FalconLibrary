@@ -1,6 +1,5 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
-
 import org.ghrobotics.lib.mathematics.units.*
 
 val <T : SIValue<T>> T.velocity: Velocity<T> get() = Velocity(value, this)

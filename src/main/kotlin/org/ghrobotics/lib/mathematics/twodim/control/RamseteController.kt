@@ -50,9 +50,9 @@ open class RamseteController(
     }
 
     companion object {
-        private fun sinc(theta: Double): Double {
-            return if (theta epsilonEquals 0.0) 1.0 - 1.0 / 6.0 * theta * theta
-            else sin(theta) / theta
-        }
+        private fun sinc(theta: Double) =
+            if (theta epsilonEquals 0.0) {
+                1.0 - 1.0 / 6.0 * theta * theta
+            } else sin(theta) / theta
     }
 }

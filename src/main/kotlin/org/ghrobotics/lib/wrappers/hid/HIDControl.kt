@@ -17,21 +17,18 @@ class HIDButton(
 
     override suspend fun update() {
         val newValue = source() >= threshold
-        if (lastValue != newValue) {
+        when {
             // Value has changed
-            if (newValue) {
-                changeOn.forEach { it() }
-            } else {
-                changeOff.forEach { it() }
+            lastValue != newValue -> when {
+                newValue -> changeOn
+                else -> changeOff
             }
-        } else {
             // Value stayed the same
-            if (newValue) {
-                whileOn.forEach { it() }
-            } else {
-                whileOff.forEach { it() }
+            else -> when {
+                newValue -> whileOn
+                else -> whileOff
             }
-        }
+        }.forEach { it() }
         lastValue = newValue
     }
 }

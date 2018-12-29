@@ -95,6 +95,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     /**
      * Curvature or cheezy drive control
      */
+    @Suppress("ComplexMethod")
     fun curvatureDrive(
         linearPercent: Double,
         curvaturePercent: Double,

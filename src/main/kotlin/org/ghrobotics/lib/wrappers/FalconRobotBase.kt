@@ -16,6 +16,7 @@ abstract class FalconRobotBase : RobotBase() {
     companion object {
         var DEBUG = true
             private set
+        @Suppress("LateinitUsage")
         lateinit var INSTANCE: FalconRobotBase
             private set
     }
@@ -60,6 +61,7 @@ abstract class FalconRobotBase : RobotBase() {
 
     abstract suspend fun initialize()
 
+    @Suppress("ComplexMethod")
     override fun startCompetition() = runBlocking {
         LiveWindow.setEnabled(false)
         // Disabled
@@ -116,6 +118,7 @@ abstract class FalconRobotBase : RobotBase() {
                 }
                 // Transition
                 for ((modes, listener) in onTransitionListeners) {
+                    @Suppress("ComplexCondition")
                     if ((modes.first == currentMode || modes.first == Mode.ANY) &&
                         (modes.second == newMode || modes.second == Mode.ANY)
                     ) {

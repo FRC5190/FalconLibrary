@@ -35,6 +35,7 @@ abstract class TrajectoryFollower(private val drive: DifferentialDrive) {
     private var previousVelocity = DifferentialDrive.ChassisState(0.0, 0.0)
 
     // Trajectory iterator
+    @Suppress("LateinitUsage")
     protected lateinit var iterator: TimedIterator<Pose2dWithCurvature>
         private set
 

@@ -28,16 +28,18 @@ class TimedTrajectory<S : VaryInterpolatable<S>>(
                 .first { (index, entry) -> index != 0 && entry.t.value >= interpolant }
 
             val prevEntry = points[index - 1]
-            if (entry.t epsilonEquals prevEntry.t)
+            if (entry.t epsilonEquals prevEntry.t) {
                 TrajectorySamplePoint(entry, index, index)
-            else TrajectorySamplePoint(
-                prevEntry.interpolate(
-                    entry,
-                    (interpolant - prevEntry.t.value) / (entry.t.value - prevEntry.t.value)
-                ),
-                index - 1,
-                index
-            )
+            } else {
+                TrajectorySamplePoint(
+                    prevEntry.interpolate(
+                        entry,
+                        (interpolant - prevEntry.t.value) / (entry.t.value - prevEntry.t.value)
+                    ),
+                    index - 1,
+                    index
+                )
+            }
         }
     }
 

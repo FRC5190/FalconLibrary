@@ -11,7 +11,6 @@
 
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
-
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.units.Rotation2d
@@ -20,6 +19,7 @@ import java.util.*
 object ParametricSplineGenerator {
     private const val kMinSampleSize = 1
 
+    @Suppress("LongParameterList")
     private fun parameterizeSpline(
         s: ParametricSpline,
         maxDx: Double,
@@ -56,6 +56,7 @@ object ParametricSplineGenerator {
         return rv
     }
 
+    @Suppress("LongParameterList")
     private fun getSegmentArc(
         s: ParametricSpline,
         t0: Double,
@@ -71,10 +72,8 @@ object ParametricSplineGenerator {
         val transformation = Pose2d((p1 - p0) * -r0, r1 + -r0)
         val twist = transformation.twist
         return if (twist._dy > maxDy || twist._dx > maxDx || twist.dTheta > maxDTheta) {
-            arrayOf(
-                *getSegmentArc(s, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta),
-                *getSegmentArc(s, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
-            )
+            getSegmentArc(s, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta) +
+                getSegmentArc(s, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
         } else {
             arrayOf(s.getPose2dWithCurvature(t1))
         }

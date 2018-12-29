@@ -42,4 +42,4 @@ val kY = XboxButton(4)
 val kBack = XboxButton(7)
 val kStart = XboxButton(8)
 
-class XboxButton internal constructor(val value: Int)
+data class XboxButton internal constructor(val value: Int)

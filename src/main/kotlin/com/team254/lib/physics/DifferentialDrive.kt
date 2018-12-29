@@ -19,6 +19,7 @@ import java.util.*
  * Dynamic model a differential drive robot.  Note: to simplify things, this math assumes the center of mass is
  * coincident with the kinematic center of rotation (e.g. midpoint of the center axle).
  */
+@Suppress("LongParameterList")
 class DifferentialDrive(
     /**
      * Equivalent mass when accelerating purely linearly, in kg.
@@ -316,10 +317,11 @@ class DifferentialDrive(
     }
 
 
-    class MinMax(val min: Double, val max: Double)
+    data class MinMax(val min: Double, val max: Double)
 
     // Curvature is redundant here in the case that chassisVelocity is not purely angular.  It is the responsibility of
     // the caller to ensure that curvature = angular vel / linear vel in these cases.
+    @Suppress("ComplexMethod", "NestedBlockDepth")
     fun getMinMaxAcceleration(
         chassisVelocity: ChassisState,
         curvature: Double, /*double dcurvature,*/
@@ -398,9 +400,8 @@ class DifferentialDrive(
             return fmt.format(linear) + ", " + fmt.format(angular)
         }
 
-        operator fun minus(other: ChassisState): ChassisState {
-            return ChassisState(this.linear - other.linear, this.angular - other.angular)
-        }
+        operator fun minus(other: ChassisState) =
+            ChassisState(this.linear - other.linear, this.angular - other.angular)
 
         operator fun times(scalar: Double) = ChassisState(linear * scalar, angular * scalar)
         operator fun div(scalar: Double) = this * (1 / scalar)
@@ -412,9 +413,7 @@ class DifferentialDrive(
     class WheelState(val left: Double, val right: Double) {
         constructor() : this(0.0, 0.0)
 
-        operator fun get(isLeft: Boolean): Double {
-            return if (isLeft) left else right
-        }
+        operator fun get(isLeft: Boolean) =  if (isLeft) left else right
 
         override fun toString(): String {
             val fmt = DecimalFormat("#0.000")
@@ -436,7 +435,7 @@ class DifferentialDrive(
         val wheelTorque: WheelState // N m
     ) : CSVWritable {
         override fun toCSV(): String {
-            return "${curvature.toString()},$dcurvature,$chassisVelocity, $chassisAcceleration, " +
+            return "$curvature,$dcurvature,$chassisVelocity, $chassisAcceleration, " +
                 "$wheelVelocity, $wheelAcceleration, $voltage, $wheelTorque"
         }
     }
