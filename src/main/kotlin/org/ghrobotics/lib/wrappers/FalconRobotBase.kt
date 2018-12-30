@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.wrappers
 
+import edu.wpi.first.hal.FRCNetComm
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.command.Scheduler
@@ -10,6 +11,8 @@ import javafx.beans.property.SimpleObjectProperty
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
 import org.ghrobotics.lib.utils.addEnterListener
+
+const val kLanguageKotlin = 6
 
 abstract class FalconRobotBase : RobotBase() {
 
@@ -49,6 +52,7 @@ abstract class FalconRobotBase : RobotBase() {
 
     @Suppress("ComplexMethod")
     override fun startCompetition() {
+        HAL.report(FRCNetComm.tResourceType.kResourceType_Language, kLanguageKotlin)
         LiveWindow.setEnabled(false)
 
         currentMode.addEnterListener(Mode.AUTONOMOUS) { SubsystemHandler.autoReset() }
