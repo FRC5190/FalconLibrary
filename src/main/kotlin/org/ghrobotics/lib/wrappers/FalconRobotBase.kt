@@ -6,11 +6,8 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.command.Scheduler
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
-import javafx.beans.property.ReadOnlyObjectProperty
-import javafx.beans.property.SimpleObjectProperty
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
-import org.ghrobotics.lib.utils.addEnterListener
 
 const val kLanguageKotlin = 6
 
@@ -38,8 +35,8 @@ abstract class FalconRobotBase : RobotBase() {
         TEST;
     }
 
-    private val _currentMode = SimpleObjectProperty<Mode>(Mode.NONE)
-    val currentMode: ReadOnlyObjectProperty<Mode> = _currentMode
+    var currentMode = Mode.NONE
+        private set
 
     // Main Robot Code
 
@@ -54,10 +51,6 @@ abstract class FalconRobotBase : RobotBase() {
     override fun startCompetition() {
         HAL.report(FRCNetComm.tResourceType.kResourceType_Language, kLanguageKotlin)
         LiveWindow.setEnabled(false)
-
-        currentMode.addEnterListener(Mode.AUTONOMOUS) { SubsystemHandler.autoReset() }
-        currentMode.addEnterListener(Mode.TELEOP) { SubsystemHandler.teleopReset() }
-        currentMode.addEnterListener(Mode.DISABLED) { SubsystemHandler.zeroOutputs() }
 
         initialize()
         SubsystemHandler.lateInit()
@@ -79,7 +72,18 @@ abstract class FalconRobotBase : RobotBase() {
                 isTest -> Mode.TEST
                 else -> TODO("Robot in invalid mode!")
             }
-            _currentMode.value = newMode
+
+            if (newMode != currentMode) {
+                when (newMode) {
+                    Mode.AUTONOMOUS -> SubsystemHandler.autoReset()
+                    Mode.TELEOP -> SubsystemHandler.teleopReset()
+                    Mode.DISABLED -> SubsystemHandler.zeroOutputs()
+                    else -> {
+                    }
+                }
+            }
+
+            currentMode = newMode
 
             // Report robot state
             when (newMode) {

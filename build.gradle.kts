@@ -28,7 +28,6 @@ dependencies {
 
     // Apache Commons Math
     compile("org.apache.commons", "commons-math3", "3.6.1")
-    compile("io.reactivex.rxjava2", "rxkotlin", "2.3.0")
 
     // Unit Testing
     testCompile("org.knowm.xchart", "xchart", "3.2.2")
