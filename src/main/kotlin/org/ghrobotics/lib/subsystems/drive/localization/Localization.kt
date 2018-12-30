@@ -50,7 +50,7 @@ abstract class Localization(
         robotPosition = newPosition
         val newHeading = robotHeading()
         prevHeading = newHeading
-        headingOffset = -newHeading
+        headingOffset = -newHeading + newPosition.rotation
         interpolatableLocalizationBuffer.clear()
     }
 
