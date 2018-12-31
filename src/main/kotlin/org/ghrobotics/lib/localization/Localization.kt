@@ -1,24 +1,28 @@
-package org.ghrobotics.lib.subsystems.drive.localization
+package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.withContext
-import org.ghrobotics.lib.debug.LiveDashboard
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.launchFrequency
-import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.CoroutineContext
 
 abstract class Localization(
-    val robotHeading: Source<Rotation2d>
+    val robotHeading: Source<Rotation2d>,
+    context: CoroutineContext
 ) : Source<Pose2d> {
 
-    private val localizationContext = Executors.newSingleThreadExecutor {
-        Thread(it, "Localization")
-    }.asCoroutineDispatcher()
+    private val job = Job(context[Job])
+    private val scope = CoroutineScope(context + job + CoroutineName("Localization"))
+
+    private val resetChannel = Channel<Pose2d>(Channel.CONFLATED)
+    private val running = AtomicBoolean(false)
 
     /**
      * The robot position relative to the field.
@@ -41,10 +45,7 @@ abstract class Localization(
     private var prevHeading = Rotation2d(0.0)
     private var headingOffset = Rotation2d(0.0)
 
-    suspend fun reset(newPosition: Pose2d = Pose2d()) =
-        withContext(localizationContext) {
-            resetInternal(newPosition)
-        }
+    suspend fun reset(newPosition: Pose2d = Pose2d()) = resetChannel.send(newPosition)
 
     protected open fun resetInternal(newPosition: Pose2d) {
         robotPosition = newPosition
@@ -54,8 +55,13 @@ abstract class Localization(
         interpolatableLocalizationBuffer.clear()
     }
 
-    internal fun start() {
-        GlobalScope.launchFrequency(100, localizationContext) {
+    fun start() {
+        if (!running.compareAndSet(false, true)) return
+        scope.launchFrequency(100) {
+            val resetPose = resetChannel.poll()
+            if (resetPose != null) {
+                resetInternal(resetPose)
+            }
             val newHeading = robotHeading()
 
             val deltaHeading = newHeading - prevHeading
@@ -66,11 +72,6 @@ abstract class Localization(
                 newRobotPosition.translation,
                 newHeading + headingOffset
             )
-
-            // Report new position to Live Dashboard
-            LiveDashboard.robotHeading = robotPosition.rotation.radian
-            LiveDashboard.robotX = robotPosition.translation.x.feet
-            LiveDashboard.robotY = robotPosition.translation.y.feet
 
             prevHeading = newHeading
 
@@ -85,4 +86,9 @@ abstract class Localization(
 
     operator fun get(timestamp: Time) = get(timestamp.second)
     internal operator fun get(timestamp: Double) = interpolatableLocalizationBuffer[timestamp]
+
+    open fun dispose() {
+        job.cancel()
+        resetChannel.close()
+    }
 }

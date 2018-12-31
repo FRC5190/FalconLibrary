@@ -1,16 +1,18 @@
-package org.ghrobotics.lib.subsystems.drive.localization
+package org.ghrobotics.lib.localization
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.utils.Source
+import kotlin.coroutines.CoroutineContext
 
 class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
     val leftEncoder: Source<Length>,
-    val rightEncoder: Source<Length>
-) : Localization(robotHeading) {
+    val rightEncoder: Source<Length>,
+    context: CoroutineContext
+) : Localization(robotHeading, context) {
 
     private var prevLeftEncoder = 0.0
     private var prevRightEncoder = 0.0

@@ -46,6 +46,10 @@ abstract class FalconSubsystem(name: String? = null) {
         override fun initDefaultCommand() {
             defaultCommand = this@FalconSubsystem.defaultCommand.wrappedValue
         }
+
+        override fun periodic() {
+            this@FalconSubsystem.periodic()
+        }
     }
 
     /**
@@ -77,4 +81,6 @@ abstract class FalconSubsystem(name: String? = null) {
      * Called when no mode is enabled
      */
     open fun zeroOutputs() {}
+
+    protected open fun periodic() {}
 }

@@ -7,6 +7,8 @@ import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.sequential
+import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.localization.Localization
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
@@ -16,7 +18,6 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
 import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
-import org.ghrobotics.lib.subsystems.drive.localization.Localization
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -52,6 +53,14 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      */
     override fun zeroOutputs() {
         tankDrive(0.0, 0.0)
+    }
+
+    override fun periodic() {
+        // Report new position to Live Dashboard
+        val robotPosition = localization()
+        LiveDashboard.robotHeading = robotPosition.rotation.radian
+        LiveDashboard.robotX = robotPosition.translation.x.feet
+        LiveDashboard.robotY = robotPosition.translation.y.feet
     }
 
     // COMMON DRIVE TYPES
