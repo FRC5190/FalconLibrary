@@ -6,6 +6,8 @@ import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.utils.Source
 
 /**
@@ -18,13 +20,15 @@ class TrajectoryTrackerCommand(
     driveSubsystem: FalconSubsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
     val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>,
-    private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker
+    private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
+    dt: Time = 20.millisecond
 ) : FalconCommand(driveSubsystem) {
 
     private var trajectoryFinished = false
 
     init {
         finishCondition += { trajectoryFinished }
+        executeFrequency = (1 / dt.value).toInt()
     }
 
     /**
