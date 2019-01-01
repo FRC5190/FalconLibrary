@@ -10,12 +10,16 @@ import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.nativeunits.STU
+import org.ghrobotics.lib.wrappers.FalconMotor
 import kotlin.properties.Delegates.observable
 
 abstract class AbstractFalconSRX<T : SIValue<T>>(
     id: Int,
     timeout: Time
-) : TalonSRX(id) {
+) : TalonSRX(id), FalconMotor<T> {
+
+    // CTRE TalonSRX
+
     protected val timeoutInt = timeout.millisecond.toInt()
 
     var kP by observable(0.0) { _, _, newValue -> config_kP(0, newValue, timeoutInt) }
@@ -107,6 +111,27 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
         demandType: DemandType,
         outputPercent: Double
     )
+
+    // Falcon Motor
+
+    override var percentOutput: Double
+        get() = motorOutputPercent
+        set(value) {
+            set(ControlMode.PercentOutput, value)
+        }
+
+    override val voltageOutput: Double
+        get() = motorOutputVoltage
+
+    override var velocity: Velocity<T>
+        get() = sensorVelocity
+        set(value) {
+            set(ControlMode.Velocity, value)
+        }
+
+    override fun setVelocityAndArbitraryFeedForward(velocity: Velocity<T>, arbitraryFeedForward: Double) {
+        set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, arbitraryFeedForward)
+    }
 
     init {
         // Clear all redundant settings.

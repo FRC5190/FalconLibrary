@@ -1,8 +1,7 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import com.ctre.phoenix.motorcontrol.ControlMode
-import com.ctre.phoenix.motorcontrol.DemandType
 import org.ghrobotics.lib.commands.FalconCommand
+import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
@@ -15,24 +14,42 @@ import org.ghrobotics.lib.utils.Source
  * @param trajectorySource Source that contains the trajectory to follow.
  */
 class FollowTrajectoryCommand(
-    val driveSubsystem: TankDriveSubsystem,
+    driveSubsystem: FalconSubsystem,
+    private val driveBase: FollowerDriveBase,
     val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>
 ) : FalconCommand(driveSubsystem) {
+
+    /**
+     * Shortcut for [TankDriveSubsystem]
+     */
+    constructor(
+        driveSubsystem: TankDriveSubsystem,
+        trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>
+    ) : this(driveSubsystem, driveSubsystem, trajectorySource)
 
     /**
      * Secondary constructor to directly pass in a trajectory without a source.
      */
     constructor(
+        driveSubsystem: FalconSubsystem,
+        driveBase: FollowerDriveBase,
+        trajectory: TimedTrajectory<Pose2dWithCurvature>
+    ) : this(driveSubsystem, driveBase, Source(trajectory))
+
+    /**
+     * Secondary constructor for [TankDriveSubsystem] to directly pass in a trajectory without a source.
+     */
+    constructor(
         driveSubsystem: TankDriveSubsystem,
         trajectory: TimedTrajectory<Pose2dWithCurvature>
-    ) : this(driveSubsystem, Source(trajectory))
+    ) : this(driveSubsystem, driveSubsystem, Source(trajectory))
 
     private var trajectoryFinished = false
 
     /**
      * Retrieve the trajectory follower from the drive subsystem.
      */
-    private val trajectoryFollower = driveSubsystem.trajectoryFollower
+    private val trajectoryFollower get() = driveBase.trajectoryFollower
 
     init {
         finishCondition += { trajectoryFinished }
@@ -53,7 +70,7 @@ class FollowTrajectoryCommand(
      */
     override suspend fun execute() {
         // Get the robot position from odometry.
-        val robotPosition = driveSubsystem.localization()
+        val robotPosition = driveBase.localization()
 
         // Get the trajectory follower output.
         val output = trajectoryFollower.getOutputFromDynamics(robotPosition)
@@ -64,17 +81,13 @@ class FollowTrajectoryCommand(
         LiveDashboard.pathHeading = trajectoryFollower.referencePose.rotation.radian
 
         // Set outputs
-        driveSubsystem.leftMaster.set(
-            ControlMode.Velocity,
+        driveBase.leftMotor.setVelocityAndArbitraryFeedForward(
             output.leftSetPoint,
-            DemandType.ArbitraryFeedForward,
             output.leftVoltage.value / 12.0
         )
 
-        driveSubsystem.rightMaster.set(
-            ControlMode.Velocity,
+        driveBase.rightMotor.setVelocityAndArbitraryFeedForward(
             output.rightSetPoint,
-            DemandType.ArbitraryFeedForward,
             output.rightVoltage.value / 12.0
         )
 
@@ -85,7 +98,7 @@ class FollowTrajectoryCommand(
      * Make sure that the drivetrain is stopped at the end of the command.
      */
     override suspend fun dispose() {
-        driveSubsystem.zeroOutputs()
+        driveBase.zeroOutputs()
         LiveDashboard.isFollowingPath = false
     }
 }

@@ -1,16 +1,12 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import com.ctre.phoenix.motorcontrol.ControlMode
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.debug.LiveDashboard
-import org.ghrobotics.lib.localization.Localization
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
@@ -21,7 +17,6 @@ import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacter
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
-import org.ghrobotics.lib.wrappers.ctre.LinearFalconSRX
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
@@ -29,22 +24,12 @@ import kotlin.math.withSign
 /**
  * Represents a standard tank drive subsystem
  */
-abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
-
-    abstract val leftMaster: LinearFalconSRX
-    abstract val rightMaster: LinearFalconSRX
-
-    abstract val localization: Localization
-
-    abstract val trajectoryFollower: TrajectoryFollower
+abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), FollowerDriveBase {
 
     private var quickStopAccumulator = 0.0
 
-    /**
-     * Initialize odometry
-     */
-    @ObsoleteCoroutinesApi
     override fun lateInit() {
+        // Ensure odemetry is running
         localization.start()
     }
 
@@ -174,8 +159,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         leftPercent: Double,
         rightPercent: Double
     ) {
-        leftMaster.set(ControlMode.PercentOutput, leftPercent.coerceIn(-1.0, 1.0))
-        rightMaster.set(ControlMode.PercentOutput, rightPercent.coerceIn(-1.0, 1.0))
+        leftMotor.percentOutput = leftPercent.coerceIn(-1.0, 1.0)
+        rightMotor.percentOutput = rightPercent.coerceIn(-1.0, 1.0)
     }
 
 
@@ -269,18 +254,18 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         sequential {
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }

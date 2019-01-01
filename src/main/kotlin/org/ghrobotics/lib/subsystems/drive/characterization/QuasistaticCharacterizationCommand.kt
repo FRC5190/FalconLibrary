@@ -48,11 +48,11 @@ class QuasistaticCharacterizationCommand(
         driveSubsystem.tankDrive(commandedVoltage / 12.0, commandedVoltage / 12.0 * if (turnInPlace) -1 else 1)
 
         val avgCompensatedVoltage =
-            (driveSubsystem.leftMaster.motorOutputVoltage + driveSubsystem.rightMaster.motorOutputVoltage) / 2.0
+            (driveSubsystem.leftMaster.voltageOutput + driveSubsystem.rightMaster.voltageOutput) / 2.0
 
         val wheelMotion = DifferentialDrive.WheelState(
-            driveSubsystem.leftMaster.sensorVelocity.value,
-            driveSubsystem.rightMaster.sensorVelocity.value
+            driveSubsystem.leftMaster.velocity.value,
+            driveSubsystem.rightMaster.velocity.value
         )
 
         // Return robot speed in meters per second if linear, radians per second if angular
