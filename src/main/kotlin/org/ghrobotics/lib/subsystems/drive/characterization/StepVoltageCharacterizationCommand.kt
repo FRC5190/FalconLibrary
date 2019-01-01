@@ -54,7 +54,7 @@ class StepVoltageCharacterizationCommand(
             (wheelMotion.right + wheelMotion.left) / 2.0
         }
 
-        data.add(CharacterizationData(avgCompensatedVoltage, avgSpd, dt.second))
+        data.add(CharacterizationData(avgCompensatedVoltage.value, avgSpd, dt.second))
     }
 
     override suspend fun dispose() {

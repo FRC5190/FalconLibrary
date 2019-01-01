@@ -1,12 +1,13 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.localization.Localization
 import org.ghrobotics.lib.mathematics.kEpsilon
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
@@ -24,9 +25,13 @@ import kotlin.math.withSign
 /**
  * Represents a standard tank drive subsystem
  */
-abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), FollowerDriveBase {
+abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), DifferentialTrackerDriveBase {
 
     private var quickStopAccumulator = 0.0
+
+    abstract val localization: Localization
+
+    override val robotLocation: Pose2d get() = localization()
 
     override fun lateInit() {
         // Ensure odemetry is running
@@ -173,7 +178,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Follower
      */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>
-    ) = FollowTrajectoryCommand(this, trajectory)
+    ) = TrajectoryTrackerCommand(this, this, { trajectory })
 
     /**
      * Returns the follow trajectory command
@@ -197,7 +202,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Follower
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
         pathMirrored: Boolean = false
-    ) = FollowTrajectoryCommand(this, trajectory.map {
+    ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     })
 
@@ -271,7 +276,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Follower
         }
 
     companion object {
-        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
-        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
+        const val kQuickStopThreshold = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopThreshold
+        const val kQuickStopAlpha = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopAlpha
     }
 }

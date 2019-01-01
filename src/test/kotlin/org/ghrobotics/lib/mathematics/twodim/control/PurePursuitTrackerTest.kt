@@ -1,20 +1,20 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
-
-import com.team254.lib.physics.DifferentialDrive
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.simulation.SimDifferentialDrive
+import org.ghrobotics.lib.simulation.SimFalconMotor
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
 import java.text.DecimalFormat
 
-class PurePursuitControllerTest {
-
-    private lateinit var trajectoryFollower: TrajectoryFollower
+class PurePursuitTrackerTest {
 
     private val kLat = 4.0
     private val kLookaheadTime = 0.4.second
@@ -22,20 +22,22 @@ class PurePursuitControllerTest {
 
     @Test
     fun testTrajectoryFollower() {
-        val iterator = TrajectoryGeneratorTest.trajectory.iterator()
-        trajectoryFollower = PurePursuitController(
-            TrajectoryGeneratorTest.drive,
+        val purePursuitTracker = PurePursuitTracker(
             kLat,
             kLookaheadTime,
             kMinLookaheadDistance
         )
-        trajectoryFollower.resetTrajectory(TrajectoryGeneratorTest.trajectory)
 
-        val error = Pose2d()
-        var totalpose = iterator.currentState.state.state.pose.transformBy(error)
+        val drive = SimDifferentialDrive(
+            TrajectoryGeneratorTest.drive,
+            SimFalconMotor(0.meter),
+            SimFalconMotor(0.meter),
+            purePursuitTracker,
+            1.05
+        )
 
-        var time = 0.second
-        val dt = 20.millisecond
+        var currentTime = 0.second
+        val deltaTime = 20.millisecond
 
         val xList = arrayListOf<Double>()
         val yList = arrayListOf<Double>()
@@ -43,31 +45,21 @@ class PurePursuitControllerTest {
         val refXList = arrayListOf<Double>()
         val refYList = arrayListOf<Double>()
 
-        while (!iterator.isDone) {
+        purePursuitTracker.reset(TrajectoryGeneratorTest.trajectory)
 
-            val pt = iterator.advance(dt)
-            val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
+        drive.robotLocation = purePursuitTracker.referencePoint!!.state.state.pose
 
-            val wheelstate = DifferentialDrive.WheelState(
-                output.leftSetPoint * dt / 3.inch,
-                output.rightSetPoint * dt / 3.inch
-            )
+        while (!purePursuitTracker.isFinished) {
+            currentTime += deltaTime
+            drive.setOutput(purePursuitTracker.nextState(drive.robotLocation, currentTime))
+            drive.update(deltaTime)
 
-            val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
+            xList += drive.robotLocation.translation.x.feet
+            yList += drive.robotLocation.translation.y.feet
 
-            time += dt
-
-            totalpose += Twist2d(
-                k.linear.meter,
-                0.meter,
-                k.angular.radian * 1.05
-            ).asPose
-
-            xList.add(totalpose.translation.x.feet)
-            yList.add(totalpose.translation.y.feet)
-
-            refXList.add(pt.state.state.pose.translation.x.feet)
-            refYList.add(pt.state.state.pose.translation.y.feet)
+            val referenceTranslation = purePursuitTracker.referencePoint!!.state.state.pose.translation
+            refXList += referenceTranslation.x.feet
+            refYList += referenceTranslation.y.feet
         }
 
         val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second)
@@ -101,8 +93,9 @@ class PurePursuitControllerTest {
         chart.addSeries("Trajectory", refXList.toDoubleArray(), refYList.toDoubleArray())
         chart.addSeries("Robot", xList.toDoubleArray(), yList.toDoubleArray())
 
-        val terror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - totalpose.translation
-        val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - totalpose.rotation
+        val terror =
+            TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotLocation.translation
+        val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotLocation.rotation
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
 
@@ -112,7 +105,7 @@ class PurePursuitControllerTest {
         assert(rerror.degree.also {
             println("[Test] Rotational Error: $it degrees")
         } < 20.0)
-////
+
 //        SwingWrapper(chart).displayChart()
 //        Thread.sleep(1000000)
     }

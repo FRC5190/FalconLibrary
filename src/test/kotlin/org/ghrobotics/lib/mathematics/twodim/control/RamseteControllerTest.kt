@@ -6,13 +6,13 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
 
-import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest.Companion.trajectory
 import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.simulation.SimDifferentialDrive
+import org.ghrobotics.lib.simulation.SimFalconMotor
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -20,22 +20,26 @@ import java.text.DecimalFormat
 
 class RamseteControllerTest {
 
-    private lateinit var trajectoryFollower: TrajectoryFollower
-
     private val kBeta = 2.0
     private val kZeta = 0.85
 
     @Test
     fun testTrajectoryFollower() {
-        val iterator = TrajectoryGeneratorTest.trajectory.iterator()
-        trajectoryFollower = RamseteController(TrajectoryGeneratorTest.drive, kBeta, kZeta)
-        trajectoryFollower.resetTrajectory(trajectory)
+        val ramseteTracker = RamseteTracker(
+            kBeta,
+            kZeta
+        )
 
-        val error = Pose2d(1.feet, 50.inch, 5.degree)
-        var totalpose = iterator.currentState.state.state.pose.transformBy(error)
+        val drive = SimDifferentialDrive(
+            TrajectoryGeneratorTest.drive,
+            SimFalconMotor(0.meter),
+            SimFalconMotor(0.meter),
+            ramseteTracker,
+            1.05
+        )
 
-        var time = 0.second
-        val dt = 20.millisecond
+        var currentTime = 0.second
+        val deltaTime = 20.millisecond
 
         val xList = arrayListOf<Double>()
         val yList = arrayListOf<Double>()
@@ -43,39 +47,31 @@ class RamseteControllerTest {
         val refXList = arrayListOf<Double>()
         val refYList = arrayListOf<Double>()
 
-        while (!iterator.isDone) {
+        ramseteTracker.reset(TrajectoryGeneratorTest.trajectory)
 
-            val pt = iterator.advance(dt)
-            val output = trajectoryFollower.getOutputFromKinematics(totalpose, time)
+        drive.robotLocation = ramseteTracker.referencePoint!!.state.state.pose
+            .transformBy(Pose2d(1.feet, 50.inch, 5.degree))
 
-            val wheelstate = DifferentialDrive.WheelState(
-                output.leftSetPoint * dt / 3.inch,
-                output.rightSetPoint * dt / 3.inch
-            )
+        while (!ramseteTracker.isFinished) {
+            currentTime += deltaTime
+            drive.setOutput(ramseteTracker.nextState(drive.robotLocation, currentTime))
+            drive.update(deltaTime)
 
-            val k = TrajectoryGeneratorTest.drive.solveForwardKinematics(wheelstate)
+            xList += drive.robotLocation.translation.x.feet
+            yList += drive.robotLocation.translation.y.feet
 
-            time += dt
+            val referenceTranslation = ramseteTracker.referencePoint!!.state.state.pose.translation
+            refXList += referenceTranslation.x.feet
+            refYList += referenceTranslation.y.feet
 
-            totalpose += Twist2d(
-                k.linear.meter,
-                0.meter,
-                k.angular.radian * 1.05
-            ).asPose
-
-            xList.add(totalpose.translation.x.feet)
-            yList.add(totalpose.translation.y.feet)
-
-            refXList.add(pt.state.state.pose.translation.x.feet)
-            refYList.add(pt.state.state.pose.translation.y.feet)
-
-            System.out.printf(
-                "Left Voltage: %3.3f, Right Voltage: %3.3f%n",
-                output.leftVoltage.value, output.rightVoltage.value
-            )
+            // TODO add voltage to the sim
+//            System.out.printf(
+//                "Left Voltage: %3.3f, Right Voltage: %3.3f%n",
+//                drive.leftMotor.voltageOutput.value, drive.rightMotor.voltageOutput.value
+//            )
         }
 
-        val fm = DecimalFormat("#.###").format(trajectory.lastInterpolant.second)
+        val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second)
 
         val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
             .xAxisTitle("X").yAxisTitle("Y").build()
@@ -106,8 +102,9 @@ class RamseteControllerTest {
         chart.addSeries("Trajectory", refXList.toDoubleArray(), refYList.toDoubleArray())
         chart.addSeries("Robot", xList.toDoubleArray(), yList.toDoubleArray())
 
-        val terror = trajectory.lastState.state.pose.translation - totalpose.translation
-        val rerror = trajectory.lastState.state.pose.rotation - totalpose.rotation
+        val terror =
+            TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotLocation.translation
+        val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotLocation.rotation
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
 
@@ -117,8 +114,8 @@ class RamseteControllerTest {
         assert(rerror.degree.also {
             println("[Test] Rotational Error: $it degrees")
         } < 5.0)
-//
-//         SwingWrapper(chart).displayChart()
-//         Thread.sleep(1000000)
+
+//        SwingWrapper(chart).displayChart()
+//        Thread.sleep(1000000)
     }
 }
