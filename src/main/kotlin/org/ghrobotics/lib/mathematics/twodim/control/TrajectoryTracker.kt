@@ -43,16 +43,25 @@ abstract class TrajectoryTracker {
         iterator.advance(deltaTime)
 
         val velocity = calculateState(iterator, currentRobotPose)
-        val previousVelocity = this.previousVelocity ?: velocity
+        val previousVelocity = this.previousVelocity
         this.previousVelocity = velocity
 
         // Calculate Acceleration (useful for drive dynamics)
-        return TrajectoryTrackerOutput(
-            _linearVelocity = velocity._linearVelocity,
-            _linearAcceleration = (velocity._linearVelocity - previousVelocity._linearVelocity) / deltaTime.value,
-            _angularVelocity = velocity._angularVelocity,
-            _angularAcceleration = (velocity._angularVelocity - previousVelocity._angularVelocity) / deltaTime.value
-        )
+        return if (previousVelocity == null || deltaTime.value <= 0) {
+            TrajectoryTrackerOutput(
+                _linearVelocity = velocity._linearVelocity,
+                _linearAcceleration = 0.0,
+                _angularVelocity = velocity._angularVelocity,
+                _angularAcceleration = 0.0
+            )
+        } else {
+            TrajectoryTrackerOutput(
+                _linearVelocity = velocity._linearVelocity,
+                _linearAcceleration = (velocity._linearVelocity - previousVelocity._linearVelocity) / deltaTime.value,
+                _angularVelocity = velocity._angularVelocity,
+                _angularAcceleration = (velocity._angularVelocity - previousVelocity._angularVelocity) / deltaTime.value
+            )
+        }
     }
 
     protected abstract fun calculateState(
