@@ -8,6 +8,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.derivedunits.AngularVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.subsystems.drive.TrajectoryTrackerOutput
 import org.ghrobotics.lib.utils.DeltaTime
@@ -32,7 +33,7 @@ abstract class TrajectoryTracker {
 
     fun nextState(
         currentRobotPose: Pose2d,
-        currentTime: Time = Timer.getFPGATimestamp().second
+        currentTime: Time = System.currentTimeMillis().millisecond
     ): TrajectoryTrackerOutput {
         val iterator = trajectoryIterator
         require(iterator != null) {
