@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.wpilibj.Notifier
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.debug.LiveDashboard
@@ -21,30 +22,12 @@ class TrajectoryTrackerCommand(
     private val driveBase: TrajectoryTrackerDriveBase,
     val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    dt: Time = 20.millisecond
+    val dt: Time = 20.millisecond
 ) : FalconCommand(driveSubsystem) {
 
     private var trajectoryFinished = false
 
-    init {
-        finishCondition += { trajectoryFinished }
-        executeFrequency = (1 / dt.value).toInt()
-    }
-
-    /**
-     * Reset the trajectory follower with the new trajectory.
-     */
-    override suspend fun initialize() {
-        trajectoryTracker.reset(trajectorySource())
-        trajectoryFinished = false
-        LiveDashboard.isFollowingPath = true
-    }
-
-    /**
-     * Get the robot position, update the follower and get the desired velocities and set outputs
-     * to the drivetrain.
-     */
-    override suspend fun execute() {
+    private val notifier = Notifier {
         // Get the trajectory follower output.
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotLocation))
 
@@ -61,10 +44,26 @@ class TrajectoryTrackerCommand(
         trajectoryFinished = trajectoryTracker.isFinished
     }
 
+    init {
+        finishCondition += { trajectoryFinished }
+    }
+
+    /**
+     * Reset the trajectory follower with the new trajectory.
+     */
+    override suspend fun initialize() {
+        trajectoryTracker.reset(trajectorySource())
+        trajectoryFinished = false
+        LiveDashboard.isFollowingPath = true
+
+        notifier.startPeriodic(dt.second)
+    }
+
     /**
      * Make sure that the drivetrain is stopped at the end of the command.
      */
     override suspend fun dispose() {
+        notifier.stop()
         driveBase.zeroOutputs()
         LiveDashboard.isFollowingPath = false
     }
