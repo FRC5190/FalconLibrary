@@ -16,7 +16,7 @@ interface TimingConstraint<S> {
 
     fun getMinMaxAcceleration(state: S, velocity: Double): MinMaxAcceleration
 
-    class MinMaxAcceleration(
+    data class MinMaxAcceleration(
         val minAcceleration: Double,
         val maxAcceleration: Double
     ) {

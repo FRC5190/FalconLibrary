@@ -2,7 +2,7 @@ package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 
-class FunctionalQuadraticSpline(
+data class FunctionalQuadraticSpline(
     private val p1: Translation2d,
     private val p2: Translation2d,
     private val p3: Translation2d

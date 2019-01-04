@@ -1,6 +1,5 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.apache.commons.math3.geometry.euclidean.twod.Line
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
@@ -31,6 +30,7 @@ class PathFinder(
     )
     private val restrictedAreas = restrictedAreas.toList()
 
+    @Suppress("SpreadOperator")
     fun findPath(
         start: Pose2d,
         end: Pose2d,
@@ -99,6 +99,7 @@ class PathFinder(
     }
 
     // https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+    @Suppress("NestedBlockDepth", "UnsafeCallOnNullableType")
     private fun optimize(
         source: Vector2D,
         target: Vector2D,
@@ -140,6 +141,7 @@ class PathFinder(
         return null
     }
 
+    @Suppress("UseDataClass")
     private class Node(
         val point: Vector2D,
         var dist: Double,
@@ -182,10 +184,10 @@ class PathFinder(
                 val bottomLeft = rect.bottomLeft.toVector2d()
                 val bottomRight = rect.bottomRight.toVector2d()
                 arrayOf(
-                    Pair(topLeft, topRight),
-                    Pair(topLeft, bottomLeft),
-                    Pair(bottomRight, bottomLeft),
-                    Pair(bottomRight, topRight)
+                    topLeft to topRight,
+                    topLeft to bottomLeft,
+                    bottomRight to bottomLeft,
+                    bottomRight to topRight
                 ).asList()
             }.mapToSet { pair ->
                 Triple(pair.first, pair.second, Line(pair.first, pair.second, kEpsilon))

@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import kotlin.reflect.KProperty
 
 object FalconNetworkTable {
-    val instance = NetworkTableInstance.getDefault()!!
+    val instance: NetworkTableInstance = NetworkTableInstance.getDefault()
 
     operator fun get(name: String): NetworkTableEntry = getEntry(name)
     fun getEntry(name: String): NetworkTableEntry = instance.getEntry(name)
@@ -14,11 +14,16 @@ object FalconNetworkTable {
     fun getTable(name: String): NetworkTable = instance.getTable(name)
 }
 
-operator fun NetworkTable.get(name: String) = getEntry(name)!!
+operator fun NetworkTable.get(name: String): NetworkTableEntry = getEntry(name)
 
-fun NetworkTableEntry.delegate(defaultValue: String = "") = delegate { this.getString(defaultValue)!! }
-fun NetworkTableEntry.delegate(defaultValue: Double = 0.0) = delegate { this.getDouble(defaultValue) }
-fun NetworkTableEntry.delegate(defaultValue: Boolean = false) = delegate { this.getBoolean(defaultValue) }
+fun NetworkTableEntry.delegate(defaultValue: String = ""): NetworkTableEntryDelegate<String> =
+    delegate { this.getString(defaultValue) }
+
+fun NetworkTableEntry.delegate(defaultValue: Double = 0.0): NetworkTableEntryDelegate<Double> =
+    delegate { this.getDouble(defaultValue) }
+
+fun NetworkTableEntry.delegate(defaultValue: Boolean = false): NetworkTableEntryDelegate<Boolean> =
+    delegate { this.getBoolean(defaultValue) }
 
 private fun <T> NetworkTableEntry.delegate(get: () -> T) = NetworkTableEntryDelegate(this, get)
 

@@ -21,7 +21,7 @@ fun Rectangle2d(
     )
 }
 
-@Suppress("FunctionName")
+@Suppress("FunctionName", "UnsafeCallOnNullableType")
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {
@@ -67,6 +67,7 @@ data class Rectangle2d internal constructor(
 
     operator fun contains(p: Translation2d) = p._x in _x..(_x + _w) && p._y in _y..(_y + _h)
 
+    @Suppress("ComplexMethod")
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
         if (translation._x epsilonEquals 0.0 && translation._y epsilonEquals 0.0) return false
         // Check if its even in range

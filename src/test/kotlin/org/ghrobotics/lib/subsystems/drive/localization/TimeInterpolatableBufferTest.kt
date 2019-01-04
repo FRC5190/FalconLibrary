@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive.localization
 
+import org.ghrobotics.lib.localization.TimeInterpolatableBuffer
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.second

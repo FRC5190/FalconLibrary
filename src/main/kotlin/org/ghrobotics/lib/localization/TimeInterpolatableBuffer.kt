@@ -1,4 +1,4 @@
-package org.ghrobotics.lib.subsystems.drive.localization
+package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.units.Time
@@ -26,8 +26,9 @@ class TimeInterpolatableBuffer<T : Interpolatable<T>>(
         val currentTime = timeSource().second
         val iterator = bufferMap.iterator()
         iterator.forEach {
-            if (currentTime - it.key >= historySpan)
+            if (currentTime - it.key >= historySpan) {
                 iterator.remove()
+            }
         }
     }
 

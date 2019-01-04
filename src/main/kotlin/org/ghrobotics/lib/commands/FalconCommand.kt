@@ -10,7 +10,6 @@ import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.loopFrequency
 import org.ghrobotics.lib.utils.or
 import org.ghrobotics.lib.wrappers.FalconRobotBase
-import org.ghrobotics.lib.wrappers.Wrapper
 import kotlin.properties.Delegates.observable
 
 /**
@@ -18,18 +17,21 @@ import kotlin.properties.Delegates.observable
  *  @param requiredSubsystems subsystems this command requires in order to run
  */
 abstract class FalconCommand(
-    vararg requiredSubsystems: FalconSubsystem
-) : Wrapper<Command> {
+    requiredSubsystems: Iterable<FalconSubsystem>
+) {
+
+    constructor(vararg requiredSubsystems: FalconSubsystem) : this(requiredSubsystems.asIterable())
 
     init {
-        if (!FalconRobotBase.DEBUG && FalconRobotBase.INSTANCE.initialized)
+        if (!FalconRobotBase.DEBUG && FalconRobotBase.INSTANCE.initialized) {
             println("[FalconCommand} [WARNING] It is not recommended to create commands after the robot has initialized!")
+        }
     }
 
     /**
      *  Wrapped WPI command
      */
-    override val wrappedValue: Command = WpiCommand(requiredSubsystems)
+    open val wrappedValue: Command = WpiCommand(requiredSubsystems)
 
     /**
      *  When this is true the command will end
@@ -100,7 +102,7 @@ abstract class FalconCommand(
     }
 
     protected inner class WpiCommand(
-        requiredSubsystems: Array<out FalconSubsystem>
+        requiredSubsystems: Iterable<FalconSubsystem>
     ) : Command(), IWpiCommand {
         init {
             requiredSubsystems.forEach { requires(it.wpiSubsystem) }
@@ -158,7 +160,7 @@ abstract class FalconCommand(
      * Sets the timeout for the command
      * @param timeout the timeout for the command, the command will never run longer then this timeout
      */
-    fun withTimeout(timeout: Time) = also { (wrappedValue as IWpiCommand).timeout = timeout }
+    fun withTimeout(timeout: Time) = also { (wrappedValue as? IWpiCommand)?.timeout = timeout }
 
     companion object {
         @ObsoleteCoroutinesApi

@@ -48,11 +48,11 @@ class QuasistaticCharacterizationCommand(
         driveSubsystem.tankDrive(commandedVoltage / 12.0, commandedVoltage / 12.0 * if (turnInPlace) -1 else 1)
 
         val avgCompensatedVoltage =
-            (driveSubsystem.leftMaster.motorOutputVoltage + driveSubsystem.rightMaster.motorOutputVoltage) / 2.0
+            (driveSubsystem.leftMotor.voltageOutput + driveSubsystem.rightMotor.voltageOutput) / 2.0
 
         val wheelMotion = DifferentialDrive.WheelState(
-            driveSubsystem.leftMaster.sensorVelocity.value,
-            driveSubsystem.rightMaster.sensorVelocity.value
+            driveSubsystem.leftMotor.velocity.value,
+            driveSubsystem.rightMotor.velocity.value
         )
 
         // Return robot speed in meters per second if linear, radians per second if angular
@@ -62,7 +62,7 @@ class QuasistaticCharacterizationCommand(
             (wheelMotion.right + wheelMotion.left) / 2.0
         }
 
-        data.add(CharacterizationData(avgCompensatedVoltage, avgSpd, dt.second))
+        data.add(CharacterizationData(avgCompensatedVoltage.value, avgSpd, dt.second))
     }
 
     override suspend fun dispose() {

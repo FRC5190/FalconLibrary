@@ -1,14 +1,13 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import com.ctre.phoenix.motorcontrol.ControlMode
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.sequential
+import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.localization.Localization
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryFollower
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
@@ -16,11 +15,9 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
 import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
-import org.ghrobotics.lib.subsystems.drive.localization.Localization
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
-import org.ghrobotics.lib.wrappers.LinearFalconSRX
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
@@ -28,22 +25,16 @@ import kotlin.math.withSign
 /**
  * Represents a standard tank drive subsystem
  */
-abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
-
-    abstract val leftMaster: LinearFalconSRX
-    abstract val rightMaster: LinearFalconSRX
-
-    abstract val localization: Localization
-
-    abstract val trajectoryFollower: TrajectoryFollower
+abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), DifferentialTrackerDriveBase {
 
     private var quickStopAccumulator = 0.0
 
-    /**
-     * Initialize odometry
-     */
-    @ObsoleteCoroutinesApi
+    abstract val localization: Localization
+
+    override val robotLocation: Pose2d get() = localization()
+
     override fun lateInit() {
+        // Ensure odemetry is running
         localization.start()
     }
 
@@ -52,6 +43,14 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      */
     override fun zeroOutputs() {
         tankDrive(0.0, 0.0)
+    }
+
+    override fun periodic() {
+        // Report new position to Live Dashboard
+        val robotPosition = localization()
+        LiveDashboard.robotHeading = robotPosition.rotation.radian
+        LiveDashboard.robotX = robotPosition.translation.x.feet
+        LiveDashboard.robotY = robotPosition.translation.y.feet
     }
 
     // COMMON DRIVE TYPES
@@ -95,6 +94,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     /**
      * Curvature or cheezy drive control
      */
+    @Suppress("ComplexMethod")
     fun curvatureDrive(
         linearPercent: Double,
         curvaturePercent: Double,
@@ -164,8 +164,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         leftPercent: Double,
         rightPercent: Double
     ) {
-        leftMaster.set(ControlMode.PercentOutput, leftPercent.coerceIn(-1.0, 1.0))
-        rightMaster.set(ControlMode.PercentOutput, rightPercent.coerceIn(-1.0, 1.0))
+        leftMotor.percentOutput = leftPercent.coerceIn(-1.0, 1.0)
+        rightMotor.percentOutput = rightPercent.coerceIn(-1.0, 1.0)
     }
 
 
@@ -178,7 +178,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
      */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>
-    ) = FollowTrajectoryCommand(this, trajectory)
+    ) = TrajectoryTrackerCommand(this, this, { trajectory })
 
     /**
      * Returns the follow trajectory command
@@ -202,7 +202,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
         pathMirrored: Boolean = false
-    ) = FollowTrajectoryCommand(this, trajectory.map {
+    ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     })
 
@@ -259,24 +259,24 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem") {
         sequential {
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
-                leftMaster.sensorVelocity.value.absoluteValue < kEpsilon &&
-                    rightMaster.sensorVelocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.value.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.value.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }
 
     companion object {
-        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
-        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
+        const val kQuickStopThreshold = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopThreshold
+        const val kQuickStopAlpha = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopAlpha
     }
 }

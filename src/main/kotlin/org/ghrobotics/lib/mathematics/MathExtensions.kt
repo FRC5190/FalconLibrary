@@ -13,17 +13,11 @@ fun Double.lerp(endValue: Double, t: Double) = this + (endValue - this) * t.coer
 fun <T : Comparable<T>> min(a: T, b: T) = if (a < b) a else b
 fun <T : Comparable<T>> max(a: T, b: T) = if (a > b) a else b
 
-infix fun Double.epsilonEquals(other: Double): Boolean {
-    return (this - other).absoluteValue < kEpsilon
-}
+infix fun Double.epsilonEquals(other: Double) = minus(other).absoluteValue < kEpsilon
 
-infix fun Double.cos(other: Double): Double {
-    return this * Math.cos(other)
-}
+infix fun Double.cos(other: Double) = times(Math.cos(other))
 
-infix fun Double.sin(other: Double): Double {
-    return this * Math.sin(other)
-}
+infix fun Double.sin(other: Double) = times(Math.sin(other))
 
 fun Double.boundRadians(): Double {
     var x = this

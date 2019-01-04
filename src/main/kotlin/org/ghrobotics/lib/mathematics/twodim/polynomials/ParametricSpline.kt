@@ -24,11 +24,8 @@ abstract class ParametricSpline {
     abstract fun getDCurvature(t: Double): Double
     abstract fun getVelocity(t: Double): Double
 
-    private fun getPose2d(t: Double): Pose2d {
-        return Pose2d(getPoint(t), getHeading(t))
-    }
+    private fun getPose2d(t: Double) = Pose2d(getPoint(t), getHeading(t))
 
-    fun getPose2dWithCurvature(t: Double): Pose2dWithCurvature {
-        return Pose2dWithCurvature(getPose2d(t), Pose2dCurvature(getCurvature(t), getDCurvature(t) / getVelocity(t)))
-    }
+    fun getPose2dWithCurvature(t: Double) =
+        Pose2dWithCurvature(getPose2d(t), Pose2dCurvature(getCurvature(t), getDCurvature(t) / getVelocity(t)))
 }

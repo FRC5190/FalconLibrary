@@ -79,7 +79,7 @@ class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 /**
  * Empty as empty can be
  */
-class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(*requiredSubsystems) {
+class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(requiredSubsystems.asIterable()) {
     init {
         executeFrequency = 0
     }
