@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics
 
-class NumericalApproximations {
+class NumericalApproximations private constructor() {
     companion object {
         tailrec fun newtonsMethod(
             numIterations: Int,
@@ -8,8 +8,11 @@ class NumericalApproximations {
             f: (x: Double) -> Double,
             fPrime: (x: Double) -> Double
         ): Double =
-            if (numIterations < 1) x
-            else newtonsMethod(numIterations - 1, x - f(x) / fPrime(x), f, fPrime)
+            if (numIterations < 1) {
+                x
+            } else {
+                newtonsMethod(numIterations - 1, x - f(x) / fPrime(x), f, fPrime)
+            }
     }
 }
 

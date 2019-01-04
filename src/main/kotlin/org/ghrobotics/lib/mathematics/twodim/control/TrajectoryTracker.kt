@@ -1,6 +1,5 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
-import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
@@ -9,7 +8,6 @@ import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.derivedunits.AngularVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.millisecond
-import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.subsystems.drive.TrajectoryTrackerOutput
 import org.ghrobotics.lib.utils.DeltaTime
 

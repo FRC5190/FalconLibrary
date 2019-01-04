@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.detekt.detekt
 
 plugins {
     kotlin("jvm") version "1.3.11"
-    id("edu.wpi.first.GradleRIO") version "2019.1.1-beta-4b"
+    id("edu.wpi.first.GradleRIO") version "2019.1.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC12"
     maven
     `maven-publish`
@@ -39,7 +39,7 @@ publishing {
         create<MavenPublication>("mavenLocal") {
             groupId = "org.ghrobotics"
             artifactId = "FalconLibrary"
-            version = "2019.01.05"
+            version = "2019.1.1"
 
             from(components["java"])
         }
