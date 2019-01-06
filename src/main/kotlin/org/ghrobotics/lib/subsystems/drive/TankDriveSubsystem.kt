@@ -13,6 +13,8 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
 import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
 import org.ghrobotics.lib.utils.BooleanSource
@@ -177,8 +179,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      * @param trajectory The trajectory to follow
      */
     fun followTrajectory(
-        trajectory: TimedTrajectory<Pose2dWithCurvature>
-    ) = TrajectoryTrackerCommand(this, this, { trajectory })
+        trajectory: TimedTrajectory<Pose2dWithCurvature>,
+        dt: Time = 20.millisecond
+    ) = TrajectoryTrackerCommand(this, this, { trajectory }, dt = dt)
 
     /**
      * Returns the follow trajectory command
@@ -188,10 +191,11 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        pathMirrored: Boolean = false
+        pathMirrored: Boolean = false,
+        dt: Time = 20.millisecond
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
-    })
+    }, dt)
 
     /**
      * Returns the follow trajectory command
@@ -201,10 +205,11 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      */
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
-        pathMirrored: Boolean = false
+        pathMirrored: Boolean = false,
+        dt: Time = 20.millisecond
     ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
-    })
+    }, dt = dt)
 
     /**
      * Returns the follow trajectory command
@@ -214,8 +219,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      */
     fun followTrajectory(
         trajectory: TimedTrajectory<Pose2dWithCurvature>,
-        pathMirrored: BooleanSource
-    ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory))
+        pathMirrored: BooleanSource,
+        dt: Time = 20.millisecond
+    ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory), dt = dt)
 
     /**
      * Returns the follow trajectory command
@@ -225,8 +231,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      */
     fun followTrajectory(
         trajectory: Source<TimedTrajectory<Pose2dWithCurvature>>,
-        pathMirrored: BooleanSource
-    ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory))
+        pathMirrored: BooleanSource,
+        dt: Time = 20.millisecond
+    ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory), dt = dt)
 
 
     // REGIONAL CONDITIONAL COMMAND METHODS
