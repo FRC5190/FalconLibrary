@@ -15,7 +15,7 @@ class HIDButton(
 
     private var lastValue = source() >= threshold
 
-    override suspend fun update() {
+    override fun update() {
         val newValue = source() >= threshold
         when {
             // Value has changed
@@ -33,8 +33,8 @@ class HIDButton(
     }
 }
 
-typealias HIDControlListener = suspend () -> Unit
+typealias HIDControlListener = () -> Unit
 
 interface HIDControl {
-    suspend fun update()
+    fun update()
 }

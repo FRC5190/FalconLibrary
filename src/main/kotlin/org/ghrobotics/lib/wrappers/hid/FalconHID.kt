@@ -83,7 +83,7 @@ class FalconHID<T : GenericHID>(
     fun getRawAxis(axisId: Int): DoubleSource = HIDAxisSource(genericHID, axisId)
     fun getRawButton(buttonId: Int): BooleanSource = HIDButtonSource(genericHID, buttonId).booleanSource
 
-    suspend fun update() {
+    fun update() {
         controls.forEach { it.update() }
         for ((state, controller) in stateControls) {
             if (state()) controller.update()
