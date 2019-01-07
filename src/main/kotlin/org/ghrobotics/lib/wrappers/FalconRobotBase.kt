@@ -5,6 +5,7 @@ import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.command.Scheduler
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
@@ -96,6 +97,7 @@ abstract class FalconRobotBase : RobotBase() {
 
             // Update Values
             SmartDashboard.updateValues()
+            Shuffleboard.update()
             // LiveWindow.updateValues()
 
             // Update Commands

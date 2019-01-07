@@ -3,6 +3,7 @@ package org.ghrobotics.lib.wrappers.networktables
 import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import kotlin.reflect.KProperty
 
 object FalconNetworkTable {
@@ -36,4 +37,15 @@ class NetworkTableEntryDelegate<T>(
     }
 
     operator fun getValue(networkInterface: Any, property: KProperty<*>): T = get()
+}
+
+inline fun <T> sendableChooser(crossinline block: SendableChooser<T>.() -> Unit) =
+    SendableChooser<T>().apply(block)
+
+inline fun <reified T : Enum<T>> enumSendableChooser(
+    crossinline block: (T) -> String = { it.name }
+) = sendableChooser<T> {
+    enumValues<T>().forEach { enumValue ->
+        addOption(block(enumValue), enumValue)
+    }
 }
