@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import org.ghrobotics.lib.utils.capitalizeEachWord
 import kotlin.reflect.KProperty
 
 object FalconNetworkTable {
@@ -43,7 +44,7 @@ inline fun <T> sendableChooser(crossinline block: SendableChooser<T>.() -> Unit)
     SendableChooser<T>().apply(block)
 
 inline fun <reified T : Enum<T>> enumSendableChooser(
-    crossinline block: (T) -> String = { it.name }
+    crossinline block: (T) -> String = { it.name.replace('_', ' ').capitalizeEachWord() }
 ) = sendableChooser<T> {
     enumValues<T>().forEach { enumValue ->
         addOption(block(enumValue), enumValue)
