@@ -12,7 +12,6 @@ import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.simulation.SimDifferentialDrive
 import org.ghrobotics.lib.simulation.SimFalconMotor
 import org.junit.Test
-import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -49,16 +48,16 @@ class RamseteControllerTest {
 
         ramseteTracker.reset(TrajectoryGeneratorTest.trajectory)
 
-        drive.robotLocation = ramseteTracker.referencePoint!!.state.state.pose
+        drive.robotPosition = ramseteTracker.referencePoint!!.state.state.pose
             .transformBy(Pose2d(1.feet, 50.inch, 5.degree))
 
         while (!ramseteTracker.isFinished) {
             currentTime += deltaTime
-            drive.setOutput(ramseteTracker.nextState(drive.robotLocation, currentTime))
+            drive.setOutput(ramseteTracker.nextState(drive.robotPosition, currentTime))
             drive.update(deltaTime)
 
-            xList += drive.robotLocation.translation.x.feet
-            yList += drive.robotLocation.translation.y.feet
+            xList += drive.robotPosition.translation.x.feet
+            yList += drive.robotPosition.translation.y.feet
 
             val referenceTranslation = ramseteTracker.referencePoint!!.state.state.pose.translation
             refXList += referenceTranslation.x.feet
@@ -103,8 +102,8 @@ class RamseteControllerTest {
         chart.addSeries("Robot", xList.toDoubleArray(), yList.toDoubleArray())
 
         val terror =
-            TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotLocation.translation
-        val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotLocation.rotation
+            TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotPosition.translation
+        val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotPosition.rotation
 
         System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
 

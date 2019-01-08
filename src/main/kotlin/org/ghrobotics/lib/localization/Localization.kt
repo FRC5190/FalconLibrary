@@ -1,33 +1,21 @@
 package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
-import org.ghrobotics.lib.utils.launchFrequency
-import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KProperty
 
 abstract class Localization(
-    val robotHeading: Source<Rotation2d>,
-    context: CoroutineContext
+    protected val robotHeading: Source<Rotation2d>
 ) : Source<Pose2d> {
-
-    private val job = Job(context[Job])
-    private val scope = CoroutineScope(context + job + CoroutineName("Localization"))
-
-    private val resetChannel = Channel<Pose2d>(Channel.CONFLATED)
-    private val running = AtomicBoolean(false)
 
     /**
      * The robot position relative to the field.
      */
-    private var robotPosition = Pose2d()
+    var robotPosition = Pose2d()
+        private set
 
     /**
      * Stores the previous 100 states so that we can interpolate if needed.
@@ -45,7 +33,8 @@ abstract class Localization(
     private var prevHeading = Rotation2d(0.0)
     private var headingOffset = Rotation2d(0.0)
 
-    suspend fun reset(newPosition: Pose2d = Pose2d()) = resetChannel.send(newPosition)
+    @Synchronized
+    fun reset(newPosition: Pose2d = Pose2d()) = resetInternal(newPosition)
 
     protected open fun resetInternal(newPosition: Pose2d) {
         robotPosition = newPosition
@@ -55,29 +44,23 @@ abstract class Localization(
         interpolatableLocalizationBuffer.clear()
     }
 
-    fun start() {
-        if (!running.compareAndSet(false, true)) return
-        scope.launchFrequency(100) {
-            val resetPose = resetChannel.poll()
-            if (resetPose != null) {
-                resetInternal(resetPose)
-            }
-            val newHeading = robotHeading()
+    @Synchronized
+    fun update() {
+        val newHeading = robotHeading()
 
-            val deltaHeading = newHeading - prevHeading
+        val deltaHeading = newHeading - prevHeading
 
-            // Add the recorded motion of the robot during this iteration to the global robot pose.
-            val newRobotPosition = robotPosition + update(deltaHeading)
-            robotPosition = Pose2d(
-                newRobotPosition.translation,
-                newHeading + headingOffset
-            )
+        // Add the recorded motion of the robot during this iteration to the global robot pose.
+        val newRobotPosition = robotPosition + update(deltaHeading)
+        robotPosition = Pose2d(
+            newRobotPosition.translation,
+            newHeading + headingOffset
+        )
 
-            prevHeading = newHeading
+        prevHeading = newHeading
 
-            // Add the global robot pose to the interpolatable buffer
-            interpolatableLocalizationBuffer[Timer.getFPGATimestamp()] = robotPosition
-        }
+        // Add the global robot pose to the interpolatable buffer
+        interpolatableLocalizationBuffer[Timer.getFPGATimestamp()] = robotPosition
     }
 
     protected abstract fun update(deltaHeading: Rotation2d): Pose2d
@@ -87,8 +70,7 @@ abstract class Localization(
     operator fun get(timestamp: Time) = get(timestamp.second)
     internal operator fun get(timestamp: Double) = interpolatableLocalizationBuffer[timestamp]
 
-    open fun dispose() {
-        job.cancel()
-        resetChannel.close()
-    }
+    // Delegates
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): Pose2d = robotPosition
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Pose2d) = reset(value)
 }

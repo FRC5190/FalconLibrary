@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.wpilibj.Notifier
 import org.ghrobotics.lib.commands.ConditionCommand
 import org.ghrobotics.lib.commands.FalconCommandGroup
 import org.ghrobotics.lib.commands.FalconSubsystem
@@ -7,7 +8,6 @@ import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.localization.Localization
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
@@ -33,11 +33,17 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
 
     abstract val localization: Localization
 
-    override val robotLocation: Pose2d get() = localization()
+    override var robotPosition
+        get() = localization.robotPosition
+        set(value) = localization.reset(value)
 
     override fun lateInit() {
-        // Ensure odemetry is running
-        localization.start()
+        // Ensure localization starts at (0,0)
+        localization.reset()
+        // Start a notifier loop to constantly update localization at 100hz
+        Notifier {
+            localization.update()
+        }.startPeriodic(1.0 / 100.0)
     }
 
     /**
@@ -49,7 +55,6 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
 
     override fun periodic() {
         // Report new position to Live Dashboard
-        val robotPosition = localization()
         LiveDashboard.robotHeading = robotPosition.rotation.radian
         LiveDashboard.robotX = robotPosition.translation.x.feet
         LiveDashboard.robotY = robotPosition.translation.y.feet
@@ -253,7 +258,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
      * @param region Source with the region to check if the robot is in.
      */
     fun withinRegion(region: Source<Rectangle2d>) =
-        ConditionCommand { region().contains(localization().translation) }
+        ConditionCommand { region().contains(robotPosition.translation) }
 
 
     // DRIVE CHARACTERIZATION

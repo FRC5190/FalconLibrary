@@ -29,7 +29,7 @@ class TrajectoryTrackerCommand(
 
     private val notifier = Notifier {
         // Get the trajectory follower output.
-        driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotLocation))
+        driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
 
         val referencePoint = trajectoryTracker.referencePoint
         if (referencePoint != null) {

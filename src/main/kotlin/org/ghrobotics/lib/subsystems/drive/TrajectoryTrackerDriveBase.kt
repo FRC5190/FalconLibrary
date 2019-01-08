@@ -17,7 +17,7 @@ interface TrajectoryTrackerDriveBase {
 
     val trajectoryTracker: TrajectoryTracker
 
-    val robotLocation: Pose2d
+    val robotPosition: Pose2d
 
     fun setOutput(output: TrajectoryTrackerOutput)
 

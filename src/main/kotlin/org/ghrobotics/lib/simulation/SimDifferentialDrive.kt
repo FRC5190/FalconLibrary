@@ -17,7 +17,7 @@ class SimDifferentialDrive(
     private val angularFactor: Double = 1.0
 ) : DifferentialTrackerDriveBase {
 
-    override var robotLocation = Pose2d()
+    override var robotPosition = Pose2d()
 
     fun update(deltaTime: Time) {
         val wheelState = DifferentialDrive.WheelState(
@@ -27,7 +27,7 @@ class SimDifferentialDrive(
 
         val forwardKinematics = differentialDrive.solveForwardKinematics(wheelState)
 
-        robotLocation += Twist2d(
+        robotPosition += Twist2d(
             forwardKinematics.linear,
             0.0,
             (forwardKinematics.angular * angularFactor).radian
