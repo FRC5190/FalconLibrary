@@ -21,6 +21,7 @@ interface TrajectoryTrackerDriveBase {
 
     fun setOutput(output: TrajectoryTrackerOutput)
 
+    @JvmDefault
     fun zeroOutputs() {
         leftMotor.percentOutput = 0.0
         rightMotor.percentOutput = 0.0

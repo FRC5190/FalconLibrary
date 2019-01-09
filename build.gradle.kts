@@ -1,6 +1,7 @@
 import edu.wpi.first.toolchain.NativePlatforms
 import org.gradle.api.publish.maven.MavenPublication
 import io.gitlab.arturbosch.detekt.detekt
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.11"
@@ -57,6 +58,15 @@ detekt {
     }
 }
 
-tasks.withType<Wrapper>().configureEach {
-    gradleVersion = "5.0"
+tasks {
+    withType<Wrapper>().configureEach {
+        gradleVersion = "5.0"
+    }
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs += "-Xjvm-default=compatibility"
+        }
+    }
 }
+

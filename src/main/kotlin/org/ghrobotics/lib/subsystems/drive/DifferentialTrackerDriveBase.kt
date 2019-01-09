@@ -8,6 +8,7 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
 
     val differentialDrive: DifferentialDrive
 
+    @JvmDefault
     override fun setOutput(output: TrajectoryTrackerOutput) {
         setOutputFromDynamics(
             output.differentialDriveVelocity,
@@ -15,6 +16,7 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
         )
     }
 
+    @JvmDefault
     fun setOutputFromKinematics(chassisVelocity: DifferentialDrive.ChassisState) {
         val wheelVelocities = differentialDrive.solveInverseKinematics(chassisVelocity)
         val feedForwardVoltages = differentialDrive.getVoltagesFromkV(wheelVelocities)
@@ -22,6 +24,7 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
         setOutput(wheelVelocities, feedForwardVoltages)
     }
 
+    @JvmDefault
     fun setOutputFromDynamics(
         chassisVelocity: DifferentialDrive.ChassisState,
         chassisAcceleration: DifferentialDrive.ChassisState
@@ -31,6 +34,7 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
         setOutput(dynamics.wheelVelocity, dynamics.voltage)
     }
 
+    @JvmDefault
     fun setOutput(
         wheelVelocities: DifferentialDrive.WheelState,
         wheelVoltages: DifferentialDrive.WheelState
