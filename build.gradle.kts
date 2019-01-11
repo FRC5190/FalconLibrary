@@ -40,7 +40,7 @@ publishing {
         create<MavenPublication>("mavenLocal") {
             groupId = "org.ghrobotics"
             artifactId = "FalconLibrary"
-            version = "2019.1.5"
+            version = "2019.1.10"
 
             from(components["java"])
         }

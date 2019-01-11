@@ -27,8 +27,21 @@ class TrajectoryTrackerCommand(
 
     private var trajectoryFinished = false
 
-    private val notifier = Notifier {
-        // Get the trajectory follower output.
+    init {
+        finishCondition += { trajectoryFinished }
+        executeFrequency = (1 / dt.second).toInt()
+    }
+
+    /**
+     * Reset the trajectory follower with the new trajectory.
+     */
+    override suspend fun initialize() {
+        trajectoryTracker.reset(trajectorySource())
+        trajectoryFinished = false
+        LiveDashboard.isFollowingPath = true
+    }
+
+    override suspend fun execute() {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
 
         val referencePoint = trajectoryTracker.referencePoint
@@ -44,26 +57,10 @@ class TrajectoryTrackerCommand(
         trajectoryFinished = trajectoryTracker.isFinished
     }
 
-    init {
-        finishCondition += { trajectoryFinished }
-    }
-
-    /**
-     * Reset the trajectory follower with the new trajectory.
-     */
-    override suspend fun initialize() {
-        trajectoryTracker.reset(trajectorySource())
-        trajectoryFinished = false
-        LiveDashboard.isFollowingPath = true
-
-        notifier.startPeriodic(dt.second)
-    }
-
     /**
      * Make sure that the drivetrain is stopped at the end of the command.
      */
     override suspend fun dispose() {
-        notifier.stop()
         driveBase.zeroOutputs()
         LiveDashboard.isFollowingPath = false
     }
