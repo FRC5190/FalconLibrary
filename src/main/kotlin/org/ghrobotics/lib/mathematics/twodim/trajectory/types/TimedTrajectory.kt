@@ -6,6 +6,8 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.meter
@@ -62,6 +64,13 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
     val t get() = _t.second
     val velocity get() = _velocity.meter.velocity
     val acceleration get() = _acceleration.meter.acceleration
+
+    constructor(
+        state: S,
+        t: Time,
+        velocity: LinearVelocity,
+        acceleration: LinearAcceleration
+    ) : this(state, t.value, velocity.value, acceleration.value)
 
     override fun interpolate(endValue: TimedEntry<S>, t: Double): TimedEntry<S> {
         val newT = _t.lerp(endValue._t, t)
