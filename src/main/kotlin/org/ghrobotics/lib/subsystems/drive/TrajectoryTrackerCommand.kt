@@ -1,12 +1,12 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import edu.wpi.first.wpilibj.Notifier
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.utils.Source
@@ -20,7 +20,7 @@ import org.ghrobotics.lib.utils.Source
 class TrajectoryTrackerCommand(
     driveSubsystem: FalconSubsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
-    val trajectorySource: Source<TimedTrajectory<Pose2dWithCurvature>>,
+    val trajectorySource: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
     val dt: Time = 20.millisecond
 ) : FalconCommand(driveSubsystem) {

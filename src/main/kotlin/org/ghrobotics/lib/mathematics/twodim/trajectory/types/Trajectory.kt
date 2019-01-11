@@ -5,6 +5,7 @@ import org.ghrobotics.lib.types.VaryInterpolatable
 
 interface Trajectory<U : Comparable<U>, S : VaryInterpolatable<S>> {
     val points: List<S>
+    val reversed get() = false
 
     @JvmDefault
     fun getPoint(index: Int) = TrajectoryPoint(index, points[index])

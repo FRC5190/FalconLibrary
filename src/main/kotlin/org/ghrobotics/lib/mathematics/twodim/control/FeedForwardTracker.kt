@@ -2,7 +2,9 @@ package org.ghrobotics.lib.mathematics.twodim.control
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.units.Time
 
 /**
  * Follows a path purely based on linear and angular velocities from the path without any external
@@ -11,7 +13,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
 class FeedForwardTracker : TrajectoryTracker() {
 
     override fun calculateState(
-        iterator: TimedIterator<Pose2dWithCurvature>,
+        iterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput {
         val referenceState = iterator.currentState.state

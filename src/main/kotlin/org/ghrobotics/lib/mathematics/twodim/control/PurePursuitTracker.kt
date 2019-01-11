@@ -3,7 +3,8 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.meter
@@ -29,7 +30,7 @@ class PurePursuitTracker(
      * Calculate desired chassis velocity using pure pursuit.
      */
     override fun calculateState(
-        iterator: TimedIterator<Pose2dWithCurvature>,
+        iterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput {
         val referencePoint = iterator.currentState
@@ -64,7 +65,7 @@ class PurePursuitTracker(
 
 
     private fun calculateLookaheadPose2d(
-        iterator: TimedIterator<Pose2dWithCurvature>,
+        iterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>,
         robotPose: Pose2d
     ): Pose2d {
         val lookaheadPoseByTime = iterator.preview(kLookaheadTime).state.state.pose
@@ -97,7 +98,7 @@ class PurePursuitTracker(
 
         return lookaheadPoseByDistance.transformBy(
             Pose2d(
-                Translation2d(remaining * if (iterator.reversed) -1 else 1, 0.0)
+                Translation2d(remaining * if (iterator.trajectory.reversed) -1 else 1, 0.0)
             )
         )
     }

@@ -3,7 +3,9 @@ package org.ghrobotics.lib.mathematics.twodim.control
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.units.Time
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -23,7 +25,7 @@ class RamseteTracker(
      * Calculate desired chassis velocity using Ramsete.
      */
     override fun calculateState(
-        iterator: TimedIterator<Pose2dWithCurvature>,
+        iterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput {
         val referenceState = iterator.currentState.state
