@@ -13,9 +13,9 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(
-    points: List<TimedEntry<S>>,
+    override val points: List<TimedEntry<S>>,
     val reversed: Boolean
-) : Trajectory<Time, TimedEntry<S>>(points) {
+) : Trajectory<Time, TimedEntry<S>> {
 
     override fun sample(interpolant: Time) = sample(interpolant.value)
 

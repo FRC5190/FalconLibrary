@@ -7,8 +7,8 @@ import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class DistanceTrajectory<S : VaryInterpolatable<S>>(
-    points: List<S>
-) : Trajectory<Length, S>(points) {
+    override val points: List<S>
+) : Trajectory<Length, S> {
 
     private val distances: List<Double>
 

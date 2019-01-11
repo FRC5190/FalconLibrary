@@ -4,8 +4,8 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class IndexedTrajectory<S : VaryInterpolatable<S>>(
-    points: List<S>
-) : Trajectory<Double, S>(points) {
+    override val points: List<S>
+) : Trajectory<Double, S> {
 
     override fun sample(interpolant: Double) = when {
         points.isEmpty() -> throw IndexOutOfBoundsException("Trajectory is empty!")
