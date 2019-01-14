@@ -2,8 +2,9 @@ package org.ghrobotics.lib.mathematics.twodim.control
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedIterator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.derivedunits.AngularVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
@@ -16,14 +17,14 @@ import org.ghrobotics.lib.utils.DeltaTime
  */
 abstract class TrajectoryTracker {
 
-    private var trajectoryIterator: TimedIterator<Pose2dWithCurvature>? = null
+    private var trajectoryIterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>? = null
     private var deltaTimeController = DeltaTime()
     private var previousVelocity: TrajectoryTrackerVelocityOutput? = null
 
     val referencePoint get() = trajectoryIterator?.currentState
     val isFinished get() = trajectoryIterator?.isDone ?: true
 
-    fun reset(trajectory: TimedTrajectory<Pose2dWithCurvature>) {
+    fun reset(trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>) {
         trajectoryIterator = trajectory.iterator()
         deltaTimeController.reset()
         previousVelocity = null
@@ -63,7 +64,7 @@ abstract class TrajectoryTracker {
     }
 
     protected abstract fun calculateState(
-        iterator: TimedIterator<Pose2dWithCurvature>,
+        iterator: TrajectoryIterator<Time, TimedEntry<Pose2dWithCurvature>>,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput
 

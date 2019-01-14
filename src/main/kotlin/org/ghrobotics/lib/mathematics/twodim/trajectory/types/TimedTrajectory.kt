@@ -6,6 +6,8 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.meter
@@ -13,9 +15,9 @@ import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(
-    points: List<TimedEntry<S>>,
-    val reversed: Boolean
-) : Trajectory<Time, TimedEntry<S>>(points) {
+    override val points: List<TimedEntry<S>>,
+    override val reversed: Boolean
+) : Trajectory<Time, TimedEntry<S>> {
 
     override fun sample(interpolant: Time) = sample(interpolant.value)
 
@@ -63,6 +65,13 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
     val velocity get() = _velocity.meter.velocity
     val acceleration get() = _acceleration.meter.acceleration
 
+    constructor(
+        state: S,
+        t: Time,
+        velocity: LinearVelocity,
+        acceleration: LinearAcceleration
+    ) : this(state, t.value, velocity.value, acceleration.value)
+
     override fun interpolate(endValue: TimedEntry<S>, t: Double): TimedEntry<S> {
         val newT = _t.lerp(endValue._t, t)
         val deltaT = newT - this.t.value
@@ -87,14 +96,13 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
 class TimedIterator<S : VaryInterpolatable<S>>(
     trajectory: TimedTrajectory<S>
 ) : TrajectoryIterator<Time, TimedEntry<S>>(trajectory) {
-    val reversed = trajectory.reversed
     override fun addition(a: Time, b: Time) = a + b
 }
 
-fun TimedTrajectory<Pose2dWithCurvature>.mirror() =
+fun Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.mirror() =
     TimedTrajectory(points.map { TimedEntry(it.state.mirror, it._t, it._velocity, it._acceleration) }, this.reversed)
 
-fun TimedTrajectory<Pose2dWithCurvature>.transform(transform: Pose2d) =
+fun Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.transform(transform: Pose2d) =
     TimedTrajectory(
         points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) },
         this.reversed

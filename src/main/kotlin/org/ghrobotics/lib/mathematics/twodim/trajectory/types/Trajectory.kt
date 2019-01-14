@@ -3,20 +3,22 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.types
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.types.VaryInterpolatable
 
-abstract class Trajectory<U : Comparable<U>, S : VaryInterpolatable<S>>(
+interface Trajectory<U : Comparable<U>, S : VaryInterpolatable<S>> {
     val points: List<S>
-) {
+    val reversed get() = false
+
+    @JvmDefault
     fun getPoint(index: Int) = TrajectoryPoint(index, points[index])
 
-    abstract fun sample(interpolant: U): TrajectorySamplePoint<S>
+    fun sample(interpolant: U): TrajectorySamplePoint<S>
 
-    abstract val firstInterpolant: U
-    abstract val lastInterpolant: U
+    val firstInterpolant: U
+    val lastInterpolant: U
 
-    abstract val firstState: S
-    abstract val lastState: S
+    val firstState: S
+    val lastState: S
 
-    abstract operator fun iterator(): TrajectoryIterator<U, S>
+    operator fun iterator(): TrajectoryIterator<U, S>
 }
 
 data class TrajectoryPoint<S>(
