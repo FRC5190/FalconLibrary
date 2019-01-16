@@ -108,6 +108,7 @@ abstract class FalconRobotBase : RobotBase() {
     }
 
     // Helpers
-    protected operator fun FalconSubsystem.unaryPlus() = SubsystemHandler.addSubsystem(this)
+    protected fun addToSubsystemHandler(subsystem: FalconSubsystem) = SubsystemHandler.addSubsystem(subsystem)
+    protected open operator fun FalconSubsystem.unaryPlus() = addToSubsystemHandler(this)
 
 }
