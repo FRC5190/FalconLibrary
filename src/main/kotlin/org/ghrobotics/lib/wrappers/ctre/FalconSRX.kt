@@ -43,6 +43,10 @@ class FalconSRX<T : SIUnit<T>>(
     override fun set(controlMode: ControlMode, velocity: Velocity<T>) =
         set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
+    override fun set(controlMode: ControlMode, length: T, demandType: DemandType, outputPercent: Double) {
+        set(controlMode, length.fromModel(model).value, demandType, outputPercent)
+    }
+
     override fun set(
         controlMode: ControlMode,
         velocity: Velocity<T>,

@@ -113,6 +113,13 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
         outputPercent: Double
     )
 
+    abstract fun set(
+        controlMode: ControlMode,
+        length: T,
+        demandType: DemandType,
+        outputPercent: Double
+    )
+
     // Falcon Motor
 
     override var percentOutput: Double
