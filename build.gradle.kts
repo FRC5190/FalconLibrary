@@ -30,6 +30,9 @@ dependencies {
     // Apache Commons Math
     compile("org.apache.commons", "commons-math3", "3.6.1")
 
+    // Gson
+    compile("com.github.salomonbrys.kotson", "kotson", "2.5.0")
+
     // Unit Testing
     testCompile("org.knowm.xchart", "xchart", "3.2.2")
     testCompile("junit", "junit", "4.12")
@@ -40,7 +43,7 @@ publishing {
         create<MavenPublication>("mavenLocal") {
             groupId = "org.ghrobotics"
             artifactId = "FalconLibrary"
-            version = "2019.1.15"
+            version = "2019.1.17"
 
             from(components["java"])
         }

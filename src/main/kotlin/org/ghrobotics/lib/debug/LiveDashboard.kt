@@ -1,5 +1,12 @@
 package org.ghrobotics.lib.debug
 
+import com.github.salomonbrys.kotson.fromJson
+import com.github.salomonbrys.kotson.jsonObject
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.units.degree
+import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.delegate
 import org.ghrobotics.lib.wrappers.networktables.get
@@ -18,4 +25,29 @@ object LiveDashboard {
     var pathX by liveDashboardTable["pathX"].delegate(0.0)
     var pathY by liveDashboardTable["pathY"].delegate(0.0)
     var pathHeading by liveDashboardTable["pathHeading"].delegate(0.0)
+
+    private val visionTargetEntry = liveDashboardTable["visionTargets"]
+    var visionTargets: List<Pose2d>
+        set(value) {
+            visionTargetEntry.setStringArray(
+                value.map {
+                    jsonObject(
+                        "x" to it.translation.x.meter,
+                        "y" to it.translation.y.meter,
+                        "angle" to it.rotation.degree
+                    ).toString()
+                }.toTypedArray()
+            )
+        }
+        get() = visionTargetEntry.getStringArray(emptyArray())
+            .map {
+                val data = kGson.fromJson<JsonObject>(it)
+                Pose2d(
+                    data["x"].asDouble.meter,
+                    data["y"].asDouble.meter,
+                    data["angle"].asDouble.degree
+                )
+            }
+
+    private val kGson = Gson()
 }
