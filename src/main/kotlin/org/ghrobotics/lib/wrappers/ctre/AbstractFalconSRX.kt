@@ -1,9 +1,6 @@
 package org.ghrobotics.lib.wrappers.ctre
 
-import com.ctre.phoenix.motorcontrol.ControlMode
-import com.ctre.phoenix.motorcontrol.DemandType
-import com.ctre.phoenix.motorcontrol.FeedbackDevice
-import com.ctre.phoenix.motorcontrol.NeutralMode
+import com.ctre.phoenix.motorcontrol.*
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
@@ -98,6 +95,23 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     var voltageCompensationEnabled by observable(false) { _, _, newValue ->
         enableVoltageCompensation(newValue)
     }
+
+    var forwardLimitSwitchSource by observable(LimitSwitchSource.Deactivated to LimitSwitchNormal.NormallyOpen) { _, _, newValue ->
+        configForwardLimitSwitchSource(newValue.first, newValue.second)
+    }
+
+    var reverseLimitSwitchSource by observable(LimitSwitchSource.Deactivated to LimitSwitchNormal.NormallyOpen) { _, _, newValue ->
+        configReverseLimitSwitchSource(newValue.first, newValue.second)
+    }
+
+    var clearPositionOnForwardLimitSwitch by observable(false) { _, _, newValue ->
+        configClearPositionOnLimitF(newValue, timeoutInt)
+    }
+
+    var clearPositionOnReverseLimitSwitch by observable(false) { _, _, newValue ->
+        configClearPositionOnLimitR(newValue, timeoutInt)
+    }
+
 
     abstract var sensorPosition: T
     abstract val sensorVelocity: Velocity<T>
