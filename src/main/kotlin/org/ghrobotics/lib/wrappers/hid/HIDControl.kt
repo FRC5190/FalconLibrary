@@ -1,5 +1,7 @@
 package org.ghrobotics.lib.wrappers.hid
 
+import kotlin.math.absoluteValue
+
 class HIDButton(
     private val source: HIDSource,
     private val threshold: Double,
@@ -16,7 +18,7 @@ class HIDButton(
     private var lastValue = source() >= threshold
 
     override fun update() {
-        val newValue = source() >= threshold
+        val newValue = source().absoluteValue >= threshold
         when {
             // Value has changed
             lastValue != newValue -> when {
