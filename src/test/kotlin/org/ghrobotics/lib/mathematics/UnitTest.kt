@@ -1,11 +1,8 @@
 package org.ghrobotics.lib.mathematics
 
 
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.nativeunits.*
-import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 
 class UnitTest {
@@ -47,5 +44,11 @@ class UnitTest {
         val one = 1.feet
 
         assert(one.meter epsilonEquals 0.3048)
+    }
+
+    @Test
+    fun testKgToPound() {
+        val kg = 2.kilogram
+        assert(kg.pound epsilonEquals 4.409248840367555)
     }
 }
