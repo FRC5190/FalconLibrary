@@ -22,7 +22,7 @@ val Number.attogram get() = Mass(toDouble() * SIConstants.kAttoOffsetKilo)
 val Number.zeptogram get() = Mass(toDouble() * SIConstants.kZeptoOffsetKilo)
 val Number.yoctogram get() = Mass(toDouble() * SIConstants.kYoctoOffsetKilo)
 
-val Number.pound get() = Mass(toDouble() * SIMassConstants.kPoundOffsetKilo)
+val Number.lb get() = Mass(toDouble() * SIMassConstants.kLbOffsetKilo)
 
 
 class Mass(
@@ -50,11 +50,11 @@ class Mass(
     val zeptogram get() = value / SIConstants.kZeptoOffsetKilo
     val yoctogram get() = value / SIConstants.kYoctoOffsetKilo
 
-    val pound get() = value / SIMassConstants.kPoundOffsetKilo
+    val lb get() = value / SIMassConstants.kLbOffsetKilo
 
     override fun createNew(newValue: Double) = Mass(newValue)
 }
 
 internal object SIMassConstants {
-    const val kPoundOffsetKilo = 0.453592
+    const val kLbOffsetKilo = 0.453592
 }

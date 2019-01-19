@@ -49,6 +49,6 @@ class UnitTest {
     @Test
     fun testKgToPound() {
         val kg = 2.kilogram
-        assert(kg.pound epsilonEquals 4.409248840367555)
+        assert(kg.lb epsilonEquals 4.409248840367555)
     }
 }
