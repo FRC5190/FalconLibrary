@@ -33,7 +33,7 @@ class NativeFalconSRX(
         set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(controlMode: ControlMode, length: NativeUnit, demandType: DemandType, outputPercent: Double) {
-        set(controlMode, length, demandType, outputPercent)
+        set(controlMode, length.value, demandType, outputPercent)
     }
 
     override fun set(
