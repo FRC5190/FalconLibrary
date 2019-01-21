@@ -14,8 +14,8 @@ operator fun NativeUnit.div(other: Time) = NativeUnitVelocity(value / other.valu
 
 val NativeUnitVelocity.STUPer100ms get() = value / 10
 
-fun <T : SIUnit<T>> Velocity<T>.fromModel(model: NativeUnitModel<T>): NativeUnitVelocity =
-    Velocity(model.fromModel(value), NativeUnit(0.0))
+fun <T : SIUnit<T>> Velocity<T>.toNativeUnitVelocity(model: NativeUnitModel<T>): NativeUnitVelocity =
+    model.toNativeUnitVelocity(this)
 
-fun <T : SIUnit<T>> NativeUnitVelocity.toModel(model: NativeUnitModel<T>) =
-    Velocity(model.toModel(value), model.zero)
+fun <T : SIUnit<T>> NativeUnitVelocity.fromNativeUnitVelocity(model: NativeUnitModel<T>): Velocity<T> =
+    model.fromNativeUnitVelocity(this)

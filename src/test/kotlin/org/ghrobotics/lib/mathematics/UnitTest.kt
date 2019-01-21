@@ -14,7 +14,7 @@ class UnitTest {
 
     @Test
     fun testNativeUnits() {
-        val nativeUnits = 360.STU.toModel(settings)
+        val nativeUnits = 360.STU.fromNativeUnit(settings)
 
         assert(nativeUnits.inch epsilonEquals 4.71238898038469)
     }
@@ -23,7 +23,7 @@ class UnitTest {
     fun testVelocitySTU() {
         val one = 1.meter / 1.second
 
-        val two = one.fromModel(settings)
+        val two = one.toNativeUnitVelocity(settings)
 
         val three = two.STUPer100ms
 
@@ -34,7 +34,7 @@ class UnitTest {
     fun testAccelerationSTU() {
         val one = 1.meter / 1.second / 1.second
 
-        val two = one.fromModel(settings)
+        val two = one.toNativeUnitAcceleration(settings)
 
         assert(two.STUPer100msPerSecond.toInt() == 300)
     }

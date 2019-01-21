@@ -1,65 +1,40 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
+import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 
-class NativeUnitLengthModel internal constructor(
-    sensorUnitsPerRotation: NativeUnit,
-    private val _wheelRadius: Double
-) : NativeUnitModel<Length>(sensorUnitsPerRotation) {
-
-    constructor(
-        sensorUnitsPerRotation: NativeUnit = NativeUnitModel.kDefaultSensorUnitsPerRotation,
-        wheelRadius: Length = 3.inch
-    ) : this(sensorUnitsPerRotation, wheelRadius.value)
-
-    override fun createNew(newValue: Double) = Length(newValue)
-
-    override fun toModel(value: Double) = _wheelRadius * ((value / _sensorUnitsPerRotation) * (2.0 * Math.PI))
-    override fun fromModel(value: Double) = _sensorUnitsPerRotation * (value / (_wheelRadius * (2.0 * Math.PI)))
-}
-
-class NativeUnitRotationModel(
-    sensorUnitsPerRotation: NativeUnit = NativeUnitModel.kDefaultSensorUnitsPerRotation
-) : NativeUnitModel<Rotation2d>(sensorUnitsPerRotation) {
-    override fun createNew(newValue: Double) = Rotation2d(newValue)
-
-    override fun toModel(value: Double) = 2.0 * Math.PI * value / _sensorUnitsPerRotation
-    override fun fromModel(value: Double) = _sensorUnitsPerRotation * value / (2.0 * Math.PI)
-}
-
-abstract class NativeUnitModel<T : SIUnit<T>> constructor(
-    protected val _sensorUnitsPerRotation: Double
+abstract class NativeUnitModel<T : SIUnit<T>>(
+    internal val zero: T
 ) {
-    constructor(sensorUnitsPerRotation: NativeUnit) : this(sensorUnitsPerRotation.value)
+    // FAST DOUBLE METHODS
 
-    val zero get() = createNew(0.0)
+    abstract fun fromNativeUnit(nativeUnits: Double): Double
+    abstract fun toNativeUnit(modelledUnit: Double): Double
 
-    protected abstract fun createNew(newValue: Double): T
+    open fun fromNativeUnitVelocity(nativeUnitVelocity: Double) = fromNativeUnit(nativeUnitVelocity)
+    open fun toNativeUnitVelocity(modelledUnitVelocity: Double) = toNativeUnit(modelledUnitVelocity)
 
-    /**
-     * Converts raw NativeUnits to the raw modelled unit
-     */
-    abstract fun toModel(value: Double): Double
+    open fun fromNativeUnitAcceleration(nativeUnitAcceleration: Double) =
+        fromNativeUnitVelocity(nativeUnitAcceleration)
 
-    /**
-     * Converts the raw modelled unit to raw NativeUnits
-     */
-    abstract fun fromModel(value: Double): Double
+    open fun toNativeUnitAcceleration(modelledUnitAcceleration: Double) =
+        toNativeUnitVelocity(modelledUnitAcceleration)
 
-    /**
-     * Converts NativeUnits to the modelled unit
-     */
-    fun toModel(value: NativeUnit) = createNew(toModel(value.value))
+    // TYPED METHODS
 
-    /**
-     * Converts the modelled unit to NativeUnits
-     */
-    fun fromModel(value: T) = NativeUnit(fromModel(value.value))
+    fun fromNativeUnit(nativeUnits: NativeUnit) = zero.createNew(fromNativeUnit(nativeUnits.value))
+    fun toNativeUnit(modelledUnit: T) = NativeUnit(toNativeUnit(modelledUnit.value))
 
-    companion object {
-        val kDefaultSensorUnitsPerRotation = 1440.STU
-    }
+    fun fromNativeUnitVelocity(nativeUnitVelocity: NativeUnitVelocity) =
+        Velocity(fromNativeUnit(nativeUnitVelocity.value), zero)
+
+    fun toNativeUnitVelocity(modelledUnitVelocity: Velocity<T>) =
+        NativeUnitVelocity(toNativeUnit(modelledUnitVelocity.value), NativeUnit.ZERO)
+
+    fun fromNativeUnitAcceleration(nativeUnitAcceleration: NativeUnitAcceleration) =
+        Acceleration(fromNativeUnitVelocity(nativeUnitAcceleration.value), zero)
+
+    fun toNativeUnitAcceleration(modelledUnitAcceleration: Acceleration<T>) =
+        NativeUnitAcceleration(toNativeUnitVelocity(modelledUnitAcceleration.value), NativeUnit.ZERO)
 }
