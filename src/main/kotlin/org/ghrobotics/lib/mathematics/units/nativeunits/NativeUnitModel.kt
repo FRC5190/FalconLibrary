@@ -7,7 +7,7 @@ import org.ghrobotics.lib.mathematics.units.inch
 
 class NativeUnitLengthModel internal constructor(
     sensorUnitsPerRotation: NativeUnit,
-    internal val _wheelRadius: Double
+    private val _wheelRadius: Double
 ) : NativeUnitModel<Length>(sensorUnitsPerRotation) {
 
     constructor(
@@ -30,8 +30,8 @@ class NativeUnitRotationModel(
     override fun fromModel(value: Double) = _sensorUnitsPerRotation * value / (2.0 * Math.PI)
 }
 
-abstract class NativeUnitModel<T : SIUnit<T>> internal constructor(
-    internal val _sensorUnitsPerRotation: Double
+abstract class NativeUnitModel<T : SIUnit<T>> constructor(
+    protected val _sensorUnitsPerRotation: Double
 ) {
     constructor(sensorUnitsPerRotation: NativeUnit) : this(sensorUnitsPerRotation.value)
 
@@ -39,8 +39,15 @@ abstract class NativeUnitModel<T : SIUnit<T>> internal constructor(
 
     protected abstract fun createNew(newValue: Double): T
 
-    internal abstract fun toModel(value: Double): Double
-    internal abstract fun fromModel(value: Double): Double
+    /**
+     * Converts raw NativeUnits to the raw modelled unit
+     */
+    abstract fun toModel(value: Double): Double
+
+    /**
+     * Converts the raw modelled unit to raw NativeUnits
+     */
+    abstract fun fromModel(value: Double): Double
 
     /**
      * Converts NativeUnits to the modelled unit
