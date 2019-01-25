@@ -116,6 +116,9 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     abstract var sensorPosition: T
     abstract val sensorVelocity: Velocity<T>
 
+    abstract val activeTrajectoryPosition: T
+    abstract val activeTrajectoryVelocity: Velocity<T>
+
     abstract fun set(controlMode: ControlMode, length: T)
 
     abstract fun set(controlMode: ControlMode, velocity: Velocity<T>)

@@ -8,10 +8,10 @@ class NativeUnitRotationModel(
 
     private val nativeUnitsPerRotation = nativeUnitsPerRotation.value
 
-    override fun toNativeUnit(modelledUnit: Double): Double =
+    override fun toNativeUnitPosition(modelledUnit: Double): Double =
         (modelledUnit / (2.0 * Math.PI)) * nativeUnitsPerRotation
 
-    override fun fromNativeUnit(nativeUnits: Double): Double =
+    override fun fromNativeUnitPosition(nativeUnits: Double): Double =
         2.0 * Math.PI * (nativeUnits / nativeUnitsPerRotation)
 
 }

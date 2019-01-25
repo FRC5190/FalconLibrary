@@ -9,11 +9,14 @@ abstract class NativeUnitModel<T : SIUnit<T>>(
 ) {
     // FAST DOUBLE METHODS
 
-    abstract fun fromNativeUnit(nativeUnits: Double): Double
-    abstract fun toNativeUnit(modelledUnit: Double): Double
+    abstract fun fromNativeUnitPosition(nativeUnits: Double): Double
+    abstract fun toNativeUnitPosition(modelledUnit: Double): Double
 
-    open fun fromNativeUnitVelocity(nativeUnitVelocity: Double) = fromNativeUnit(nativeUnitVelocity)
-    open fun toNativeUnitVelocity(modelledUnitVelocity: Double) = toNativeUnit(modelledUnitVelocity)
+    open fun toNativeUnitError(modelledUnit: Double): Double =
+        toNativeUnitPosition(modelledUnit) - toNativeUnitPosition(0.0)
+
+    open fun fromNativeUnitVelocity(nativeUnitVelocity: Double) = fromNativeUnitPosition(nativeUnitVelocity)
+    open fun toNativeUnitVelocity(modelledUnitVelocity: Double) = toNativeUnitPosition(modelledUnitVelocity)
 
     open fun fromNativeUnitAcceleration(nativeUnitAcceleration: Double) =
         fromNativeUnitVelocity(nativeUnitAcceleration)
@@ -23,8 +26,10 @@ abstract class NativeUnitModel<T : SIUnit<T>>(
 
     // TYPED METHODS
 
-    fun fromNativeUnit(nativeUnits: NativeUnit) = zero.createNew(fromNativeUnit(nativeUnits.value))
-    fun toNativeUnit(modelledUnit: T) = NativeUnit(toNativeUnit(modelledUnit.value))
+    fun fromNativeUnitPosition(nativeUnits: NativeUnit) = zero.createNew(fromNativeUnitPosition(nativeUnits.value))
+    fun toNativeUnitPosition(modelledUnit: T) = NativeUnit(toNativeUnitPosition(modelledUnit.value))
+
+    fun toNativeUnitError(modelledUnit: T) = NativeUnit(toNativeUnitError(modelledUnit.value))
 
     fun fromNativeUnitVelocity(nativeUnitVelocity: NativeUnitVelocity) =
         Velocity(fromNativeUnitVelocity(nativeUnitVelocity.value), zero)

@@ -23,7 +23,7 @@ open class FalconSRX<T : SIUnit<T>>(
     timeout: Time = 10.millisecond
 ) : AbstractFalconSRX<T>(id, timeout) {
     override var allowedClosedLoopError by observable(model.zero) { _, _, newValue ->
-        configAllowableClosedloopError(0, model.toNativeUnit(newValue.value).toInt(), timeoutInt)
+        configAllowableClosedloopError(0, model.toNativeUnitError(newValue.value).toInt(), timeoutInt)
     }
     override var motionCruiseVelocity by observable(model.zero.velocity) { _, _, newValue ->
         configMotionCruiseVelocity(newValue.toNativeUnitVelocity(model).STUPer100ms.toInt(), timeoutInt)
@@ -34,17 +34,20 @@ open class FalconSRX<T : SIUnit<T>>(
     override var sensorPosition: T
         get() = getSelectedSensorPosition(0).STU.fromNativeUnit(model)
         set(value) {
-            setSelectedSensorPosition(value.toNativeUnit(model).value.toInt(), 0, timeoutInt)
+            setSelectedSensorPosition(value.toNativeUnitPosition(model).value.toInt(), 0, timeoutInt)
         }
     override val sensorVelocity get() = getSelectedSensorVelocity(0).STUPer100ms.fromNativeUnitVelocity(model)
 
-    override fun set(controlMode: ControlMode, length: T) = set(controlMode, length.toNativeUnit(model).value)
+    override val activeTrajectoryPosition get() = model.fromNativeUnitPosition(getActiveTrajectoryPosition(0).STU)
+    override val activeTrajectoryVelocity get() = model.fromNativeUnitVelocity(getActiveTrajectoryVelocity(0).STUPer100ms)
+
+    override fun set(controlMode: ControlMode, length: T) = set(controlMode, length.toNativeUnitPosition(model).value)
 
     override fun set(controlMode: ControlMode, velocity: Velocity<T>) =
         set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(controlMode: ControlMode, length: T, demandType: DemandType, outputPercent: Double) {
-        set(controlMode, length.toNativeUnit(model).value, demandType, outputPercent)
+        set(controlMode, length.toNativeUnitPosition(model).value, demandType, outputPercent)
     }
 
     override fun set(

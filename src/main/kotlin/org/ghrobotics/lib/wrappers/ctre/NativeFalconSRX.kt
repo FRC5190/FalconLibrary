@@ -27,6 +27,9 @@ class NativeFalconSRX(
         }
     override val sensorVelocity get() = getSelectedSensorVelocity(0).STUPer100ms
 
+    override val activeTrajectoryPosition get() = getActiveTrajectoryPosition(0).STU
+    override val activeTrajectoryVelocity get() = getActiveTrajectoryVelocity(0).STUPer100ms
+    
     override fun set(controlMode: ControlMode, length: NativeUnit) = set(controlMode, length.value)
 
     override fun set(controlMode: ControlMode, velocity: NativeUnitVelocity) =
