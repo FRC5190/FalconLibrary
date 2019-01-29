@@ -30,4 +30,8 @@ class Watt(
     override val value: Double
 ) : SIValue<Watt> {
     override fun createNew(newValue: Double) = Watt(value)
+
+    companion object {
+        val kZero = Watt(0.0)
+    }
 }

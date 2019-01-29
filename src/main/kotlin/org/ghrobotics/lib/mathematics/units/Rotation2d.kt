@@ -53,6 +53,7 @@ class Rotation2d : SIUnit<Rotation2d> {
     override fun hashCode() = this.value.hashCode()
 
     companion object {
+        val kZero = Rotation2d(0.0)
         val kRotation = 360.degree
     }
 }

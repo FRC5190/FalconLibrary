@@ -4,7 +4,7 @@ import org.ghrobotics.lib.mathematics.units.Rotation2d
 
 class NativeUnitRotationModel(
     nativeUnitsPerRotation: NativeUnit
-) : NativeUnitModel<Rotation2d>(Rotation2d(0.0)) {
+) : NativeUnitModel<Rotation2d>(Rotation2d.kZero) {
 
     private val nativeUnitsPerRotation = nativeUnitsPerRotation.value
 

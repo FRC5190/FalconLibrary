@@ -11,7 +11,9 @@ import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
-import org.ghrobotics.lib.mathematics.units.nativeunits.*
+import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.nativeunits.nativeUnits
+import org.ghrobotics.lib.mathematics.units.nativeunits.nativeUnitsPer100ms
 import kotlin.properties.Delegates.observable
 
 typealias LinearFalconSRX = FalconSRX<Length>
@@ -26,28 +28,31 @@ open class FalconSRX<T : SIUnit<T>>(
         configAllowableClosedloopError(0, model.toNativeUnitError(newValue.value).toInt(), timeoutInt)
     }
     override var motionCruiseVelocity by observable(model.zero.velocity) { _, _, newValue ->
-        configMotionCruiseVelocity(newValue.toNativeUnitVelocity(model).STUPer100ms.toInt(), timeoutInt)
+        configMotionCruiseVelocity((model.toNativeUnitVelocity(newValue.value) / 10.0).toInt(), timeoutInt)
     }
     override var motionAcceleration by observable(model.zero.acceleration) { _, _, newValue ->
-        configMotionAcceleration(newValue.toNativeUnitAcceleration(model).STUPer100msPerSecond.toInt(), timeoutInt)
+        configMotionAcceleration(
+            (model.toNativeUnitAcceleration(newValue.value) / 10.0).toInt(),
+            timeoutInt
+        )
     }
     override var sensorPosition: T
-        get() = getSelectedSensorPosition(0).STU.fromNativeUnit(model)
-        set(value) {
-            setSelectedSensorPosition(value.toNativeUnitPosition(model).value.toInt(), 0, timeoutInt)
+        get() = model.fromNativeUnitPosition(getSelectedSensorPosition(0).nativeUnits)
+        set(newValue) {
+            setSelectedSensorPosition(model.toNativeUnitPosition(newValue.value).toInt(), 0, timeoutInt)
         }
-    override val sensorVelocity get() = getSelectedSensorVelocity(0).STUPer100ms.fromNativeUnitVelocity(model)
+    override val sensorVelocity get() = model.fromNativeUnitVelocity(getSelectedSensorVelocity(0).nativeUnitsPer100ms)
 
-    override val activeTrajectoryPosition get() = model.fromNativeUnitPosition(getActiveTrajectoryPosition(0).STU)
-    override val activeTrajectoryVelocity get() = model.fromNativeUnitVelocity(getActiveTrajectoryVelocity(0).STUPer100ms)
+    override val activeTrajectoryPosition get() = model.fromNativeUnitPosition(getActiveTrajectoryPosition(0).nativeUnits)
+    override val activeTrajectoryVelocity get() = model.fromNativeUnitVelocity(getActiveTrajectoryVelocity(0).nativeUnitsPer100ms)
 
-    override fun set(controlMode: ControlMode, length: T) = set(controlMode, length.toNativeUnitPosition(model).value)
+    override fun set(controlMode: ControlMode, length: T) = set(controlMode, model.toNativeUnitPosition(length.value))
 
     override fun set(controlMode: ControlMode, velocity: Velocity<T>) =
         set(controlMode, velocity, DemandType.ArbitraryFeedForward, 0.0)
 
     override fun set(controlMode: ControlMode, length: T, demandType: DemandType, outputPercent: Double) {
-        set(controlMode, length.toNativeUnitPosition(model).value, demandType, outputPercent)
+        set(controlMode, model.toNativeUnitPosition(length.value), demandType, outputPercent)
     }
 
     override fun set(
@@ -55,5 +60,5 @@ open class FalconSRX<T : SIUnit<T>>(
         velocity: Velocity<T>,
         demandType: DemandType,
         outputPercent: Double
-    ) = set(controlMode, velocity.toNativeUnitVelocity(model).STUPer100ms, demandType, outputPercent)
+    ) = set(controlMode, model.toNativeUnitVelocity(velocity.value) / 10.0, demandType, outputPercent)
 }

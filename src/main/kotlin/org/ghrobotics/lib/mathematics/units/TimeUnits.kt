@@ -68,4 +68,8 @@ class Time(
     val yoctosecond get() = value / SIConstants.kYocto
 
     override fun createNew(newValue: Double) = Time(newValue)
+
+    companion object {
+        val kZero = Time(0.0)
+    }
 }

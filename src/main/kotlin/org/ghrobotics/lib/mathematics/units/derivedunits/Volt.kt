@@ -34,4 +34,8 @@ class Volt(
 
     operator fun times(other: ElectricCurrent) = Watt(value * other.value)
     operator fun div(other: ElectricCurrent) = Ohm(value / other.value)
+
+    companion object {
+        val kZero = Volt(0.0)
+    }
 }

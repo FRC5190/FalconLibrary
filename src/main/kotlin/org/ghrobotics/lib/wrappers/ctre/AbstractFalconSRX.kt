@@ -7,7 +7,7 @@ import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.Volt
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
-import org.ghrobotics.lib.mathematics.units.nativeunits.STU
+import org.ghrobotics.lib.mathematics.units.nativeunits.nativeUnits
 import org.ghrobotics.lib.wrappers.FalconMotor
 import kotlin.properties.Delegates.observable
 
@@ -36,10 +36,10 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
     var softLimitReverseEnabled by observable(false) { _, _, newValue ->
         configReverseSoftLimitEnable(newValue, timeoutInt)
     }
-    var softLimitForward by observable(0.STU) { _, _, newValue ->
+    var softLimitForward by observable(0.nativeUnits) { _, _, newValue ->
         configForwardSoftLimitThreshold(newValue.value.toInt(), timeoutInt)
     }
-    var softLimitReverse by observable(0.STU) { _, _, newValue ->
+    var softLimitReverse by observable(0.nativeUnits) { _, _, newValue ->
         configReverseSoftLimitThreshold(newValue.value.toInt(), timeoutInt)
     }
 

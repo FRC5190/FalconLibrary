@@ -80,4 +80,8 @@ class Length(
     val yoctometer get() = value / SIConstants.kYocto
 
     override fun createNew(newValue: Double) = Length(newValue)
+
+    companion object {
+        val kZero = Length(0.0)
+    }
 }

@@ -53,6 +53,10 @@ class Mass(
     val lb get() = value / SIMassConstants.kLbOffsetKilo
 
     override fun createNew(newValue: Double) = Mass(newValue)
+
+    companion object {
+        val kZero = Mass(0.0)
+    }
 }
 
 internal object SIMassConstants {

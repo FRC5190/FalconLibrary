@@ -48,4 +48,8 @@ class ElectricCurrent(
     val yoctoamp get() = value / SIConstants.kYocto
 
     override fun createNew(newValue: Double) = ElectricCurrent(newValue)
+
+    companion object {
+        val kZero = ElectricCurrent(0.0)
+    }
 }

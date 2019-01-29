@@ -5,7 +5,7 @@ import org.ghrobotics.lib.mathematics.units.Length
 class NativeUnitLengthModel(
     nativeUnitsPerRotation: NativeUnit,
     wheelRadius: Length
-) : NativeUnitModel<Length>(Length(0.0)) {
+) : NativeUnitModel<Length>(Length.kZero) {
 
     private val nativeUnitsPerRotation = nativeUnitsPerRotation.value
     private val wheelRadius = wheelRadius.value

@@ -30,4 +30,8 @@ class Ohm(
     override val value: Double
 ) : SIValue<Ohm> {
     override fun createNew(newValue: Double) = Ohm(value)
+
+    companion object {
+        val kZero = Ohm(0.0)
+    }
 }

@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.detekt.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.11"
+    kotlin("jvm") version "1.3.20"
     id("edu.wpi.first.GradleRIO") version "2019.2.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC12"
     maven

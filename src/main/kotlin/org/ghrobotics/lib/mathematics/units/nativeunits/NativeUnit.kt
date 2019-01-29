@@ -4,7 +4,9 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 
 fun <T : SIUnit<T>> T.toNativeUnitPosition(model: NativeUnitModel<T>) = model.toNativeUnitPosition(this)
 
-val Number.STU get() = NativeUnit(toDouble())
+@Deprecated("Use nativeUnits naming instead of STU", ReplaceWith("nativeUnits"))
+val Number.STU get() = nativeUnits
+val Number.nativeUnits get() = NativeUnit(toDouble())
 
 class NativeUnit(
     override val value: Double
@@ -14,6 +16,6 @@ class NativeUnit(
     fun <T : SIUnit<T>> fromNativeUnit(model: NativeUnitModel<T>) = model.fromNativeUnitPosition(this)
 
     companion object {
-        val ZERO = NativeUnit(0.0)
+        val kZero = NativeUnit(0.0)
     }
 }

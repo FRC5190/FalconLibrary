@@ -35,11 +35,11 @@ abstract class NativeUnitModel<T : SIUnit<T>>(
         Velocity(fromNativeUnitVelocity(nativeUnitVelocity.value), zero)
 
     fun toNativeUnitVelocity(modelledUnitVelocity: Velocity<T>) =
-        NativeUnitVelocity(toNativeUnitVelocity(modelledUnitVelocity.value), NativeUnit.ZERO)
+        NativeUnitVelocity(toNativeUnitVelocity(modelledUnitVelocity.value), NativeUnit.kZero)
 
     fun fromNativeUnitAcceleration(nativeUnitAcceleration: NativeUnitAcceleration) =
         Acceleration(fromNativeUnitAcceleration(nativeUnitAcceleration.value), zero)
 
     fun toNativeUnitAcceleration(modelledUnitAcceleration: Acceleration<T>) =
-        NativeUnitAcceleration(toNativeUnitAcceleration(modelledUnitAcceleration.value), NativeUnit.ZERO)
+        NativeUnitAcceleration(toNativeUnitAcceleration(modelledUnitAcceleration.value), NativeUnit.kZero)
 }

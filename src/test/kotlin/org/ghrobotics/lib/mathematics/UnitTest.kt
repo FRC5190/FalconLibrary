@@ -8,13 +8,13 @@ import org.junit.Test
 class UnitTest {
 
     private val settings = NativeUnitLengthModel(
-        1440.STU,
+        1440.nativeUnits,
         3.0.inch
     )
 
     @Test
     fun testNativeUnits() {
-        val nativeUnits = 360.STU.fromNativeUnit(settings)
+        val nativeUnits = 360.nativeUnits.fromNativeUnit(settings)
 
         assert(nativeUnits.inch epsilonEquals 4.71238898038469)
     }
@@ -25,7 +25,7 @@ class UnitTest {
 
         val two = one.toNativeUnitVelocity(settings)
 
-        val three = two.STUPer100ms
+        val three = two.nativeUnitsPer100ms
 
         assert(three.toInt() == 300)
     }
@@ -36,7 +36,7 @@ class UnitTest {
 
         val two = one.toNativeUnitAcceleration(settings)
 
-        assert(two.STUPer100msPerSecond.toInt() == 300)
+        assert(two.nativeUnitsPer100msPerSecond.toInt() == 300)
     }
 
     @Test
