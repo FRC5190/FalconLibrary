@@ -107,3 +107,5 @@ fun Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.transform(transform: Pose2
         points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) },
         this.reversed
     )
+
+val Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.duration get() = this.lastState.t
