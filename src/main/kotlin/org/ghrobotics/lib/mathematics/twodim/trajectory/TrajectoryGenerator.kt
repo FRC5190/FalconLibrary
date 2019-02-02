@@ -61,7 +61,8 @@ class TrajectoryGenerator(
         endVelocity: LinearVelocity,
         maxVelocity: LinearVelocity,
         maxAcceleration: LinearAcceleration,
-        reversed: Boolean
+        reversed: Boolean,
+        optimizeSplines: Boolean = true
     ): TimedTrajectory<Pose2dWithCurvature> {
         val flippedPosition = Pose2d(rotation = 180.degree)
 
@@ -70,7 +71,7 @@ class TrajectoryGenerator(
             if (reversed) point + flippedPosition else point
         }
 
-        var trajectory = trajectoryFromSplineWaypoints(newWayPoints).points
+        var trajectory = trajectoryFromSplineWaypoints(newWayPoints, optimizeSplines).points
 
         // After trajectory generation, flip theta back so it's relative to the field.
         // Also fix curvature.
@@ -97,11 +98,12 @@ class TrajectoryGenerator(
     }
 
     private fun trajectoryFromSplineWaypoints(
-        wayPoints: Sequence<Pose2d>
+        wayPoints: Sequence<Pose2d>,
+        optimizeSplines: Boolean
     ): IndexedTrajectory<Pose2dWithCurvature> {
         val splines = wayPoints.zipWithNext { a, b -> ParametricQuinticHermiteSpline(a, b) }.toMutableList()
 
-        ParametricQuinticHermiteSpline.optimizeSpline(splines)
+        if (optimizeSplines) ParametricQuinticHermiteSpline.optimizeSpline(splines)
 
         return trajectoryFromSplines(splines)
     }
