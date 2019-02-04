@@ -12,6 +12,7 @@ import org.ghrobotics.lib.commands.SubsystemHandler
 
 const val kLanguageKotlin = 6
 
+@Deprecated("Use FalconRobot instead")
 abstract class FalconRobotBase : RobotBase() {
 
     companion object {
