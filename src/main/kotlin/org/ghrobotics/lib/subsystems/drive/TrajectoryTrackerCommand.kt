@@ -29,7 +29,6 @@ class TrajectoryTrackerCommand(
 
     init {
         finishCondition += { trajectoryFinished }
-        executeFrequency = (1 / dt.second).toInt()
     }
 
     /**
