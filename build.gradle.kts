@@ -4,9 +4,9 @@ import io.gitlab.arturbosch.detekt.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.20"
-    id("edu.wpi.first.GradleRIO") version "2019.2.1"
-    id("io.gitlab.arturbosch.detekt") version "1.0.0-RC12"
+    kotlin("jvm") version "1.3.21"
+    id("edu.wpi.first.GradleRIO") version "2019.3.2"
+    id("io.gitlab.arturbosch.detekt") version "1.0.0-RC13"
     maven
     `maven-publish`
 }
@@ -19,7 +19,7 @@ repositories {
 dependencies {
     // Kotlin Standard Library and Coroutines
     compile(kotlin("stdlib"))
-    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.1.0")
+    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.1.1")
 
     // WPILib
     wpi.deps.wpilib().forEach { compile(it) }
@@ -43,7 +43,7 @@ publishing {
         create<MavenPublication>("mavenLocal") {
             groupId = "org.ghrobotics"
             artifactId = "FalconLibrary"
-            version = "2019.2.7"
+            version = "2019.2.17"
 
             from(components["java"])
         }
