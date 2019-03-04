@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.21"
-    id("edu.wpi.first.GradleRIO") version "2019.3.2"
+    id("edu.wpi.first.GradleRIO") version "2019.4.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC13"
     maven
     `maven-publish`
