@@ -11,7 +11,6 @@ import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
-import kotlin.concurrent.fixedRateTimer
 
 abstract class FalconRobot {
 
@@ -43,11 +42,6 @@ abstract class FalconRobot {
      * Executes at a specified rate
      */
     protected open fun periodic() {}
-
-    /**
-     * Executes at a specified rate but with only Networking code
-     */
-    protected open fun periodicNetwork() {}
 
     // Helpers
     protected fun addToSubsystemHandler(subsystem: FalconSubsystem) = SubsystemHandler.addSubsystem(subsystem)
@@ -86,54 +80,10 @@ abstract class FalconRobot {
                 // Tell the DS that the robot is ready to be enabled
                 HAL.observeUserProgramStarting()
 
-                // New states that need to be sent to FalconRobot
-                var currentMode = Mode.NONE
-                var currentEnabledState = false
+                var previousRobotMode = Mode.NONE
 
-                fixedRateTimer(
-                    "Periodic FalconRobot Loop",
-                    period = period.millisecond.toLong()
-                ) {
-                    val newMode = currentMode
-                    val knownMode = robot.lastRobotMode
-                    // Send new states
-                    robot.updateState(
-                        newMode,
-                        currentEnabledState
-                    )
-                    // If new state execute Subsystem event methods
-                    if (newMode != knownMode) {
-                        when (newMode) {
-                            Mode.AUTONOMOUS -> SubsystemHandler.autoReset()
-                            Mode.TELEOP -> SubsystemHandler.teleopReset()
-                            Mode.DISABLED -> SubsystemHandler.zeroOutputs()
-                            else -> {
-                            }
-                        }
-                    }
-                    // Update command and subsystem loops
-                    Scheduler.getInstance().run()
-                    // Update robot loop
-                    robot.periodic()
-                }
-
-                fixedRateTimer(
-                    "Periodic FalconRobot Network Loop",
-                    period = period.millisecond.toLong()
-                ) {
-                    // Update Values
-                    SmartDashboard.updateValues()
-                    Shuffleboard.update()
-                    // LiveWindow.updateValues()
-                    robot.periodicNetwork()
-                }
-
-                // YEET and yote to receive new data from ds
-                while (true) {
-                    // Wait for new data to arrive
-                    m_ds.waitForData()
-
-                    currentMode = when {
+                fun loopFunc() {
+                    val newRobotMode = when {
                         isDisabled -> {
                             HAL.observeUserProgramDisabled()
                             Mode.DISABLED
@@ -152,8 +102,45 @@ abstract class FalconRobot {
                         }
                         else -> TODO("Robot in invalid mode!")
                     }
+                    val newEnabledState = isEnabled
 
-                    currentEnabledState = isEnabled
+                    // Send new states
+                    robot.updateState(newRobotMode, newEnabledState)
+                    // If new state execute Subsystem event methods
+                    if (newRobotMode != previousRobotMode) {
+                        when (newRobotMode) {
+                            Mode.AUTONOMOUS -> SubsystemHandler.autoReset()
+                            Mode.TELEOP -> SubsystemHandler.teleopReset()
+                            Mode.DISABLED -> SubsystemHandler.zeroOutputs()
+                            else -> {
+                            }
+                        }
+                    }
+                    previousRobotMode = newRobotMode
+                    // Update robot loop
+                    robot.periodic()
+                    // Update command and subsystem loops
+                    Scheduler.getInstance().run()
+                    // Update network stuffs
+                    SmartDashboard.updateValues()
+                    LiveWindow.updateValues()
+                    Shuffleboard.update()
+                }
+
+                val dt = period.nanosecond.toLong()
+                var nextUpdateTime = System.nanoTime() + dt
+
+                while (true) {
+                    val newTime = System.nanoTime()
+                    if (newTime >= nextUpdateTime) {
+                        nextUpdateTime += dt
+                        loopFunc()
+                    } else {
+                        val amountToDelay = nextUpdateTime - newTime
+                        if(amountToDelay > 0) {
+                            Thread.sleep(0, amountToDelay.toInt())
+                        }
+                    }
                 }
             }
         }
