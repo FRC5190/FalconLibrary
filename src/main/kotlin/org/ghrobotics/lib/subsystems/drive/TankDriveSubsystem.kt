@@ -272,18 +272,18 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
         sequential {
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }

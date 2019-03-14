@@ -27,9 +27,15 @@ class NativeFalconSRX(
         }
     override val sensorVelocity get() = getSelectedSensorVelocity(0).nativeUnitsPer100ms
 
+    override var velocity: Double
+        get() = getSelectedSensorVelocity(0) * 10.0
+        set(value) {
+            set(ControlMode.Velocity, value / 10.0)
+        }
+
     override val activeTrajectoryPosition get() = getActiveTrajectoryPosition(0).nativeUnits
     override val activeTrajectoryVelocity get() = getActiveTrajectoryVelocity(0).nativeUnitsPer100ms
-    
+
     override fun set(controlMode: ControlMode, length: NativeUnit) = set(controlMode, length.value)
 
     override fun set(controlMode: ControlMode, velocity: NativeUnitVelocity) =
@@ -45,4 +51,12 @@ class NativeFalconSRX(
         demandType: DemandType,
         outputPercent: Double
     ) = set(controlMode, velocity.nativeUnitsPer100ms, demandType, outputPercent)
+
+    override fun setVelocityAndArbitraryFeedForward(velocity: Double, arbitraryFeedForward: Double) =
+        set(
+            ControlMode.Velocity,
+            velocity / 10.0,
+            DemandType.ArbitraryFeedForward,
+            arbitraryFeedForward
+        )
 }

@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.Volt
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
 import org.ghrobotics.lib.mathematics.units.nativeunits.nativeUnits
 import org.ghrobotics.lib.wrappers.FalconMotor
@@ -145,18 +144,11 @@ abstract class AbstractFalconSRX<T : SIValue<T>>(
             set(ControlMode.PercentOutput, value)
         }
 
-    override val voltageOutput: Volt
-        get() = motorOutputVoltage.volt
+    override val voltageOutput get() = motorOutputVoltage
 
-    override var velocity: Velocity<T>
-        get() = sensorVelocity
-        set(value) {
-            set(ControlMode.Velocity, value)
-        }
+    abstract override var velocity: Double
 
-    override fun setVelocityAndArbitraryFeedForward(velocity: Velocity<T>, arbitraryFeedForward: Double) {
-        set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, arbitraryFeedForward)
-    }
+    abstract override fun setVelocityAndArbitraryFeedForward(velocity: Double, arbitraryFeedForward: Double)
 
     init {
         // Clear all redundant settings.

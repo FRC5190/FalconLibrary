@@ -21,8 +21,8 @@ class SimDifferentialDrive(
 
     fun update(deltaTime: Time) {
         val wheelState = DifferentialDrive.WheelState(
-            leftMotor.velocity.value * deltaTime.value / differentialDrive.wheelRadius,
-            rightMotor.velocity.value * deltaTime.value / differentialDrive.wheelRadius
+            leftMotor.velocity * deltaTime.value / differentialDrive.wheelRadius,
+            rightMotor.velocity * deltaTime.value / differentialDrive.wheelRadius
         )
 
         val forwardKinematics = differentialDrive.solveForwardKinematics(wheelState)

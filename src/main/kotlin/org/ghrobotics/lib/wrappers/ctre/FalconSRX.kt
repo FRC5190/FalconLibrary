@@ -43,6 +43,12 @@ open class FalconSRX<T : SIUnit<T>>(
         }
     override val sensorVelocity get() = model.fromNativeUnitVelocity(getSelectedSensorVelocity(0).nativeUnitsPer100ms)
 
+    override var velocity: Double
+        get() = model.fromNativeUnitVelocity(getSelectedSensorVelocity(0) * 10.0)
+        set(value) {
+            set(ControlMode.Velocity, model.toNativeUnitVelocity(value) / 10.0)
+        }
+
     override val activeTrajectoryPosition get() = model.fromNativeUnitPosition(getActiveTrajectoryPosition(0).nativeUnits)
     override val activeTrajectoryVelocity get() = model.fromNativeUnitVelocity(getActiveTrajectoryVelocity(0).nativeUnitsPer100ms)
 
@@ -61,4 +67,12 @@ open class FalconSRX<T : SIUnit<T>>(
         demandType: DemandType,
         outputPercent: Double
     ) = set(controlMode, model.toNativeUnitVelocity(velocity.value) / 10.0, demandType, outputPercent)
+
+    override fun setVelocityAndArbitraryFeedForward(velocity: Double, arbitraryFeedForward: Double) =
+        set(
+            ControlMode.Velocity,
+            model.toNativeUnitVelocity(velocity) / 10.0,
+            DemandType.ArbitraryFeedForward,
+            arbitraryFeedForward
+        )
 }
