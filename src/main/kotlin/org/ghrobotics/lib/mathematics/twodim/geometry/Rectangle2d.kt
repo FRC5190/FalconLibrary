@@ -11,10 +11,10 @@ fun Rectangle2d(
     one: Translation2d,
     two: Translation2d
 ): Rectangle2d {
-    val minX = min(one._x, two._x)
-    val minY = min(one._y, two._y)
-    val maxX = max(one._x, two._x)
-    val maxY = max(one._y, two._y)
+    val minX = min(one.x, two.x)
+    val minY = min(one.y, two.y)
+    val maxX = max(one.x, two.x)
+    val maxY = max(one.y, two.y)
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
@@ -25,10 +25,10 @@ fun Rectangle2d(
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {
-    val minX = pointsToInclude.minBy { it._x }!!._x
-    val minY = pointsToInclude.minBy { it._y }!!._y
-    val maxX = pointsToInclude.maxBy { it._x }!!._x
-    val maxY = pointsToInclude.maxBy { it._y }!!._y
+    val minX = pointsToInclude.minBy { it.x }!!.x
+    val minY = pointsToInclude.minBy { it.y }!!.y
+    val maxX = pointsToInclude.maxBy { it.x }!!.x
+    val maxY = pointsToInclude.maxBy { it.y }!!.y
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
@@ -65,11 +65,11 @@ data class Rectangle2d internal constructor(
 
     fun isWithin(r: Rectangle2d) = r._x in _x..(_x + _w - r._w) && r._y in _y..(_y + _h - r._h)
 
-    operator fun contains(p: Translation2d) = p._x in _x..(_x + _w) && p._y in _y..(_y + _h)
+    operator fun contains(p: Translation2d) = p.x in _x..(_x + _w) && p.y in _y..(_y + _h)
 
     @Suppress("ComplexMethod")
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation._x epsilonEquals 0.0 && translation._y epsilonEquals 0.0) return false
+        if (translation.x epsilonEquals 0.0 && translation.y epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
             rectangle.topLeft, rectangle.bottomRight,
@@ -83,14 +83,14 @@ data class Rectangle2d internal constructor(
         val xInvExit: Double
         val yInvEntry: Double
         val yInvExit: Double
-        if (translation._x > 0.0) {
+        if (translation.x > 0.0) {
             xInvEntry = (_x - (rectangle._x + rectangle._w))
             xInvExit = ((_x + _w) - rectangle._x)
         } else {
             xInvEntry = ((_x + _w) - rectangle._x)
             xInvExit = (_x - (rectangle._x + rectangle._w))
         }
-        if (translation._y > 0.0) {
+        if (translation.y > 0.0) {
             yInvEntry = (_y - (rectangle._y + rectangle._h))
             yInvExit = ((_y + _h) - rectangle._y)
         } else {
@@ -102,19 +102,19 @@ data class Rectangle2d internal constructor(
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation._x epsilonEquals 0.0) {
+        if (translation.x epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
-            xEntry = xInvEntry / translation._x
-            xExit = xInvExit / translation._x
+            xEntry = xInvEntry / translation.x
+            xExit = xInvExit / translation.x
         }
-        if (translation._y epsilonEquals 0.0) {
+        if (translation.y epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {
-            yEntry = yInvEntry / translation._y
-            yExit = yInvExit / translation._y
+            yEntry = yInvEntry / translation.y
+            yExit = yInvExit / translation.y
         }
         val entryTime = max(xEntry, yEntry)
         val exitTime = min(xExit, yExit)

@@ -42,16 +42,16 @@ class PurePursuitTracker(
         val lookaheadTransform = lookaheadState inFrameOfReferenceOf robotPose
 
         // Calculate latitude error.
-        val xError = (referencePoint.state.state.pose inFrameOfReferenceOf robotPose).translation._x
+        val xError = (referencePoint.state.state.pose inFrameOfReferenceOf robotPose).translation.x
 
         // Calculate the velocity at the reference point.
         val vd = referencePoint.state._velocity
 
         // Calculate the distance from the robot to the lookahead.
-        val l = lookaheadTransform.translation._norm
+        val l = lookaheadTransform.translation.norm
 
         // Calculate the curvature of the arc that connects the robot and the lookahead point.
-        val curvature = 2 * lookaheadTransform.translation._y / l.pow(2)
+        val curvature = 2 * lookaheadTransform.translation.y / l.pow(2)
 
         // Adjust the linear velocity to compensate for the robot lagging behind.
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
@@ -72,7 +72,7 @@ class PurePursuitTracker(
 
         // The lookahead point is farther from the robot than the minimum lookahead distance.
         // Therefore we can use this point.
-        if ((lookaheadPoseByTime inFrameOfReferenceOf robotPose).translation._norm >= kMinLookaheadDistance.value) {
+        if ((lookaheadPoseByTime inFrameOfReferenceOf robotPose).translation.norm >= kMinLookaheadDistance.value) {
             return lookaheadPoseByTime
         }
 
@@ -85,7 +85,7 @@ class PurePursuitTracker(
             previewedTime += 0.02.second
 
             lookaheadPoseByDistance = iterator.preview(previewedTime).state.state.pose
-            val lookaheadDistance = (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation._norm
+            val lookaheadDistance = (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation.norm
 
             if (lookaheadDistance > kMinLookaheadDistance.value) {
                 return lookaheadPoseByDistance
@@ -94,7 +94,7 @@ class PurePursuitTracker(
 
         // Extend the trajectory.
         val remaining =
-            kMinLookaheadDistance.value - (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation._norm
+            kMinLookaheadDistance.value - (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation.norm
 
         return lookaheadPoseByDistance.transformBy(
             Pose2d(

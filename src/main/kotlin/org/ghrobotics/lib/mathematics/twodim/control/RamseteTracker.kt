@@ -35,7 +35,7 @@ class RamseteTracker(
 
         // Get reference linear and angular velocities
         val vd = referenceState._velocity
-        val wd = vd * referenceState.state.curvature._curvature
+        val wd = vd * referenceState.state.curvature
 
         // Compute gain
         val k1 = 2 * kZeta * sqrt(wd * wd + kBeta * vd * vd)
@@ -44,8 +44,8 @@ class RamseteTracker(
         val angleError = error.rotation.radian
 
         return TrajectoryTrackerVelocityOutput(
-            _linearVelocity = vd * error.rotation.cos + k1 * error.translation._x,
-            _angularVelocity = wd + kBeta * vd * sinc(angleError) * error.translation._y + k1 * angleError
+            _linearVelocity = vd * error.rotation.cos + k1 * error.translation.x,
+            _angularVelocity = wd + kBeta * vd * sinc(angleError) * error.translation.y + k1 * angleError
         )
     }
 

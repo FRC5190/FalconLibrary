@@ -7,8 +7,8 @@ data class FunctionalLinearSpline(
     val p1: Translation2d,
     val p2: Translation2d
 ) {
-    val m get() = (p2._y - p1._y) / (p2._x - p1._x)
-    val b get() = p1._y - (m * p1._x)
+    val m get() = (p2.y - p1.y) / (p2.x - p1.x)
+    val b get() = p1.y - (m * p1.x)
 
     val zero get() = -b / m
 }

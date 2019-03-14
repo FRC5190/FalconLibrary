@@ -12,6 +12,7 @@ import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.simulation.SimDifferentialDrive
 import org.ghrobotics.lib.simulation.SimFalconMotor
 import org.junit.Test
+import org.knowm.xchart.SwingWrapper
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
 import java.awt.Font
@@ -31,8 +32,8 @@ class RamseteControllerTest {
 
         val drive = SimDifferentialDrive(
             TrajectoryGeneratorTest.drive,
-            SimFalconMotor(0.meter),
-            SimFalconMotor(0.meter),
+            SimFalconMotor(),
+            SimFalconMotor(),
             ramseteTracker,
             1.05
         )
@@ -56,12 +57,12 @@ class RamseteControllerTest {
             drive.setOutput(ramseteTracker.nextState(drive.robotPosition, currentTime))
             drive.update(deltaTime)
 
-            xList += drive.robotPosition.translation.x.feet
-            yList += drive.robotPosition.translation.y.feet
+            xList += drive.robotPosition.translation.x / SILengthConstants.kFeetToMeter
+            yList += drive.robotPosition.translation.y / SILengthConstants.kFeetToMeter
 
             val referenceTranslation = ramseteTracker.referencePoint!!.state.state.pose.translation
-            refXList += referenceTranslation.x.feet
-            refYList += referenceTranslation.y.feet
+            refXList += referenceTranslation.x / SILengthConstants.kFeetToMeter
+            refYList += referenceTranslation.y / SILengthConstants.kFeetToMeter
 
             // TODO add voltage to the sim
 //            System.out.printf(
@@ -105,9 +106,13 @@ class RamseteControllerTest {
             TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotPosition.translation
         val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotPosition.rotation
 
-        System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
+        System.out.printf(
+            "%n[Test] X Error: %3.3f, Y Error: %3.3f%n",
+            terror.x / SILengthConstants.kFeetToMeter,
+            terror.y / SILengthConstants.kFeetToMeter
+        )
 
-        assert(terror.norm.value.also {
+        assert(terror.norm.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
         assert(rerror.degree.also {

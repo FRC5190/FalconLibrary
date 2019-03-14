@@ -7,13 +7,10 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units.degree
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.millisecond
 import org.junit.Test
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
@@ -43,7 +40,7 @@ class PathFinderTest {
                 )
             )!!
             println(path.joinToString(separator = "\n") {
-                "${it.translation.x.value}\t${it.translation.y.value}\t${it.rotation.degree}"
+                "${it.translation.x}\t${it.translation.y}\t${it.rotation.degree}"
             })
         }
         println("Generated Nodes in $nodeCreationTime ms")
@@ -106,8 +103,8 @@ class PathFinderTest {
 
         chart.addSeries(
             "Trajectory",
-            refList.map { it.x.feet }.toDoubleArray(),
-            refList.map { it.y.feet }.toDoubleArray()
+            refList.map { it.x / SILengthConstants.kFeetToMeter }.toDoubleArray(),
+            refList.map { it.y / SILengthConstants.kFeetToMeter }.toDoubleArray()
         )
 //        SwingWrapper(chart).displayChart()
 //        Thread.sleep(1000000)

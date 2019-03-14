@@ -48,10 +48,10 @@ data class Pose2d(
             }
             val translationPart = translation *
                 Rotation2d(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
-            return Twist2d(translationPart._x, translationPart._y, rotation)
+            return Twist2d(translationPart.x, translationPart.y, rotation)
         }
 
-    val mirror get() = Pose2d(Translation2d(translation._x, 27.feet.value - translation._y), -rotation)
+    val mirror get() = Pose2d(Translation2d(translation.x, 27.feet.value - translation.y), -rotation)
 
     infix fun inFrameOfReferenceOf(fieldRelativeOrigin: Pose2d) = (-fieldRelativeOrigin) + this
 
@@ -73,7 +73,7 @@ data class Pose2d(
     fun isCollinear(other: Pose2d): Boolean {
         if (!rotation.isParallel(other.rotation)) return false
         val twist = (-this + other).twist
-        return twist._dy epsilonEquals 0.0 && twist.dTheta.value epsilonEquals 0.0
+        return twist.dy epsilonEquals 0.0 && twist.dTheta.value epsilonEquals 0.0
     }
 
     override fun interpolate(endValue: Pose2d, t: Double): Pose2d {
@@ -86,5 +86,5 @@ data class Pose2d(
         return this + (twist * t).asPose
     }
 
-    override fun distance(other: Pose2d) = (-this + other).twist._norm
+    override fun distance(other: Pose2d) = (-this + other).twist.norm
 }

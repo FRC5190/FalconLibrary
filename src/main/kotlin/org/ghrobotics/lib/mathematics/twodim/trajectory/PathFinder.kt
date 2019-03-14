@@ -206,7 +206,7 @@ class PathFinder(
             }
     }
 
-    private fun Translation2d.toVector2d() = Vector2D(x.value, y.value)
+    private fun Translation2d.toVector2d() = Vector2D(x, y)
     private fun Vector2D.toTranslation2d() = Translation2d(x.meter, y.meter)
 
     companion object {
