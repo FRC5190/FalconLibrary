@@ -8,8 +8,8 @@ import org.ghrobotics.lib.utils.Source
 
 class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
-    val leftEncoder: Source<Length>,
-    val rightEncoder: Source<Length>
+    val leftEncoder: Source<Double>,
+    val rightEncoder: Source<Double>
 ) : Localization(robotHeading) {
 
     private var prevLeftEncoder = 0.0
@@ -17,13 +17,13 @@ class TankEncoderLocalization(
 
     override fun resetInternal(newPosition: Pose2d) {
         super.resetInternal(newPosition)
-        prevLeftEncoder = leftEncoder().value
-        prevRightEncoder = rightEncoder().value
+        prevLeftEncoder = leftEncoder()
+        prevRightEncoder = rightEncoder()
     }
 
     override fun update(deltaHeading: Rotation2d): Pose2d {
-        val newLeftEncoder = leftEncoder().value
-        val newRightEncoder = rightEncoder().value
+        val newLeftEncoder = leftEncoder()
+        val newRightEncoder = rightEncoder()
 
         val deltaLeft = newLeftEncoder - prevLeftEncoder
         val deltaRight = newRightEncoder - prevRightEncoder
