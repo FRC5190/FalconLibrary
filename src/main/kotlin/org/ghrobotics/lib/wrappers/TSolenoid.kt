@@ -2,6 +2,7 @@ package org.ghrobotics.lib.wrappers
 
 import edu.wpi.first.wpilibj.DoubleSolenoid
 import edu.wpi.first.wpilibj.Solenoid
+import kotlin.properties.Delegates
 
 /**
  * Interface for both double- and single-solenoids.
@@ -25,15 +26,13 @@ class TSingleSolenoid(channel: Int, module: Int? = null) : TSolenoid {
 
     // Set the solenoid's position. Forward -> true, Reverse -> false
     // If the solenoid is set to 'Off', the state is not changed.
-    override var state: TSolenoid.State = TSolenoid.State.Reverse
-        set(value) {
-            when (value) {
-                TSolenoid.State.Forward -> wpiSolenoid.set(true)
-                TSolenoid.State.Reverse -> wpiSolenoid.set(false)
-                else -> return
-            }
-            field = value
+    override var state: TSolenoid.State by Delegates.observable(TSolenoid.State.Reverse) {_, _, newValue ->
+        when (newValue) {
+            TSolenoid.State.Forward -> wpiSolenoid.set(true)
+            TSolenoid.State.Reverse -> wpiSolenoid.set(false)
+            else -> Unit
         }
+    }
 }
 
 /**
@@ -44,17 +43,15 @@ class TSingleSolenoid(channel: Int, module: Int? = null) : TSolenoid {
 class TDoubleSolenoid(forwardChannel: Int, reverseChannel: Int, module: Int? = null) : TSolenoid {
 
     private val wpiSolenoid: DoubleSolenoid =
-            if(module == null) DoubleSolenoid(forwardChannel, reverseChannel)
+            if (module == null) DoubleSolenoid(forwardChannel, reverseChannel)
             else DoubleSolenoid(module, forwardChannel, reverseChannel)
 
     // Set the solenoid to the desired position
-    override var state : TSolenoid.State = TSolenoid.State.Reverse
-        set(value) {
-            when(value){
-                TSolenoid.State.Forward -> wpiSolenoid.set(DoubleSolenoid.Value.kForward)
-                TSolenoid.State.Reverse -> wpiSolenoid.set(DoubleSolenoid.Value.kReverse)
-                TSolenoid.State.Off -> wpiSolenoid.set(DoubleSolenoid.Value.kOff)
-            }
-            field = value
+    override var state: TSolenoid.State by Delegates.observable(TSolenoid.State.Off) { _, _, newValue ->
+        when (newValue) {
+            TSolenoid.State.Forward -> wpiSolenoid.set(DoubleSolenoid.Value.kForward)
+            TSolenoid.State.Reverse -> wpiSolenoid.set(DoubleSolenoid.Value.kReverse)
+            TSolenoid.State.Off -> wpiSolenoid.set(DoubleSolenoid.Value.kOff)
         }
+    }
 }
