@@ -7,8 +7,13 @@ import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
 import kotlin.reflect.KProperty
 
+/**
+ * @param localizationBuffer Stores the previous 100 states so that we can interpolate if needed.
+ * Especially useful for Vision
+ */
 abstract class Localization(
-    protected val robotHeading: Source<Rotation2d>
+    protected val robotHeading: Source<Rotation2d>,
+    private val localizationBuffer: TimeInterpolatableBuffer<Pose2d> = TimeInterpolatableBuffer()
 ) : Source<Pose2d> {
 
     /**
@@ -16,16 +21,6 @@ abstract class Localization(
      */
     var robotPosition = Pose2d()
         private set
-
-    /**
-     * Stores the previous 100 states so that we can interpolate if needed.
-     * Especially useful for Vision
-     */
-    private val interpolatableLocalizationBuffer = TimeInterpolatableBuffer<Pose2d>()
-
-    init {
-        interpolatableLocalizationBuffer.set(0.0, Pose2d())
-    }
 
     /**
      * Stores the previous state of the robot.
@@ -41,7 +36,7 @@ abstract class Localization(
         val newHeading = robotHeading()
         prevHeading = newHeading
         headingOffset = -newHeading + newPosition.rotation
-        interpolatableLocalizationBuffer.clear()
+        localizationBuffer.clear()
     }
 
     @Synchronized
@@ -60,7 +55,7 @@ abstract class Localization(
         prevHeading = newHeading
 
         // Add the global robot pose to the interpolatable buffer
-        interpolatableLocalizationBuffer[Timer.getFPGATimestamp()] = robotPosition
+        localizationBuffer[Timer.getFPGATimestamp()] = robotPosition
     }
 
     protected abstract fun update(deltaHeading: Rotation2d): Pose2d
@@ -68,9 +63,10 @@ abstract class Localization(
     override fun invoke() = robotPosition
 
     operator fun get(timestamp: Time) = get(timestamp.second)
-    internal operator fun get(timestamp: Double) = interpolatableLocalizationBuffer[timestamp]
+    operator fun get(timestamp: Double) = localizationBuffer[timestamp] ?: Pose2d()
 
     // Delegates
+
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Pose2d = robotPosition
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Pose2d) = reset(value)
 }

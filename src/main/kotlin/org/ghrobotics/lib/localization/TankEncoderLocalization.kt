@@ -8,9 +8,10 @@ import org.ghrobotics.lib.utils.Source
 
 class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
-    val leftEncoder: Source<Double>,
-    val rightEncoder: Source<Double>
-) : Localization(robotHeading) {
+    val leftEncoder: Source<Length>,
+    val rightEncoder: Source<Length>,
+    localizationBuffer: TimeInterpolatableBuffer<Pose2d> = TimeInterpolatableBuffer()
+) : Localization(robotHeading, localizationBuffer) {
 
     private var prevLeftEncoder = 0.0
     private var prevRightEncoder = 0.0
