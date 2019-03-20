@@ -51,8 +51,8 @@ class QuasistaticCharacterizationCommand(
             (driveSubsystem.leftMotor.voltageOutput + driveSubsystem.rightMotor.voltageOutput) / 2.0
 
         val wheelMotion = DifferentialDrive.WheelState(
-            driveSubsystem.leftMotor.velocity.value,
-            driveSubsystem.rightMotor.velocity.value
+            driveSubsystem.leftMotor.velocity,
+            driveSubsystem.rightMotor.velocity
         )
 
         // Return robot speed in meters per second if linear, radians per second if angular
@@ -62,7 +62,7 @@ class QuasistaticCharacterizationCommand(
             (wheelMotion.right + wheelMotion.left) / 2.0
         }
 
-        data.add(CharacterizationData(avgCompensatedVoltage.value, avgSpd, dt.second))
+        data.add(CharacterizationData(avgCompensatedVoltage, avgSpd, dt.second))
     }
 
     override suspend fun dispose() {

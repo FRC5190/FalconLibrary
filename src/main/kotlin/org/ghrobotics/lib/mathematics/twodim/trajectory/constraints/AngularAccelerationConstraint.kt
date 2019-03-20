@@ -21,7 +21,7 @@ class AngularAccelerationConstraint internal constructor(
          * v = sqrt(maxAngularAcceleration / dk/ds)
          */
 
-        return Math.sqrt(maxAngularAcceleration / state.curvature.dkds.absoluteValue)
+        return Math.sqrt(maxAngularAcceleration / state.dkds.absoluteValue)
     }
 
     override fun getMinMaxAcceleration(
@@ -57,7 +57,7 @@ class AngularAccelerationConstraint internal constructor(
          */
 
         val maxAbsoluteAcceleration = Math.abs(
-            (maxAngularAcceleration - (velocity * velocity * state.curvature.dkds)) / state.curvature._curvature
+            (maxAngularAcceleration - (velocity * velocity * state.dkds)) / state.curvature
         )
 
         return TimingConstraint.MinMaxAcceleration(-maxAbsoluteAcceleration, maxAbsoluteAcceleration)

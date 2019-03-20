@@ -1,8 +1,8 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryGeneratorTest
+import org.ghrobotics.lib.mathematics.units.SILengthConstants
 import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.simulation.SimDifferentialDrive
@@ -29,8 +29,8 @@ class PurePursuitTrackerTest {
 
         val drive = SimDifferentialDrive(
             TrajectoryGeneratorTest.drive,
-            SimFalconMotor(0.meter),
-            SimFalconMotor(0.meter),
+            SimFalconMotor(),
+            SimFalconMotor(),
             purePursuitTracker,
             1.05
         )
@@ -53,12 +53,12 @@ class PurePursuitTrackerTest {
             drive.setOutput(purePursuitTracker.nextState(drive.robotPosition, currentTime))
             drive.update(deltaTime)
 
-            xList += drive.robotPosition.translation.x.feet
-            yList += drive.robotPosition.translation.y.feet
+            xList += drive.robotPosition.translation.x / SILengthConstants.kFeetToMeter
+            yList += drive.robotPosition.translation.y / SILengthConstants.kFeetToMeter
 
             val referenceTranslation = purePursuitTracker.referencePoint!!.state.state.pose.translation
-            refXList += referenceTranslation.x.feet
-            refYList += referenceTranslation.y.feet
+            refXList += referenceTranslation.x / SILengthConstants.kFeetToMeter
+            refYList += referenceTranslation.y / SILengthConstants.kFeetToMeter
         }
 
         val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second)
@@ -96,9 +96,13 @@ class PurePursuitTrackerTest {
             TrajectoryGeneratorTest.trajectory.lastState.state.pose.translation - drive.robotPosition.translation
         val rerror = TrajectoryGeneratorTest.trajectory.lastState.state.pose.rotation - drive.robotPosition.rotation
 
-        System.out.printf("%n[Test] X Error: %3.3f, Y Error: %3.3f%n", terror.x.feet, terror.y.feet)
+        System.out.printf(
+            "%n[Test] X Error: %3.3f, Y Error: %3.3f%n",
+            terror.x / SILengthConstants.kFeetToMeter,
+            terror.y / SILengthConstants.kFeetToMeter
+        )
 
-        assert(terror.norm.value.also {
+        assert(terror.norm.also {
             println("[Test] Norm of Translational Error: $it")
         } < 0.50)
         assert(rerror.degree.also {

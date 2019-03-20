@@ -20,7 +20,7 @@ class FeedForwardTracker : TrajectoryTracker() {
 
         // Get reference linear and angular velocities
         val vd = referenceState._velocity
-        val wd = vd * referenceState.state.curvature._curvature
+        val wd = vd * referenceState.state.curvature
 
         return TrajectoryTrackerVelocityOutput(
             _linearVelocity = vd,

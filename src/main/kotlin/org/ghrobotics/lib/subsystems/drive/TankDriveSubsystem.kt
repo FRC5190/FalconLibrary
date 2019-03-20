@@ -14,6 +14,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
 import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.SILengthConstants
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.millisecond
 import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
@@ -57,8 +58,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
     override fun periodic() {
         // Report new position to Live Dashboard
         LiveDashboard.robotHeading = robotPosition.rotation.radian
-        LiveDashboard.robotX = robotPosition.translation.x.feet
-        LiveDashboard.robotY = robotPosition.translation.y.feet
+        LiveDashboard.robotX = robotPosition.translation.x / SILengthConstants.kFeetToMeter
+        LiveDashboard.robotY = robotPosition.translation.y / SILengthConstants.kFeetToMeter
     }
 
     // COMMON DRIVE TYPES
@@ -272,18 +273,18 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
         sequential {
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
-                leftMotor.velocity.value.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.value.absoluteValue < kEpsilon
+                leftMotor.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }

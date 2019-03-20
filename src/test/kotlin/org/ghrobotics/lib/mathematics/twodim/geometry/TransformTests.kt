@@ -26,11 +26,13 @@ class TransformTests {
         // Get the global robot pose
         val globalRobotPose = staticObjectPose - robotToStaticObject
 
-        println("X: ${globalRobotPose.translation.x.meter}, Y: ${globalRobotPose.translation.y.meter}, " +
-            "Angle: ${globalRobotPose.rotation.degree}")
+        println(
+            "X: ${globalRobotPose.translation.x.meter}, Y: ${globalRobotPose.translation.y.meter}, " +
+                "Angle: ${globalRobotPose.rotation.degree}"
+        )
 
-        Assert.assertEquals(0.0, globalRobotPose.translation.x.value, kEpsilon)
-        Assert.assertEquals(8.0, globalRobotPose.translation.y.value, kEpsilon)
+        Assert.assertEquals(0.0, globalRobotPose.translation.x, kEpsilon)
+        Assert.assertEquals(8.0, globalRobotPose.translation.y, kEpsilon)
         Assert.assertEquals((-180).degree, globalRobotPose.rotation)
     }
 }

@@ -14,17 +14,13 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.Rotation2d
-import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.absoluteValue
 
-class Twist2d internal constructor(
-    internal val _dx: Double,
-    internal val _dy: Double,
+class Twist2d constructor(
+    val dx: Double,
+    val dy: Double,
     val dTheta: Rotation2d
 ) {
-
-    val dx get() = _dx.meter
-    val dy get() = _dy.meter
 
     constructor(
         dx: Length,
@@ -32,8 +28,7 @@ class Twist2d internal constructor(
         dTheta: Rotation2d
     ) : this(dx.value, dy.value, dTheta)
 
-    internal val _norm get() = if (_dy == 0.0) _dx.absoluteValue else Math.hypot(_dx, _dy)
-    val norm get() = _norm.meter
+    val norm get() = if (dy == 0.0) dx.absoluteValue else Math.hypot(dx, dy)
 
     val asPose: Pose2d
         get() {
@@ -47,11 +42,11 @@ class Twist2d internal constructor(
                 sinTheta / dTheta to (1.0 - cosTheta) / dTheta
             }
             return Pose2d(
-                Translation2d(_dx * s - _dy * c, _dx * c + _dy * s),
+                Translation2d(dx * s - dy * c, dx * c + dy * s),
                 Rotation2d(cosTheta, sinTheta, false)
             )
         }
 
     operator fun times(scale: Double) =
-        Twist2d(_dx * scale, _dy * scale, dTheta * scale)
+        Twist2d(dx * scale, dy * scale, dTheta * scale)
 }

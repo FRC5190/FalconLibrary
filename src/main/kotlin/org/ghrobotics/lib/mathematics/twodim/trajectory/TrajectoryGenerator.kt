@@ -12,7 +12,6 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricQuinticHermiteSpline
 import org.ghrobotics.lib.mathematics.twodim.polynomials.ParametricSpline
@@ -80,7 +79,8 @@ class TrajectoryGenerator(
             trajectory = trajectory.map { state ->
                 Pose2dWithCurvature(
                     pose = state.pose + flippedPosition,
-                    curvature = Pose2dCurvature(-state.curvature._curvature, state.curvature.dkds)
+                    curvature = -state.curvature,
+                    dkds = state.dkds
                 )
             }
         }

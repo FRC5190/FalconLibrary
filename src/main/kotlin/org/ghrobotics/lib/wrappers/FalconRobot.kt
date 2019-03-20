@@ -11,6 +11,7 @@ import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.SubsystemHandler
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
+import java.util.concurrent.TimeUnit
 
 abstract class FalconRobot {
 
@@ -137,8 +138,8 @@ abstract class FalconRobot {
                         loopFunc()
                     } else {
                         val amountToDelay = nextUpdateTime - newTime
-                        if(amountToDelay > 0) {
-                            Thread.sleep(0, amountToDelay.toInt())
+                        if (amountToDelay > 0) {
+                            TimeUnit.NANOSECONDS.sleep(amountToDelay)
                         }
                     }
                 }

@@ -32,7 +32,7 @@ val Number.attometer get() = Length(toDouble() * SIConstants.kAtto)
 val Number.zeptometer get() = Length(toDouble() * SIConstants.kZepto)
 val Number.yoctometer get() = Length(toDouble() * SIConstants.kYocto)
 
-internal object SILengthConstants {
+object SILengthConstants {
     const val kInchToMeter = 0.0254
     const val kThouToMeter = kInchToMeter * 0.001
     const val kLineToMeter = kInchToMeter * (1.0 / 12.0)

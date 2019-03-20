@@ -32,8 +32,8 @@ object LiveDashboard {
             visionTargetEntry.setStringArray(
                 value.map {
                     jsonObject(
-                        "x" to it.translation.x.meter,
-                        "y" to it.translation.y.meter,
+                        "x" to it.translation.x,
+                        "y" to it.translation.y,
                         "angle" to it.rotation.degree
                     ).toString()
                 }.toTypedArray()
