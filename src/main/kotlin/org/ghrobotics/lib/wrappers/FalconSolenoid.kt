@@ -7,7 +7,7 @@ import kotlin.properties.Delegates
 /**
  * Interface for both double- and single-solenoids.
  */
-interface TSolenoid {
+interface FalconSolenoid {
     enum class State {
         Forward,
         Reverse,
@@ -21,15 +21,15 @@ interface TSolenoid {
  * Single-acting solenoid with only one PCM Solenoid channel.
  * This type of solenoid can only be on or off.
  */
-class TSingleSolenoid(channel: Int, module: Int? = null) : TSolenoid {
+class FalconSingleSolenoid(channel: Int, module: Int? = null) : FalconSolenoid {
     private val wpiSolenoid: Solenoid = if(module == null) Solenoid(channel) else Solenoid(module, channel)
 
     // Set the solenoid's position. Forward -> true, Reverse -> false
     // If the solenoid is set to 'Off', the state is not changed.
-    override var state: TSolenoid.State by Delegates.observable(TSolenoid.State.Reverse) {_, _, newValue ->
+    override var state: FalconSolenoid.State by Delegates.observable(FalconSolenoid.State.Reverse) { _, _, newValue ->
         when (newValue) {
-            TSolenoid.State.Forward -> wpiSolenoid.set(true)
-            TSolenoid.State.Reverse -> wpiSolenoid.set(false)
+            FalconSolenoid.State.Forward -> wpiSolenoid.set(true)
+            FalconSolenoid.State.Reverse -> wpiSolenoid.set(false)
             else -> Unit
         }
     }
@@ -40,18 +40,18 @@ class TSingleSolenoid(channel: Int, module: Int? = null) : TSolenoid {
  * This type of solenoid can be forward (Forward channel is active), reverse (Reverse channel is active),
  * or off (Neither of the two channels are active).
  */
-class TDoubleSolenoid(forwardChannel: Int, reverseChannel: Int, module: Int? = null) : TSolenoid {
+class FalconDoubleSolenoid(forwardChannel: Int, reverseChannel: Int, module: Int? = null) : FalconSolenoid {
 
     private val wpiSolenoid: DoubleSolenoid =
             if (module == null) DoubleSolenoid(forwardChannel, reverseChannel)
             else DoubleSolenoid(module, forwardChannel, reverseChannel)
 
     // Set the solenoid to the desired position
-    override var state: TSolenoid.State by Delegates.observable(TSolenoid.State.Off) { _, _, newValue ->
+    override var state: FalconSolenoid.State by Delegates.observable(FalconSolenoid.State.Off) { _, _, newValue ->
         when (newValue) {
-            TSolenoid.State.Forward -> wpiSolenoid.set(DoubleSolenoid.Value.kForward)
-            TSolenoid.State.Reverse -> wpiSolenoid.set(DoubleSolenoid.Value.kReverse)
-            TSolenoid.State.Off -> wpiSolenoid.set(DoubleSolenoid.Value.kOff)
+            FalconSolenoid.State.Forward -> wpiSolenoid.set(DoubleSolenoid.Value.kForward)
+            FalconSolenoid.State.Reverse -> wpiSolenoid.set(DoubleSolenoid.Value.kReverse)
+            FalconSolenoid.State.Off -> wpiSolenoid.set(DoubleSolenoid.Value.kOff)
         }
     }
 }
