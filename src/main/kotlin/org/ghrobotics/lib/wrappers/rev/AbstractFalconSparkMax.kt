@@ -14,9 +14,10 @@ import kotlin.properties.Delegates.observable
  * REV Robotics Spark Max - Brushless mode
  */
 
-abstract class BrushlessSparkMax<T : SIValue<T>> (
-        id: Int
-) : CANSparkMax(id, MotorType.kBrushless), FalconMotor<T> {
+abstract class AbstractFalconSparkMax<T : SIValue<T>> (
+        id: Int,
+        type: MotorType
+) : CANSparkMax(id, type), FalconMotor<T> {
 
     // The PID Controller for this spark max
     val pidController : CANPIDController by lazy {
@@ -33,6 +34,30 @@ abstract class BrushlessSparkMax<T : SIValue<T>> (
     var kI by observable(0.0) {_, _, newVal -> pidController.setI(newVal, 0)}
     var kD by observable(0.0) {_, _, newVal -> pidController.setD(newVal, 0)}
     var kF by observable(0.0) {_, _, newVal -> pidController.setFF(newVal, 0)}
+    abstract var motionCruiseVelocity: Velocity<T>
+    abstract var motionAcceleration: Acceleration<T>
+    abstract var allowedClosedLoopError: T
+
+    // Voltage Ramping
+    var openLoopRamp by observable(0.second) { _, _, newValue ->
+        setOpenLoopRampRate(newValue.value)
+    }
+    val closedLoopRamp by observable(0.second) { _, _, newValue ->
+        setClosedLoopRampRate(newValue.second)
+    }
+
+    // Voltage compensation
+    var voltageCompensationSaturation : Volt by observable(12.volt) { _, _, newValue ->
+        setVoltageCompensation(voltageCompensationEnabled, newValue)
+    }
+
+    var voltageCompensationEnabled : Boolean by observable(false) { _, _, newValue ->
+        setVoltageCompensation(newValue, voltageCompensationSaturation)
+    }
+
+    private fun setVoltageCompensation(enabled: Boolean, saturation: Volt) {
+        if (enabled) enableVoltageCompensation(saturation.value) else disableVoltageCompensation()
+    }
 
     // Kinda hacky, since SparkMax's don't seem to support disabling current limits other
     // than setting the limit to zero.
@@ -59,8 +84,9 @@ abstract class BrushlessSparkMax<T : SIValue<T>> (
     abstract var sensorPosition: T
     abstract val sensorVelocity: Velocity<T>
 
-    abstract val activeTrajectoryPosition: T
-    abstract val activeTrajectoryVelocity: Velocity<T>
+    fun set(outputVolt: Volt) {
+        set(outputVolt / busVoltage)
+    }
 
     abstract fun set(controlType: ControlType, length: T)
 
