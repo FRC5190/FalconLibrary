@@ -14,7 +14,7 @@ interface FalconSolenoid {
         Off
     }
 
-    var state : State
+    var state: State
 }
 
 /**
@@ -22,7 +22,7 @@ interface FalconSolenoid {
  * This type of solenoid can only be on or off.
  */
 class FalconSingleSolenoid(channel: Int, module: Int? = null) : FalconSolenoid {
-    private val wpiSolenoid: Solenoid = if(module == null) Solenoid(channel) else Solenoid(module, channel)
+    private val wpiSolenoid: Solenoid = if (module == null) Solenoid(channel) else Solenoid(module, channel)
 
     // Set the solenoid's position. Forward -> true, Reverse -> false
     // If the solenoid is set to 'Off', the state is not changed.
