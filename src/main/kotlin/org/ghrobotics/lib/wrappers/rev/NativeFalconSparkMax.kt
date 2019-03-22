@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
 
 class NativeFalconSparkMax(
         id: Int,
-        type: CANSparkMaxLowLevel.MotorType
+        type: CANSparkMaxLowLevel.MotorType = MotorType.kBrushless
 ) : AbstractFalconSparkMax<NativeUnit>(id, type) {
     override var allowedClosedLoopError by Delegates.observable(0.nativeUnits) { _, _, newValue ->
         pidController.setSmartMotionAllowedClosedLoopError(newValue.value, 0)
@@ -45,12 +45,10 @@ class NativeFalconSparkMax(
     }
 
     override fun set(controlType: ControlType, velocity: Velocity<NativeUnit>, outputPercent: Double) {
-        pidController.ff = outputPercent
-        set(controlType, velocity)
+        pidController.setReference(velocity.value, controlType, 0, outputPercent)
     }
 
     override fun set(controlType: ControlType, length: NativeUnit, outputPercent: Double) {
-        pidController.ff = outputPercent
-        set(controlType, length)
+        pidController.setReference(length.value, controlType, 0, outputPercent)
     }
 }

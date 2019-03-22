@@ -16,7 +16,7 @@ import kotlin.properties.Delegates.observable
 
 abstract class AbstractFalconSparkMax<T : SIValue<T>> (
         id: Int,
-        type: MotorType
+        type: MotorType = MotorType.kBrushless
 ) : CANSparkMax(id, type), FalconMotor<T> {
 
     // The PID Controller for this spark max
