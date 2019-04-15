@@ -37,13 +37,13 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
         wheelVelocities: DifferentialDrive.WheelState,
         wheelVoltages: DifferentialDrive.WheelState
     ) {
-        leftMotor.setVelocityAndArbitraryFeedForward(
+        leftMotor.setVelocity(
             wheelVelocities.left * differentialDrive.wheelRadius,
-            wheelVoltages.left / 12.0
+            wheelVoltages.left
         )
-        rightMotor.setVelocityAndArbitraryFeedForward(
+        rightMotor.setVelocity(
             wheelVelocities.right * differentialDrive.wheelRadius,
-            wheelVoltages.right / 12.0
+            wheelVoltages.right
         )
     }
 }

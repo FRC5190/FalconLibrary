@@ -173,8 +173,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
         leftPercent: Double,
         rightPercent: Double
     ) {
-        leftMotor.percentOutput = leftPercent.coerceIn(-1.0, 1.0)
-        rightMotor.percentOutput = rightPercent.coerceIn(-1.0, 1.0)
+        leftMotor.setDutyCycle(leftPercent.coerceIn(-1.0, 1.0))
+        rightMotor.setDutyCycle(rightPercent.coerceIn(-1.0, 1.0))
     }
 
 
@@ -273,18 +273,18 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"), Differen
         sequential {
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.absoluteValue < kEpsilon
+                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, false)
             +ConditionCommand {
-                leftMotor.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.absoluteValue < kEpsilon
+                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
             }
             +QuasistaticCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
             +ConditionCommand {
-                leftMotor.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.velocity.absoluteValue < kEpsilon
+                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
+                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
             }
             +StepVoltageCharacterizationCommand(this@TankDriveSubsystem, wheelRadius, effectiveWheelBaseRadius, true)
         }

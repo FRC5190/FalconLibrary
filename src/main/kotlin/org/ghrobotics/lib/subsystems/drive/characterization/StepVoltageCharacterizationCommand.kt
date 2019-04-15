@@ -43,8 +43,8 @@ class StepVoltageCharacterizationCommand(
             (driveSubsystem.leftMotor.voltageOutput + driveSubsystem.rightMotor.voltageOutput) / 2.0
 
         val wheelMotion = DifferentialDrive.WheelState(
-            driveSubsystem.leftMotor.velocity,
-            driveSubsystem.rightMotor.velocity
+            driveSubsystem.leftMotor.encoder.velocity,
+            driveSubsystem.rightMotor.encoder.velocity
         )
 
         // Return robot speed in meters per second if linear, radians per second if angular

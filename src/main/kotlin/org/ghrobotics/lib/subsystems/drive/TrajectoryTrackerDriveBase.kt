@@ -6,7 +6,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.derivedunits.*
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.radian
-import org.ghrobotics.lib.wrappers.LinearFalconMotor
+import org.ghrobotics.lib.motors.LinearFalconMotor
 
 /**
  * Just implement this if you want to use the TrajectoryTrackerCommand.
@@ -23,8 +23,8 @@ interface TrajectoryTrackerDriveBase {
 
     @JvmDefault
     fun zeroOutputs() {
-        leftMotor.percentOutput = 0.0
-        rightMotor.percentOutput = 0.0
+        leftMotor.setNeutral()
+        rightMotor.setNeutral()
     }
 }
 
