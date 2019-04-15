@@ -50,4 +50,18 @@ class SimFalconMotor<T : SIUnit<T>> : FalconMotor<T> {
         velocity = 0.0
     }
 
+    override var voltageCompSaturation: Double
+        get() = TODO("not implemented")
+        set(value) {TODO("not implemented")}
+
+    override var motionProfileCruiseVelocity: Double
+        get() = TODO("not implemented")
+        set(value) {TODO("not implemented")}
+
+    override var motionProfileAcceleration: Double
+        get() = TODO("not implemented")
+        set(value) {TODO("not implemented")}
+
+    override var useMotionProfileForPosition = false
+
 }
