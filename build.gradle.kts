@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.detekt.detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.30"
     id("edu.wpi.first.GradleRIO") version "2019.4.1"
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC13"
     maven
@@ -19,7 +19,7 @@ repositories {
 dependencies {
     // Kotlin Standard Library and Coroutines
     compile(kotlin("stdlib"))
-    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.1.1")
+    compile("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.2.0")
 
     // WPILib
     wpi.deps.wpilib().forEach { compile(it) }
