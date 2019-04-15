@@ -18,13 +18,13 @@ class TankEncoderLocalization(
 
     override fun resetInternal(newPosition: Pose2d) {
         super.resetInternal(newPosition)
-        prevLeftEncoder = leftEncoder()
-        prevRightEncoder = rightEncoder()
+        prevLeftEncoder = leftEncoder().value
+        prevRightEncoder = rightEncoder().value
     }
 
     override fun update(deltaHeading: Rotation2d): Pose2d {
-        val newLeftEncoder = leftEncoder()
-        val newRightEncoder = rightEncoder()
+        val newLeftEncoder = leftEncoder().value
+        val newRightEncoder = rightEncoder().value
 
         val deltaLeft = newLeftEncoder - prevLeftEncoder
         val deltaRight = newRightEncoder - prevRightEncoder
