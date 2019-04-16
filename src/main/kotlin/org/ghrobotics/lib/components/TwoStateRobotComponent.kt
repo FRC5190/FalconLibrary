@@ -1,6 +1,7 @@
 package org.ghrobotics.lib.components
 
 import edu.wpi.first.wpilibj.DoubleSolenoid
+import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
 
 @Suppress("FunctionName")
@@ -21,20 +22,16 @@ class TwoStateRobotComponent(
     private val setState: (newState: Boolean) -> Unit
 ) : RobotComponent() {
 
-    private var firstLoop = true
-
     var wantedState = startState
-
-    var currentState = startState
+    var currentState = !startState
         private set
 
     override fun update() {
-        if (firstLoop || currentState != wantedState) {
+        if (currentState != wantedState) {
             currentState = wantedState
             setState(currentState)
-            firstLoop = false
-            transform.updateLocal(
-                localPosition = if (currentState) {
+            transform = Pose3d(
+                translation = if (currentState) {
                     trueStateDisplacement
                 } else {
                     falseStateDisplacement

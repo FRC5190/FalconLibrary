@@ -4,7 +4,8 @@ import org.ghrobotics.lib.mathematics.threedim.geometry.Transform
 
 abstract class RobotComponent {
 
-    open val transform = Transform()
+    var transform = Transform()
+        protected set
 
     var parent: RobotComponent? = null
         private set

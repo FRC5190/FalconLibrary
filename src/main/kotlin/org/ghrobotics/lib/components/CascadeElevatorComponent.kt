@@ -1,15 +1,18 @@
 package org.ghrobotics.lib.components
 
 import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.motors.FalconMotor
 
+/**
+ * Standard cascade elevator with both stages moving at the same time
+ */
 abstract class CascadeElevatorComponent(
     elevatorZero: Vector3,
-    override val elevatorKg: Double
+    final override val elevatorKg: Double
 ) : ElevatorComponent(elevatorZero)
 
-
+/**
+ * Cascade Elevator with a spring attached to delay the second stage when going up (increases max height of elevator)
+ */
 abstract class SpringCascadeElevatorComponent(
     elevatorZero: Vector3,
     private val elevatorSwitchHeight: Double,

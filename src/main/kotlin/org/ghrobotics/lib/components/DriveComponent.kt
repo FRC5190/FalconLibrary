@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.components
 
-import org.ghrobotics.lib.localization.Localization
+import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
 import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
 import org.ghrobotics.lib.mathematics.units.Length
@@ -13,10 +13,6 @@ abstract class DriveComponent(
 
     constructor(drivetrainHeightFromGround: Length) : this(drivetrainHeightFromGround.value)
 
-    abstract val localization: Localization
-
-    override var robotPosition by localization
-
     var wantedState: State = State.Nothing
     var currentState: State = State.Nothing
         private set
@@ -24,10 +20,10 @@ abstract class DriveComponent(
     open fun customizeWantedState(wantedState: State): State = wantedState
 
     override fun update() {
-        val robotPose = localization.robotPosition
-        transform.updateLocal(
-            localPosition = Vector3(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
-            localRotation = Quaternion.fromEulerAngles(robotPose.rotation.radian, 0.0, 0.0)
+        val robotPose = robotPosition
+        transform = Pose3d(
+            Vector3(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
+            Quaternion.fromEulerAngles(robotPose.rotation.radian, 0.0, 0.0)
         )
 
         val wantedState = customizeWantedState(wantedState)

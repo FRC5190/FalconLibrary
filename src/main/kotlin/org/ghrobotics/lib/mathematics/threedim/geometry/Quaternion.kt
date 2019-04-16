@@ -57,6 +57,9 @@ data class Quaternion(
     companion object {
         val kIdentity = Quaternion(0.0, 0.0, 0.0, 1.0)
 
+        /**
+         * Creates a [Quaternion] from Euler Angles in radians
+         */
         fun fromEulerAngles(yaw: Double, pitch: Double, roll: Double): Quaternion {
             val cy = Math.cos(yaw * 0.5)
             val sy = Math.sin(yaw * 0.5)
@@ -70,6 +73,16 @@ data class Quaternion(
                 sy * cp * sr + cy * sp * cr,
                 sy * cp * cr - cy * sp * sr,
                 cy * cp * cr + sy * sp * sr
+            )
+        }
+
+        fun fromAxisAngle(angle: Double, axis: Vector3): Quaternion {
+            val s = Math.sin(angle * 0.5)
+            return Quaternion(
+                axis.x * s,
+                axis.y * s,
+                axis.z * s,
+                Math.cos(angle * 0.5)
             )
         }
     }
