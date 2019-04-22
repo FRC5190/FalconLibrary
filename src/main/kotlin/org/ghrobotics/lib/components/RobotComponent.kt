@@ -4,8 +4,11 @@ import org.ghrobotics.lib.mathematics.threedim.geometry.Transform
 
 abstract class RobotComponent {
 
-    var transform = Transform()
+    var localTransform = Transform()
         protected set
+
+    var worldTransform = Transform()
+        private set
 
     var parent: RobotComponent? = null
         private set
@@ -19,6 +22,10 @@ abstract class RobotComponent {
     }
 
     open fun update() {
+        val parent = this.parent
+        if(parent != null) {
+            worldTransform = parent.worldTransform + localTransform
+        }
         _children.forEach(RobotComponent::update)
     }
 

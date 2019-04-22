@@ -12,7 +12,7 @@ abstract class ElevatorComponent(
 
     override fun update() {
         arbitraryFeedForward = elevatorKg
-        transform = Pose3d(
+        localTransform = Pose3d(
             translation = Vector3(
                 elevatorZero.x,
                 elevatorZero.y,

@@ -25,7 +25,7 @@ abstract class ArmComponent(
 
         arbitraryFeedForward = armKg * Math.cos(position) * experiencedAcceleration
 
-        transform = Pose3d(
+        localTransform = Pose3d(
             armAxleOffset,
             Quaternion.fromAxisAngle(position, armRotationAxis)
         )

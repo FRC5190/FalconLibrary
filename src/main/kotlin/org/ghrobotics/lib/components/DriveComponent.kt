@@ -21,7 +21,7 @@ abstract class DriveComponent(
 
     override fun update() {
         val robotPose = robotPosition
-        transform = Pose3d(
+        localTransform = Pose3d(
             Vector3(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
             Quaternion.fromEulerAngles(robotPose.rotation.radian, 0.0, 0.0)
         )

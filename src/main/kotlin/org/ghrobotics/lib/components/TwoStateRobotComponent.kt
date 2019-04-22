@@ -30,7 +30,7 @@ class TwoStateRobotComponent(
         if (currentState != wantedState) {
             currentState = wantedState
             setState(currentState)
-            transform = Pose3d(
+            localTransform = Pose3d(
                 translation = if (currentState) {
                     trueStateDisplacement
                 } else {
