@@ -1,10 +1,12 @@
 package org.ghrobotics.lib.components
 
+import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
 import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.subsystems.drive.DifferentialTrackerDriveBase
+import org.ghrobotics.lib.utils.DeltaTime
 import org.ghrobotics.lib.utils.Source
 
 abstract class DriveComponent(
@@ -19,13 +21,22 @@ abstract class DriveComponent(
 
     open fun customizeWantedState(wantedState: State): State = wantedState
 
+    private val loopDeltaTime = DeltaTime()
+
     override fun updateState() {
 
+        val dt = loopDeltaTime.updateTime(Timer.getFPGATimestamp())
+
         val robotPose = robotPosition
+
+        val lastLocalTransform = localTransform
+
         localTransform = Pose3d(
             Translation3d(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
             Quaternion.fromEulerAngles(robotPose.rotation.radian, 0.0, 0.0)
         )
+
+        localVelocityTransform = (lastLocalTransform - localTransform) / dt
 
         super.updateState()
     }

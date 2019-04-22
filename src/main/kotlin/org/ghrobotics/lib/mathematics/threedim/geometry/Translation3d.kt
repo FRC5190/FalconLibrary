@@ -17,6 +17,8 @@ data class Translation3d(
     val magnitude get() = Math.sqrt(sqrMagnitude)
     val sqrMagnitude get() = x * x + y * y + z * z
 
+    operator fun unaryMinus() = Translation3d(-x, -y, -z)
+
     operator fun get(componentId: Int) =
         when (componentId) {
             0 -> x
@@ -33,6 +35,8 @@ data class Translation3d(
         )
 
     operator fun times(quaternion: Quaternion) = quaternion.transform(this)
+
+    operator fun times(scalar: Double) = Translation3d(x * scalar, y * scalar, z * scalar)
 
     infix fun epsilonEquals(other: Translation3d) = x epsilonEquals other.x &&
         y epsilonEquals other.y && z epsilonEquals other.z

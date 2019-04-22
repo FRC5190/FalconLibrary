@@ -57,7 +57,7 @@ data class Quaternion(
             )
         }
 
-    fun conjugate() = Quaternion(w, -x, -y, -z)
+    operator fun unaryMinus() = Quaternion(w, -x, -y, -z)
 
     operator fun times(factor: Double) =
         Quaternion(
@@ -91,6 +91,8 @@ data class Quaternion(
             -x * other.z + y * other.w + z * other.x + w * other.y,
             x * other.y - y * other.x + z * other.w + w * other.z
         )
+
+    operator fun div(other: Quaternion) = times(-other)
 
     fun transform(other: Translation3d) =
         Translation3d(

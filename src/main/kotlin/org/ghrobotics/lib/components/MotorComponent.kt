@@ -1,9 +1,7 @@
 package org.ghrobotics.lib.components
 
-import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.motors.FalconMotor
-import org.ghrobotics.lib.utils.DeltaTime
 import org.ghrobotics.lib.utils.Source
 
 abstract class MotorComponent<T : SIUnit<T>> : RobotComponent() {
@@ -18,27 +16,15 @@ abstract class MotorComponent<T : SIUnit<T>> : RobotComponent() {
         private set
     var velocity: Double = 0.0
         private set
-    var acceleration: Double = 0.0
-        private set
 
-    private val loopDeltaTime = DeltaTime()
 
     protected var arbitraryFeedForward: Double = 0.0
 
     open fun customizeWantedState(wantedState: State): State = wantedState
 
     override fun updateState() {
-
-        val dt = loopDeltaTime.updateTime(Timer.getFPGATimestamp())
-
         position = motor.encoder.position
-        val previousVelocity = velocity
         velocity = motor.encoder.velocity
-        acceleration = if (dt <= 0.0) {
-            (velocity - previousVelocity) / dt
-        } else {
-            0.0
-        }
 
         super.updateState()
     }

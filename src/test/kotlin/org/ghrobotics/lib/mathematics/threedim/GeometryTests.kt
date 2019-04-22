@@ -3,7 +3,9 @@ package org.ghrobotics.lib.mathematics.threedim
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
+import org.ghrobotics.lib.mathematics.threedim.geometry.Transform
 import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
+import org.ghrobotics.lib.mathematics.units.millisecond
 import org.junit.Test
 
 class GeometryTests {
@@ -16,6 +18,16 @@ class GeometryTests {
         val three = one * two
 
         assert(Math.toDegrees(three.eulerAngles.x) epsilonEquals 70.0)
+    }
+
+    @Test
+    fun testQuaternionDiv() {
+        val one = Quaternion.fromEulerAngles(Math.toRadians(70.0), 0.0, 0.0)
+        val two = Quaternion.fromEulerAngles(Math.toRadians(25.0), 0.0, 0.0)
+
+        val three = one / two
+
+        assert(Math.toDegrees(three.eulerAngles.x) epsilonEquals 45.0)
     }
 
     @Test
@@ -42,6 +54,24 @@ class GeometryTests {
                 0.5
             )
         )
+    }
+
+    @Test
+    fun testAccelerationTransform() {
+        val armRotation = Quaternion.fromAxisAngle(Math.toRadians(25.0), Translation3d(0.0, 0.0, 1.0))
+
+        val firstState = Transform(
+            Translation3d(0.0, 0.0, 0.0),
+            armRotation
+        )
+        val secondState = Transform(
+            Translation3d(0.0, 1.0, 0.0),
+            armRotation
+        )
+
+        val deltaState = (secondState - firstState) / 20.millisecond.value
+
+        println(deltaState.translation * armRotation)
     }
 
 }
