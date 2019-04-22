@@ -27,8 +27,7 @@ abstract class MotorComponent<T : SIUnit<T>> : RobotComponent() {
 
     open fun customizeWantedState(wantedState: State): State = wantedState
 
-    override fun update() {
-        super.update()
+    override fun updateState() {
 
         val dt = loopDeltaTime.updateTime(Timer.getFPGATimestamp())
 
@@ -41,6 +40,11 @@ abstract class MotorComponent<T : SIUnit<T>> : RobotComponent() {
             0.0
         }
 
+        super.updateState()
+    }
+
+    override fun useState() {
+
         val wantedState = customizeWantedState(wantedState)
         currentState = wantedState
         when (wantedState) {
@@ -52,6 +56,8 @@ abstract class MotorComponent<T : SIUnit<T>> : RobotComponent() {
             )
             is State.CustomState -> wantedState.update(this, arbitraryFeedForward)
         }
+
+        super.useState()
     }
 
     sealed class State {

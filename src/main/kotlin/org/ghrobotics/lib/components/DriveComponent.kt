@@ -2,7 +2,7 @@ package org.ghrobotics.lib.components
 
 import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
-import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
+import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.subsystems.drive.DifferentialTrackerDriveBase
 import org.ghrobotics.lib.utils.Source
@@ -19,12 +19,18 @@ abstract class DriveComponent(
 
     open fun customizeWantedState(wantedState: State): State = wantedState
 
-    override fun update() {
+    override fun updateState() {
+
         val robotPose = robotPosition
         localTransform = Pose3d(
-            Vector3(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
+            Translation3d(robotPose.translation.x, robotPose.translation.y, drivetrainHeightFromGround),
             Quaternion.fromEulerAngles(robotPose.rotation.radian, 0.0, 0.0)
         )
+
+        super.updateState()
+    }
+
+    override fun useState() {
 
         val wantedState = customizeWantedState(wantedState)
         currentState = wantedState
@@ -44,7 +50,7 @@ abstract class DriveComponent(
             is State.CustomState -> wantedState.update()
         }
 
-        super.update()
+        super.useState()
     }
 
     sealed class State {

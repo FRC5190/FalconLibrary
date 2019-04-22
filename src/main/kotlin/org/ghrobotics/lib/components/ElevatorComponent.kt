@@ -1,24 +1,33 @@
 package org.ghrobotics.lib.components
 
 import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
-import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
+import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
 import org.ghrobotics.lib.mathematics.units.Length
 
 abstract class ElevatorComponent(
-    private val elevatorZero: Vector3
+    private val elevatorZero: Translation3d
 ) : MotorComponent<Length>() {
 
     protected abstract val elevatorKg: Double
 
-    override fun update() {
+    override fun updateState() {
+        
         arbitraryFeedForward = elevatorKg
+
+        super.updateState()
+    }
+
+    override fun useState() {
+
         localTransform = Pose3d(
-            translation = Vector3(
+            translation = Translation3d(
                 elevatorZero.x,
                 elevatorZero.y,
                 elevatorZero.z + motor.encoder.position
             )
         )
+
+        super.useState()
     }
 
 }

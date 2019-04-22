@@ -1,12 +1,12 @@
 package org.ghrobotics.lib.components
 
-import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
+import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
 
 /**
  * Standard cascade elevator with both stages moving at the same time
  */
 abstract class CascadeElevatorComponent(
-    elevatorZero: Vector3,
+    elevatorZero: Translation3d,
     final override val elevatorKg: Double
 ) : ElevatorComponent(elevatorZero)
 
@@ -14,7 +14,7 @@ abstract class CascadeElevatorComponent(
  * Cascade Elevator with a spring attached to delay the second stage when going up (increases max height of elevator)
  */
 abstract class SpringCascadeElevatorComponent(
-    elevatorZero: Vector3,
+    elevatorZero: Translation3d,
     private val elevatorSwitchHeight: Double,
     private val elevatorAboveSwitchKg: Double,
     private val elevatorBelowSwitchKg: Double
@@ -23,12 +23,14 @@ abstract class SpringCascadeElevatorComponent(
     final override var elevatorKg: Double = 0.0
         private set
 
-    override fun update() {
+    override fun updateState() {
+
         elevatorKg = if (position >= elevatorSwitchHeight) {
             elevatorAboveSwitchKg
         } else {
             elevatorBelowSwitchKg
         }
-        super.update()
+
+        super.updateState()
     }
 }

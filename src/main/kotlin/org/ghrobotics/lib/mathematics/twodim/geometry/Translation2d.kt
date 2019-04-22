@@ -34,7 +34,7 @@ data class Translation2d constructor(
         y: Length = 0.meter
     ) : this(x.value, y.value)
 
-    // Vector to Translation2d
+    // Vector to Translation3d
     constructor(
         distance: Length = 0.meter,
         rotation: Rotation2d = 0.degree

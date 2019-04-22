@@ -21,12 +21,16 @@ abstract class RobotComponent {
         _children += component
     }
 
-    open fun update() {
+    open fun updateState() {
         val parent = this.parent
-        if(parent != null) {
+        if (parent != null) {
             worldTransform = parent.worldTransform + localTransform
         }
-        _children.forEach(RobotComponent::update)
+        _children.forEach(RobotComponent::updateState)
+    }
+
+    open fun useState() {
+        _children.forEach(RobotComponent::useState)
     }
 
 }

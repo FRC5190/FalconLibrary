@@ -7,7 +7,8 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
  * +Y straight up
  * +Z axis toward viewer
  */
-data class Vector3(
+
+data class Translation3d(
     val x: Double,
     val y: Double,
     val z: Double
@@ -24,8 +25,8 @@ data class Vector3(
             else -> throw IndexOutOfBoundsException()
         }
 
-    operator fun plus(other: Vector3) =
-        Vector3(
+    operator fun plus(other: Translation3d) =
+        Translation3d(
             x + other.x,
             y + other.y,
             z + other.z
@@ -33,10 +34,10 @@ data class Vector3(
 
     operator fun times(quaternion: Quaternion) = quaternion.transform(this)
 
-    infix fun epsilonEquals(other: Vector3) = x epsilonEquals other.x &&
+    infix fun epsilonEquals(other: Translation3d) = x epsilonEquals other.x &&
         y epsilonEquals other.y && z epsilonEquals other.z
 
     companion object {
-        val kZero = Vector3(0.0, 0.0, 0.0)
+        val kZero = Translation3d(0.0, 0.0, 0.0)
     }
 }

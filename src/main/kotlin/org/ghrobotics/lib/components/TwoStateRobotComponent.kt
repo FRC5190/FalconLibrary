@@ -2,13 +2,13 @@ package org.ghrobotics.lib.components
 
 import edu.wpi.first.wpilibj.DoubleSolenoid
 import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
-import org.ghrobotics.lib.mathematics.threedim.geometry.Vector3
+import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
 
 @Suppress("FunctionName")
 fun TwoStateRobotComponent(
     solenoid: DoubleSolenoid,
-    trueStateDisplacement: Vector3,
-    falseStateDisplacement: Vector3
+    trueStateDisplacement: Translation3d,
+    falseStateDisplacement: Translation3d
 ) = TwoStateRobotComponent(
     solenoid.get() == DoubleSolenoid.Value.kForward,
     trueStateDisplacement,
@@ -17,8 +17,8 @@ fun TwoStateRobotComponent(
 
 class TwoStateRobotComponent(
     startState: Boolean,
-    val trueStateDisplacement: Vector3,
-    val falseStateDisplacement: Vector3,
+    val trueStateDisplacement: Translation3d,
+    val falseStateDisplacement: Translation3d,
     private val setState: (newState: Boolean) -> Unit
 ) : RobotComponent() {
 
@@ -26,7 +26,8 @@ class TwoStateRobotComponent(
     var currentState = !startState
         private set
 
-    override fun update() {
+    override fun useState() {
+        
         if (currentState != wantedState) {
             currentState = wantedState
             setState(currentState)
@@ -38,6 +39,7 @@ class TwoStateRobotComponent(
                 }
             )
         }
-        super.update()
+
+        super.useState()
     }
 }
