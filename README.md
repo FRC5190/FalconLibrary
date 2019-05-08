@@ -3,7 +3,7 @@
 
 ## Overview
 
-Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST Robotics Competition. FalconLibrary is the backend for all Team 5190 robots,
+Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST Robotics Competition. FalconLibrary is the backend for all Team 5190 robots.
 
 ### `core`: Platform-agnostic mathematics and units code
 * Two-dimensional parametric and functional splines.
