@@ -14,8 +14,8 @@ Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST R
     * Adaptive Pure Pursuit
     * Feedforward
 * Typesafe units of measure
-        * Quick and easy conversions between all length, velocity, acceleration, electrical units.
-        * Support for Talon SRX native unit length and rotation models.
+    * Quick and easy conversions between all length, velocity, acceleration, electrical units.
+    * Support for Talon SRX native unit length and rotation models.
 
 ### `wpi`: Code specific to the RoboRIO and FIRST Robotics Competition
 * Wrapped WPILib Commands and Subsystems with Kotlin Coroutines asynchronous optimization.
