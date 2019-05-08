@@ -3,39 +3,56 @@
 
 ## Overview
 
-Falcon Library is the backend library that is used on all FRC Team 5190 robots. This library was written in the Kotlin JVM Language. Some features of this library include:
+Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST Robotics Competition. FalconLibrary is the backend for all Team 5190 robots,
 
- * Wrapped WPILib Commands and Subsystems with Kotlin Coroutines asynchronous optimzation.
-
- * High level mathematics for path generation, tracking, custom typesafe units of measure, etc.
-    * Two-dimensional parametric and functional splines.
-    * Arc length of parametric quintic hermite splines evaluated using recursive arc subdivision (from Team 254).
-    * Trajectory generation that respects constraints (i.e. centripetal acceleration, motor voltage).
-    * Custom trajectory followers
-        * Ramsete
-        * Adaptive Pure Pursuit
-        * Feedforward
-    * Typesafe units of measure
+### `core`: Platform-agnostic mathematics and units code
+* Two-dimensional parametric and functional splines.
+* Arc length of parametric quintic hermite splines evaluated using recursive arc subdivision (from Team 254).
+* Trajectory generation that respects constraints (i.e. centripetal acceleration, motor voltage).
+* Custom trajectory followers
+    * Ramsete
+    * Adaptive Pure Pursuit
+    * Feedforward
+* Typesafe units of measure
         * Quick and easy conversions between all length, velocity, acceleration, electrical units.
         * Support for Talon SRX native unit length and rotation models.
 
- * AHRS sensor wrapper for Pigeon IMU and NavX.
+### `wpi`: Code specific to the RoboRIO and FIRST Robotics Competition
+* Wrapped WPILib Commands and Subsystems with Kotlin Coroutines asynchronous optimization.
+* Built-in drive subsystem abstraction with support for arbitrary localization.
+* Custom robot base built on coroutines.
 
- * Tank Drive Subsystem abstraction with built-in odometry and command to follow trajectories.
+### `vendorXXX`: RoboRIO vendor extensions
+* Talon SRX and Spark MAX wrappers that utilize Kotlin properties to set configurations.
+* Custom gyro `Rotation2d` sources.
 
- * Talon SRX wrapper that utilizes Kotlin properties to set configurations.
+## Using FalconLibrary in your project
 
- * Custom robot base with fully implemented state machine and coroutine support.
+Make sure you can retrieve dependencies from JitPack. Add this to your `build.gradle`:
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+```
 
- * Other WPILib wrappers for NetworkTables, etc.
+Under the `dependencies` section of your `build.gradle`, add the specific submodules that you want in your project. All of the submodules are presented below.
+
+```groovy
+compile 'org.ghrobotics:FalconLibrary:core:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:wpi:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:vendorCTRE:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:vendorNAVX:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:vendorREV:2019.5.10'
+```
+
+Alternatively, you can include all submodules at once:
+```groovy
+compile 'org.ghrobotics:FalconLibrary:2019.5.10'
+```
 
 ## Contributing
+You are always welcome to submit a PR if you think that you can contribute something to this library. Remember that this is a FRC-game-agnostic library, so please don't ask for season-specific code to be merged.
 
-This library is open source and we would love to have you contribute code to this repository. Please make sure that before submitting a pull request, your code is formatted according to `ktlint` (already in the project). The Gradle build will fail if all code is not formatted correctly.
-
-To format code automatically, run `./gradlew spotlessApply`. Please build the project locally using `./gradlew build` to make sure everything works before submitting a pull request. 
-
-When adding new features, it is encouraged that these features be game-agnostic. This library is intended to be used for robots that play any game. Also make sure to include unit-tests for any new features.
 
 
 
