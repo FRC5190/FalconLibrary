@@ -13,6 +13,8 @@ plugins {
 subprojects {
     apply {
         plugin("kotlin")
+        plugin("maven")
+        plugin("maven-publish")
     }
     tasks {
         withType<KotlinCompile>().configureEach {
@@ -34,6 +36,7 @@ subprojects {
         "testCompile"("junit", "junit", "4.12")
     }
 }
+
 
 detekt {
     config = files("$rootDir/detekt-config.yml")
