@@ -13,6 +13,8 @@ plugins {
 subprojects {
     apply {
         plugin("kotlin")
+        plugin("maven")
+        plugin("maven-publish")
     }
     tasks {
         withType<KotlinCompile>().configureEach {
@@ -35,17 +37,6 @@ subprojects {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenLocal") {
-            groupId = "org.ghrobotics"
-            artifactId = "FalconLibrary"
-            version = "2019.5.12"
-
-            from(components["java"])
-        }
-    }
-}
 
 detekt {
     config = files("$rootDir/detekt-config.yml")
