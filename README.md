@@ -38,16 +38,16 @@ repositories {
 Under the `dependencies` section of your `build.gradle`, add the specific submodules that you want in your project. All of the submodules are presented below.
 
 ```groovy
-compile 'org.ghrobotics:FalconLibrary:core:2019.5.10'
-compile 'org.ghrobotics:FalconLibrary:wpi:2019.5.10'
-compile 'org.ghrobotics:FalconLibrary:vendorCTRE:2019.5.10'
-compile 'org.ghrobotics:FalconLibrary:vendorNAVX:2019.5.10'
-compile 'org.ghrobotics:FalconLibrary:vendorREV:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:core:2019.5.12'
+compile 'org.ghrobotics:FalconLibrary:wpi:2019.5.12'
+compile 'org.ghrobotics:FalconLibrary:vendorCTRE:2019.5.12'
+compile 'org.ghrobotics:FalconLibrary:vendorNAVX:2019.5.12'
+compile 'org.ghrobotics:FalconLibrary:vendorREV:2019.5.12'
 ```
 
 Alternatively, you can include all submodules at once:
 ```groovy
-compile 'org.ghrobotics:FalconLibrary:2019.5.10'
+compile 'org.ghrobotics:FalconLibrary:2019.5.12'
 ```
 
 ## Contributing
