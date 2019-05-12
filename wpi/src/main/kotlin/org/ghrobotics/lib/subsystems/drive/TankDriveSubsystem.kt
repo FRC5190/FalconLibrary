@@ -170,7 +170,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
     /**
      * Tank drive control
      */
-    fun tankDrive(
+    open fun tankDrive(
         leftPercent: Double,
         rightPercent: Double
     ) {
