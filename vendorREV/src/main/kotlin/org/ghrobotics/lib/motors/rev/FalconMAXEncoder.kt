@@ -13,7 +13,7 @@ class FalconMAXEncoder<T : SIUnit<T>>(
     override val rawPosition: Double get() = canEncoder.position
 
     override fun resetPosition(newPosition: Double) {
-        canEncoder.position = 0.0
+        canEncoder.position = newPosition
     }
 
 }
