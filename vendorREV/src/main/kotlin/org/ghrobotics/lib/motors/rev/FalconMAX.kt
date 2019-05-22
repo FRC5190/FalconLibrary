@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax
 import com.revrobotics.ControlType
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.motors.FalconMotor
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import kotlin.properties.Delegates
 
@@ -64,6 +65,14 @@ class FalconMAX<T : SIUnit<T>>(
             0, arbitraryFeedForward
         )
     }
+    
+    override fun follow(motor: FalconMotor<*>): Boolean = 
+        if(motor is FalconMAX<*>) {
+            canSparkMax.follow(motor.canSparkMax)
+            true
+        } else {
+            super.follow(motor)
+        }
 
     override fun setNeutral() = setDutyCycle(0.0)
 
