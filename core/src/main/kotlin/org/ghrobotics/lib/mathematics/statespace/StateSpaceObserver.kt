@@ -37,14 +37,14 @@ class StateSpaceObserver(
 
     val K = observerCoeffs.K
 
-    var xHat = zeros(numInputs, 1)
+    var xHat = zeros(numStates, 1)
         set(value) {
             validate { value("xhat") { numStates x 1 } }
             field = value
         }
 
     fun reset() {
-        xHat = zeros(numInputs, 1)
+        xHat = zeros(numStates, 1)
     }
 
     fun predict(newU: Matrix<Double>) {

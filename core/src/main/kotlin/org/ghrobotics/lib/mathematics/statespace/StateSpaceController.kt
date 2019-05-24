@@ -70,7 +70,7 @@ class StateSpaceController(
             x("X") { numStates x 1 }
             nextR("r") { numStates x 1 }
         }
-        u = K * (r - x) + Kff * (nextR - plant.A - r)
+        u = K * (r - x) + Kff * (nextR - plant.A * r)
         r = nextR
         capU()
     }
