@@ -1,8 +1,6 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import koma.matrix.Matrix
-import koma.util.validation.validate
-import koma.zeros
+import org.ghrobotics.lib.mathematics.linalg.*
 
 /**
  * Luenberger observers combine predictions from a model and measurements to
@@ -22,41 +20,27 @@ import koma.zeros
  * For more on the underlying math, read
  * https://file.tavsys.net/control/state-space-guide.pdf.
  */
-class StateSpaceObserver(
-    val numStates: Int, val numInputs: Int, val numOutputs: Int,
-    observerCoeffs: StateSpaceObserverCoeffs, val plant: StateSpacePlant
+@Suppress("PrivatePropertyName")
+class StateSpaceObserver<States : `100`, Inputs : `100`, Outputs : `100`>(
+    coeffs: StateSpaceObserverCoeffs<States, Inputs, Outputs>,
+    private val plant: StateSpacePlant<States, Inputs, Outputs>
 ) {
 
-    constructor(observerCoeffs: StateSpaceObserverCoeffs, plant: StateSpacePlant) : this(
-        observerCoeffs.numStates,
-        observerCoeffs.numInputs,
-        observerCoeffs.numOutputs,
-        observerCoeffs,
-        plant
-    )
+    private val states = plant.coeffs.states
 
-    val K = observerCoeffs.K
+    private val K = coeffs.K
 
-    var xHat = zeros(numStates, 1)
-        set(value) {
-            validate { value("xhat") { numStates x 1 } }
-            field = value
-        }
+    var xHat: Vector<States> = zeros(states)
 
     fun reset() {
-        xHat = zeros(numStates, 1)
+        xHat = zeros(states)
     }
 
-    fun predict(newU: Matrix<Double>) {
-        validate { newU("U") { numInputs x 1 } }
+    fun predict(newU: Matrix<Inputs, `1`>) {
         xHat = plant.updateX(xHat, newU)
     }
 
-    fun correct(u: Matrix<Double>, y: Matrix<Double>) {
-        validate {
-            u("U") { numInputs x 1 }
-            y("y") { numOutputs x 1 }
-        }
+    fun correct(u: Matrix<Inputs, `1`>, y: Matrix<Outputs, `1`>) {
         xHat += K * (y - plant.C * xHat - plant.D * u)
     }
 }
