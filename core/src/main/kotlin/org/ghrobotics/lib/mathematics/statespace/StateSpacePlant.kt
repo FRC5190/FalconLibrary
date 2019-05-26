@@ -1,8 +1,6 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import koma.matrix.Matrix
-import koma.util.validation.validate
-import koma.zeros
+import org.ghrobotics.lib.mathematics.linalg.*
 
 /**
  * A plant defined using state-space notation.
@@ -13,51 +11,32 @@ import koma.zeros
  * https://file.tavsys.net/control/state-space-guide.pdf.
  */
 
-class StateSpacePlant(
-    val numStates: Int, val numInputs: Int, val numOutputs: Int,
-    plantCoeffs: StateSpacePlantCoeffs
+@Suppress("PropertyName")
+class StateSpacePlant<States : `100`, Inputs : `100`, Outputs : `100`>(
+    val coeffs: StateSpacePlantCoeffs<States, Inputs, Outputs>
 ) {
 
-    constructor(plantCoeffs: StateSpacePlantCoeffs) : this(
-        plantCoeffs.numStates,
-        plantCoeffs.numInputs,
-        plantCoeffs.numOutputs,
-        plantCoeffs
-    )
+    private val states = coeffs.states
+    private val outputs = coeffs.outputs
 
-    val A = plantCoeffs.A
-    val B = plantCoeffs.B
-    val C = plantCoeffs.C
-    val D = plantCoeffs.D
+    val A = coeffs.A
+    val B = coeffs.B
+    val C = coeffs.C
+    val D = coeffs.D
 
-    var x = zeros(numStates, 1)
-        set(value) {
-            validate { value("X") { numStates x 1 } }
-            field = value
-        }
+    var x: Vector<States> = zeros(states)
+    var y: Vector<Outputs> = zeros(outputs)
 
-    var y = zeros(numOutputs, 1)
-        set(value) {
-            validate { value("Y") { numOutputs x 1 } }
-            field = value
-        }
-
-    fun update(u: Matrix<Double>) {
-        validate { u("U") { numInputs x 1 } }
+    fun update(u: Matrix<Inputs, `1`>) {
         x = updateX(x, u)
         y = updateY(u)
     }
 
-    fun updateX(x: Matrix<Double>, u: Matrix<Double>): Matrix<Double> {
-        validate {
-            x("X") { numStates x 1 }
-            u("U") { numInputs x 1 }
-        }
+    fun updateX(x: Matrix<States, `1`>, u: Matrix<Inputs, `1`>): Matrix<States, `1`> {
         return A * x + B * u
     }
 
-    fun updateY(u: Matrix<Double>): Matrix<Double> {
-        validate { u("U") { numInputs x 1 } }
+    fun updateY(u: Matrix<Inputs, `1`>): Matrix<Outputs, `1`> {
         return C * x + D * u
     }
 }
