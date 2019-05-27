@@ -1,10 +1,7 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.`100`
-import org.ghrobotics.lib.mathematics.linalg.Matrix
-import org.ghrobotics.lib.mathematics.linalg.Nat
-
-data class StateSpacePlantCoeffs<States : `100`, Inputs : `100`, Outputs : `100`>(
+import frc.team4069.keigen.*
+data class StateSpacePlantCoeffs<States : `50`, Inputs : `50`, Outputs : `50`>(
     val states: Nat<States>, val inputs: Nat<Inputs>, val outputs: Nat<Outputs>,
     val A: Matrix<States, States>,
     val B: Matrix<States, Inputs>,

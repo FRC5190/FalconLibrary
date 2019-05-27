@@ -26,7 +26,7 @@ subprojects {
     }
     repositories {
         jcenter()
-        maven { setUrl("http://dl.bintray.com/kyonifer/maven") }
+        maven("https://jitpack.io")
     }
     dependencies {
         "compile"(kotlin("stdlib"))
