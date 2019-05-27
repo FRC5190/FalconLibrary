@@ -1,8 +1,7 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.`100`
-import org.ghrobotics.lib.mathematics.linalg.Matrix
+import frc.team4069.keigen.*
 
-data class StateSpaceObserverCoeffs<States : `100`, Inputs : `100`, Outputs : `100`>(
+data class StateSpaceObserverCoeffs<States : `50`, Inputs : `50`, Outputs : `50`>(
     val K: Matrix<States, Outputs>
 )

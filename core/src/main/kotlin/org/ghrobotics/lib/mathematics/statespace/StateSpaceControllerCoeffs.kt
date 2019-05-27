@@ -1,10 +1,8 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.`100`
-import org.ghrobotics.lib.mathematics.linalg.Matrix
-import org.ghrobotics.lib.mathematics.linalg.Vector
+import frc.team4069.keigen.*
 
-data class StateSpaceControllerCoeffs<States : `100`, Inputs : `100`, Outputs : `100`>(
+data class StateSpaceControllerCoeffs<States : `50`, Inputs : `50`, Outputs : `50`>(
     val K: Matrix<Inputs, States>,
     val Kff: Matrix<Inputs, States>,
     val UMin: Vector<Inputs>,

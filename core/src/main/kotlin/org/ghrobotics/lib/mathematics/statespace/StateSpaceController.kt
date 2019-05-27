@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.*
+import frc.team4069.keigen.*
 
 
 /**
@@ -13,7 +13,7 @@ import org.ghrobotics.lib.mathematics.linalg.*
  * https://file.tavsys.net/control/state-space-guide.pdf.
  */
 @Suppress("PrivatePropertyName")
-class StateSpaceController<States : `100`, Inputs : `100`, Outputs : `100`>(
+class StateSpaceController<States : `50`, Inputs : `50`, Outputs : `50`>(
     coeffs: StateSpaceControllerCoeffs<States, Inputs, Outputs>,
     private val plant: StateSpacePlant<States, Inputs, Outputs>
 ) {
@@ -45,12 +45,12 @@ class StateSpaceController<States : `100`, Inputs : `100`, Outputs : `100`>(
         u = zeros(inputs)
     }
 
-    fun update(x: Matrix<States, `1`>) {
+    fun update(x: Vector<States>) {
         u = K * (r - x) + Kff * (r - plant.A * r)
         capU()
     }
 
-    fun update(nextR: Matrix<States, `1`>, x: Matrix<States, `1`>) {
+    fun update(nextR: Vector<States>, x: Vector<States>) {
         u = K * (r - x) + Kff * (nextR - plant.A * r)
         r = nextR
         capU()

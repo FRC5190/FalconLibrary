@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.*
+import frc.team4069.keigen.*
 
 /**
  * Luenberger observers combine predictions from a model and measurements to
@@ -21,7 +21,7 @@ import org.ghrobotics.lib.mathematics.linalg.*
  * https://file.tavsys.net/control/state-space-guide.pdf.
  */
 @Suppress("PrivatePropertyName")
-class StateSpaceObserver<States : `100`, Inputs : `100`, Outputs : `100`>(
+class StateSpaceObserver<States : `50`, Inputs : `50`, Outputs : `50`>(
     coeffs: StateSpaceObserverCoeffs<States, Inputs, Outputs>,
     private val plant: StateSpacePlant<States, Inputs, Outputs>
 ) {
@@ -40,7 +40,7 @@ class StateSpaceObserver<States : `100`, Inputs : `100`, Outputs : `100`>(
         xHat = plant.updateX(xHat, newU)
     }
 
-    fun correct(u: Matrix<Inputs, `1`>, y: Matrix<Outputs, `1`>) {
+    fun correct(u: Vector<Inputs>, y: Vector<Outputs>) {
         xHat += K * (y - plant.C * xHat - plant.D * u)
     }
 }

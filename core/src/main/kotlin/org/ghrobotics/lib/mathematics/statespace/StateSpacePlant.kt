@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.statespace
 
-import org.ghrobotics.lib.mathematics.linalg.*
+import frc.team4069.keigen.*
 
 /**
  * A plant defined using state-space notation.
@@ -12,7 +12,7 @@ import org.ghrobotics.lib.mathematics.linalg.*
  */
 
 @Suppress("PropertyName")
-class StateSpacePlant<States : `100`, Inputs : `100`, Outputs : `100`>(
+class StateSpacePlant<States : `50`, Inputs : `50`, Outputs : `50`>(
     val coeffs: StateSpacePlantCoeffs<States, Inputs, Outputs>
 ) {
 
@@ -32,11 +32,11 @@ class StateSpacePlant<States : `100`, Inputs : `100`, Outputs : `100`>(
         y = updateY(u)
     }
 
-    fun updateX(x: Matrix<States, `1`>, u: Matrix<Inputs, `1`>): Matrix<States, `1`> {
+    fun updateX(x: Vector<States>, u: Vector<Inputs>): Vector<States> {
         return A * x + B * u
     }
 
-    fun updateY(u: Matrix<Inputs, `1`>): Matrix<Outputs, `1`> {
+    fun updateY(u: Vector<Inputs>): Vector<Outputs> {
         return C * x + D * u
     }
 }
