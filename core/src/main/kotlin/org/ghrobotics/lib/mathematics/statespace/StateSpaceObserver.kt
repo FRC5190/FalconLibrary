@@ -21,7 +21,7 @@ import frc.team4069.keigen.*
  * https://file.tavsys.net/control/state-space-guide.pdf.
  */
 @Suppress("PrivatePropertyName")
-class StateSpaceObserver<States : `50`, Inputs : `50`, Outputs : `50`>(
+class StateSpaceObserver<States : Num, Inputs : Num, Outputs : Num>(
     coeffs: StateSpaceObserverCoeffs<States, Inputs, Outputs>,
     private val plant: StateSpacePlant<States, Inputs, Outputs>
 ) {

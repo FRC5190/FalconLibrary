@@ -12,7 +12,7 @@ import frc.team4069.keigen.*
  */
 
 @Suppress("PropertyName")
-class StateSpacePlant<States : `50`, Inputs : `50`, Outputs : `50`>(
+class StateSpacePlant<States : Num, Inputs : Num, Outputs : Num>(
     val coeffs: StateSpacePlantCoeffs<States, Inputs, Outputs>
 ) {
 
