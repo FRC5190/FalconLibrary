@@ -1,8 +1,8 @@
 package org.ghrobotics.lib.localization
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
-import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.utils.Source
 
 class TankEncoderLocalization(

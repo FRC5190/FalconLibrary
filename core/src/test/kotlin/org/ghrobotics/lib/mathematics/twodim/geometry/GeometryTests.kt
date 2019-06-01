@@ -1,7 +1,5 @@
-package org.ghrobotics.lib.mathematics.twodim
+package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.junit.Test
 

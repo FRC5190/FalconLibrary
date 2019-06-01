@@ -33,6 +33,6 @@ class TransformTests {
 
         Assert.assertEquals(0.0, globalRobotPose.translation.x, kEpsilon)
         Assert.assertEquals(8.0, globalRobotPose.translation.y, kEpsilon)
-        Assert.assertEquals((-180).degree, globalRobotPose.rotation)
+        Assert.assertEquals((-180).degree.toRotation2d(), globalRobotPose.rotation)
     }
 }

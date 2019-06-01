@@ -5,8 +5,8 @@ import com.revrobotics.CANSparkMax
 import com.revrobotics.ControlType
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
-import org.ghrobotics.lib.motors.FalconMotor
 import org.ghrobotics.lib.motors.AbstractFalconMotor
+import org.ghrobotics.lib.motors.FalconMotor
 import kotlin.properties.Delegates
 
 class FalconMAX<T : SIUnit<T>>(

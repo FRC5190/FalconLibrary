@@ -39,7 +39,7 @@ val DefaultTrajectoryGenerator = TrajectoryGenerator(
 class TrajectoryGenerator(
     val kMaxDx: Length,
     val kMaxDy: Length,
-    val kMaxDTheta: Rotation2d
+    val kMaxDTheta: UnboundedRotation
 ) {
 
     val baseline = generateTrajectory(

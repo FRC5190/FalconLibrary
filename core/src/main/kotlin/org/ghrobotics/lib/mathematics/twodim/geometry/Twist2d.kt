@@ -13,26 +13,45 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 import kotlin.math.absoluteValue
 
 class Twist2d constructor(
     val dx: Double,
     val dy: Double,
-    val dTheta: Rotation2d
+    val dTheta: Double
 ) {
+
+    constructor(
+        dx: Double,
+        dy: Double,
+        dTheta: UnboundedRotation
+    ) : this(dx, dy, dTheta.toRotation2d().value)
 
     constructor(
         dx: Length,
         dy: Length,
         dTheta: Rotation2d
+    ) : this(dx.value, dy.value, dTheta.value)
+
+    constructor(
+        dx: Double,
+        dy: Double,
+        dTheta: Rotation2d
+    ) : this(dx, dy, dTheta.value)
+
+
+    constructor(
+        dx: Length,
+        dy: Length,
+        dTheta: UnboundedRotation
     ) : this(dx.value, dy.value, dTheta)
 
     val norm get() = if (dy == 0.0) dx.absoluteValue else Math.hypot(dx, dy)
 
     val asPose: Pose2d
         get() {
-            val dTheta = this.dTheta.radian
+            val dTheta = this.dTheta
             val sinTheta = Math.sin(dTheta)
             val cosTheta = Math.cos(dTheta)
 

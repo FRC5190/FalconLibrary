@@ -2,7 +2,8 @@ package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.utils.Source
 import kotlin.reflect.KProperty

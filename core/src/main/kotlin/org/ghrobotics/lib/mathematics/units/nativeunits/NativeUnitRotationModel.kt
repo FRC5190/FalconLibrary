@@ -1,10 +1,10 @@
 package org.ghrobotics.lib.mathematics.units.nativeunits
 
-import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 
 class NativeUnitRotationModel(
     nativeUnitsPerRotation: NativeUnit
-) : NativeUnitModel<Rotation2d>(Rotation2d.kZero) {
+) : NativeUnitModel<UnboundedRotation>(UnboundedRotation.kZero) {
 
     private val nativeUnitsPerRotation = nativeUnitsPerRotation.value
 

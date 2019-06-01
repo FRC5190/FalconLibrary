@@ -2,6 +2,7 @@ package org.ghrobotics.lib.mathematics
 
 
 import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.nativeunits.*
 import org.junit.Test
 
@@ -50,5 +51,11 @@ class UnitTest {
     fun testKgToPound() {
         val kg = 2.kilogram
         assert(kg.lb epsilonEquals 4.409248840367555)
+    }
+
+    @Test
+    fun testUnboundedRotationUnits() {
+        val speed = 250.radian.velocity
+        assert(speed.value epsilonEquals 250.0)
     }
 }

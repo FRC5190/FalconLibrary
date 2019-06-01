@@ -4,10 +4,10 @@ import org.ghrobotics.lib.mathematics.units.*
 
 val <T : SIValue<T>> T.velocity: Velocity<T> get() = Velocity(value, this)
 val Length.velocity: LinearVelocity get() = Velocity(value, this)
-val Rotation2d.velocity: AngularVelocity get() = Velocity(value, this)
+val UnboundedRotation.velocity: AngularVelocity get() = Velocity(value, this)
 
 typealias LinearVelocity = Velocity<Length>
-typealias AngularVelocity = Velocity<Rotation2d>
+typealias AngularVelocity = Velocity<UnboundedRotation>
 
 private val meterToFeet = 1.meter.feet
 private val meterToInches = 1.meter.inch

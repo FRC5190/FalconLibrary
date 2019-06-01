@@ -16,8 +16,7 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
-import org.ghrobotics.lib.mathematics.units.degree
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.absoluteValue
@@ -26,13 +25,24 @@ import kotlin.math.absoluteValue
 
 data class Pose2d(
     val translation: Translation2d = Translation2d(),
-    val rotation: Rotation2d = 0.degree
+    val rotation: Rotation2d = Rotation2d(0.0)
 ) : VaryInterpolatable<Pose2d> {
 
     constructor(
         x: Length,
         y: Length,
-        rotation: Rotation2d = 0.degree
+        rotation: Rotation2d = Rotation2d(0.0)
+    ) : this(Translation2d(x, y), rotation)
+
+    constructor(
+        translation: Translation2d = Translation2d(),
+        rotation: UnboundedRotation
+    ) : this(translation, rotation.toRotation2d())
+
+     constructor(
+        x: Length,
+        y: Length,
+        rotation: UnboundedRotation
     ) : this(Translation2d(x, y), rotation)
 
     val twist: Twist2d
@@ -73,7 +83,7 @@ data class Pose2d(
     fun isCollinear(other: Pose2d): Boolean {
         if (!rotation.isParallel(other.rotation)) return false
         val twist = (-this + other).twist
-        return twist.dy epsilonEquals 0.0 && twist.dTheta.value epsilonEquals 0.0
+        return twist.dy epsilonEquals 0.0 && twist.dTheta epsilonEquals 0.0
     }
 
     override fun interpolate(endValue: Pose2d, t: Double): Pose2d {
