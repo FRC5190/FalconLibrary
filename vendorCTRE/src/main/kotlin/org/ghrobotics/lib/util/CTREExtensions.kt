@@ -1,7 +1,7 @@
 
 import com.ctre.phoenix.CANifier
 import com.ctre.phoenix.sensors.PigeonIMU
-import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.utils.Source
 import java.awt.Color
@@ -14,4 +14,4 @@ fun CANifier.setLEDOutput(r: Int, g: Int, b: Int) {
     setLEDOutput(b * (1.0 / 255.0), CANifier.LEDChannel.LEDChannelC)
 }
 
-fun PigeonIMU.asSource(): Source<Rotation2d> = { fusedHeading.degree }
+fun PigeonIMU.asSource(): Source<UnboundedRotation> = { fusedHeading.degree }

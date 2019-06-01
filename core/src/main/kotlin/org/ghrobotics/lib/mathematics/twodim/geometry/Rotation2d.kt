@@ -1,16 +1,15 @@
-package org.ghrobotics.lib.mathematics.units
+package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
 
-val Number.radian get() = Rotation2d(toDouble())
-val Number.degree get() = Math.toRadians(toDouble()).radian
+class Rotation2d {
 
-class Rotation2d : SIUnit<Rotation2d> {
-
-    override val value: Double
+    val value: Double
     val cos: Double
     val sin: Double
+
+    constructor() : this(0.0)
 
     constructor(value: Double) : this(Math.cos(value), Math.sin(value), true)
 
@@ -31,12 +30,17 @@ class Rotation2d : SIUnit<Rotation2d> {
         value = Math.atan2(sin, cos)
     }
 
-    val radian get() = value // should be between -PI and PI already. // % (Math.PI * 2)
+    val radian get() = value
     val degree get() = Math.toDegrees(value)
 
     fun isParallel(rotation: Rotation2d) = (this - rotation).radian epsilonEquals 0.0
 
-    override fun plus(other: Rotation2d): Rotation2d {
+    operator fun minus(other: Rotation2d) = plus(-other)
+    operator fun unaryMinus() = Rotation2d(-value)
+
+    operator fun times(other: Double) = Rotation2d(value * other)
+
+    operator fun plus(other: Rotation2d): Rotation2d {
         return Rotation2d(
             cos * other.cos - sin * other.sin,
             cos * other.sin + sin * other.cos,
@@ -44,16 +48,11 @@ class Rotation2d : SIUnit<Rotation2d> {
         )
     }
 
-    override fun minus(other: Rotation2d) = plus(-other)
-
-    override fun createNew(newValue: Double) = Rotation2d(newValue)
-
-    override fun equals(other: Any?) = other is Rotation2d && this.value epsilonEquals other.value
-
-    override fun hashCode() = this.value.hashCode()
+    override fun equals(other: Any?): Boolean {
+        return other is Rotation2d && other.value epsilonEquals value
+    }
 
     companion object {
-        val kZero = Rotation2d(0.0)
-        val kRotation = 360.degree
+        fun fromDegrees(x: Double) = Rotation2d(Math.toRadians(x))
     }
 }

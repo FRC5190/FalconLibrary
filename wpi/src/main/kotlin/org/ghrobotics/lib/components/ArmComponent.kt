@@ -4,12 +4,12 @@ import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
 import org.ghrobotics.lib.mathematics.threedim.geometry.Transform
 import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
-import org.ghrobotics.lib.mathematics.units.Rotation2d
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 
 abstract class ArmComponent(
     val armAxleOffset: Translation3d,
     val armRotationAxis: Translation3d
-) : MotorComponent<Rotation2d>() {
+) : MotorComponent<UnboundedRotation>() {
 
     abstract val armKg: Double
 

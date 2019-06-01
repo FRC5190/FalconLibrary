@@ -15,8 +15,6 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
-import org.ghrobotics.lib.mathematics.units.degree
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
@@ -37,7 +35,7 @@ data class Translation2d constructor(
     // Vector to Translation3d
     constructor(
         distance: Length = 0.meter,
-        rotation: Rotation2d = 0.degree
+        rotation: Rotation2d = Rotation2d()
     ) : this(distance * rotation.cos, distance * rotation.sin)
 
     val norm get() = Math.hypot(x, y)

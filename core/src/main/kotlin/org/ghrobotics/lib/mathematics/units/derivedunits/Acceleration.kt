@@ -1,16 +1,16 @@
 package org.ghrobotics.lib.mathematics.units.derivedunits
 
 import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIValue
 import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 
 val <T : SIValue<T>> T.acceleration: Acceleration<T> get() = Acceleration(value, this)
 val Length.acceleration: LinearAcceleration get() = Acceleration(value, this)
-val Rotation2d.acceleration: AngularAcceleration get() = Acceleration(value, this)
+val UnboundedRotation.acceleration: AngularAcceleration get() = Acceleration(value, this)
 
 typealias LinearAcceleration = Acceleration<Length>
-typealias AngularAcceleration = Acceleration<Rotation2d>
+typealias AngularAcceleration = Acceleration<UnboundedRotation>
 
 class Acceleration<T : SIValue<T>>(
     override val value: Double,

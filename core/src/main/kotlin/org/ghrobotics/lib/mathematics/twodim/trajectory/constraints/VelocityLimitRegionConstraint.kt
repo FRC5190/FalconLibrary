@@ -13,8 +13,8 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
 
 class VelocityLimitRegionConstraint internal constructor(
