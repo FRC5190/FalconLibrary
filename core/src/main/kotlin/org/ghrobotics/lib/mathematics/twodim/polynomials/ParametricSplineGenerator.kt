@@ -35,7 +35,7 @@ object ParametricSplineGenerator {
         var t = 0.0
         while (t < t1) {
             val nextTime = t + dt / kMinSampleSize
-            rv += getSegmentArc(s, t, nextTime, maxDx, maxDy, maxDTheta.toRotation2d())
+            rv += getSegmentArc(s, t, nextTime, maxDx, maxDy, maxDTheta.value)
             t = nextTime
         }
         return rv
@@ -64,7 +64,7 @@ object ParametricSplineGenerator {
         t1: Double,
         maxDx: Double,
         maxDy: Double,
-        maxDTheta: Rotation2d
+        maxDTheta: Double
     ): Array<Pose2dWithCurvature> {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)
@@ -72,7 +72,7 @@ object ParametricSplineGenerator {
         val r1 = s.getHeading(t1)
         val transformation = Pose2d((p1 - p0) * -r0, r1 + -r0)
         val twist = transformation.twist
-        return if (twist.dy > maxDy || twist.dx > maxDx || twist.dTheta > maxDTheta.value) {
+        return if (twist.dy > maxDy || twist.dx > maxDx || twist.dTheta > maxDTheta) {
             getSegmentArc(s, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta) +
                 getSegmentArc(s, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
         } else {
