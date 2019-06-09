@@ -1,7 +1,7 @@
 package org.ghrobotics.lib.subsystems.drive
 
-import org.ghrobotics.lib.commands.FalconCommand
-import org.ghrobotics.lib.commands.FalconSubsystem
+import edu.wpi.first.wpilibj.experimental.command.NotifierCommand
+import edu.wpi.first.wpilibj.experimental.command.Subsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
@@ -19,29 +19,13 @@ import org.ghrobotics.lib.utils.Source
  * @param trajectorySource Source that contains the trajectory to follow.
  */
 class TrajectoryTrackerCommand(
-    driveSubsystem: FalconSubsystem,
+    driveSubsystem: Subsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
     val trajectorySource: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
     val dt: Time = 20.millisecond
-) : FalconCommand(driveSubsystem) {
-
-    private var trajectoryFinished = false
-
-    init {
-        finishCondition += { trajectoryFinished }
-    }
-
-    /**
-     * Reset the trajectory follower with the new trajectory.
-     */
-    override suspend fun initialize() {
-        trajectoryTracker.reset(trajectorySource())
-        trajectoryFinished = false
-        LiveDashboard.isFollowingPath = true
-    }
-
-    override suspend fun execute() {
+) : NotifierCommand(
+    Runnable {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
 
         val referencePoint = trajectoryTracker.referencePoint
@@ -53,15 +37,26 @@ class TrajectoryTrackerCommand(
             LiveDashboard.pathY = referencePose.translation.y / SILengthConstants.kFeetToMeter
             LiveDashboard.pathHeading = referencePose.rotation.radian
         }
+    },
+    dt.value,
+    driveSubsystem
+) {
 
-        trajectoryFinished = trajectoryTracker.isFinished
+    /**
+     * Reset the trajectory follower with the new trajectory.
+     */
+    override fun initialize() {
+        trajectoryTracker.reset(trajectorySource())
+        LiveDashboard.isFollowingPath = true
     }
 
     /**
      * Make sure that the drivetrain is stopped at the end of the command.
      */
-    override suspend fun dispose() {
+    override fun end(interrupted: Boolean) {
         driveBase.zeroOutputs()
         LiveDashboard.isFollowingPath = false
     }
+
+    override fun isFinished() = trajectoryTracker.isFinished
 }
