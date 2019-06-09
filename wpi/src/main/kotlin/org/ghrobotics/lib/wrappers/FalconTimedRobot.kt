@@ -1,5 +1,6 @@
 package org.ghrobotics.lib.wrappers
 
+import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.FalconSubsystemHandler
@@ -11,7 +12,9 @@ abstract class FalconTimedRobot {
     var emergencyActive = false
         protected set
 
-    private inner class WpiTimedRobot : TimedRobot() {
+    val wrappedValue = WpiTimedRobot()
+
+    inner class WpiTimedRobot : TimedRobot() {
         override fun robotInit() {
             this@FalconTimedRobot.robotInit()
             FalconSubsystemHandler.lateInit()
@@ -74,5 +77,11 @@ abstract class FalconTimedRobot {
     fun recoverFromEmergency() {
         emergencyReadySystems.forEach { it.recoverFromEmergency() }
         emergencyActive = false
+    }
+
+    companion object {
+        fun startRobot(robot: () -> FalconTimedRobot) {
+            RobotBase.startRobot { robot().wrappedValue }
+        }
     }
 }
