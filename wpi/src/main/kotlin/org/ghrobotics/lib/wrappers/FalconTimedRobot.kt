@@ -2,6 +2,7 @@ package org.ghrobotics.lib.wrappers
 
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.experimental.command.CommandScheduler
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.FalconSubsystemHandler
 import org.ghrobotics.lib.subsystems.EmergencyHandleable
@@ -37,6 +38,7 @@ abstract class FalconTimedRobot {
 
         override fun robotPeriodic() {
             this@FalconTimedRobot.robotPeriodic()
+            CommandScheduler.getInstance().run()
         }
 
         override fun autonomousPeriodic() {
