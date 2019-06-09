@@ -1,4 +1,4 @@
-package org.ghrobotics.lib.utils
+package org.ghrobotics.lib.wrappers
 
 import edu.wpi.first.hal.NotifierJNI
 import edu.wpi.first.wpilibj.Timer
