@@ -10,6 +10,7 @@ import kotlin.properties.Delegates.observable
  *  @param groupType the type of command group
  *  @param commands the commands the group will run
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class FalconCommandGroup(
     private val groupType: GroupType,
     private val commands: List<Command>

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Subsystem
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicLong
 
+@Deprecated("Old WPILib Command architecture is now deprecated")
 internal object SubsystemHandler {
 
     private val subsystems = CopyOnWriteArrayList<FalconSubsystem>()
@@ -26,10 +27,13 @@ internal object SubsystemHandler {
     fun zeroOutputs() = subsystems.forEach { it.zeroOutputs() }
 }
 
+
+
 /**
  *  Kotlin Wrapper for [WPI's Subsystem][Subsystem]
  *  @param name the name of the subsystem
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 abstract class FalconSubsystem(name: String? = null) {
     companion object {
         private val subsystemId = AtomicLong()

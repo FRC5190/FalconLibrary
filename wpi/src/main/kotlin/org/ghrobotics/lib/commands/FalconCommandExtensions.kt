@@ -15,12 +15,14 @@ import org.ghrobotics.lib.utils.Source
 /**
  * Creates a command group builder [block] that will run all commands sequentially
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 fun sequential(block: BasicCommandGroupBuilder.() -> Unit) =
     commandGroup(FalconCommandGroup.GroupType.SEQUENTIAL, block)
 
 /**
  * Creates a command group builder [block] that will run all commands in parallel
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 fun parallel(block: BasicCommandGroupBuilder.() -> Unit) =
     commandGroup(FalconCommandGroup.GroupType.PARALLEL, block)
 
@@ -30,11 +32,12 @@ private fun commandGroup(type: FalconCommandGroup.GroupType, block: BasicCommand
 /**
  * Creates a state command group builder [block] that will run commands with the matching [state]
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 fun <T> stateCommandGroup(state: Source<T>, block: StateCommandGroupBuilder<T>.() -> Unit) =
     StateCommandGroupBuilder(state).apply(block).build()
 
 // Builders
-
+@Deprecated("Old WPILib Command architecture is now deprecated")
 interface CommandGroupBuilder {
     /**
      * Creates the command group
@@ -45,6 +48,7 @@ interface CommandGroupBuilder {
 /**
  * Creates a [Falcon Command Group][FalconCommandGroup] with the given [type]
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class BasicCommandGroupBuilder(private val type: FalconCommandGroup.GroupType) :
     CommandGroupBuilder {
     private val commands = mutableListOf<FalconCommand>()
@@ -60,6 +64,7 @@ class BasicCommandGroupBuilder(private val type: FalconCommandGroup.GroupType) :
 /**
  * Creates a [Falcon State Command Group][FalconCommandGroup] with the given [state]
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class StateCommandGroupBuilder<T>(private val state: Source<T>) :
     CommandGroupBuilder {
     private val stateMap = mutableMapOf<T, FalconCommand>()
