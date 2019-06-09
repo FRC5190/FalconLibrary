@@ -1,24 +1,18 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.Notifier
-import org.ghrobotics.lib.commands.ConditionCommand
-import org.ghrobotics.lib.commands.FalconCommandGroup
+import edu.wpi.first.wpilibj.experimental.command.WaitUntilCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
-import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.localization.Localization
-import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
-import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.SILengthConstants
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.millisecond
-import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
-import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -29,7 +23,7 @@ import kotlin.math.withSign
 /**
  * Represents a standard tank drive subsystem
  */
-abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
+abstract class TankDriveSubsystem : FalconSubsystem(),
     DifferentialTrackerDriveBase {
 
     private var quickStopAccumulator = 0.0
@@ -44,9 +38,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
         // Ensure localization starts at (0,0)
         localization.reset()
         // Start a notifier loop to constantly update localization at 100hz
-        Notifier {
-            localization.update()
-        }.startPeriodic(1.0 / 100.0)
+        Notifier { localization.update() }.startPeriodic(1.0 / 100.0)
     }
 
     /**
@@ -261,54 +253,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param region Source with the region to check if the robot is in.
      */
     fun withinRegion(region: Source<Rectangle2d>) =
-        ConditionCommand { region().contains(robotPosition.translation) }
-
-
-    // DRIVE CHARACTERIZATION
-
-    /**
-     * Characterizes the drivetrain and prints out CSV data to the console.
-     * All linear and angular Kv and Ka parameters can be found by calling this method.
-     */
-    open fun characterizeDrive(wheelRadius: Length, effectiveWheelBaseRadius: Length): FalconCommandGroup =
-        sequential {
-            +QuasistaticCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                false
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +StepVoltageCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                false
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +QuasistaticCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                true
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +StepVoltageCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                true
-            )
-        }
+        WaitUntilCommand { region().contains(robotPosition.translation) }
 
     companion object {
         const val kQuickStopThreshold = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopThreshold
