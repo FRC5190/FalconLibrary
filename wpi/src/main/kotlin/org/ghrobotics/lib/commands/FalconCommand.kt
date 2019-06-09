@@ -16,6 +16,7 @@ import kotlin.properties.Delegates.observable
  *  Kotlin Wrapper for [WPI's Command][Command]
  *  @param requiredSubsystems subsystems this command requires in order to run
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 abstract class FalconCommand(
     requiredSubsystems: Iterable<FalconSubsystem>
 ) {

@@ -10,6 +10,7 @@ import kotlin.properties.Delegates.observable
 /**
  * Command will end the moment it begins
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 abstract class InstantCommand : FalconCommand() {
     init {
         executeFrequency = 0
@@ -20,6 +21,7 @@ abstract class InstantCommand : FalconCommand() {
 /**
  * Runs [runnable] once and ends the command when its done
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class InstantRunnableCommand(private val runnable: suspend () -> Unit) : InstantCommand() {
     override suspend fun initialize() = runnable()
 }
@@ -29,6 +31,7 @@ class InstantRunnableCommand(private val runnable: suspend () -> Unit) : Instant
  * @param exitCondition command will end when this is true
  * @param runnableFrequency command will run at the this frequency
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class PeriodicRunnableCommand(
     private val runnable: suspend () -> Unit,
     exitCondition: BooleanSource,
@@ -46,6 +49,7 @@ class PeriodicRunnableCommand(
  * Waits until a condition is true
  * @param condition command will end when this is true
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class ConditionCommand(
     condition: BooleanSource
 ) : FalconCommand() {
@@ -59,6 +63,7 @@ class ConditionCommand(
  * Waits for a given amount of time
  * @param delaySource the time to wait
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 
     /**
@@ -79,6 +84,7 @@ class DelayCommand(private val delaySource: Source<Time>) : FalconCommand() {
 /**
  * Empty as empty can be
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(requiredSubsystems.asIterable()) {
     init {
         executeFrequency = 0
@@ -90,6 +96,7 @@ class EmptyCommand(vararg requiredSubsystems: FalconSubsystem) : FalconCommand(r
  * @param onTrue ran when [condition] is true
  * @param onFalse ran when [condition] is false
  */
+@Deprecated("Old WPILib Command architecture is now deprecated")
 class ConditionalCommand(
     val condition: BooleanSource,
     val onTrue: FalconCommand?,
