@@ -61,8 +61,6 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
     private val changeOn = mutableListOf<HIDControlListener>()
     private val changeOff = mutableListOf<HIDControlListener>()
 
-    @Deprecated("Old WPILib Command architecture is now deprecated")
-
     fun change(command: Command) {
         changeOn(command)
         changeOff { command.cancel() }
