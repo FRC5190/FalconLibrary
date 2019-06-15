@@ -15,9 +15,9 @@ abstract class FalconTimedRobot {
     var emergencyActive = false
         protected set
 
-    val wrappedValue = WpiTimedRobot()
+    protected val wrappedValue = WpiTimedRobot()
 
-    inner class WpiTimedRobot : TimedRobot() {
+    protected inner class WpiTimedRobot : TimedRobot() {
 
         private val kLanguage_Kotlin = 6
 
