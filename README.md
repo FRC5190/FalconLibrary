@@ -16,7 +16,7 @@ Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST R
 * Typesafe units of measure
     * Quick and easy conversions between all length, velocity, acceleration, electrical units.
     * Support for Talon SRX native unit length and rotation models.
-* Shafe-safe matrix operations
+* Shape-safe matrix operations
     * Detect matrix shape mismatches at runtime by attempting to mimic C++'s templates using Generics
 * State-space modern control
 
@@ -41,16 +41,16 @@ repositories {
 Under the `dependencies` section of your `build.gradle`, add the specific submodules that you want in your project. All of the submodules are presented below.
 
 ```groovy
-compile 'org.ghrobotics.FalconLibrary:core:2019.5.25'
-compile 'org.ghrobotics.FalconLibrary:wpi:2019.5.25'
-compile 'org.ghrobotics.FalconLibrary:vendorCTRE:2019.5.25'
-compile 'org.ghrobotics.FalconLibrary:vendorNAVX:2019.5.25'
-compile 'org.ghrobotics.FalconLibrary:vendorREV:2019.5.25'
+compile 'org.ghrobotics.FalconLibrary:core:2019.6.14'
+compile 'org.ghrobotics.FalconLibrary:wpi:2019.6.14'
+compile 'org.ghrobotics.FalconLibrary:vendorCTRE:2019.6.14'
+compile 'org.ghrobotics.FalconLibrary:vendorNAVX:2019.6.14'
+compile 'org.ghrobotics.FalconLibrary:vendorREV:2019.6.14'
 ```
 
 Alternatively, you can include all submodules at once:
 ```groovy
-compile 'org.ghrobotics:FalconLibrary:2019.5.25'
+compile 'org.ghrobotics:FalconLibrary:2019.6.14'
 ```
 
 ## Contributing
