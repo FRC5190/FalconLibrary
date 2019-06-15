@@ -1,5 +1,7 @@
 package org.ghrobotics.lib.wrappers
 
+import edu.wpi.first.hal.FRCNetComm
+import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.experimental.command.CommandScheduler
@@ -16,6 +18,13 @@ abstract class FalconTimedRobot {
     val wrappedValue = WpiTimedRobot()
 
     inner class WpiTimedRobot : TimedRobot() {
+
+        private val kLanguage_Kotlin = 6
+
+        init {
+            HAL.report(FRCNetComm.tResourceType.kResourceType_Language, kLanguage_Kotlin)
+        }
+
         override fun robotInit() {
             this@FalconTimedRobot.robotInit()
             FalconSubsystemHandler.lateInit()
