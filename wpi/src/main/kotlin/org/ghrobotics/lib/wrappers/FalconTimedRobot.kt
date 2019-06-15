@@ -90,9 +90,7 @@ abstract class FalconTimedRobot {
         emergencyActive = false
     }
 
-    companion object {
-        fun startRobot(robot: () -> FalconTimedRobot) {
-            RobotBase.startRobot { robot().wrappedValue }
-        }
+    fun start() {
+        RobotBase.startRobot { wrappedValue }
     }
 }
