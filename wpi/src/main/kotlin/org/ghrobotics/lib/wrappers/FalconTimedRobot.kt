@@ -5,6 +5,7 @@ import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.experimental.command.CommandScheduler
+import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.FalconSubsystemHandler
 import org.ghrobotics.lib.subsystems.EmergencyHandleable
@@ -28,6 +29,7 @@ abstract class FalconTimedRobot {
         override fun robotInit() {
             this@FalconTimedRobot.robotInit()
             FalconSubsystemHandler.lateInit()
+            LiveWindow.disableAllTelemetry()
         }
 
         override fun autonomousInit() {
