@@ -14,7 +14,7 @@ class FalconMAX<T : SIUnit<T>>(
     val model: NativeUnitModel<T>
 ) : AbstractFalconMotor<T>() {
 
-    private val controller: CANPIDController = canSparkMax.pidController
+    val controller: CANPIDController = canSparkMax.pidController
     override val encoder = FalconMAXEncoder(canSparkMax.encoder, model)
 
     override val voltageOutput: Double
