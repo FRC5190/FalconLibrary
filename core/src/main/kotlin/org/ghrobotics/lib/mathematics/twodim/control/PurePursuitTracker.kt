@@ -76,12 +76,14 @@ class PurePursuitTracker(
             return lookaheadPoseByTime
         }
 
+        val lastInterpolant = iterator.trajectory.lastInterpolant
+
         var lookaheadPoseByDistance = iterator.currentState.state.state.pose
         var previewedTime = 0.second
 
         // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
         // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
-        while (iterator.progress > previewedTime) {
+        while ((lastInterpolant - iterator.progress) > previewedTime) {
             previewedTime += 0.02.second
 
             lookaheadPoseByDistance = iterator.preview(previewedTime).state.state.pose
