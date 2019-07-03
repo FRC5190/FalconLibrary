@@ -17,6 +17,6 @@ class FalconCTREEncoder<T : SIUnit<T>>(
     var encoderPhase by Delegates.observable(false) { _, _, newValue -> motorController.setSensorPhase(newValue) }
 
     override fun resetPosition(newPosition: Double) {
-        motorController.setSelectedSensorPosition(0, pidIdx, 0)
+        motorController.setSelectedSensorPosition(newPosition.toInt(), pidIdx, 0)
     }
 }
