@@ -9,7 +9,7 @@ fun <T : GenericHID> T.mapControls(
     block: FalconHIDBuilder<T>.() -> Unit
 ) = FalconHIDBuilder(this).also(block).build()
 
-class FalconHIDBuilder<T : GenericHID>(private val genericHID: T) {
+class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
     private val controlBuilders = mutableListOf<FalconHIDControlBuilder>()
     private val stateControlBuilders = mutableMapOf<BooleanSource, FalconHIDBuilder<T>>()
 
