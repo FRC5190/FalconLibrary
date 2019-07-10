@@ -24,6 +24,26 @@ class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
         block: FalconHIDButtonBuilder.() -> Unit = {}
     ) = button(HIDAxisSource(genericHID, axisId), threshold, block)
 
+    fun lessThanAxisButton(
+            axisId: Int,
+            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+            block: FalconHIDButtonBuilder.() -> Unit = {}
+    ) = boundedAxisButton(axisId, threshold, -1.0, 0.0)
+
+    fun greaterThanAxisButton(
+            axisId: Int,
+            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+            block: FalconHIDButtonBuilder.() -> Unit = {}
+    ) = boundedAxisButton(axisId, threshold, 0.0, 1.0)
+
+    fun boundedAxisButton(
+            axisId: Int,
+            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+            minValue: Double,
+            maxValue: Double,
+            block: FalconHIDButtonBuilder.() -> Unit = {}
+    ) = button(BoundedHIDAxisSource(genericHID, axisId, minValue, maxValue), threshold, block)
+
     fun pov(angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = pov(0, angle, block)
     fun pov(pov: Int, angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) =
         button(HIDPOVSource(genericHID, pov, angle), block = block)
