@@ -1,11 +1,8 @@
 package org.ghrobotics.lib.wrappers.hid
 
 import edu.wpi.first.wpilibj.GenericHID
-import org.ghrobotics.lib.mathematics.max
-import org.ghrobotics.lib.mathematics.min
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
-import org.ghrobotics.lib.utils.safeRangeTo
 
 class HIDButtonSource(
     private val genericHID: GenericHID,
