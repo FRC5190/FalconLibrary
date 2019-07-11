@@ -26,10 +26,9 @@ class HIDAxisSource(
 class BoundedHIDAxisSource(
         private val genericHID: GenericHID,
         private val axisId: Int,
-        private val minValue: Double,
-        private val maxValue: Double
+        private val range: ClosedFloatingPointRange<Double>
 ) : HIDSource {
-    override fun invoke() = min(max(genericHID.getRawAxis(axisId), minValue), maxValue)
+    override fun invoke() = genericHID.getRawAxis(axisId).coerceIn(range)
 }
 
 class HIDPOVSource(
