@@ -23,6 +23,7 @@ val Number.zeptogram get() = Mass(toDouble() * SIConstants.kZeptoOffsetKilo)
 val Number.yoctogram get() = Mass(toDouble() * SIConstants.kYoctoOffsetKilo)
 
 val Number.lb get() = Mass(toDouble() * SIMassConstants.kLbOffsetKilo)
+val Number.slug get() = Mass(toDouble() * SIMassConstants.kSlugOffsetKilo)
 
 
 class Mass(
@@ -61,4 +62,5 @@ class Mass(
 
 internal object SIMassConstants {
     const val kLbOffsetKilo = 0.453592
+    const val kSlugOffsetKilo = 14.59
 }
