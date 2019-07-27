@@ -9,7 +9,7 @@ repositories {
 dependencies {
     compile(project(":core"))
     compile("com.github.salomonbrys.kotson", "kotson", "2.5.0")
-    compile("com.github.Oblarg:command-rewrite-jitpack:1.1.4")
+    compile("com.github.Oblarg:command-rewrite-jitpack:1.2.0")
 
     wpi.deps.wpilibJni().forEach { nativeZip(it) }
     wpi.deps.wpilibDesktopJni().forEach { nativeDesktopZip(it) }
