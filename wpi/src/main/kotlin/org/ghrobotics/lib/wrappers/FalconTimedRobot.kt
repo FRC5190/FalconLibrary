@@ -12,6 +12,16 @@ import org.ghrobotics.lib.subsystems.EmergencyHandleable
 
 abstract class FalconTimedRobot {
 
+    enum class Mode {
+        NONE,
+        DISABLED,
+        AUTONOMOUS,
+        TELEOP,
+        TEST
+    }
+    var currentMode = Mode.NONE
+        private set
+
     private val emergencyReadySystems = arrayListOf<EmergencyHandleable>()
     var emergencyActive = false
         protected set
@@ -27,24 +37,33 @@ abstract class FalconTimedRobot {
         }
 
         override fun robotInit() {
+            currentMode = FalconTimedRobot.Mode.NONE
             this@FalconTimedRobot.robotInit()
             FalconSubsystemHandler.lateInit()
             LiveWindow.disableAllTelemetry()
         }
 
         override fun autonomousInit() {
+            currentMode = FalconTimedRobot.Mode.AUTONOMOUS
             this@FalconTimedRobot.autonomousInit()
             FalconSubsystemHandler.autoReset()
         }
 
         override fun teleopInit() {
+            currentMode = FalconTimedRobot.Mode.TELEOP
             this@FalconTimedRobot.teleopInit()
             FalconSubsystemHandler.teleopReset()
         }
 
         override fun disabledInit() {
+            currentMode = FalconTimedRobot.Mode.DISABLED
             this@FalconTimedRobot.disabledInit()
             FalconSubsystemHandler.setNeutral()
+        }
+
+        override fun testInit() {
+            currentMode = FalconTimedRobot.Mode.TEST
+            this@FalconTimedRobot.testInit()
         }
 
         override fun robotPeriodic() {
@@ -69,6 +88,7 @@ abstract class FalconTimedRobot {
     protected open fun autonomousInit() {}
     protected open fun teleopInit() {}
     protected open fun disabledInit() {}
+    private fun testInit() {}
 
     protected open fun robotPeriodic() {}
     protected open fun autonomousPeriodic() {}
