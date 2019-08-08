@@ -1,13 +1,14 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX
-import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
-class FalconSPX<T : SIUnit<T>>(
+class FalconSPX<K : SIKey>(
     val victorSPX: VictorSPX,
-    model: NativeUnitModel<T>
-) : FalconCTRE<T>(victorSPX, model) {
+    model: NativeUnitModel<K>
+) : FalconCTRE<K>(victorSPX, model) {
 
-    constructor(id: Int, model: NativeUnitModel<T>) : this(VictorSPX(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
 
 }

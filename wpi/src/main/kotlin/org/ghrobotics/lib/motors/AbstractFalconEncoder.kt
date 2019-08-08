@@ -10,4 +10,8 @@ abstract class AbstractFalconEncoder<K : SIKey>(
 ) : FalconEncoder<K> {
     override val position: SIUnit<K> get() = model.fromNativeUnitPosition(rawPosition)
     override val velocity: SIUnit<Velocity<K>> get() = model.fromNativeUnitVelocity(rawVelocity)
+
+    override fun resetPosition(newPosition: SIUnit<K>) {
+        resetPositionRaw(model.toNativeUnitPosition(newPosition))
+    }
 }

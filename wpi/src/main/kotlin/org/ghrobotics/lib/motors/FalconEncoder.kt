@@ -28,4 +28,6 @@ interface FalconEncoder<K : SIKey> {
 
     fun resetPosition(newPosition: SIUnit<K>)
 
+    fun resetPositionRaw(newPosition: SIUnit<NativeUnit>)
+
 }

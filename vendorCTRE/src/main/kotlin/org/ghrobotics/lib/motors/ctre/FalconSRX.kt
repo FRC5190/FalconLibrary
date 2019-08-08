@@ -2,17 +2,21 @@ package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import org.ghrobotics.lib.mathematics.units.ElectricCurrent
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.Ampere
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.amp
+import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import kotlin.properties.Delegates
 
-class FalconSRX<T : SIUnit<T>>(
+class FalconSRX<K : SIKey>(
     val talonSRX: TalonSRX,
-    model: NativeUnitModel<T>
-) : FalconCTRE<T>(talonSRX, model) {
+    model: NativeUnitModel<K>
+) : FalconCTRE<K>(talonSRX, model) {
 
-    constructor(id: Int, model: NativeUnitModel<T>) : this(TalonSRX(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>) : this(TalonSRX(id), model)
 
     var feedbackSensor by Delegates.observable(FeedbackDevice.QuadEncoder) { _, _, newValue ->
         talonSRX.configSelectedFeedbackSensor(newValue, 0, 0)
@@ -28,9 +32,9 @@ class FalconSRX<T : SIUnit<T>>(
     }
 
     data class CurrentLimitConfig(
-        val peakCurrentLimit: ElectricCurrent,
-        val peakCurrentLimitDuration: Time,
-        val continuousCurrentLimit: ElectricCurrent
+        val peakCurrentLimit: SIUnit<Ampere>,
+        val peakCurrentLimitDuration: SIUnit<Second>,
+        val continuousCurrentLimit: SIUnit<Ampere>
     )
 
 

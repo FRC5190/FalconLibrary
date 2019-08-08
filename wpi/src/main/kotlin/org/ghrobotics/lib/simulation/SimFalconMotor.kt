@@ -23,6 +23,7 @@ class SimFalconMotor<K : SIKey> : FalconMotor<K> {
         override val rawPosition: SIUnit<NativeUnit> get() = SIUnit(position.value)
 
         override fun resetPosition(newPosition: SIUnit<K>) {}
+        override fun resetPositionRaw(newPosition: SIUnit<NativeUnit>) {}
     }
 
     override var outputInverted: Boolean
