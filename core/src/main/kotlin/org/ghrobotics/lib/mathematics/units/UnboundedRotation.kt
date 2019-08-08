@@ -6,6 +6,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 val Number.radian get() = UnboundedRotation(toDouble())
 val Number.degree get() = Math.toRadians(toDouble()).radian
 
+@Deprecated("")
 class UnboundedRotation(override val value: Double) : SIUnit<UnboundedRotation> {
 
     val radian get() = value // should be between -PI and PI already. // % (Math.PI * 2)

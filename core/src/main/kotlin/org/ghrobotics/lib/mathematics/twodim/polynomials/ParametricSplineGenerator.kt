@@ -13,8 +13,9 @@ package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.units.UnboundedRotation
+import org.ghrobotics.lib.mathematics.units2.Meter
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.derived.Radian
 import java.util.*
 
 object ParametricSplineGenerator {
@@ -23,9 +24,9 @@ object ParametricSplineGenerator {
     @Suppress("LongParameterList")
     private fun parameterizeSpline(
         s: ParametricSpline,
-        maxDx: Double,
-        maxDy: Double,
-        maxDTheta: UnboundedRotation,
+        maxDx: SIUnit<Meter>,
+        maxDy: SIUnit<Meter>,
+        maxDTheta: SIUnit<Radian>,
         t0: Double = 0.0,
         t1: Double = 1.0
     ): List<Pose2dWithCurvature> {
@@ -35,7 +36,7 @@ object ParametricSplineGenerator {
         var t = 0.0
         while (t < t1) {
             val nextTime = t + dt / kMinSampleSize
-            rv += getSegmentArc(s, t, nextTime, maxDx, maxDy, maxDTheta.value)
+            rv += getSegmentArc(s, t, nextTime, maxDx, maxDy, maxDTheta)
             t = nextTime
         }
         return rv
@@ -43,9 +44,9 @@ object ParametricSplineGenerator {
 
     fun parameterizeSplines(
         splines: List<ParametricSpline>,
-        maxDx: Double,
-        maxDy: Double,
-        maxDTheta: UnboundedRotation
+        maxDx: SIUnit<Meter>,
+        maxDy: SIUnit<Meter>,
+        maxDTheta: SIUnit<Radian>
     ): List<Pose2dWithCurvature> {
         if (splines.isEmpty()) return emptyList()
         val rv = ArrayList<Pose2dWithCurvature>(splines.size * kMinSampleSize + 1)
@@ -62,9 +63,9 @@ object ParametricSplineGenerator {
         s: ParametricSpline,
         t0: Double,
         t1: Double,
-        maxDx: Double,
-        maxDy: Double,
-        maxDTheta: Double
+        maxDx: SIUnit<Meter>,
+        maxDy: SIUnit<Meter>,
+        maxDTheta: SIUnit<Radian>
     ): Array<Pose2dWithCurvature> {
         val p0 = s.getPoint(t0)
         val p1 = s.getPoint(t1)

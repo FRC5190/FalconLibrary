@@ -36,6 +36,7 @@ object SITimeConstants {
     const val kMomentToSecond = 90
 }
 
+@Deprecated("")
 class Time(
     override val value: Double
 ) : SIUnit<Time> {

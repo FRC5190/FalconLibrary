@@ -22,6 +22,7 @@ val Number.attoamp get() = ElectricCurrent(toDouble() * SIConstants.kAtto)
 val Number.zeptoamp get() = ElectricCurrent(toDouble() * SIConstants.kZepto)
 val Number.yoctoamp get() = ElectricCurrent(toDouble() * SIConstants.kYocto)
 
+@Deprecated("")
 class ElectricCurrent(
     override val value: Double
 ) : SIUnit<ElectricCurrent> {

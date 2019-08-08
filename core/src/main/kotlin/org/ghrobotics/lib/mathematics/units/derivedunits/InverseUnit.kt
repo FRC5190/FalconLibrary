@@ -12,6 +12,7 @@ fun Curvature(value: Double) = Curvature(value, Length.kZero)
 operator fun <T : SIUnit<T>> Number.div(other: T): InverseUnit<T> =
     InverseUnit(this.toDouble(), other)
 
+@Deprecated("")
 class InverseUnit<T : SIUnit<T>>(
     override val value: Double,
     val type: T

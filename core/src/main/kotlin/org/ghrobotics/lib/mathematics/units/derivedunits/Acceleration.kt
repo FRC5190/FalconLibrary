@@ -12,6 +12,7 @@ val UnboundedRotation.acceleration: AngularAcceleration get() = Acceleration(val
 typealias LinearAcceleration = Acceleration<Length>
 typealias AngularAcceleration = Acceleration<UnboundedRotation>
 
+@Deprecated("")
 class Acceleration<T : SIValue<T>>(
     override val value: Double,
     internal val type: T

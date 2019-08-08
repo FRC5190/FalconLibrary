@@ -1,17 +1,18 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.units.derivedunits.AngularAcceleration
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.derived.AngularAcceleration
+import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.sqrt
 
-class AngularAccelerationConstraint internal constructor(
-    private val maxAngularAcceleration: Double
+class AngularAccelerationConstraint constructor(
+    val maxAngularAcceleration: SIUnit<AngularAcceleration>
 ) : TimingConstraint<Pose2dWithCurvature> {
 
-    constructor(maxAngularAcceleration: AngularAcceleration) : this(maxAngularAcceleration.value)
-
     init {
-        require(maxAngularAcceleration >= 0) { "Cannot have negative Angular Acceleration." }
+        require(maxAngularAcceleration.value >= 0) { "Cannot have negative Angular Acceleration." }
     }
 
     override fun getMaxVelocity(state: Pose2dWithCurvature): Double {
@@ -21,7 +22,7 @@ class AngularAccelerationConstraint internal constructor(
          * v = sqrt(maxAngularAcceleration / dk/ds)
          */
 
-        return Math.sqrt(maxAngularAcceleration / state.dkds.absoluteValue)
+        return sqrt(maxAngularAcceleration.value / state.dkds.absoluteValue)
     }
 
     override fun getMinMaxAcceleration(
@@ -56,9 +57,8 @@ class AngularAccelerationConstraint internal constructor(
          * Yay Calculus
          */
 
-        val maxAbsoluteAcceleration = Math.abs(
-            (maxAngularAcceleration - (velocity * velocity * state.dkds)) / state.curvature
-        )
+        val maxAbsoluteAcceleration =
+            abs((maxAngularAcceleration.value - (velocity * velocity * state.dkds)) / state.curvature)
 
         return TimingConstraint.MinMaxAcceleration(-maxAbsoluteAcceleration, maxAbsoluteAcceleration)
     }

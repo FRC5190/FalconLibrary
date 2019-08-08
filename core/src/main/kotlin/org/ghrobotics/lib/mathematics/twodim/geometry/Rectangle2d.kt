@@ -1,10 +1,11 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.meter
-import kotlin.math.max
-import kotlin.math.min
+import org.ghrobotics.lib.mathematics.max
+import org.ghrobotics.lib.mathematics.min
+import org.ghrobotics.lib.mathematics.units2.Meter
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.operations.div
 
 @Suppress("FunctionName")
 fun Rectangle2d(
@@ -35,41 +36,33 @@ fun Rectangle2d(
     )
 }
 
-data class Rectangle2d internal constructor(
-    internal val _x: Double,
-    internal val _y: Double,
-    internal val _w: Double,
-    internal val _h: Double
+data class Rectangle2d constructor(
+    val x: SIUnit<Meter>,
+    val y: SIUnit<Meter>,
+    val w: SIUnit<Meter>,
+    val h: SIUnit<Meter>
 ) {
 
-    val x get() = _x.meter
-    val y get() = _y.meter
-    val w get() = _w.meter
-    val h get() = _h.meter
+    val topLeft = Translation2d(x, y + h)
+    val topRight = Translation2d(x + w, y + h)
+    val bottomLeft = Translation2d(x, y)
+    val bottomRight = Translation2d(x + w, y)
 
-    constructor(x: Length, y: Length, w: Length, h: Length) :
-        this(x.value, y.value, w.value, h.value)
-
-    val topLeft = Translation2d(_x, _y + _h)
-    val topRight = Translation2d(_x + _w, _y + _h)
-    val bottomLeft = Translation2d(_x, _y)
-    val bottomRight = Translation2d(_x + _w, _y)
-
-    val center = Translation2d(_x + _w / 2, _y + _h / 2)
+    val center = Translation2d(x + w / 2.0, y + h / 2.0)
 
     val maxCorner = topRight
     val minCorner = bottomLeft
 
     fun isIn(r: Rectangle2d) =
-        _x < r._x + r._w && _x + _w > r._x && _y < r._y + r._h && _y + _h > r._y
+        x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y
 
-    fun isWithin(r: Rectangle2d) = r._x in _x..(_x + _w - r._w) && r._y in _y..(_y + _h - r._h)
+    fun isWithin(r: Rectangle2d) = r.x in x..(x + w - r.w) && r.y in y..(y + h - r.h)
 
-    operator fun contains(p: Translation2d) = p.x in _x..(_x + _w) && p.y in _y..(_y + _h)
+    operator fun contains(p: Translation2d) = p.x in x..(x + w) && p.y in y..(y + h)
 
     @Suppress("ComplexMethod")
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation.x epsilonEquals 0.0 && translation.y epsilonEquals 0.0) return false
+        if (translation.x.value epsilonEquals 0.0 && translation.y.value epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
             rectangle.topLeft, rectangle.bottomRight,
@@ -79,42 +72,42 @@ data class Rectangle2d internal constructor(
         if (!boxRect.isIn(this)) return false
         // AABB collision
         // Calculate distances
-        val xInvEntry: Double
-        val xInvExit: Double
-        val yInvEntry: Double
-        val yInvExit: Double
-        if (translation.x > 0.0) {
-            xInvEntry = (_x - (rectangle._x + rectangle._w))
-            xInvExit = ((_x + _w) - rectangle._x)
+        val xInvEntry: SIUnit<Meter>
+        val xInvExit: SIUnit<Meter>
+        val yInvEntry: SIUnit<Meter>
+        val yInvExit: SIUnit<Meter>
+        if (translation.x.value > 0.0) {
+            xInvEntry = (x - (rectangle.x + rectangle.w))
+            xInvExit = ((x + w) - rectangle.x)
         } else {
-            xInvEntry = ((_x + _w) - rectangle._x)
-            xInvExit = (_x - (rectangle._x + rectangle._w))
+            xInvEntry = ((x + w) - rectangle.x)
+            xInvExit = (x - (rectangle.x + rectangle.w))
         }
-        if (translation.y > 0.0) {
-            yInvEntry = (_y - (rectangle._y + rectangle._h))
-            yInvExit = ((_y + _h) - rectangle._y)
+        if (translation.y.value > 0.0) {
+            yInvEntry = (y - (rectangle.y + rectangle.h))
+            yInvExit = ((y + h) - rectangle.y)
         } else {
-            yInvEntry = ((_y + _h) - rectangle._y)
-            yInvExit = (_y - (rectangle._y + rectangle._h))
+            yInvEntry = ((y + h) - rectangle.y)
+            yInvExit = (y - (rectangle.y + rectangle.h))
         }
         // Find time of collisions
         val xEntry: Double
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation.x epsilonEquals 0.0) {
+        if (translation.x.value epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
-            xEntry = xInvEntry / translation.x
-            xExit = xInvExit / translation.x
+            xEntry = (xInvEntry / translation.x).value
+            xExit = (xInvExit / translation.x).value
         }
-        if (translation.y epsilonEquals 0.0) {
+        if (translation.y.value epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {
-            yEntry = yInvEntry / translation.y
-            yExit = yInvExit / translation.y
+            yEntry = (yInvEntry / translation.y).value
+            yExit = (yInvExit / translation.y).value
         }
         val entryTime = max(xEntry, yEntry)
         val exitTime = min(xExit, yExit)

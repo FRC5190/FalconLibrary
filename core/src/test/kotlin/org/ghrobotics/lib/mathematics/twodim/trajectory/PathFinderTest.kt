@@ -7,10 +7,14 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
 import org.ghrobotics.lib.mathematics.units.derivedunits.volt
+import org.ghrobotics.lib.mathematics.units2.derived.acceleration
+import org.ghrobotics.lib.mathematics.units2.derived.degree
+import org.ghrobotics.lib.mathematics.units2.derived.velocity
+import org.ghrobotics.lib.mathematics.units2.feet
+import org.ghrobotics.lib.mathematics.units2.inch
+import org.ghrobotics.lib.mathematics.units2.milli
+import org.ghrobotics.lib.mathematics.units2.second
 import org.junit.Test
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
@@ -22,7 +26,7 @@ class PathFinderTest {
 
     @Test
     fun testPathFinder() {
-        val robotSize = 33.inch
+        val robotSize = 33.0.inch
         val pathFinder = PathFinder(
             robotSize,
             PathFinder.k2018LeftSwitch,
@@ -32,11 +36,11 @@ class PathFinderTest {
         lateinit var path: List<Pose2d>
         val nodeCreationTime = measureTimeMillis {
             path = pathFinder.findPath(
-                Pose2d(1.54.feet, 23.234167.feet, 0.degree),
-                Pose2d(23.7.feet, (27 - 20.2).feet, 0.degree),
+                Pose2d(1.54.feet, 23.234167.feet, 0.0.degree),
+                Pose2d(23.7.feet, (27 - 20.2).feet, 0.0.degree),
                 Rectangle2d(
-                    Translation2d(0.feet, 0.feet),
-                    Translation2d(10.feet, 10.feet)
+                    Translation2d(0.0.feet, 0.0.feet),
+                    Translation2d(10.0.feet, 10.0.feet)
                 )
             )!!
             println(path.joinToString(separator = "\n") {
@@ -49,13 +53,13 @@ class PathFinderTest {
             trajectory = DefaultTrajectoryGenerator.generateTrajectory(
                 path,
                 listOf(
-                    CentripetalAccelerationConstraint(4.feet.acceleration),
+                    CentripetalAccelerationConstraint(4.0.feet.acceleration),
                     DifferentialDriveDynamicsConstraint(TrajectoryGeneratorTest.drive, 9.0.volt)
                 ),
                 0.0.feet.velocity,
                 0.0.feet.velocity,
-                10.feet.velocity,
-                4.feet.acceleration,
+                10.0.feet.velocity,
+                4.0.feet.acceleration,
                 false
             )
         }
@@ -65,7 +69,7 @@ class PathFinderTest {
         )
 
         val iterator = trajectory.iterator()
-        val dt = 20.millisecond
+        val dt = 20.0.milli.second
         val refList = mutableListOf<Translation2d>()
 
         while (!iterator.isDone) {
@@ -103,8 +107,8 @@ class PathFinderTest {
 
         chart.addSeries(
             "Trajectory",
-            refList.map { it.x / SILengthConstants.kFeetToMeter }.toDoubleArray(),
-            refList.map { it.y / SILengthConstants.kFeetToMeter }.toDoubleArray()
+            refList.map { it.x.feet }.toDoubleArray(),
+            refList.map { it.y.feet }.toDoubleArray()
         )
 //        SwingWrapper(chart).displayChart()
 //        Thread.sleep(1000000)

@@ -1,32 +1,27 @@
 package org.ghrobotics.lib.utils
 
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.Second
+import org.ghrobotics.lib.mathematics.units2.second
 
-class DeltaTime internal constructor(startTime: Double) {
-    constructor(startTime: Time = (-1).second) : this(startTime.value)
+class DeltaTime constructor(startTime: SIUnit<Second> = (-1.0).second) {
 
-    internal var _currentTime = startTime
+    var currentTime = startTime
         private set
-    internal var _deltaTime = 0.0
+    var deltaTime = 0.0.second
         private set
 
-    val deltaTime get() = _deltaTime.second
-    val currentTime get() = _currentTime.second
-
-    fun updateTime(newTime: Time) = updateTime(newTime.value).second
-
-    fun updateTime(newTime: Double): Double {
-        _deltaTime = if (_currentTime < 0.0) {
-            0.0
+    fun updateTime(newTime: SIUnit<Second>): SIUnit<Second> {
+        deltaTime = if (currentTime.value < 0.0) {
+            0.0.second
         } else {
-            newTime - _currentTime
+            newTime - currentTime
         }
-        _currentTime = newTime
-        return _deltaTime
+        currentTime = newTime
+        return deltaTime
     }
 
     fun reset() {
-        _currentTime = -1.0
+        currentTime = (-1.0).second
     }
 }

@@ -25,7 +25,7 @@ val Number.yoctogram get() = Mass(toDouble() * SIConstants.kYoctoOffsetKilo)
 val Number.lb get() = Mass(toDouble() * SIMassConstants.kLbOffsetKilo)
 val Number.slug get() = Mass(toDouble() * SIMassConstants.kSlugOffsetKilo)
 
-
+@Deprecated("")
 class Mass(
     override val value: Double
 ) : SIUnit<Mass> {

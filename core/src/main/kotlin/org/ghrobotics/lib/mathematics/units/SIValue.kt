@@ -8,6 +8,7 @@ import kotlin.math.absoluteValue
 
 operator fun <T : SIValue<T>> Number.times(other: T) = other * this
 
+@Deprecated("")
 interface SIValue<T : SIValue<T>> : Comparable<T> {
     val value: Double
 

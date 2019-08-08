@@ -17,6 +17,7 @@ val LinearVelocity.feetPerSecond get() = value * meterToFeet
 val LinearVelocity.feetPerMinute get() = feetPerSecond * secondsPerMinute
 val LinearVelocity.inchesPerSecond get() = value * meterToInches
 
+@Deprecated("")
 class Velocity<T : SIValue<T>>(
     override val value: Double,
     internal val type: T

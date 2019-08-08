@@ -1,33 +1,33 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory.types
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.Second
+import org.ghrobotics.lib.mathematics.units2.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units2.derived.LinearVelocity
+import org.ghrobotics.lib.mathematics.units2.derived.acceleration
+import org.ghrobotics.lib.mathematics.units2.derived.velocity
+import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units2.operations.div
+import org.ghrobotics.lib.mathematics.units2.operations.times
+import org.ghrobotics.lib.mathematics.units2.second
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(
     override val points: List<TimedEntry<S>>,
     override val reversed: Boolean
-) : Trajectory<Time, TimedEntry<S>> {
+) : Trajectory<SIUnit<Second>, TimedEntry<S>> {
 
-    override fun sample(interpolant: Time) = sample(interpolant.value)
-
-    fun sample(interpolant: Double) = when {
-        interpolant >= lastInterpolant.value -> TrajectorySamplePoint(getPoint(points.size - 1))
-        interpolant <= firstInterpolant.value -> TrajectorySamplePoint(getPoint(0))
+    override fun sample(interpolant: SIUnit<Second>) = when {
+        interpolant >= lastInterpolant -> TrajectorySamplePoint(getPoint(points.size - 1))
+        interpolant <= firstInterpolant -> TrajectorySamplePoint(getPoint(0))
         else -> {
             val (index, entry) = points.asSequence()
                 .withIndex()
-                .first { (index, entry) -> index != 0 && entry.t.value >= interpolant }
+                .first { (index, entry) -> index != 0 && entry.t >= interpolant }
 
             val prevEntry = points[index - 1]
             if (entry.t epsilonEquals prevEntry.t) {
@@ -36,7 +36,7 @@ class TimedTrajectory<S : VaryInterpolatable<S>>(
                 TrajectorySamplePoint(
                     prevEntry.interpolate(
                         entry,
-                        (interpolant - prevEntry.t.value) / (entry.t.value - prevEntry.t.value)
+                        ((interpolant - prevEntry.t) / (entry.t - prevEntry.t)).value
                     ),
                     index - 1,
                     index
@@ -54,39 +54,29 @@ class TimedTrajectory<S : VaryInterpolatable<S>>(
     override fun iterator() = TimedIterator(this)
 }
 
-data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
+data class TimedEntry<S : VaryInterpolatable<S>> constructor(
     val state: S,
-    internal val _t: Double = 0.0,
-    internal val _velocity: Double = 0.0,
-    internal val _acceleration: Double = 0.0
+    val t: SIUnit<Second> = SIUnit(0.0),
+    val velocity: SIUnit<LinearVelocity> = SIUnit(0.0),
+    val acceleration: SIUnit<LinearAcceleration> = SIUnit(0.0)
 ) : VaryInterpolatable<TimedEntry<S>> {
 
-    val t get() = _t.second
-    val velocity get() = _velocity.meter.velocity
-    val acceleration get() = _acceleration.meter.acceleration
-
-    constructor(
-        state: S,
-        t: Time,
-        velocity: LinearVelocity,
-        acceleration: LinearAcceleration
-    ) : this(state, t.value, velocity.value, acceleration.value)
-
     override fun interpolate(endValue: TimedEntry<S>, t: Double): TimedEntry<S> {
-        val newT = _t.lerp(endValue._t, t)
-        val deltaT = newT - this.t.value
-        if (deltaT < 0.0) return endValue.interpolate(this, 1.0 - t)
+        val newT = this.t.lerp(endValue.t, t)
+        val deltaT = newT - this.t
+        if (deltaT.value < 0.0) return endValue.interpolate(this, 1.0 - t)
 
-        val reversing = _velocity < 0.0 || _velocity epsilonEquals 0.0 && _acceleration < 0.0
+        val reversing =
+            this.velocity.value < 0.0 || this.velocity.value epsilonEquals 0.0 && this.acceleration.value < 0.0
 
-        val newV = _velocity + _acceleration * deltaT
-        val newS = (if (reversing) -1.0 else 1.0) * (_velocity * deltaT + 0.5 * _acceleration * deltaT * deltaT)
+        val newV = this.velocity + this.acceleration * deltaT
+        val newS = (if (reversing) -1.0 else 1.0) * (this.velocity * deltaT + 0.5 * this.acceleration * deltaT * deltaT)
 
         return TimedEntry(
-            state.interpolate(endValue.state, newS / state.distance(endValue.state)),
+            state.interpolate(endValue.state, (newS / state.distance(endValue.state)).value),
             newT,
             newV,
-            _acceleration
+            this.acceleration
         )
     }
 
@@ -95,17 +85,17 @@ data class TimedEntry<S : VaryInterpolatable<S>> internal constructor(
 
 class TimedIterator<S : VaryInterpolatable<S>>(
     trajectory: TimedTrajectory<S>
-) : TrajectoryIterator<Time, TimedEntry<S>>(trajectory) {
-    override fun addition(a: Time, b: Time) = a + b
+) : TrajectoryIterator<SIUnit<Second>, TimedEntry<S>>(trajectory) {
+    override fun addition(a: SIUnit<Second>, b: SIUnit<Second>) = a + b
 }
 
-fun Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.mirror() =
-    TimedTrajectory(points.map { TimedEntry(it.state.mirror, it._t, it._velocity, it._acceleration) }, this.reversed)
+fun Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>.mirror() =
+    TimedTrajectory(points.map { TimedEntry(it.state.mirror, it.t, it.velocity, it.acceleration) }, this.reversed)
 
-fun Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.transform(transform: Pose2d) =
+fun Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>.transform(transform: Pose2d) =
     TimedTrajectory(
-        points.map { TimedEntry(it.state + transform, it._t, it._velocity, it._acceleration) },
+        points.map { TimedEntry(it.state + transform, it.t, it.velocity, it.acceleration) },
         this.reversed
     )
 
-val Trajectory<Time, TimedEntry<Pose2dWithCurvature>>.duration get() = this.lastState.t
+val Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>.duration get() = this.lastState.t

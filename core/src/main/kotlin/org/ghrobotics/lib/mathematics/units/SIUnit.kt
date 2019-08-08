@@ -2,6 +2,7 @@ package org.ghrobotics.lib.mathematics.units
 
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 
+@Deprecated("")
 interface SIUnit<T : SIUnit<T>> : SIValue<T> {
     /**
      * This is the value expressed in its SI Base Unit

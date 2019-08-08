@@ -8,16 +8,22 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.utils.*
+import org.ghrobotics.lib.mathematics.units2.Meter
+import org.ghrobotics.lib.mathematics.units2.SIUnit
+import org.ghrobotics.lib.mathematics.units2.feet
+import org.ghrobotics.lib.mathematics.units2.inch
+import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.utils.combinationPairs
+import org.ghrobotics.lib.utils.filterNotToSet
+import org.ghrobotics.lib.utils.flatMapToSet
+import org.ghrobotics.lib.utils.mapNotNullToSet
+import org.ghrobotics.lib.utils.mapToSet
+import org.ghrobotics.lib.utils.plusToSet
 import java.lang.Math.sqrt
 import kotlin.math.pow
 
 class PathFinder(
-    private val robotSize: Length,
+    private val robotSize: SIUnit<Meter>,
     vararg restrictedAreas: Rectangle2d
 ) {
 
@@ -69,8 +75,8 @@ class PathFinder(
 
             Pose2d(
                 Translation2d(
-                    splineX.value(distanceTraveled),
-                    splineY.value(distanceTraveled)
+                    splineX.value(distanceTraveled).meter,
+                    splineY.value(distanceTraveled).meter
                 ),
                 Rotation2d(
                     splineDx.value(distanceTraveled),
@@ -210,25 +216,25 @@ class PathFinder(
             }
     }
 
-    private fun Translation2d.toVector2d() = Vector2D(x, y)
+    private fun Translation2d.toVector2d() = Vector2D(x.value, y.value)
     private fun Vector2D.toTranslation2d() = Translation2d(x.meter, y.meter)
 
     companion object {
         private val kFieldRectangle = Rectangle2d(
             Translation2d(),
-            Translation2d((54 / 2).feet, 27.feet)
+            Translation2d((54.0 / 2.0).feet, 27.0.feet)
         )
         val k2018LeftSwitch = Rectangle2d(
-            Translation2d(140.inch, 85.25.inch),
-            Translation2d(196.inch, 238.75.inch)
+            Translation2d(140.0.inch, 85.25.inch),
+            Translation2d(196.0.inch, 238.75.inch)
         )
         val k2018Platform = Rectangle2d(
             Translation2d(261.47.inch, 95.25.inch),
             Translation2d(386.53.inch, 228.75.inch)
         )
         val k2018CubesSwitch = Rectangle2d(
-            Translation2d(196.inch, 85.25.inch),
-            Translation2d(211.inch, 238.75.inch)
+            Translation2d(196.0.inch, 85.25.inch),
+            Translation2d(211.0.inch, 238.75.inch)
         )
     }
 }

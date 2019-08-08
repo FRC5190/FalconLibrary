@@ -44,6 +44,7 @@ object SILengthConstants {
     const val kLightYearToMeter = 9460730472580800.0
 }
 
+@Deprecated("")
 class Length(
     override val value: Double
 ) : SIUnit<Length> {
