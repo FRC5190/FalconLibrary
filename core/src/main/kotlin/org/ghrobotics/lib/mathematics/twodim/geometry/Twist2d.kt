@@ -12,10 +12,10 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.derived.Radian
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.hypot

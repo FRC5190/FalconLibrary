@@ -2,11 +2,14 @@ package org.ghrobotics.lib.mathematics
 
 
 import org.ghrobotics.lib.mathematics.units.amp
-import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerMinute
-import org.ghrobotics.lib.mathematics.units.derivedunits.feetPerSecond
-import org.ghrobotics.lib.mathematics.units.derivedunits.volt
+import org.ghrobotics.lib.mathematics.units.derived.feetPerMinute
+import org.ghrobotics.lib.mathematics.units.derived.feetPerSecond
+import org.ghrobotics.lib.mathematics.units.derived.volt
 import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.operations.times
 import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.junit.Test
 
 class DerivedTests {
@@ -78,7 +81,7 @@ class DerivedTests {
         val one = 33.meter / 1.second / 1.second
         val two = 22.meter / 2.second / 1.second
 
-        val three = one / two
+        val three = (one / two).unitlessValue
 
         assert(three == 3.0)
     }
@@ -88,7 +91,7 @@ class DerivedTests {
         val one = 33.meter / 1.second
         val two = 22.meter / 2.second
 
-        val three = one / two
+        val three = (one / two).unitlessValue
 
         assert(three epsilonEquals 3.0)
     }

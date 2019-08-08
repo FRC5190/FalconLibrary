@@ -1,9 +1,21 @@
 package org.ghrobotics.lib.mathematics
 
-
-import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
-import org.ghrobotics.lib.mathematics.units.nativeunits.*
+import org.ghrobotics.lib.mathematics.units.derived.radian
+import org.ghrobotics.lib.mathematics.units.derived.velocity
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.kilo
+import org.ghrobotics.lib.mathematics.units.lb
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
+import org.ghrobotics.lib.mathematics.units.nativeunit.fromNativeUnitPosition
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100msPerSecond
+import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitAcceleration
+import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitVelocity
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 
 class UnitTest {
@@ -15,7 +27,7 @@ class UnitTest {
 
     @Test
     fun testNativeUnits() {
-        val nativeUnits = 360.nativeUnits.fromNativeUnit(settings)
+        val nativeUnits = 360.nativeUnits.fromNativeUnitPosition(settings)
 
         assert(nativeUnits.inch epsilonEquals 4.71238898038469)
     }
@@ -49,7 +61,7 @@ class UnitTest {
 
     @Test
     fun testKgToPound() {
-        val kg = 2.kilogram
+        val kg = 2.kilo.gram
         assert(kg.lb epsilonEquals 4.409248840367555)
     }
 

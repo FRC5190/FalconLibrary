@@ -1,6 +1,6 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.meter
 import org.junit.Test
 
 class GeometryTests {

@@ -4,16 +4,12 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.Second
-import org.ghrobotics.lib.mathematics.units2.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units2.derived.LinearVelocity
-import org.ghrobotics.lib.mathematics.units2.derived.acceleration
-import org.ghrobotics.lib.mathematics.units2.derived.velocity
-import org.ghrobotics.lib.mathematics.units2.meter
-import org.ghrobotics.lib.mathematics.units2.operations.div
-import org.ghrobotics.lib.mathematics.units2.operations.times
-import org.ghrobotics.lib.mathematics.units2.second
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.operations.times
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class TimedTrajectory<S : VaryInterpolatable<S>>(

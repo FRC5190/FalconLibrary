@@ -13,9 +13,9 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.hypot
 

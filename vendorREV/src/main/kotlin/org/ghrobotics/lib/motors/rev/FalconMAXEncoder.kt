@@ -1,7 +1,6 @@
 package org.ghrobotics.lib.motors.rev
 
 import com.revrobotics.CANEncoder
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
 

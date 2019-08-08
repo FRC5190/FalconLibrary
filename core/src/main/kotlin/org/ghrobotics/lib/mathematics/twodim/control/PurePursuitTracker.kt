@@ -5,11 +5,11 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.Second
-import org.ghrobotics.lib.mathematics.units2.meter
-import org.ghrobotics.lib.mathematics.units2.second
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.second
 import kotlin.math.pow
 
 /**

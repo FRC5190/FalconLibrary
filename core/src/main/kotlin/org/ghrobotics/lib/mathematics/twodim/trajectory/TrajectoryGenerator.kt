@@ -21,17 +21,17 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.DistanceTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units2.derived.LinearVelocity
-import org.ghrobotics.lib.mathematics.units2.derived.Radian
-import org.ghrobotics.lib.mathematics.units2.derived.acceleration
-import org.ghrobotics.lib.mathematics.units2.derived.degree
-import org.ghrobotics.lib.mathematics.units2.derived.velocity
-import org.ghrobotics.lib.mathematics.units2.feet
-import org.ghrobotics.lib.mathematics.units2.inch
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.acceleration
+import org.ghrobotics.lib.mathematics.units.derived.degree
+import org.ghrobotics.lib.mathematics.units.derived.velocity
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.abs
 import kotlin.math.absoluteValue
@@ -195,7 +195,7 @@ class TrajectoryGenerator(
             distanceTrajectory.sample(
                 (step * stepSize + distanceTrajectory.firstInterpolant.value).coerceIn(
                     distanceViewRange
-                )
+                ).meter
             )
                 .state
         }

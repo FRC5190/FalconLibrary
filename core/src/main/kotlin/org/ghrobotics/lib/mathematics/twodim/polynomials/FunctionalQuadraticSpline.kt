@@ -1,11 +1,11 @@
 package org.ghrobotics.lib.mathematics.twodim.polynomials
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.Mult
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.operations.div
-import org.ghrobotics.lib.mathematics.units2.operations.times
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.Mult
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.operations.times
 
 data class FunctionalQuadraticSpline(
     private val p1: Translation2d,

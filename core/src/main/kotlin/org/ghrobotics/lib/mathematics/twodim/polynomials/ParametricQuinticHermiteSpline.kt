@@ -14,7 +14,7 @@ package org.ghrobotics.lib.mathematics.twodim.polynomials
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.meter
 import kotlin.math.pow
 
 class ParametricQuinticHermiteSpline(

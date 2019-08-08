@@ -2,7 +2,6 @@ package org.ghrobotics.lib.motors
 
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.UnboundedRotation
-import org.ghrobotics.lib.mathematics.units.SIUnit
 
 typealias LinearFalconMotor = FalconMotor<Length>
 typealias AngularFalconMotor = FalconMotor<UnboundedRotation>

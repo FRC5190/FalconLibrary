@@ -1,7 +1,5 @@
 package org.ghrobotics.lib.motors
 
-import org.ghrobotics.lib.mathematics.units.SIUnit
-
 interface FalconEncoder<T : SIUnit<T>> {
 
     /**

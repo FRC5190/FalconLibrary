@@ -1,9 +1,9 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.units2.derived.degree
-import org.ghrobotics.lib.mathematics.units2.derived.toRotation2d
-import org.ghrobotics.lib.mathematics.units2.meter
+import org.ghrobotics.lib.mathematics.units.derived.degree
+import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
+import org.ghrobotics.lib.mathematics.units.meter
 import org.junit.Assert
 import org.junit.Test
 

@@ -1,8 +1,8 @@
 package org.ghrobotics.lib.utils
 
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.Second
-import org.ghrobotics.lib.mathematics.units2.second
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.second
 
 class DeltaTime constructor(startTime: SIUnit<Second> = (-1.0).second) {
 

@@ -1,7 +1,6 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.IMotorController
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
 import kotlin.properties.Delegates

@@ -1,6 +1,5 @@
 package org.ghrobotics.lib.simulation
 
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.motors.FalconEncoder
 import org.ghrobotics.lib.motors.FalconMotor
 

@@ -1,6 +1,5 @@
 package org.ghrobotics.lib.motors
 
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
 
 abstract class AbstractFalconEncoder<T : SIUnit<T>>(

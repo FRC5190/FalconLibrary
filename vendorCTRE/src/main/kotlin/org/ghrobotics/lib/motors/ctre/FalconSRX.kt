@@ -3,7 +3,6 @@ package org.ghrobotics.lib.motors.ctre
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import org.ghrobotics.lib.mathematics.units.ElectricCurrent
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Time
 import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
 import kotlin.properties.Delegates

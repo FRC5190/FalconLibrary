@@ -1,8 +1,8 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.derived.AngularAcceleration
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.AngularAcceleration
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt

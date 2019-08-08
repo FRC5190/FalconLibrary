@@ -3,9 +3,9 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.max
 import org.ghrobotics.lib.mathematics.min
-import org.ghrobotics.lib.mathematics.units2.Meter
-import org.ghrobotics.lib.mathematics.units2.SIUnit
-import org.ghrobotics.lib.mathematics.units2.operations.div
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.operations.div
 
 @Suppress("FunctionName")
 fun Rectangle2d(
