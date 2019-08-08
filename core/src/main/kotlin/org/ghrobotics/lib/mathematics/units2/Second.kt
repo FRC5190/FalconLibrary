@@ -15,6 +15,13 @@ val Double.day get() = SIUnit<Second>(times(kDayToSecond))
 val Double.week get() = SIUnit<Second>(times(kWeekToSecond))
 val Double.moment get() = SIUnit<Second>(times(kMomentToSecond))
 
+val Number.second get() = toDouble().second
+val Number.minute get() = toDouble().minute
+val Number.hour get() = toDouble().hour
+val Number.day get() = toDouble().day
+val Number.week get() = toDouble().week
+val Number.moment get() = toDouble().moment
+
 val SIUnit<Second>.minute get() = value.div(kMinuteToSecond)
 val SIUnit<Second>.hour get() = value.div(kHourToSecond)
 val SIUnit<Second>.day get() = value.div(kDayToSecond)

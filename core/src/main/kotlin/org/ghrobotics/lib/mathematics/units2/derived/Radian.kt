@@ -9,6 +9,9 @@ typealias Radian = Unitless
 val Double.radian get() = SIUnit<Radian>(this)
 val Double.degree get() = SIUnit<Radian>(Math.toRadians(this))
 
+val Number.radian get() = toDouble().radian
+val Number.degree get() = toDouble().degree
+
 val SIUnit<Radian>.radian get() = value
 val SIUnit<Radian>.degree get() = Math.toDegrees(value)
 

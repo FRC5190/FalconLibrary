@@ -29,6 +29,9 @@ const val kSlugOffsetKilo = 14.59
 val Double.lb get() = SIUnit<Kilogram>(times(kLbOffsetKilo))
 val Double.slug get() = SIUnit<Kilogram>(times(kSlugOffsetKilo))
 
+val Number.lb get() = toDouble().lb
+val Number.slug get() = toDouble().slug
+
 val SIUnit<Kilogram>.yottagram get() = value.div(kYottaOffsetKilo)
 val SIUnit<Kilogram>.zettagram get() = value.div(kZettaOffsetKilo)
 val SIUnit<Kilogram>.exagram get() = value.div(kExaOffsetKilo)
@@ -52,3 +55,4 @@ val SIUnit<Kilogram>.zeptogram get() = value.div(kZeptoOffsetKilo)
 val SIUnit<Kilogram>.yoctogram get() = value.div(kYoctoOffsetKilo)
 
 val SIUnit<Kilogram>.lb get() = value.div(kLbOffsetKilo)
+val SIUnit<Kilogram>.slug get() = value.div(kSlugOffsetKilo)

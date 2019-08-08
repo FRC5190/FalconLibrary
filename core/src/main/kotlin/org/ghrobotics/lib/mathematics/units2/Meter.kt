@@ -23,6 +23,17 @@ val Double.league get() = SIUnit<Meter>(times(kLeagueToMeter))
 val Double.nauticalMile get() = SIUnit<Meter>(times(kNauticalMile))
 val Double.lightYear get() = SIUnit<Meter>(times(kLightYearToMeter))
 
+val Number.meter get() = toDouble().meter
+val Number.thou get() = toDouble().thou
+val Number.line get() = toDouble().line
+val Number.inch get() = toDouble().inch
+val Number.feet get() = toDouble().feet
+val Number.yard get() = toDouble().yard
+val Number.mile get() = toDouble().mile
+val Number.league get() = toDouble().league
+val Number.nauticalMile get() = toDouble().nauticalMile
+val Number.lightYear get() = toDouble().lightYear
+
 val SIUnit<Meter>.thou get() = value.div(kThouToMeter)
 val SIUnit<Meter>.line get() = value.div(kLineToMeter)
 val SIUnit<Meter>.inch get() = value.div(kInchToMeter)
