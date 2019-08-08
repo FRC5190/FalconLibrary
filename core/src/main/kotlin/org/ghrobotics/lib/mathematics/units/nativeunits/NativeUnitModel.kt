@@ -4,6 +4,7 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derivedunits.Acceleration
 import org.ghrobotics.lib.mathematics.units.derivedunits.Velocity
 
+@Deprecated("")
 abstract class NativeUnitModel<T : SIUnit<T>>(
     internal val zero: T
 ) {

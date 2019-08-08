@@ -2,6 +2,7 @@ package org.ghrobotics.lib.mathematics.units.nativeunits
 
 import org.ghrobotics.lib.mathematics.units.UnboundedRotation
 
+@Deprecated("")
 class NativeUnitRotationModel(
     nativeUnitsPerRotation: NativeUnit
 ) : NativeUnitModel<UnboundedRotation>(UnboundedRotation.kZero) {

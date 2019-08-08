@@ -8,6 +8,7 @@ fun <T : SIUnit<T>> T.toNativeUnitPosition(model: NativeUnitModel<T>) = model.to
 val Number.STU get() = nativeUnits
 val Number.nativeUnits get() = NativeUnit(toDouble())
 
+@Deprecated("")
 class NativeUnit(
     override val value: Double
 ) : SIUnit<NativeUnit> {

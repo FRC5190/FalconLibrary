@@ -3,6 +3,7 @@ package org.ghrobotics.lib.mathematics.units.nativeunits
 import org.ghrobotics.lib.mathematics.units.Length
 import org.ghrobotics.lib.mathematics.units.SIUnit
 
+@Deprecated("")
 class SlopeNativeUnitModel<T : SIUnit<T>>(
     val modelledSample: T,
     val nativeUnitSample: NativeUnit

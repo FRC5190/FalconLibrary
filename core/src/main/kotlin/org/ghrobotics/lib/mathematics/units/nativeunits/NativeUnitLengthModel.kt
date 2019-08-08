@@ -2,6 +2,7 @@ package org.ghrobotics.lib.mathematics.units.nativeunits
 
 import org.ghrobotics.lib.mathematics.units.Length
 
+@Deprecated("")
 class NativeUnitLengthModel(
     nativeUnitsPerRotation: NativeUnit,
     wheelRadius: Length
