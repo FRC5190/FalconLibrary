@@ -1,21 +1,27 @@
 package org.ghrobotics.lib.motors
 
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.UnboundedRotation
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volt
 
-typealias LinearFalconMotor = FalconMotor<Length>
-typealias AngularFalconMotor = FalconMotor<UnboundedRotation>
+typealias LinearFalconMotor = FalconMotor<Meter>
+typealias AngularFalconMotor = FalconMotor<Radian>
 
-interface FalconMotor<T : SIUnit<T>> {
+interface FalconMotor<K : SIKey> {
 
     /**
      * The encoder attached to the motor
      */
-    val encoder: FalconEncoder<T>
+    val encoder: FalconEncoder<K>
     /**
      * The voltage output of the motor controller in volts
      */
-    val voltageOutput: Double
+    val voltageOutput: SIUnit<Volt>
 
     /**
      * Inverts the output given to the motor
@@ -30,18 +36,18 @@ interface FalconMotor<T : SIUnit<T>> {
     /**
      * Configures the max voltage output given to the motor
      */
-    var voltageCompSaturation: Double
+    var voltageCompSaturation: SIUnit<Volt>
 
     /**
      *  Peak target velocity that the on board motion profile generator will use
-     *  Unit is [T]/s
+     *  Unit is [K]/s
      */
-    var motionProfileCruiseVelocity: Double
+    var motionProfileCruiseVelocity: SIUnit<Velocity<K>>
     /**
      *  Acceleration that the on board motion profile generator will
-     *  Unit is [T]/s/s
+     *  Unit is [K]/s/s
      */
-    var motionProfileAcceleration: Double
+    var motionProfileAcceleration: SIUnit<Acceleration<K>>
     /**
      * Enables the use of on board motion profiling for position mode
      */
@@ -52,22 +58,22 @@ interface FalconMotor<T : SIUnit<T>> {
     /**
      * Sets the output [voltage] in volts and [arbitraryFeedForward] in volts
      */
-    fun setVoltage(voltage: Double, arbitraryFeedForward: Double = 0.0)
+    fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
 
     /**
      * Sets the output [dutyCycle] in percent and [arbitraryFeedForward] in volts
      */
-    fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: Double = 0.0)
+    fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
 
     /**
-     * Sets the output [velocity] in [T]/s and [arbitraryFeedForward] in volts
+     * Sets the output [velocity] in [K]/s and [arbitraryFeedForward] in volts
      */
-    fun setVelocity(velocity: Double, arbitraryFeedForward: Double = 0.0)
+    fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
 
     /**
-     * Sets the output [position] in [T] and [arbitraryFeedForward] in volts
+     * Sets the output [position] in [K] and [arbitraryFeedForward] in volts
      */
-    fun setPosition(position: Double, arbitraryFeedForward: Double = 0.0)
+    fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
 
     /**
      * Sets the output of the motor to neutral

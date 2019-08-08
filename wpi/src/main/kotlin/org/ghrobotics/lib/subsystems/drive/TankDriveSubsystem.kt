@@ -10,9 +10,10 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
-import org.ghrobotics.lib.mathematics.units.SILengthConstants
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -51,8 +52,8 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     override fun periodic() {
         // Report new position to Live Dashboard
         LiveDashboard.robotHeading = robotPosition.rotation.radian
-        LiveDashboard.robotX = robotPosition.translation.x / SILengthConstants.kFeetToMeter
-        LiveDashboard.robotY = robotPosition.translation.y / SILengthConstants.kFeetToMeter
+        LiveDashboard.robotX = robotPosition.translation.x.feet
+        LiveDashboard.robotY = robotPosition.translation.y.feet
     }
 
     // COMMON DRIVE TYPES
@@ -179,8 +180,8 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param trajectory The trajectory to follow
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
-        dt: Time = 20.millisecond
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, { trajectory }, dt = dt)
 
     /**
@@ -190,9 +191,9 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
         pathMirrored: Boolean = false,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
     }, dt)
@@ -204,9 +205,9 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
         pathMirrored: Boolean = false,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     }, dt = dt)
@@ -218,9 +219,9 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
         pathMirrored: BooleanSource,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory), dt = dt)
 
     /**
@@ -230,9 +231,9 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
         pathMirrored: BooleanSource,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory), dt = dt)
 
 

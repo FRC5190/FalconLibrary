@@ -7,9 +7,10 @@ import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
-import org.ghrobotics.lib.mathematics.units.SILengthConstants
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.utils.Source
 
 /**
@@ -21,9 +22,9 @@ import org.ghrobotics.lib.utils.Source
 class TrajectoryTrackerCommand(
     driveSubsystem: Subsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
-    val trajectorySource: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+    val trajectorySource: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    val dt: Time = 20.millisecond
+    val dt: SIUnit<Second> = 20.milli.second
 ) : NotifierCommand(
     Runnable {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
@@ -33,8 +34,8 @@ class TrajectoryTrackerCommand(
             val referencePose = referencePoint.state.state.pose
 
             // Update Current Path Location on Live Dashboard
-            LiveDashboard.pathX = referencePose.translation.x / SILengthConstants.kFeetToMeter
-            LiveDashboard.pathY = referencePose.translation.y / SILengthConstants.kFeetToMeter
+            LiveDashboard.pathX = referencePose.translation.x.feet
+            LiveDashboard.pathY = referencePose.translation.y.feet
             LiveDashboard.pathHeading = referencePose.rotation.radian
         }
     },

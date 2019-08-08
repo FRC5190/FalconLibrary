@@ -1,20 +1,28 @@
 package org.ghrobotics.lib.simulation
 
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnit
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.motors.FalconEncoder
 import org.ghrobotics.lib.motors.FalconMotor
 
-class SimFalconMotor<T : SIUnit<T>> : FalconMotor<T> {
+class SimFalconMotor<K : SIKey> : FalconMotor<K> {
 
-    var velocity = 0.0
-    override val voltageOutput = 0.0
+    var velocity = SIUnit<Velocity<K>>(0.0)
+    override val voltageOutput = 0.0.volt
 
-    override val encoder = object : FalconEncoder<T> {
-        override val velocity: Double get() = rawVelocity
-        override val position: Double get() = rawPosition
-        override val rawVelocity: Double get() = this@SimFalconMotor.velocity
-        override val rawPosition: Double get() = 0.0
+    override val encoder = object : FalconEncoder<K> {
+        override val velocity: SIUnit<Velocity<K>> get() = this@SimFalconMotor.velocity
+        override val position: SIUnit<K> = SIUnit(0.0)
+        override val rawVelocity: SIUnit<NativeUnitVelocity> get() = SIUnit(velocity.value)
+        override val rawPosition: SIUnit<NativeUnit> get() = SIUnit(position.value)
 
-        override fun resetPosition(newPosition: Double) {}
+        override fun resetPosition(newPosition: SIUnit<K>) {}
     }
 
     override var outputInverted: Boolean
@@ -29,37 +37,43 @@ class SimFalconMotor<T : SIUnit<T>> : FalconMotor<T> {
         TODO("not implemented")
     }
 
-    override fun setVoltage(voltage: Double, arbitraryFeedForward: Double) {
+    override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
         TODO("not implemented")
     }
 
-    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: Double) {
+    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
         TODO("not implemented")
     }
 
-    override fun setVelocity(velocity: Double, arbitraryFeedForward: Double) {
+    override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) {
         this.velocity = velocity
     }
 
-    override fun setPosition(position: Double, arbitraryFeedForward: Double) {
+    override fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt>) {
         TODO("not implemented")
     }
 
     override fun setNeutral() {
-        velocity = 0.0
+        velocity = SIUnit(0.0)
     }
 
-    override var voltageCompSaturation: Double
+    override var voltageCompSaturation: SIUnit<Volt>
         get() = TODO("not implemented")
-        set(value) {TODO("not implemented")}
+        set(value) {
+            TODO("not implemented")
+        }
 
-    override var motionProfileCruiseVelocity: Double
+    override var motionProfileCruiseVelocity: SIUnit<Velocity<K>>
         get() = TODO("not implemented")
-        set(value) {TODO("not implemented")}
+        set(value) {
+            TODO("not implemented")
+        }
 
-    override var motionProfileAcceleration: Double
+    override var motionProfileAcceleration: SIUnit<Acceleration<K>>
         get() = TODO("not implemented")
-        set(value) {TODO("not implemented")}
+        set(value) {
+            TODO("not implemented")
+        }
 
     override var useMotionProfileForPosition = false
 

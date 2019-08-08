@@ -1,6 +1,8 @@
 package org.ghrobotics.lib.motors
 
-abstract class AbstractFalconMotor<T : SIUnit<T>> : FalconMotor<T> {
+import org.ghrobotics.lib.mathematics.units.SIKey
+
+abstract class AbstractFalconMotor<K : SIKey> : FalconMotor<K> {
 
     override var useMotionProfileForPosition: Boolean = false
 

@@ -1,10 +1,13 @@
 package org.ghrobotics.lib.motors
 
-import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
-abstract class AbstractFalconEncoder<T : SIUnit<T>>(
-    val model: NativeUnitModel<T>
-) : FalconEncoder<T> {
-    override val position: Double get() = model.fromNativeUnitPosition(rawPosition)
-    override val velocity: Double get() = model.fromNativeUnitVelocity(rawVelocity)
+abstract class AbstractFalconEncoder<K : SIKey>(
+    val model: NativeUnitModel<K>
+) : FalconEncoder<K> {
+    override val position: SIUnit<K> get() = model.fromNativeUnitPosition(rawPosition)
+    override val velocity: SIUnit<Velocity<K>> get() = model.fromNativeUnitVelocity(rawVelocity)
 }

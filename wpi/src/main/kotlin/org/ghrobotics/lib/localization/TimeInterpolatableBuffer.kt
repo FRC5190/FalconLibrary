@@ -1,27 +1,23 @@
 package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
-import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.types.Interpolatable
 import org.ghrobotics.lib.utils.Source
-import org.ghrobotics.lib.utils.map
 import java.util.*
 
 class TimeInterpolatableBuffer<T : Interpolatable<T>>(
-    private val historySpan: Double = 1.0,
-    private val timeSource: Source<Double> = Timer::getFPGATimestamp
+    private val historySpan: SIUnit<Second> = 1.0.second,
+    private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().second }
 ) {
 
-    constructor(
-        historySpan: Time,
-        timeSource: Source<Time>
-    ) : this(historySpan.value, timeSource.map { it.value })
+    private val bufferMap = TreeMap<SIUnit<Second>, T>()
 
-    private val bufferMap = TreeMap<Double, T>()
-
-    operator fun set(time: Time, value: T) = set(time.second, value)
-
-    operator fun set(time: Double, value: T): T? {
+    operator fun set(time: SIUnit<Second>, value: T): T? {
         cleanUp()
         return bufferMap.put(time, value)
     }
@@ -43,9 +39,7 @@ class TimeInterpolatableBuffer<T : Interpolatable<T>>(
         bufferMap.clear()
     }
 
-    operator fun get(time: Time) = get(time.second)
-
-    operator fun get(time: Double): T? {
+    operator fun get(time: SIUnit<Second>): T? {
         if (bufferMap.isEmpty()) return null
 
         bufferMap[time]?.let { return it }
@@ -58,7 +52,7 @@ class TimeInterpolatableBuffer<T : Interpolatable<T>>(
             bottomBound == null -> topBound.value
             else -> bottomBound.value.interpolate(
                 topBound.value,
-                (time - bottomBound.key) / (topBound.key - bottomBound.key)
+                ((time - bottomBound.key) / (topBound.key - bottomBound.key)).unitlessValue
             )
         }
     }

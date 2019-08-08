@@ -5,11 +5,12 @@ import edu.wpi.first.wpilibj.experimental.command.Subsystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.utils.launchFrequency
 
 open class FalconNotifierCommand(
-    private val period: Time,
+    private val period: SIUnit<Second>,
     vararg requirements: Subsystem,
     private val block: suspend CoroutineScope.() -> Unit
 ) : SendableCommandBase() {

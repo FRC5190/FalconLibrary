@@ -3,8 +3,9 @@ package org.ghrobotics.lib.localization
 import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.units.UnboundedRotation
-import org.ghrobotics.lib.mathematics.units.Time
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.utils.Source
 import kotlin.reflect.KProperty
 
@@ -56,15 +57,14 @@ abstract class Localization(
         prevHeading = newHeading
 
         // Add the global robot pose to the interpolatable buffer
-        localizationBuffer[Timer.getFPGATimestamp()] = robotPosition
+        localizationBuffer[Timer.getFPGATimestamp().second] = robotPosition
     }
 
     protected abstract fun update(deltaHeading: Rotation2d): Pose2d
 
     override fun invoke() = robotPosition
 
-    operator fun get(timestamp: Time) = get(timestamp.second)
-    operator fun get(timestamp: Double) = localizationBuffer[timestamp] ?: Pose2d()
+    operator fun get(timestamp: SIUnit<Second>) = localizationBuffer[timestamp] ?: Pose2d()
 
     // Delegates
 

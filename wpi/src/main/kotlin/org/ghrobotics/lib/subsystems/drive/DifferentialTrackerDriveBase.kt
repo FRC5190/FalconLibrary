@@ -2,6 +2,9 @@ package org.ghrobotics.lib.subsystems.drive
 
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
+import org.ghrobotics.lib.mathematics.units.derived.velocity
+import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.meter
 
 interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
 
@@ -39,12 +42,12 @@ interface DifferentialTrackerDriveBase : TrajectoryTrackerDriveBase {
         wheelVoltages: DifferentialDrive.WheelState
     ) {
         leftMotor.setVelocity(
-            wheelVelocities.left * differentialDrive.wheelRadius,
-            wheelVoltages.left
+            (wheelVelocities.left * differentialDrive.wheelRadius).meter.velocity,
+            wheelVoltages.left.volt
         )
         rightMotor.setVelocity(
-            wheelVelocities.right * differentialDrive.wheelRadius,
-            wheelVoltages.right
+            (wheelVelocities.right * differentialDrive.wheelRadius).meter.velocity,
+            wheelVoltages.right.volt
         )
     }
 }
