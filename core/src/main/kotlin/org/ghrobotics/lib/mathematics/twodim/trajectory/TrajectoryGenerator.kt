@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -21,34 +29,41 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.types.DistanceTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.IndexedTrajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedTrajectory
-import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
-import org.ghrobotics.lib.mathematics.units.derivedunits.acceleration
-import org.ghrobotics.lib.mathematics.units.derivedunits.velocity
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.acceleration
+import org.ghrobotics.lib.mathematics.units.derived.degree
+import org.ghrobotics.lib.mathematics.units.derived.velocity
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 val DefaultTrajectoryGenerator = TrajectoryGenerator(
-    2.inch,
+    2.0.inch,
     0.25.inch,
-    5.degree
+    5.0.degree
 )
 
 class TrajectoryGenerator(
-    val kMaxDx: Length,
-    val kMaxDy: Length,
-    val kMaxDTheta: UnboundedRotation
+    val kMaxDx: SIUnit<Meter>,
+    val kMaxDy: SIUnit<Meter>,
+    val kMaxDTheta: SIUnit<Radian>
 ) {
 
     val baseline = generateTrajectory(
-        listOf(Pose2d(0.meter, 0.meter, 0.degree), Pose2d(10.feet, 0.meter, 0.degree)),
+        listOf(Pose2d(0.0.meter, 0.0.meter, 0.0.degree), Pose2d(10.0.feet, 0.0.meter, 0.0.degree)),
         listOf(),
-        0.meter.velocity,
-        0.meter.velocity,
-        10.feet.velocity,
-        4.feet.acceleration,
+        0.0.meter.velocity,
+        0.0.meter.velocity,
+        10.0.feet.velocity,
+        4.0.feet.acceleration,
         false
     )
 
@@ -56,14 +71,14 @@ class TrajectoryGenerator(
     fun generateTrajectory(
         wayPoints: List<Pose2d>,
         constraints: List<TimingConstraint<Pose2dWithCurvature>>,
-        startVelocity: LinearVelocity,
-        endVelocity: LinearVelocity,
-        maxVelocity: LinearVelocity,
-        maxAcceleration: LinearAcceleration,
+        startVelocity: SIUnit<LinearVelocity>,
+        endVelocity: SIUnit<LinearVelocity>,
+        maxVelocity: SIUnit<LinearVelocity>,
+        maxAcceleration: SIUnit<LinearAcceleration>,
         reversed: Boolean,
         optimizeSplines: Boolean = true
     ): TimedTrajectory<Pose2dWithCurvature> {
-        val flippedPosition = Pose2d(rotation = 180.degree)
+        val flippedPosition = Pose2d(rotation = 180.0.degree)
 
         // Make theta normal for trajectory generation if path is trajectoryReversed.
         val newWayPoints = wayPoints.asSequence().map { point ->
@@ -113,8 +128,8 @@ class TrajectoryGenerator(
     ) = IndexedTrajectory(
         ParametricSplineGenerator.parameterizeSplines(
             splines,
-            kMaxDx.value,
-            kMaxDy.value,
+            kMaxDx,
+            kMaxDy,
             kMaxDTheta
         )
     )
@@ -188,7 +203,7 @@ class TrajectoryGenerator(
             distanceTrajectory.sample(
                 (step * stepSize + distanceTrajectory.firstInterpolant.value).coerceIn(
                     distanceViewRange
-                )
+                ).meter
             )
                 .state
         }
@@ -340,12 +355,12 @@ class TrajectoryGenerator(
             var dt = 0.0
             if (i > 0) {
                 timedStates[i - 1] = timedStates[i - 1].copy(
-                    _acceleration = if (reversed) -accel else accel
+                    acceleration = SIUnit(if (reversed) -accel else accel)
                 )
 
                 dt = when {
-                    Math.abs(accel) > epsilon -> (constrainedState.maxVelocity - v) / accel
-                    Math.abs(v) > epsilon -> ds / v
+                    abs(accel) > epsilon -> (constrainedState.maxVelocity - v) / accel
+                    abs(v) > epsilon -> ds / v
                     else -> throw RuntimeException()
                 }
             }
@@ -359,9 +374,9 @@ class TrajectoryGenerator(
             timedStates.add(
                 TimedEntry(
                     constrainedState.state,
-                    t,
-                    if (reversed) -v else v,
-                    if (reversed) -accel else accel
+                    SIUnit(t),
+                    SIUnit(if (reversed) -v else v),
+                    SIUnit(if (reversed) -accel else accel)
                 )
             )
         }

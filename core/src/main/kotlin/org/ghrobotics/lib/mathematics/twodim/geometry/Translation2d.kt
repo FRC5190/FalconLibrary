@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -13,32 +21,28 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import org.ghrobotics.lib.mathematics.lerp
-import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
+import kotlin.math.hypot
 
-fun Rotation2d.toTranslation() = Translation2d(cos, sin)
+fun Rotation2d.toTranslation() = Translation2d(cos.meter, sin.meter)
 
 data class Translation2d constructor(
-    val x: Double,
-    val y: Double
+    val x: SIUnit<Meter>,
+    val y: SIUnit<Meter>
 ) : VaryInterpolatable<Translation2d> {
 
-    constructor() : this(0.0, 0.0)
-
-    constructor(
-        x: Length = 0.meter,
-        y: Length = 0.meter
-    ) : this(x.value, y.value)
+    constructor() : this(0.0.meter, 0.0.meter)
 
     // Vector to Translation3d
     constructor(
-        distance: Length = 0.meter,
+        distance: SIUnit<Meter> = 0.0.meter,
         rotation: Rotation2d = Rotation2d()
     ) : this(distance * rotation.cos, distance * rotation.sin)
 
-    val norm get() = Math.hypot(x, y)
+    val norm get() = hypot(x.value, y.value).meter
 
     override fun interpolate(endValue: Translation2d, t: Double) = when {
         t <= 0 -> this
@@ -50,9 +54,9 @@ data class Translation2d constructor(
     }
 
     override fun distance(other: Translation2d): Double {
-        val x = this.x - other.x
-        val y = this.y - other.y
-        return Math.hypot(x, y)
+        val x = this.x.value - other.x.value
+        val y = this.y.value - other.y.value
+        return hypot(x, y)
     }
 
     operator fun plus(other: Translation2d) = Translation2d(x + other.x, y + other.y)

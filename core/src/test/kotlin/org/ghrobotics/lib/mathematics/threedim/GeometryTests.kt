@@ -1,3 +1,11 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.mathematics.threedim
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
@@ -5,7 +13,7 @@ import org.ghrobotics.lib.mathematics.threedim.geometry.Pose3d
 import org.ghrobotics.lib.mathematics.threedim.geometry.Quaternion
 import org.ghrobotics.lib.mathematics.threedim.geometry.Transform
 import org.ghrobotics.lib.mathematics.threedim.geometry.Translation3d
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.milli
 import org.junit.Test
 
 class GeometryTests {
@@ -69,7 +77,7 @@ class GeometryTests {
             armRotation
         )
 
-        val deltaState = (secondState - firstState) / 20.millisecond.value
+        val deltaState = (secondState - firstState) / 20.milli.second.value
 
         println(deltaState.translation * armRotation)
     }

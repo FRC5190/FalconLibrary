@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -15,20 +23,16 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
-class VelocityLimitRegionConstraint internal constructor(
-    private val region: Rectangle2d,
-    private val velocityLimit: Double
+class VelocityLimitRegionConstraint constructor(
+    val region: Rectangle2d,
+    val velocityLimit: SIUnit<LinearVelocity>
 ) : TimingConstraint<Pose2dWithCurvature> {
 
-    constructor(
-        region: Rectangle2d,
-        velocityLimit: LinearVelocity
-    ) : this(region, velocityLimit.value)
-
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
-        if (state.pose.translation in region) velocityLimit else Double.POSITIVE_INFINITY
+        if (state.pose.translation in region) velocityLimit.value else Double.POSITIVE_INFINITY
 
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,

@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -12,17 +20,17 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.units.derivedunits.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import kotlin.math.absoluteValue
+import kotlin.math.sqrt
 
-class CentripetalAccelerationConstraint internal constructor(
-    private val mMaxCentripetalAcceleration: Double
+class CentripetalAccelerationConstraint constructor(
+    val mMaxCentripetalAcceleration: SIUnit<LinearAcceleration>
 ) : TimingConstraint<Pose2dWithCurvature> {
 
-    constructor(mMaxCentripetalAcceleration: LinearAcceleration) : this(mMaxCentripetalAcceleration.value)
-
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
-        Math.sqrt((mMaxCentripetalAcceleration / state.curvature).absoluteValue)
+        sqrt((mMaxCentripetalAcceleration.value / state.curvature).absoluteValue)
 
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,
