@@ -5,6 +5,8 @@
 
 Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST Robotics Competition. FalconLibrary is the backend for all Team 5190 robots.
 
+Due to the usage of Kotlin inline classes, this library is NOT compatible with Java.
+
 ### `core`: Platform-agnostic mathematics and units code
 * Two-dimensional parametric and functional splines.
 * Arc length of parametric quintic hermite splines evaluated using recursive arc subdivision (from Team 254).
