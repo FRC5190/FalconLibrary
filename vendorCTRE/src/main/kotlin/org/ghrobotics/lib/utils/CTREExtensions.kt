@@ -1,3 +1,11 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 import com.ctre.phoenix.CANifier
 import com.ctre.phoenix.sensors.PigeonIMU
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
