@@ -1,7 +1,15 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.wrappers.hid
 
 import edu.wpi.first.wpilibj.GenericHID
-import org.ghrobotics.lib.commands.FalconCommand
+import edu.wpi.first.wpilibj.experimental.command.Command
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
 
@@ -80,13 +88,13 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
     private val changeOn = mutableListOf<HIDControlListener>()
     private val changeOff = mutableListOf<HIDControlListener>()
 
-    fun change(command: FalconCommand) {
+    fun change(command: Command) {
         changeOn(command)
-        changeOff { command.stop() }
+        changeOff { command.cancel() }
     }
 
-    fun changeOn(command: FalconCommand) = changeOn { command.start() }
-    fun changeOff(command: FalconCommand) = changeOff { command.start() }
+    fun changeOn(command: Command) = changeOn { command.schedule() }
+    fun changeOff(command: Command) = changeOff { command.cancel() }
 
     fun whileOff(block: HIDControlListener) = also { whileOff.add(block) }
     fun whileOn(block: HIDControlListener) = also { whileOn.add(block) }

@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -12,50 +20,30 @@
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.UnboundedRotation
-import kotlin.math.absoluteValue
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.meter
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.hypot
+import kotlin.math.sin
 
 class Twist2d constructor(
-    val dx: Double,
-    val dy: Double,
-    val dTheta: Double
+    val dx: SIUnit<Meter>,
+    val dy: SIUnit<Meter>,
+    val dTheta: SIUnit<Radian>
 ) {
 
-    constructor(
-        dx: Double,
-        dy: Double,
-        dTheta: UnboundedRotation
-    ) : this(dx, dy, dTheta.toRotation2d().value)
-
-    constructor(
-        dx: Length,
-        dy: Length,
-        dTheta: Rotation2d
-    ) : this(dx.value, dy.value, dTheta.value)
-
-    constructor(
-        dx: Double,
-        dy: Double,
-        dTheta: Rotation2d
-    ) : this(dx, dy, dTheta.value)
-
-
-    constructor(
-        dx: Length,
-        dy: Length,
-        dTheta: UnboundedRotation
-    ) : this(dx.value, dy.value, dTheta)
-
-    val norm get() = if (dy == 0.0) dx.absoluteValue else Math.hypot(dx, dy)
+    val norm get() = if (dy.value == 0.0) dx.absoluteValue else hypot(dx.value, dy.value).meter
 
     val asPose: Pose2d
         get() {
-            val dTheta = this.dTheta
-            val sinTheta = Math.sin(dTheta)
-            val cosTheta = Math.cos(dTheta)
+            val dTheta = this.dTheta.value
+            val sinTheta = sin(dTheta)
+            val cosTheta = cos(dTheta)
 
-            val (s, c) = if (Math.abs(dTheta) < kEpsilon) {
+            val (s, c) = if (abs(dTheta) < kEpsilon) {
                 1.0 - 1.0 / 6.0 * dTheta * dTheta to .5 * dTheta
             } else {
                 sinTheta / dTheta to (1.0 - cosTheta) / dTheta

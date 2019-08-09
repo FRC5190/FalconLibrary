@@ -1,24 +1,27 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.Notifier
-import org.ghrobotics.lib.commands.ConditionCommand
-import org.ghrobotics.lib.commands.FalconCommandGroup
+import edu.wpi.first.wpilibj.experimental.command.WaitUntilCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
-import org.ghrobotics.lib.commands.sequential
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.localization.Localization
-import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.SILengthConstants
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.millisecond
-import org.ghrobotics.lib.subsystems.drive.characterization.QuasistaticCharacterizationCommand
-import org.ghrobotics.lib.subsystems.drive.characterization.StepVoltageCharacterizationCommand
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -29,7 +32,7 @@ import kotlin.math.withSign
 /**
  * Represents a standard tank drive subsystem
  */
-abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
+abstract class TankDriveSubsystem : FalconSubsystem(),
     DifferentialTrackerDriveBase {
 
     private var quickStopAccumulator = 0.0
@@ -44,9 +47,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
         // Ensure localization starts at (0,0)
         localization.reset()
         // Start a notifier loop to constantly update localization at 100hz
-        Notifier {
-            localization.update()
-        }.startPeriodic(1.0 / 100.0)
+        Notifier { localization.update() }.startPeriodic(1.0 / 100.0)
     }
 
     /**
@@ -59,8 +60,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
     override fun periodic() {
         // Report new position to Live Dashboard
         LiveDashboard.robotHeading = robotPosition.rotation.radian
-        LiveDashboard.robotX = robotPosition.translation.x / SILengthConstants.kFeetToMeter
-        LiveDashboard.robotY = robotPosition.translation.y / SILengthConstants.kFeetToMeter
+        LiveDashboard.robotX = robotPosition.translation.x.feet
+        LiveDashboard.robotY = robotPosition.translation.y.feet
     }
 
     // COMMON DRIVE TYPES
@@ -187,8 +188,8 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param trajectory The trajectory to follow
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
-        dt: Time = 20.millisecond
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, { trajectory }, dt = dt)
 
     /**
@@ -198,9 +199,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
         pathMirrored: Boolean = false,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
     }, dt)
@@ -212,9 +213,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
         pathMirrored: Boolean = false,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     }, dt = dt)
@@ -226,9 +227,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<Time, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
         pathMirrored: BooleanSource,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory), dt = dt)
 
     /**
@@ -238,9 +239,9 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
         pathMirrored: BooleanSource,
-        dt: Time = 20.millisecond
+        dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory), dt = dt)
 
 
@@ -261,54 +262,7 @@ abstract class TankDriveSubsystem : FalconSubsystem("Drive Subsystem"),
      * @param region Source with the region to check if the robot is in.
      */
     fun withinRegion(region: Source<Rectangle2d>) =
-        ConditionCommand { region().contains(robotPosition.translation) }
-
-
-    // DRIVE CHARACTERIZATION
-
-    /**
-     * Characterizes the drivetrain and prints out CSV data to the console.
-     * All linear and angular Kv and Ka parameters can be found by calling this method.
-     */
-    open fun characterizeDrive(wheelRadius: Length, effectiveWheelBaseRadius: Length): FalconCommandGroup =
-        sequential {
-            +QuasistaticCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                false
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +StepVoltageCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                false
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +QuasistaticCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                true
-            )
-            +ConditionCommand {
-                leftMotor.encoder.velocity.absoluteValue < kEpsilon &&
-                    rightMotor.encoder.velocity.absoluteValue < kEpsilon
-            }
-            +StepVoltageCharacterizationCommand(
-                this@TankDriveSubsystem,
-                wheelRadius,
-                effectiveWheelBaseRadius,
-                true
-            )
-        }
+        WaitUntilCommand { region().contains(robotPosition.translation) }
 
     companion object {
         const val kQuickStopThreshold = edu.wpi.first.wpilibj.drive.DifferentialDrive.kDefaultQuickStopThreshold

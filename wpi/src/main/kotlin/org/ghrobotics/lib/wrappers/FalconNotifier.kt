@@ -1,9 +1,19 @@
-package org.ghrobotics.lib.utils
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+package org.ghrobotics.lib.wrappers
 
 import edu.wpi.first.hal.NotifierJNI
-import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.Notifier
-import org.ghrobotics.lib.mathematics.units.Time
+import edu.wpi.first.wpilibj.Timer
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.microsecond
 import org.ghrobotics.lib.mathematics.units.second
 import java.util.concurrent.TimeUnit
 
@@ -31,7 +41,7 @@ class FalconNotifier(frequency: Int) : AutoCloseable {
      * Updates the notifier alarm. Should be called when the alarm is tripped to
      * reset the ticker
      */
-    fun updateAlarm(currentTime: Time = Timer.getFPGATimestamp().second) {
+    fun updateAlarm(currentTime: SIUnit<Second> = Timer.getFPGATimestamp().second) {
         if (closed) {
             throw IllegalStateException("updateAlarm() called on a disposed notifier! Check usages of close() for the relevant instance")
         }

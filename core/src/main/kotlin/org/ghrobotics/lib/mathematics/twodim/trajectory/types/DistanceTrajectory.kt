@@ -1,14 +1,23 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.mathematics.twodim.trajectory.types
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.units.Length
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.types.VaryInterpolatable
 
 class DistanceTrajectory<S : VaryInterpolatable<S>>(
     override val points: List<S>
-) : Trajectory<Length, S> {
+) : Trajectory<SIUnit<Meter>, S> {
 
     private val distances: List<Double>
 
@@ -19,15 +28,13 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
         distances = tempDistances
     }
 
-    override fun sample(interpolant: Length) = sample(interpolant.value)
-
-    fun sample(interpolant: Double) = when {
-        interpolant >= lastInterpolant.value -> TrajectorySamplePoint(getPoint(points.size - 1))
-        interpolant <= 0.0 -> TrajectorySamplePoint(getPoint(0))
+    override fun sample(interpolant: SIUnit<Meter>) = when {
+        interpolant >= lastInterpolant -> TrajectorySamplePoint(getPoint(points.size - 1))
+        interpolant.value <= 0.0 -> TrajectorySamplePoint(getPoint(0))
         else -> {
             val (index, entry) = points.asSequence()
                 .withIndex()
-                .first { (index, _) -> index != 0 && distances[index] >= interpolant }
+                .first { (index, _) -> index != 0 && distances[index] >= interpolant.value }
 
             val prevEntry = points[index - 1]
             if (distances[index] epsilonEquals distances[index - 1]) {
@@ -36,7 +43,7 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
                 TrajectorySamplePoint(
                     prevEntry.interpolate(
                         entry,
-                        (interpolant - distances[index - 1]) / (distances[index] - distances[index - 1])
+                        (interpolant.value - distances[index - 1]) / (distances[index] - distances[index - 1])
                     ),
                     index - 1,
                     index
@@ -56,6 +63,6 @@ class DistanceTrajectory<S : VaryInterpolatable<S>>(
 
 class DistanceIterator<S : VaryInterpolatable<S>>(
     trajectory: DistanceTrajectory<S>
-) : TrajectoryIterator<Length, S>(trajectory) {
-    override fun addition(a: Length, b: Length) = a + b
+) : TrajectoryIterator<SIUnit<Meter>, S>(trajectory) {
+    override fun addition(a: SIUnit<Meter>, b: SIUnit<Meter>) = a + b
 }

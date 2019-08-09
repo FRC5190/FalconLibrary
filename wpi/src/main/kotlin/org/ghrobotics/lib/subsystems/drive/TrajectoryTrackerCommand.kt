@@ -1,15 +1,24 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.subsystems.drive
 
-import org.ghrobotics.lib.commands.FalconCommand
-import org.ghrobotics.lib.commands.FalconSubsystem
+import edu.wpi.first.wpilibj.experimental.command.NotifierCommand
+import edu.wpi.first.wpilibj.experimental.command.Subsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
 import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
-import org.ghrobotics.lib.mathematics.units.SILengthConstants
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.utils.Source
 
 /**
@@ -19,29 +28,13 @@ import org.ghrobotics.lib.utils.Source
  * @param trajectorySource Source that contains the trajectory to follow.
  */
 class TrajectoryTrackerCommand(
-    driveSubsystem: FalconSubsystem,
+    driveSubsystem: Subsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
-    val trajectorySource: Source<Trajectory<Time, TimedEntry<Pose2dWithCurvature>>>,
+    val trajectorySource: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    val dt: Time = 20.millisecond
-) : FalconCommand(driveSubsystem) {
-
-    private var trajectoryFinished = false
-
-    init {
-        finishCondition += { trajectoryFinished }
-    }
-
-    /**
-     * Reset the trajectory follower with the new trajectory.
-     */
-    override suspend fun initialize() {
-        trajectoryTracker.reset(trajectorySource())
-        trajectoryFinished = false
-        LiveDashboard.isFollowingPath = true
-    }
-
-    override suspend fun execute() {
+    val dt: SIUnit<Second> = 20.milli.second
+) : NotifierCommand(
+    Runnable {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
 
         val referencePoint = trajectoryTracker.referencePoint
@@ -49,19 +42,30 @@ class TrajectoryTrackerCommand(
             val referencePose = referencePoint.state.state.pose
 
             // Update Current Path Location on Live Dashboard
-            LiveDashboard.pathX = referencePose.translation.x / SILengthConstants.kFeetToMeter
-            LiveDashboard.pathY = referencePose.translation.y / SILengthConstants.kFeetToMeter
+            LiveDashboard.pathX = referencePose.translation.x.feet
+            LiveDashboard.pathY = referencePose.translation.y.feet
             LiveDashboard.pathHeading = referencePose.rotation.radian
         }
+    },
+    dt.value,
+    driveSubsystem
+) {
 
-        trajectoryFinished = trajectoryTracker.isFinished
+    /**
+     * Reset the trajectory follower with the new trajectory.
+     */
+    override fun initialize() {
+        trajectoryTracker.reset(trajectorySource())
+        LiveDashboard.isFollowingPath = true
     }
 
     /**
      * Make sure that the drivetrain is stopped at the end of the command.
      */
-    override suspend fun dispose() {
+    override fun end(interrupted: Boolean) {
         driveBase.zeroOutputs()
         LiveDashboard.isFollowingPath = false
     }
+
+    override fun isFinished() = trajectoryTracker.isFinished
 }

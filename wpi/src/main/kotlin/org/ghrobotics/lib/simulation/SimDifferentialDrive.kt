@@ -1,35 +1,46 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.simulation
 
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.Time
-import org.ghrobotics.lib.mathematics.units.radian
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.derived.radian
+import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.operations.times
 import org.ghrobotics.lib.subsystems.drive.DifferentialTrackerDriveBase
 
 class SimDifferentialDrive(
     override val differentialDrive: DifferentialDrive,
-    override val leftMotor: SimFalconMotor<Length>,
-    override val rightMotor: SimFalconMotor<Length>,
+    override val leftMotor: SimFalconMotor<Meter>,
+    override val rightMotor: SimFalconMotor<Meter>,
     override val trajectoryTracker: TrajectoryTracker,
     private val angularFactor: Double = 1.0
 ) : DifferentialTrackerDriveBase {
 
     override var robotPosition = Pose2d()
 
-    fun update(deltaTime: Time) {
+    fun update(deltaTime: SIUnit<Second>) {
         val wheelState = DifferentialDrive.WheelState(
-            leftMotor.velocity * deltaTime.value / differentialDrive.wheelRadius,
-            rightMotor.velocity * deltaTime.value / differentialDrive.wheelRadius
+            (leftMotor.velocity * deltaTime / differentialDrive.wheelRadius).value,
+            (rightMotor.velocity * deltaTime / differentialDrive.wheelRadius).value
         )
 
         val forwardKinematics = differentialDrive.solveForwardKinematics(wheelState)
 
         robotPosition += Twist2d(
-            forwardKinematics.linear,
-            0.0,
+            forwardKinematics.linear.meter,
+            0.0.meter,
             (forwardKinematics.angular * angularFactor).radian
         ).asPose
     }

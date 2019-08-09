@@ -1,4 +1,12 @@
 /*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
+/*
  * FRC Team 5190
  * Green Hope Falcons
  */
@@ -15,8 +23,11 @@ package org.ghrobotics.lib.mathematics.twodim.geometry
 
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.units.Length
-import org.ghrobotics.lib.mathematics.units.UnboundedRotation
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
+import org.ghrobotics.lib.mathematics.units.derived.toUnbounded
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.types.VaryInterpolatable
 import kotlin.math.absoluteValue
@@ -29,20 +40,20 @@ data class Pose2d(
 ) : VaryInterpolatable<Pose2d> {
 
     constructor(
-        x: Length,
-        y: Length,
+        x: SIUnit<Meter>,
+        y: SIUnit<Meter>,
         rotation: Rotation2d = Rotation2d(0.0)
     ) : this(Translation2d(x, y), rotation)
 
     constructor(
         translation: Translation2d = Translation2d(),
-        rotation: UnboundedRotation
+        rotation: SIUnit<Radian>
     ) : this(translation, rotation.toRotation2d())
 
-     constructor(
-        x: Length,
-        y: Length,
-        rotation: UnboundedRotation
+    constructor(
+        x: SIUnit<Meter>,
+        y: SIUnit<Meter>,
+        rotation: SIUnit<Radian>
     ) : this(Translation2d(x, y), rotation)
 
     val twist: Twist2d
@@ -58,10 +69,10 @@ data class Pose2d(
             }
             val translationPart = translation *
                 Rotation2d(halfThetaByTanOfHalfDTheta, -halfDTheta, false)
-            return Twist2d(translationPart.x, translationPart.y, rotation)
+            return Twist2d(translationPart.x, translationPart.y, rotation.toUnbounded())
         }
 
-    val mirror get() = Pose2d(Translation2d(translation.x, 27.feet.value - translation.y), -rotation)
+    val mirror get() = Pose2d(Translation2d(translation.x, 27.0.feet - translation.y), -rotation)
 
     infix fun inFrameOfReferenceOf(fieldRelativeOrigin: Pose2d) = (-fieldRelativeOrigin) + this
 
@@ -83,7 +94,7 @@ data class Pose2d(
     fun isCollinear(other: Pose2d): Boolean {
         if (!rotation.isParallel(other.rotation)) return false
         val twist = (-this + other).twist
-        return twist.dy epsilonEquals 0.0 && twist.dTheta epsilonEquals 0.0
+        return twist.dy.value epsilonEquals 0.0 && twist.dTheta.value epsilonEquals 0.0
     }
 
     override fun interpolate(endValue: Pose2d, t: Double): Pose2d {
@@ -96,5 +107,5 @@ data class Pose2d(
         return this + (twist * t).asPose
     }
 
-    override fun distance(other: Pose2d) = (-this + other).twist.norm
+    override fun distance(other: Pose2d) = (-this + other).twist.norm.value
 }

@@ -1,29 +1,47 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.IMotorController
 import com.ctre.phoenix.motorcontrol.NeutralMode
+import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.nativeunits.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100msPerSecond
+import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
-abstract class FalconCTRE<T : SIUnit<T>>(
+abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,
-    val model: NativeUnitModel<T>
-) : AbstractFalconMotor<T>() {
+    val model: NativeUnitModel<K>
+) : AbstractFalconMotor<K>() {
 
     private var lastDemand =
         Demand(ControlMode.Disabled, 0.0, DemandType.Neutral, 0.0)
 
-    private var compVoltage = 12.0
+    private var compVoltage = 12.0.volt
 
     override val encoder = FalconCTREEncoder(motorController, 0, model)
 
-    override val voltageOutput: Double
-        get() = motorController.motorOutputVoltage
+    override val voltageOutput: SIUnit<Volt>
+        get() = motorController.motorOutputVoltage.volt
 
     override var outputInverted: Boolean by Delegates.observable(false) { _, _, newValue ->
         motorController.inverted = newValue
@@ -33,16 +51,22 @@ abstract class FalconCTRE<T : SIUnit<T>>(
         motorController.setNeutralMode(if (newValue) NeutralMode.Brake else NeutralMode.Coast)
     }
 
-    override var voltageCompSaturation: Double by Delegates.observable(12.0) { _, _, newValue ->
-        motorController.configVoltageCompSaturation(newValue, 0)
+    override var voltageCompSaturation: SIUnit<Volt> by Delegates.observable(12.0.volt) { _, _, newValue ->
+        motorController.configVoltageCompSaturation(newValue.value, 0)
         motorController.enableVoltageCompensation(true)
     }
 
-    override var motionProfileCruiseVelocity: Double by Delegates.observable(0.0) { _, _, newValue ->
-        motorController.configMotionCruiseVelocity((model.toNativeUnitVelocity(newValue) / 10.0).toInt(), 0)
+    override var motionProfileCruiseVelocity: SIUnit<Velocity<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        motorController.configMotionCruiseVelocity(
+            model.toNativeUnitVelocity(newValue).nativeUnitsPer100ms.roundToInt(),
+            0
+        )
     }
-    override var motionProfileAcceleration: Double by Delegates.observable(0.0) { _, _, newValue ->
-        motorController.configMotionAcceleration((model.toNativeUnitAcceleration(newValue) / 10.0).toInt(), 0)
+    override var motionProfileAcceleration: SIUnit<Acceleration<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        motorController.configMotionAcceleration(
+            model.toNativeUnitAcceleration(newValue).nativeUnitsPer100msPerSecond.roundToInt(),
+            0
+        )
     }
 
     init {
@@ -50,36 +74,36 @@ abstract class FalconCTRE<T : SIUnit<T>>(
         motorController.enableVoltageCompensation(true)
     }
 
-    override fun setVoltage(voltage: Double, arbitraryFeedForward: Double) =
+    override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.PercentOutput, voltage / compVoltage,
-                DemandType.ArbitraryFeedForward, arbitraryFeedForward / compVoltage
+                ControlMode.PercentOutput, (voltage / compVoltage).unitlessValue,
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
             )
         )
 
-    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: Double) =
+    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
                 ControlMode.PercentOutput, dutyCycle,
-                DemandType.ArbitraryFeedForward, arbitraryFeedForward / compVoltage
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
             )
         )
 
-    override fun setVelocity(velocity: Double, arbitraryFeedForward: Double) =
+    override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.Velocity, model.toNativeUnitVelocity(velocity) / 10.0,
-                DemandType.ArbitraryFeedForward, arbitraryFeedForward / compVoltage
+                ControlMode.Velocity, model.toNativeUnitVelocity(velocity).nativeUnitsPer100ms,
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
             )
         )
 
-    override fun setPosition(position: Double, arbitraryFeedForward: Double) =
+    override fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
                 if (useMotionProfileForPosition) ControlMode.MotionMagic else ControlMode.Position,
-                model.toNativeUnitPosition(position),
-                DemandType.ArbitraryFeedForward, arbitraryFeedForward / compVoltage
+                model.toNativeUnitPosition(position).value,
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
             )
         )
 
