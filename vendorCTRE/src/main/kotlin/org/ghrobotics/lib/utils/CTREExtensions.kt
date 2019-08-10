@@ -6,10 +6,11 @@
  * Copyright 2019, Green Hope Falcons
  */
 
+package org.ghrobotics.lib.utils
+
 import com.ctre.phoenix.CANifier
 import com.ctre.phoenix.sensors.PigeonIMU
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.utils.Source
+import edu.wpi.first.wpilibj.geometry.Rotation2d
 import java.awt.Color
 
 fun CANifier.setLEDOutput(color: Color) = setLEDOutput(color.red, color.green, color.blue)

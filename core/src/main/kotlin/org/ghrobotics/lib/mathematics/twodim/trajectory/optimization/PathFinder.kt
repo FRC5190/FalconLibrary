@@ -6,27 +6,23 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-package org.ghrobotics.lib.mathematics.twodim.trajectory
+package org.ghrobotics.lib.mathematics.twodim.trajectory.optimization
 
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Translation2d
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.apache.commons.math3.geometry.euclidean.twod.Line
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inch
 import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.utils.combinationPairs
-import org.ghrobotics.lib.utils.filterNotToSet
-import org.ghrobotics.lib.utils.flatMapToSet
-import org.ghrobotics.lib.utils.mapNotNullToSet
-import org.ghrobotics.lib.utils.mapToSet
-import org.ghrobotics.lib.utils.plusToSet
+import org.ghrobotics.lib.utils.*
 import java.lang.Math.sqrt
 import kotlin.math.pow
 
@@ -88,8 +84,7 @@ class PathFinder(
                 ),
                 Rotation2d(
                     splineDx.value(distanceTraveled),
-                    splineDy.value(distanceTraveled),
-                    true
+                    splineDy.value(distanceTraveled)
                 )
             )
         }.toTypedArray()
@@ -125,7 +120,11 @@ class PathFinder(
         effectiveRestrictedAreas: Set<Rectangle2d>
     ): List<Vector2D>? {
         val Q = points.map {
-            Node(it, Double.POSITIVE_INFINITY, null)
+            Node(
+                it,
+                Double.POSITIVE_INFINITY,
+                null
+            )
         }.toMutableSet()
 
         Q.first { it.point == source }.dist = 0.0
@@ -224,7 +223,7 @@ class PathFinder(
             }
     }
 
-    private fun Translation2d.toVector2d() = Vector2D(x.value, y.value)
+    private fun Translation2d.toVector2d() = Vector2D(x, y)
     private fun Vector2D.toTranslation2d() = Translation2d(x.meter, y.meter)
 
     companion object {

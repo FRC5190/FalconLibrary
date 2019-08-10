@@ -13,11 +13,10 @@ import edu.wpi.first.wpilibj.experimental.command.WaitUntilCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.localization.Localization
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.mirror
+import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
+import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.feet
@@ -59,9 +58,9 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
 
     override fun periodic() {
         // Report new position to Live Dashboard
-        LiveDashboard.robotHeading = robotPosition.rotation.radian
-        LiveDashboard.robotX = robotPosition.translation.x.feet
-        LiveDashboard.robotY = robotPosition.translation.y.feet
+        LiveDashboard.robotHeading = robotPosition.rotation.radians
+        LiveDashboard.robotX = robotPosition.translation.x_u.feet
+        LiveDashboard.robotY = robotPosition.translation.y_u.feet
     }
 
     // COMMON DRIVE TYPES
@@ -188,7 +187,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param trajectory The trajectory to follow
      */
     fun followTrajectory(
-        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, { trajectory }, dt = dt)
 
@@ -199,7 +198,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         pathMirrored: Boolean = false,
         dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(trajectory.let {
@@ -213,7 +212,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory>,
         pathMirrored: Boolean = false,
         dt: SIUnit<Second> = 20.milli.second
     ) = TrajectoryTrackerCommand(this, this, trajectory.map {
@@ -227,7 +226,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         pathMirrored: BooleanSource,
         dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory), dt = dt)
@@ -239,7 +238,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      * @param pathMirrored Source with whether to mirror the path or not
      */
     fun followTrajectory(
-        trajectory: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
+        trajectory: Source<Trajectory>,
         pathMirrored: BooleanSource,
         dt: SIUnit<Second> = 20.milli.second
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory), dt = dt)

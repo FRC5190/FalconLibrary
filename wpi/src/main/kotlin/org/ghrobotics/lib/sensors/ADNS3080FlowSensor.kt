@@ -9,11 +9,12 @@
 package org.ghrobotics.lib.sensors
 
 import edu.wpi.first.wpilibj.SPI
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Translation2d
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.utils.Source
@@ -74,7 +75,7 @@ class ADNS3080FlowSensor(
         return dataReceived[0]
     }
 
-    override fun invoke() = Translation2d(accumX.feet, accumY.feet) * rotation2d
+    override fun invoke() = Translation2d(accumX.feet, accumY.feet).rotateBy(rotation2d)
 
     fun free() {
         job.cancel()

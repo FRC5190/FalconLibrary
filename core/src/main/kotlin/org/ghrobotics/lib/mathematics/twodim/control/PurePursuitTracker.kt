@@ -8,16 +8,12 @@
 
 package org.ghrobotics.lib.mathematics.twodim.control
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
-import org.ghrobotics.lib.mathematics.units.Meter
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.second
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Transform2d
+import edu.wpi.first.wpilibj.geometry.Translation2d
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
+import org.ghrobotics.lib.mathematics.units.*
 import kotlin.math.pow
 
 /**
@@ -39,28 +35,28 @@ class PurePursuitTracker(
      * Calculate desired chassis velocity using pure pursuit.
      */
     override fun calculateState(
-        iterator: TrajectoryIterator<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput {
-        val referencePoint = iterator.currentState
+        val referencePoint = trajectory.currentState
 
         // Compute the lookahead state.
-        val lookaheadState: Pose2d = calculateLookaheadPose2d(iterator, robotPose)
+        val lookaheadState: Pose2d = calculateLookaheadPose2d(trajectory, robotPose)
 
         // Find the appropriate lookahead point.
-        val lookaheadTransform = lookaheadState inFrameOfReferenceOf robotPose
+        val lookaheadTransform = lookaheadState.relativeTo(robotPose)
 
         // Calculate latitude error.
-        val xError = (referencePoint.state.state.pose inFrameOfReferenceOf robotPose).translation.x.value
+        val xError = (referencePoint.state.pose.relativeTo(robotPose)).translation.x
 
         // Calculate the velocity at the reference point.
-        val vd = referencePoint.state.velocity.value
+        val vd = referencePoint.velocity.value
 
         // Calculate the distance from the robot to the lookahead.
-        val l = lookaheadTransform.translation.norm.value
+        val l = lookaheadTransform.translation.norm
 
         // Calculate the curvature of the arc that connects the robot and the lookahead point.
-        val curvature = 2 * lookaheadTransform.translation.y.value / l.pow(2)
+        val curvature = 2 * lookaheadTransform.translation.y / l.pow(2)
 
         // Adjust the linear velocity to compensate for the robot lagging behind.
         val adjustedLinearVelocity = vd * lookaheadTransform.rotation.cos + kLat * xError
@@ -74,20 +70,18 @@ class PurePursuitTracker(
 
 
     private fun calculateLookaheadPose2d(
-        iterator: TrajectoryIterator<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         robotPose: Pose2d
     ): Pose2d {
-        val lookaheadPoseByTime = iterator.preview(kLookaheadTime).state.state.pose
+        val lookaheadPoseByTime = trajectory.preview(kLookaheadTime).state.pose
 
         // The lookahead point is farther from the robot than the minimum lookahead distance.
         // Therefore we can use this point.
-        if ((lookaheadPoseByTime inFrameOfReferenceOf robotPose).translation.norm >= kMinLookaheadDistance) {
+        if ((lookaheadPoseByTime.relativeTo(robotPose)).translation.norm >= kMinLookaheadDistance.value) {
             return lookaheadPoseByTime
         }
 
-        val lastInterpolant = iterator.trajectory.lastInterpolant
-
-        var lookaheadPoseByDistance = iterator.currentState.state.state.pose
+        var lookaheadPoseByDistance = trajectory.currentState.state.pose
 
         // We can start previewing from the current lookahead time because we know that we do not
         // meet the distance requirement at this time -- it is useless to start from zero.
@@ -95,26 +89,26 @@ class PurePursuitTracker(
 
         // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
         // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
-        while ((lastInterpolant - iterator.progress) > previewedTime) {
+        while (trajectory.remainingProgress > previewedTime) {
             previewedTime += 0.02.second
 
-            lookaheadPoseByDistance = iterator.preview(previewedTime).state.state.pose
-            val lookaheadDistance = (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation.norm
+            lookaheadPoseByDistance = trajectory.preview(previewedTime).state.pose
+            val lookaheadDistance = (lookaheadPoseByDistance.relativeTo(robotPose)).translation.norm
 
-            if (lookaheadDistance > kMinLookaheadDistance) {
+            if (lookaheadDistance > kMinLookaheadDistance.value) {
                 return lookaheadPoseByDistance
             }
         }
 
         // Extend the trajectory.
         val remaining =
-            kMinLookaheadDistance - (lookaheadPoseByDistance inFrameOfReferenceOf robotPose).translation.norm
+            kMinLookaheadDistance.value - (lookaheadPoseByDistance.relativeTo(robotPose)).translation.norm
 
         return lookaheadPoseByDistance.transformBy(
-            Pose2d(
-                Translation2d(remaining * (if (iterator.trajectory.reversed) -1.0 else 1.0), 0.0.meter)
+            Transform2d(
+                Translation2d(remaining * (if (trajectory.reversed) -1.0 else 1.0), 0.0),
+                Rotation2d()
             )
         )
     }
-
 }

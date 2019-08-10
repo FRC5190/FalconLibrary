@@ -8,12 +8,11 @@
 
 package org.ghrobotics.lib.localization
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.toUnbounded
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.utils.Source
 
@@ -21,7 +20,7 @@ class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
     val leftEncoder: Source<SIUnit<Meter>>,
     val rightEncoder: Source<SIUnit<Meter>>,
-    localizationBuffer: TimeInterpolatableBuffer<Pose2d> = TimeInterpolatableBuffer()
+    localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
 ) : Localization(robotHeading, localizationBuffer) {
 
     private var prevLeftEncoder = 0.0.meter
@@ -33,7 +32,7 @@ class TankEncoderLocalization(
         prevRightEncoder = rightEncoder()
     }
 
-    override fun update(deltaHeading: Rotation2d): Pose2d {
+    override fun update(deltaHeading: Rotation2d): Twist2d {
         val newLeftEncoder = leftEncoder()
         val newRightEncoder = rightEncoder()
 
@@ -43,7 +42,7 @@ class TankEncoderLocalization(
         this.prevLeftEncoder = newLeftEncoder
         this.prevRightEncoder = newRightEncoder
 
-        return forwardKinematics(deltaLeft, deltaRight, deltaHeading).asPose
+        return forwardKinematics(deltaLeft, deltaRight, deltaHeading)
     }
 
     /**
@@ -55,6 +54,6 @@ class TankEncoderLocalization(
         rotationDelta: Rotation2d
     ): Twist2d {
         val dx = (leftDelta + rightDelta) / 2.0
-        return Twist2d(dx, 0.0.meter, rotationDelta.toUnbounded())
+        return Twist2d(dx.value, 0.0, rotationDelta.radians)
     }
 }

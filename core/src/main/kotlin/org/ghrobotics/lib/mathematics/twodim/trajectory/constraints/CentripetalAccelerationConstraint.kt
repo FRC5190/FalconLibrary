@@ -7,11 +7,6 @@
  */
 
 /*
- * FRC Team 5190
- * Green Hope Falcons
- */
-
-/*
  * Some implementations and algorithms borrowed from:
  * NASA Ames Robotics "The Cheesy Poofs"
  * Team 254
@@ -27,7 +22,7 @@ import kotlin.math.sqrt
 
 class CentripetalAccelerationConstraint constructor(
     val mMaxCentripetalAcceleration: SIUnit<LinearAcceleration>
-) : TimingConstraint<Pose2dWithCurvature> {
+) : TrajectoryConstraint {
 
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
         sqrt((mMaxCentripetalAcceleration.value / state.curvature).absoluteValue)
@@ -35,5 +30,5 @@ class CentripetalAccelerationConstraint constructor(
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,
         velocity: Double
-    ) = TimingConstraint.MinMaxAcceleration.kNoLimits
+    ) = TrajectoryConstraint.MinMaxAcceleration.kNoLimits
 }

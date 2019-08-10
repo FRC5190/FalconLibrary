@@ -9,8 +9,9 @@
 package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.second
@@ -23,7 +24,7 @@ import kotlin.reflect.KProperty
  */
 abstract class Localization(
     protected val robotHeading: Source<Rotation2d>,
-    private val localizationBuffer: TimeInterpolatableBuffer<Pose2d> = TimeInterpolatableBuffer()
+    private val localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
 ) : Source<Pose2d> {
 
     /**
@@ -56,7 +57,7 @@ abstract class Localization(
         val deltaHeading = newHeading - prevHeading
 
         // Add the recorded motion of the robot during this iteration to the global robot pose.
-        val newRobotPosition = robotPosition + update(deltaHeading)
+        val newRobotPosition = robotPosition.exp(update(deltaHeading))
         robotPosition = Pose2d(
             newRobotPosition.translation,
             newHeading + headingOffset
@@ -68,7 +69,7 @@ abstract class Localization(
         localizationBuffer[Timer.getFPGATimestamp().second] = robotPosition
     }
 
-    protected abstract fun update(deltaHeading: Rotation2d): Pose2d
+    protected abstract fun update(deltaHeading: Rotation2d): Twist2d
 
     override fun invoke() = robotPosition
 

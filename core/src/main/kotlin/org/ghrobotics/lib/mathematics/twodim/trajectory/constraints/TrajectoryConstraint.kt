@@ -6,23 +6,13 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-/*
- * FRC Team 5190
- * Green Hope Falcons
- */
-
-/*
- * Some implementations and algorithms borrowed from:
- * NASA Ames Robotics "The Cheesy Poofs"
- * Team 254
- */
-
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
-interface TimingConstraint<S> {
-    fun getMaxVelocity(state: S): Double
+import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 
-    fun getMinMaxAcceleration(state: S, velocity: Double): MinMaxAcceleration
+interface TrajectoryConstraint {
+    fun getMaxVelocity(state: Pose2dWithCurvature): Double
+    fun getMinMaxAcceleration(state: Pose2dWithCurvature, velocity: Double): MinMaxAcceleration
 
     data class MinMaxAcceleration(
         val minAcceleration: Double,
@@ -33,7 +23,8 @@ interface TimingConstraint<S> {
         val valid = minAcceleration <= maxAcceleration
 
         companion object {
-            val kNoLimits = MinMaxAcceleration()
+            val kNoLimits =
+                MinMaxAcceleration()
         }
     }
 }
