@@ -9,23 +9,24 @@
 package org.ghrobotics.lib.localization
 
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.interpolate
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.second
 import org.ghrobotics.lib.mathematics.units.unitlessValue
-import org.ghrobotics.lib.types.Interpolatable
 import org.ghrobotics.lib.utils.Source
 import java.util.*
 
-class TimeInterpolatableBuffer<T : Interpolatable<T>>(
+class TimePoseInterpolatableBuffer(
     private val historySpan: SIUnit<Second> = 1.0.second,
     private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().second }
 ) {
 
-    private val bufferMap = TreeMap<SIUnit<Second>, T>()
+    private val bufferMap = TreeMap<SIUnit<Second>, Pose2d>()
 
-    operator fun set(time: SIUnit<Second>, value: T): T? {
+    operator fun set(time: SIUnit<Second>, value: Pose2d): Pose2d? {
         cleanUp()
         return bufferMap.put(time, value)
     }
@@ -47,7 +48,7 @@ class TimeInterpolatableBuffer<T : Interpolatable<T>>(
         bufferMap.clear()
     }
 
-    operator fun get(time: SIUnit<Second>): T? {
+    operator fun get(time: SIUnit<Second>): Pose2d? {
         if (bufferMap.isEmpty()) return null
 
         bufferMap[time]?.let { return it }

@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "1.3.30" apply false
     id("edu.wpi.first.GradleRIO") version "2019.4.1" apply false
     id("io.gitlab.arturbosch.detekt") version "1.0.0-RC13"
+    id("java")
     maven
     `maven-publish`
 

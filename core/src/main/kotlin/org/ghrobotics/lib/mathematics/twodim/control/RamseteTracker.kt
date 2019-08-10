@@ -8,13 +8,10 @@
 
 package org.ghrobotics.lib.mathematics.twodim.control
 
+import edu.wpi.first.wpilibj.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.epsilonEquals
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -34,13 +31,13 @@ class RamseteTracker(
      * Calculate desired chassis velocity using Ramsete.
      */
     override fun calculateState(
-        iterator: TrajectoryIterator<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput {
-        val referenceState = iterator.currentState.state
+        val referenceState = trajectory.currentState
 
         // Calculate goal in robot's coordinates
-        val error = referenceState.state.pose inFrameOfReferenceOf robotPose
+        val error = referenceState.state.pose.relativeTo(robotPose)
 
         // Get reference linear and angular velocities
         val vd = referenceState.velocity.value
@@ -50,11 +47,11 @@ class RamseteTracker(
         val k1 = 2 * kZeta * sqrt(wd * wd + kBeta * vd * vd)
 
         // Get angular error in bounded radians
-        val angleError = error.rotation.radian
+        val angleError = error.rotation.radians
 
         return TrajectoryTrackerVelocityOutput(
-            linearVelocity = SIUnit(vd * error.rotation.cos + k1 * error.translation.x.value),
-            angularVelocity = SIUnit(wd + kBeta * vd * sinc(angleError) * error.translation.y.value + k1 * angleError)
+            linearVelocity = SIUnit(vd * error.rotation.cos + k1 * error.translation.x),
+            angularVelocity = SIUnit(wd + kBeta * vd * sinc(angleError) * error.translation.y + k1 * angleError)
         )
     }
 

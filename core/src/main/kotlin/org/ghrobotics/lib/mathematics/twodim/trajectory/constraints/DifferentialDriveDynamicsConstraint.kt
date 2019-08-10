@@ -16,7 +16,7 @@ import org.ghrobotics.lib.mathematics.units.derived.Volt
 class DifferentialDriveDynamicsConstraint constructor(
     val drive: DifferentialDrive,
     val maxVoltage: SIUnit<Volt>
-) : TimingConstraint<Pose2dWithCurvature> {
+) : TrajectoryConstraint {
 
     override fun getMaxVelocity(state: Pose2dWithCurvature) =
         drive.getMaxAbsVelocity(state.curvature, maxVoltage.value)
@@ -24,12 +24,12 @@ class DifferentialDriveDynamicsConstraint constructor(
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,
         velocity: Double
-    ): TimingConstraint.MinMaxAcceleration {
+    ): TrajectoryConstraint.MinMaxAcceleration {
         val minMax = drive.getMinMaxAcceleration(
             DifferentialDrive.ChassisState(velocity, velocity * state.curvature),
             state.curvature,
             maxVoltage.value
         )
-        return TimingConstraint.MinMaxAcceleration(minMax.min, minMax.max)
+        return TrajectoryConstraint.MinMaxAcceleration(minMax.min, minMax.max)
     }
 }

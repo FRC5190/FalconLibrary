@@ -12,8 +12,10 @@ import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.jsonObject
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import edu.wpi.first.wpilibj.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.derived.degree
+import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.delegate
@@ -42,7 +44,7 @@ object LiveDashboard {
                     jsonObject(
                         "x" to it.translation.x,
                         "y" to it.translation.y,
-                        "angle" to it.rotation.degree
+                        "angle" to it.rotation.degrees
                     ).toString()
                 }.toTypedArray()
             )
@@ -53,7 +55,7 @@ object LiveDashboard {
                 Pose2d(
                     data["x"].asDouble.meter,
                     data["y"].asDouble.meter,
-                    data["angle"].asDouble.degree
+                    data["angle"].asDouble.degree.toRotation2d()
                 )
             }
 

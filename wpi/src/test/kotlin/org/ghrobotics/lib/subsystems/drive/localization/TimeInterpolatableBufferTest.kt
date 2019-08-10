@@ -8,7 +8,10 @@
 
 package org.ghrobotics.lib.subsystems.drive.localization
 
-import org.ghrobotics.lib.localization.TimeInterpolatableBuffer
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
+import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.second
@@ -18,16 +21,25 @@ import org.junit.Test
 class TimeInterpolatableBufferTest {
     @Test
     fun testInterpolation() {
-        val buffer = TimeInterpolatableBuffer<Pose2d>(
+        val buffer = TimePoseInterpolatableBuffer(
             2.second,
             timeSource = { 2.second }
         )
         buffer[1000.second] = Pose2d()
-        buffer[2000.second] = Pose2d(10.meter, 0.meter)
+        buffer[2000.second] = Pose2d(10.meter, 0.meter, Rotation2d())
 
-        Assert.assertEquals(Pose2d(), buffer[500.second])
-        Assert.assertEquals(Pose2d(2.5.meter, 0.meter), buffer[1250.second])
-        Assert.assertEquals(Pose2d(5.meter, 0.meter), buffer[1500.second])
-        Assert.assertEquals(Pose2d(10.meter, 0.meter), buffer[2500.second])
+        Assert.assertEquals(Pose2d().translation.norm, buffer[500.second]!!.translation.norm, kEpsilon)
+        Assert.assertEquals(
+            Pose2d(2.5.meter, 0.meter, Rotation2d()).translation.norm,
+            buffer[1250.second]!!.translation.norm, kEpsilon
+        )
+        Assert.assertEquals(
+            Pose2d(5.meter, 0.meter, Rotation2d()).translation.norm,
+            buffer[1500.second]!!.translation.norm, kEpsilon
+        )
+        Assert.assertEquals(
+            Pose2d(10.meter, 0.meter, Rotation2d()).translation.norm,
+            buffer[2500.second]!!.translation.norm, kEpsilon
+        )
     }
 }
