@@ -5,7 +5,7 @@
 
 Feature-rich Kotlin JVM based robotics library, primarily for use in the FIRST Robotics Competition. FalconLibrary is the backend for all Team 5190 robots.
 
-Due to the usage of Kotlin inline classes, this library is NOT compatible with Java.
+Note: Due to the usage of inline classes, the units code does NOT work in Java.
 
 ### `core`: Platform-agnostic mathematics and units code
 * Two-dimensional parametric and functional splines.
