@@ -36,8 +36,6 @@ abstract class FalconCTRE<K : SIKey>(
     private var lastDemand =
         Demand(ControlMode.Disabled, 0.0, DemandType.Neutral, 0.0)
 
-    private var compVoltage = 12.0.volt
-
     override val encoder = FalconCTREEncoder(motorController, 0, model)
 
     override val voltageOutput: SIUnit<Volt>
@@ -77,7 +75,7 @@ abstract class FalconCTRE<K : SIKey>(
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.PercentOutput, (voltage / compVoltage).unitlessValue,
+                ControlMode.PercentOutput, (voltage / voltageCompSaturation).unitlessValue,
                 DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
