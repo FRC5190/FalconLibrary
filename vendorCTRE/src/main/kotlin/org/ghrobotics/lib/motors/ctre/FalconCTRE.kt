@@ -78,7 +78,7 @@ abstract class FalconCTRE<K : SIKey>(
         sendDemand(
             Demand(
                 ControlMode.PercentOutput, (voltage / compVoltage).unitlessValue,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
 
@@ -86,7 +86,7 @@ abstract class FalconCTRE<K : SIKey>(
         sendDemand(
             Demand(
                 ControlMode.PercentOutput, dutyCycle,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
 
@@ -94,7 +94,7 @@ abstract class FalconCTRE<K : SIKey>(
         sendDemand(
             Demand(
                 ControlMode.Velocity, model.toNativeUnitVelocity(velocity).nativeUnitsPer100ms,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
 
@@ -103,7 +103,7 @@ abstract class FalconCTRE<K : SIKey>(
             Demand(
                 if (useMotionProfileForPosition) ControlMode.MotionMagic else ControlMode.Position,
                 model.toNativeUnitPosition(position).value,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / compVoltage).unitlessValue
+                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
 
