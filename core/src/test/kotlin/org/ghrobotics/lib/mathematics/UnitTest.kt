@@ -51,7 +51,7 @@ class UnitTest {
 
     @Test
     fun testFeetToMeter() {
-        val one = 1.foot
+        val one = 1.feet
 
         assert(one.meter epsilonEquals 0.3048)
     }
