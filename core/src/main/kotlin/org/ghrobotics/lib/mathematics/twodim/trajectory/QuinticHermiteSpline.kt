@@ -23,7 +23,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.log
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.Radian
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.meters
 import kotlin.math.hypot
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -72,14 +72,16 @@ class QuinticHermiteSpline(
     private var ey = 0.0
     private var fy = 0.0
 
-    val startPose get() = Pose2d(
-        Translation2d(x0.meter, y0.meter),
-        Rotation2d(dx0, dy0)
-    )
-    val endPose get() = Pose2d(
-        Translation2d(x1.meter, y1.meter),
-        Rotation2d(dx1, dy1)
-    )
+    val startPose
+        get() = Pose2d(
+            Translation2d(x0.meters, y0.meters),
+            Rotation2d(dx0, dy0)
+        )
+    val endPose
+        get() = Pose2d(
+            Translation2d(x1.meters, y1.meters),
+            Rotation2d(dx1, dy1)
+        )
 
     init {
         computeCoefficients()
@@ -107,7 +109,7 @@ class QuinticHermiteSpline(
     fun getPoint(t: Double): Translation2d {
         val x = ax * t.pow(5) + bx * t.pow(4) + cx * t.pow(3) + dx * t.pow(2) + ex * t + fx
         val y = ay * t.pow(5) + by * t.pow(4) + cy * t.pow(3) + dy * t.pow(2) + ey * t + fy
-        return Translation2d(x.meter, y.meter)
+        return Translation2d(x.meters, y.meters)
     }
 
     private fun dx(t: Double) =
@@ -235,14 +237,14 @@ class QuinticHermiteSpline(
                     maxDy,
                     maxDTheta
                 ) +
-                    getSegmentArc(
-                        s,
-                        (t0 + t1) / 2,
-                        t1,
-                        maxDx,
-                        maxDy,
-                        maxDTheta
-                    )
+                        getSegmentArc(
+                            s,
+                            (t0 + t1) / 2,
+                            t1,
+                            maxDx,
+                            maxDy,
+                            maxDTheta
+                        )
             } else {
                 arrayOf(s.getPose2dWithCurvature(t1))
             }

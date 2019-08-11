@@ -19,6 +19,12 @@ import org.ghrobotics.lib.mathematics.units.Second
 typealias Ohm = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
     Mult<Second, Mult<Second, Mult<Second, Mult<Ampere, Ampere>>>>>
 
-val Double.ohm get() = SIUnit<Ohm>(this)
+@Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
+val Double.ohm get() = ohms
 
-val Number.ohm get() = toDouble().ohm
+@Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
+val Number.ohm get() = ohms
+
+val Double.ohms get() = SIUnit<Ohm>(this)
+
+val Number.ohms get() = toDouble().ohms

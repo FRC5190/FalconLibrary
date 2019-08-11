@@ -19,6 +19,12 @@ import org.ghrobotics.lib.mathematics.units.Second
 typealias Volt = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
     Mult<Ampere, Mult<Second, Mult<Second, Second>>>>
 
-val Double.volt get() = SIUnit<Volt>(this)
+@Deprecated("Replaced with Plural version", ReplaceWith("volts"))
+val Double.volt get() = volts
 
-val Number.volt get() = toDouble().volt
+@Deprecated("Replaced with Plural version", ReplaceWith("volts"))
+val Number.volt get() = volts
+
+val Double.volts get() = SIUnit<Volt>(this)
+
+val Number.volts get() = toDouble().volts

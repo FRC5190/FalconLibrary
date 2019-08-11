@@ -8,29 +8,18 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.derived.radian
+import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.derived.radians
 import org.ghrobotics.lib.mathematics.units.derived.velocity
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.kilo
-import org.ghrobotics.lib.mathematics.units.lb
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
-import org.ghrobotics.lib.mathematics.units.nativeunit.fromNativeUnitPosition
-import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
-import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100ms
-import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100msPerSecond
-import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitAcceleration
-import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitVelocity
+import org.ghrobotics.lib.mathematics.units.nativeunit.*
 import org.ghrobotics.lib.mathematics.units.operations.div
-import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 
 class UnitTest {
 
     private val settings = NativeUnitLengthModel(
         1440.nativeUnits,
-        3.0.inch
+        3.0.inches
     )
 
     @Test
@@ -42,7 +31,7 @@ class UnitTest {
 
     @Test
     fun testVelocitySTU() {
-        val one = 1.meter / 1.second
+        val one = 1.meters / 1.seconds
 
         val two = one.toNativeUnitVelocity(settings)
 
@@ -53,7 +42,7 @@ class UnitTest {
 
     @Test
     fun testAccelerationSTU() {
-        val one = 1.meter / 1.second / 1.second
+        val one = 1.meters / 1.seconds / 1.seconds
 
         val two = one.toNativeUnitAcceleration(settings)
 
@@ -62,20 +51,20 @@ class UnitTest {
 
     @Test
     fun testFeetToMeter() {
-        val one = 1.feet
+        val one = 1.foot
 
         assert(one.meter epsilonEquals 0.3048)
     }
 
     @Test
     fun testKgToPound() {
-        val kg = 2.kilo.gram
+        val kg = 2.kilo.grams
         assert(kg.lb epsilonEquals 4.409248840367555)
     }
 
     @Test
     fun testUnboundedRotationUnits() {
-        val speed = 250.radian.velocity
+        val speed = 250.radians.velocity
         assert(speed.value epsilonEquals 250.0)
     }
 }

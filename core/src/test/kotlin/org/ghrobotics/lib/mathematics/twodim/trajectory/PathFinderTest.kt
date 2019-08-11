@@ -17,8 +17,8 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalA
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.optimization.PathFinder
 import org.ghrobotics.lib.mathematics.units.derived.*
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.foot
+import org.ghrobotics.lib.mathematics.units.inches
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
@@ -32,7 +32,7 @@ class PathFinderTest {
 
     @Test
     fun testPathFinder() {
-        val robotSize = 33.0.inch
+        val robotSize = 33.0.inches
         val pathFinder = PathFinder(
             robotSize,
             PathFinder.k2018LeftSwitch,
@@ -42,11 +42,11 @@ class PathFinderTest {
         lateinit var path: List<Pose2d>
         val nodeCreationTime = measureTimeMillis {
             path = pathFinder.findPath(
-                Pose2d(1.54.feet, 23.234167.feet, 0.0.degree.toRotation2d()),
-                Pose2d(23.7.feet, (27 - 20.2).feet, 0.0.degree.toRotation2d()),
+                Pose2d(1.54.foot, 23.234167.foot, 0.0.degrees.toRotation2d()),
+                Pose2d(23.7.foot, (27 - 20.2).foot, 0.0.degrees.toRotation2d()),
                 Rectangle2d(
-                    Translation2d(0.0.feet, 0.0.feet),
-                    Translation2d(10.0.feet, 10.0.feet)
+                    Translation2d(0.0.foot, 0.0.foot),
+                    Translation2d(10.0.foot, 10.0.foot)
                 )
             )!!
             println(path.joinToString(separator = "\n") {
@@ -59,23 +59,23 @@ class PathFinderTest {
             trajectory = DefaultTrajectoryGenerator.generateTrajectory(
                 path,
                 listOf(
-                    CentripetalAccelerationConstraint(4.0.feet.acceleration),
-                    DifferentialDriveDynamicsConstraint(TrajectoryGeneratorTest.drive, 9.0.volt)
+                    CentripetalAccelerationConstraint(4.0.foot.acceleration),
+                    DifferentialDriveDynamicsConstraint(TrajectoryGeneratorTest.drive, 9.0.volts)
                 ),
-                0.0.feet.velocity,
-                0.0.feet.velocity,
-                10.0.feet.velocity,
-                4.0.feet.acceleration,
+                0.0.foot.velocity,
+                0.0.foot.velocity,
+                10.0.foot.velocity,
+                4.0.foot.acceleration,
                 false
             )
         }
         println(
             "Generated Trajectory in $trajectoryTime ms\n" +
-                "Total: ${trajectoryTime + nodeCreationTime} ms"
+                    "Total: ${trajectoryTime + nodeCreationTime} ms"
         )
 
         val iterator = trajectory
-        val dt = 20.0.milli.second
+        val dt = 20.0.milli.seconds
         val refList = mutableListOf<Translation2d>()
 
         while (!iterator.isDone) {

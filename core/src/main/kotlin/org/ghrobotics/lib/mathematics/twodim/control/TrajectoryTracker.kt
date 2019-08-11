@@ -14,7 +14,7 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.derived.*
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.utils.DeltaTime
@@ -39,7 +39,7 @@ abstract class TrajectoryTracker {
 
     fun nextState(
         currentRobotPose: Pose2d,
-        currentTime: SIUnit<Second> = System.currentTimeMillis().toDouble().milli.second
+        currentTime: SIUnit<Second> = System.currentTimeMillis().toDouble().milli.seconds
     ): TrajectoryTrackerOutput {
         val iterator = trajectory
         require(iterator != null) {
@@ -56,9 +56,9 @@ abstract class TrajectoryTracker {
         return if (previousVelocity == null || deltaTime.value <= 0) {
             TrajectoryTrackerOutput(
                 linearVelocity = velocity.linearVelocity,
-                linearAcceleration = 0.0.meter.acceleration,
+                linearAcceleration = 0.0.meters.acceleration,
                 angularVelocity = velocity.angularVelocity,
-                angularAcceleration = 0.0.radian.acceleration
+                angularAcceleration = 0.0.radians.acceleration
             )
         } else {
             TrajectoryTrackerOutput(

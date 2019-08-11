@@ -13,13 +13,28 @@ import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.Watt
 
 inline class SIUnitBuilder(private val value: Double) {
-    val second get() = SIUnit<Second>(value)
-    val meter get() = SIUnit<Meter>(value)
-    val gram get() = SIUnit<Kilogram>(value.times(kBaseOffsetKilo))
-    val amp get() = SIUnit<Ampere>(value)
-    val ohm get() = SIUnit<Ohm>(value)
-    val volt get() = SIUnit<Volt>(value)
-    val watt get() = SIUnit<Watt>(value)
+    @Deprecated("Replaced with Plural version", ReplaceWith("seconds"))
+    val second get() = seconds
+    @Deprecated("Replaced with Plural version", ReplaceWith("meters"))
+    val meter get() = meters
+    @Deprecated("Replaced with Plural version", ReplaceWith("grams"))
+    val gram get() = grams
+    @Deprecated("Replaced with Plural version", ReplaceWith("amps"))
+    val amp get() = amps
+    @Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
+    val ohm get() = ohms
+    @Deprecated("Replaced with Plural version", ReplaceWith("volts"))
+    val volt get() = volts
+    @Deprecated("Replaced with Plural version", ReplaceWith("watts"))
+    val watt get() = watts
+
+    val seconds get() = SIUnit<Second>(value)
+    val meters get() = SIUnit<Meter>(value)
+    val grams get() = SIUnit<Kilogram>(value.times(kBaseOffsetKilo))
+    val amps get() = SIUnit<Ampere>(value)
+    val ohms get() = SIUnit<Ohm>(value)
+    val volts get() = SIUnit<Volt>(value)
+    val watts get() = SIUnit<Watt>(value)
 }
 
 val Double.yotta get() = SIUnitBuilder(times(kYotta))

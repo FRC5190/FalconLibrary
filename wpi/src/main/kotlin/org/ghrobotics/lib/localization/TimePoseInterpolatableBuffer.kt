@@ -11,17 +11,14 @@ package org.ghrobotics.lib.localization
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.interpolate
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.operations.div
-import org.ghrobotics.lib.mathematics.units.second
-import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.utils.Source
 import java.util.*
 
 class TimePoseInterpolatableBuffer(
-    private val historySpan: SIUnit<Second> = 1.0.second,
-    private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().second }
+    private val historySpan: SIUnit<Second> = 1.0.seconds,
+    private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().seconds }
 ) {
 
     private val bufferMap = TreeMap<SIUnit<Second>, Pose2d>()

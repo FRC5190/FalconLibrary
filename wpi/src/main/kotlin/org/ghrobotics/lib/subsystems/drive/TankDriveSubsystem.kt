@@ -188,7 +188,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
      */
     fun followTrajectory(
         trajectory: Trajectory,
-        dt: SIUnit<Second> = 20.milli.second
+        dt: SIUnit<Second> = 20.milli.seconds
     ) = TrajectoryTrackerCommand(this, this, { trajectory }, dt = dt)
 
     /**
@@ -200,7 +200,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     fun followTrajectory(
         trajectory: Trajectory,
         pathMirrored: Boolean = false,
-        dt: SIUnit<Second> = 20.milli.second
+        dt: SIUnit<Second> = 20.milli.seconds
     ) = followTrajectory(trajectory.let {
         if (pathMirrored) it.mirror() else it
     }, dt)
@@ -214,7 +214,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     fun followTrajectory(
         trajectory: Source<Trajectory>,
         pathMirrored: Boolean = false,
-        dt: SIUnit<Second> = 20.milli.second
+        dt: SIUnit<Second> = 20.milli.seconds
     ) = TrajectoryTrackerCommand(this, this, trajectory.map {
         if (pathMirrored) it.mirror() else it
     }, dt = dt)
@@ -228,7 +228,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     fun followTrajectory(
         trajectory: Trajectory,
         pathMirrored: BooleanSource,
-        dt: SIUnit<Second> = 20.milli.second
+        dt: SIUnit<Second> = 20.milli.seconds
     ) = followTrajectory(pathMirrored.map(trajectory.mirror(), trajectory), dt = dt)
 
     /**
@@ -240,7 +240,7 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     fun followTrajectory(
         trajectory: Source<Trajectory>,
         pathMirrored: BooleanSource,
-        dt: SIUnit<Second> = 20.milli.second
+        dt: SIUnit<Second> = 20.milli.seconds
     ) = followTrajectory(pathMirrored.map(trajectory.map { it.mirror() }, trajectory), dt = dt)
 
 

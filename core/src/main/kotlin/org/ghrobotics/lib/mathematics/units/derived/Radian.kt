@@ -14,11 +14,21 @@ import org.ghrobotics.lib.mathematics.units.Unitless
 
 typealias Radian = Unitless
 
-val Double.radian get() = SIUnit<Radian>(this)
-val Double.degree get() = SIUnit<Radian>(Math.toRadians(this))
+@Deprecated("Replaced with Plural version", ReplaceWith("radians"))
+val Double.radian get() = radians
+@Deprecated("Replaced with Plural version", ReplaceWith("degrees"))
+val Double.degree get() = degrees
 
-val Number.radian get() = toDouble().radian
-val Number.degree get() = toDouble().degree
+@Deprecated("Replaced with Plural version", ReplaceWith("radians"))
+val Number.radian get() = radians
+@Deprecated("Replaced with Plural version", ReplaceWith("degrees"))
+val Number.degree get() = degrees
+
+val Double.radians get() = SIUnit<Radian>(this)
+val Double.degrees get() = SIUnit<Radian>(Math.toRadians(this))
+
+val Number.radians get() = toDouble().radians
+val Number.degrees get() = toDouble().degrees
 
 val SIUnit<Radian>.radian get() = value
 val SIUnit<Radian>.degree get() = Math.toDegrees(value)

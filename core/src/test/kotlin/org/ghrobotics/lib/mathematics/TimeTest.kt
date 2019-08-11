@@ -8,16 +8,14 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.day
-import org.ghrobotics.lib.mathematics.units.minute
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
 
 class TimeTest {
 
     @Test
     fun testDivision() {
-        val one = 45.day
+        val one = 45.days
 
         val two = one / 3
 
@@ -26,8 +24,8 @@ class TimeTest {
 
     @Test
     fun testAddition() {
-        val one = 2.5.minute
-        val two = 360.second
+        val one = 2.5.minutes
+        val two = 360.seconds
 
         val three = one + two
 

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.utils.Source
 
 class TankEncoderLocalization(
@@ -23,8 +23,8 @@ class TankEncoderLocalization(
     localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
 ) : Localization(robotHeading, localizationBuffer) {
 
-    private var prevLeftEncoder = 0.0.meter
-    private var prevRightEncoder = 0.0.meter
+    private var prevLeftEncoder = 0.0.meters
+    private var prevRightEncoder = 0.0.meters
 
     override fun resetInternal(newPosition: Pose2d) {
         super.resetInternal(newPosition)
