@@ -19,7 +19,7 @@ class TimeTest {
 
         val two = one / 3
 
-        assert(two.day == 15.0)
+        assert(two.inDays() == 15.0)
     }
 
     @Test
@@ -29,6 +29,6 @@ class TimeTest {
 
         val three = one + two
 
-        assert(three.minute epsilonEquals 8.5)
+        assert(three.inMinutes() epsilonEquals 8.5)
     }
 }

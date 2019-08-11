@@ -17,10 +17,7 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.milli
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -59,8 +56,8 @@ abstract class TankDriveSubsystem : FalconSubsystem(),
     override fun periodic() {
         // Report new position to Live Dashboard
         LiveDashboard.robotHeading = robotPosition.rotation.radians
-        LiveDashboard.robotX = robotPosition.translation.x_u.feet
-        LiveDashboard.robotY = robotPosition.translation.y_u.feet
+        LiveDashboard.robotX = robotPosition.translation.x_u.inFeet()
+        LiveDashboard.robotY = robotPosition.translation.y_u.inFeet()
     }
 
     // COMMON DRIVE TYPES

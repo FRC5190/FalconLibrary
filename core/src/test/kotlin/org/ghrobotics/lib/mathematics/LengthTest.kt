@@ -20,7 +20,7 @@ class LengthTest {
 
         val three = one + two
 
-        assert(three.meter epsilonEquals 1.3048)
+        assert(three.inMeters() epsilonEquals 1.3048)
     }
 
     @Test
@@ -30,7 +30,7 @@ class LengthTest {
 
         val three = one + two
 
-        assert(three.millimeter epsilonEquals 2000.0)
+        assert(three.inMillimeters() epsilonEquals 2000.0)
     }
 
     @Test
@@ -40,15 +40,15 @@ class LengthTest {
         val two = one / 3.0
         val three = two * 3.0
 
-        assert(two.meter epsilonEquals 4.0)
-        assert(three.meter epsilonEquals 12.0)
+        assert(two.inMeters() epsilonEquals 4.0)
+        assert(three.inMeters() epsilonEquals 12.0)
     }
 
     @Test
     fun testToMetric() {
         val one = 40.inches
 
-        val two = one.millimeter
+        val two = one.inMillimeters()
 
         assert(two.toInt() == 1016)
     }
@@ -57,7 +57,7 @@ class LengthTest {
     fun testFromMetric() {
         val one = 1016.milli.meters
 
-        val two = one.inch
+        val two = one.inInches()
 
         assert(two.toInt() == 40)
     }

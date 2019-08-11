@@ -42,7 +42,7 @@ class FalconNotifier(frequency: Int) : AutoCloseable {
         if (closed) {
             throw IllegalStateException("updateAlarm() called on a disposed notifier! Check usages of close() for the relevant instance")
         }
-        NotifierJNI.updateNotifierAlarm(notifier, (currentTime.microsecond + period).toLong())
+        NotifierJNI.updateNotifierAlarm(notifier, (currentTime.inMicroseconds() + period).toLong())
     }
 
     /**

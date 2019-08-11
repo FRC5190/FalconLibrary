@@ -18,9 +18,9 @@ import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.Differential
 import org.ghrobotics.lib.mathematics.twodim.trajectory.optimization.PathFinder
 import org.ghrobotics.lib.mathematics.units.derived.*
 import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inSeconds
 import org.ghrobotics.lib.mathematics.units.inches
 import org.ghrobotics.lib.mathematics.units.milli
-import org.ghrobotics.lib.mathematics.units.second
 import org.junit.Test
 import org.knowm.xchart.XYChartBuilder
 import java.awt.Color
@@ -83,7 +83,7 @@ class PathFinderTest {
             refList.add(pt.state.pose.translation)
         }
 
-        val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.second)
+        val fm = DecimalFormat("#.###").format(TrajectoryGeneratorTest.trajectory.lastInterpolant.inSeconds())
 
         val chart = XYChartBuilder().width(1800).height(1520).title("$fm seconds.")
             .xAxisTitle("X").yAxisTitle("Y").build()

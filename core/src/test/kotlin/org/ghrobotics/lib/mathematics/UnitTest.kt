@@ -26,7 +26,7 @@ class UnitTest {
     fun testNativeUnits() {
         val nativeUnits = 360.nativeUnits.fromNativeUnitPosition(settings)
 
-        assert(nativeUnits.inch epsilonEquals 4.71238898038469)
+        assert(nativeUnits.inInches() epsilonEquals 4.71238898038469)
     }
 
     @Test
@@ -35,7 +35,7 @@ class UnitTest {
 
         val two = one.toNativeUnitVelocity(settings)
 
-        val three = two.nativeUnitsPer100ms
+        val three = two.inNativeUnitsPer100ms()
 
         assert(three.toInt() == 300)
     }
@@ -46,20 +46,20 @@ class UnitTest {
 
         val two = one.toNativeUnitAcceleration(settings)
 
-        assert(two.nativeUnitsPer100msPerSecond.toInt() == 300)
+        assert(two.inNativeUnitsPer100msPerSecond().toInt() == 300)
     }
 
     @Test
     fun testFeetToMeter() {
         val one = 1.feet
 
-        assert(one.meter epsilonEquals 0.3048)
+        assert(one.inMeters() epsilonEquals 0.3048)
     }
 
     @Test
     fun testKgToPound() {
         val kg = 2.kilo.grams
-        assert(kg.lb epsilonEquals 4.409248840367555)
+        assert(kg.inLbs() epsilonEquals 4.409248840367555)
     }
 
     @Test

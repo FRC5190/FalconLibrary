@@ -15,10 +15,7 @@ import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.milli
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.utils.Source
 
 /**
@@ -42,8 +39,8 @@ class TrajectoryTrackerCommand(
             val referencePose = referencePoint.state.pose
 
             // Update Current Path Location on Live Dashboard
-            LiveDashboard.pathX = referencePose.translation.x_u.feet
-            LiveDashboard.pathY = referencePose.translation.y_u.feet
+            LiveDashboard.pathX = referencePose.translation.x_u.inFeet()
+            LiveDashboard.pathY = referencePose.translation.y_u.inFeet()
             LiveDashboard.pathHeading = referencePose.rotation.radians
         }
     },
