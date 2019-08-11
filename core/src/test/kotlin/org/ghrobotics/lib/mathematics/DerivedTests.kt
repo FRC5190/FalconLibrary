@@ -66,7 +66,7 @@ class DerivedTests {
         val two = 6.seconds
 
         val three = one * two
-        val four = three.meter
+        val four = three.inMeters()
 
         assert(four == 15.0)
     }
@@ -78,7 +78,7 @@ class DerivedTests {
 
         val three = one / two
 
-        assert(three.second epsilonEquals 1.2222222222222223)
+        assert(three.inSeconds() epsilonEquals 1.2222222222222223)
     }
 
     @Test

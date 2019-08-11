@@ -31,9 +31,9 @@ class FalconSRX<K : SIKey>(
     fun configCurrentLimit(enabled: Boolean, config: CurrentLimitConfig) {
         talonSRX.enableCurrentLimit(enabled)
         if (enabled) {
-            talonSRX.configPeakCurrentLimit(config.peakCurrentLimit.amp.toInt())
-            talonSRX.configPeakCurrentDuration(config.peakCurrentLimitDuration.millisecond.toInt())
-            talonSRX.configContinuousCurrentLimit(config.continuousCurrentLimit.amp.toInt())
+            talonSRX.configPeakCurrentLimit(config.peakCurrentLimit.inAmps().toInt())
+            talonSRX.configPeakCurrentDuration(config.peakCurrentLimitDuration.inMilliseconds().toInt())
+            talonSRX.configContinuousCurrentLimit(config.continuousCurrentLimit.inAmps().toInt())
         }
     }
 
