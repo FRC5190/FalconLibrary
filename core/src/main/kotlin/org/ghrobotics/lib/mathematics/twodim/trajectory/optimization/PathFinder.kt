@@ -225,7 +225,7 @@ class PathFinder(
     companion object {
         private val kFieldRectangle = Rectangle2d(
             Translation2d(),
-            Translation2d((54.0 / 2.0).foot, 27.0.foot)
+            Translation2d((54.0 / 2.0).feet, 27.0.feet)
         )
         val k2018LeftSwitch = Rectangle2d(
             Translation2d(140.0.inches, 85.25.inches),

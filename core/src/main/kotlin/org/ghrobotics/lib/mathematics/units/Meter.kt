@@ -26,8 +26,6 @@ val Double.meter get() = meters
 val Double.line get() = lines
 @Deprecated("Replaced with Plural version", ReplaceWith("inches"))
 val Double.inch get() = inches
-@Deprecated("Replaced with Plural version", ReplaceWith("foot"))
-val Double.feet get() = foot
 @Deprecated("Replaced with Plural version", ReplaceWith("yards"))
 val Double.yard get() = yards
 @Deprecated("Replaced with Plural version", ReplaceWith("miles"))
@@ -45,8 +43,6 @@ val Number.meter get() = meters
 val Number.line get() = lines
 @Deprecated("Replaced with Plural version", ReplaceWith("inches"))
 val Number.inch get() = inches
-@Deprecated("Replaced with Plural version", ReplaceWith("foot"))
-val Number.feet get() = foot
 @Deprecated("Replaced with Plural version", ReplaceWith("yards"))
 val Number.yard get() = yards
 @Deprecated("Replaced with Plural version", ReplaceWith("miles"))
@@ -62,7 +58,7 @@ val Double.meters get() = SIUnit<Meter>(this)
 val Double.thou get() = SIUnit<Meter>(times(kThouToMeter))
 val Double.lines get() = SIUnit<Meter>(times(kLineToMeter))
 val Double.inches get() = SIUnit<Meter>(times(kInchToMeter))
-val Double.foot get() = SIUnit<Meter>(times(kFeetToMeter))
+val Double.feet get() = SIUnit<Meter>(times(kFeetToMeter))
 val Double.yards get() = SIUnit<Meter>(times(kYardToMeter))
 val Double.miles get() = SIUnit<Meter>(times(kMileToMeter))
 val Double.leagues get() = SIUnit<Meter>(times(kLeagueToMeter))
@@ -73,7 +69,7 @@ val Number.meters get() = toDouble().meters
 val Number.thou get() = toDouble().thou
 val Number.lines get() = toDouble().lines
 val Number.inches get() = toDouble().inches
-val Number.foot get() = toDouble().foot
+val Number.feet get() = toDouble().feet
 val Number.yards get() = toDouble().yards
 val Number.miles get() = toDouble().miles
 val Number.leagues get() = toDouble().leagues
