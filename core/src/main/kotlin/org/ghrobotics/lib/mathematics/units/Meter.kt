@@ -17,7 +17,7 @@ const val kFeetToMeter = kInchToMeter * 12
 const val kYardToMeter = kFeetToMeter * 3
 const val kMileToMeter = kFeetToMeter * 5280
 const val kLeagueToMeter = kMileToMeter * 3
-const val kNauticalMile = 1852
+const val kNauticalMile = 1852.0
 const val kLightYearToMeter = 9460730472580800.0
 
 val Double.meter get() = SIUnit<Meter>(this)

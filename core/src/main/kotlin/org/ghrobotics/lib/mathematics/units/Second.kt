@@ -10,11 +10,11 @@ package org.ghrobotics.lib.mathematics.units
 
 object Second : SIKey
 
-const val kMinuteToSecond = 60
-const val kHourToSecond = kMinuteToSecond * 60
-const val kDayToSecond = kHourToSecond * 24
+const val kMinuteToSecond = 60.0
+const val kHourToSecond = kMinuteToSecond * 60.0
+const val kDayToSecond = kHourToSecond * 24.0
 const val kWeekToSecond = kDayToSecond * 7
-const val kMomentToSecond = 90
+const val kMomentToSecond = 90.0
 
 val Double.second get() = SIUnit<Second>(this)
 val Double.minute get() = SIUnit<Second>(times(kMinuteToSecond))
