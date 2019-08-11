@@ -11,10 +11,7 @@ package org.ghrobotics.lib.wrappers
 import edu.wpi.first.hal.NotifierJNI
 import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.Timer
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.microsecond
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -41,7 +38,7 @@ class FalconNotifier(frequency: Int) : AutoCloseable {
      * Updates the notifier alarm. Should be called when the alarm is tripped to
      * reset the ticker
      */
-    fun updateAlarm(currentTime: SIUnit<Second> = Timer.getFPGATimestamp().second) {
+    fun updateAlarm(currentTime: SIUnit<Second> = Timer.getFPGATimestamp().seconds) {
         if (closed) {
             throw IllegalStateException("updateAlarm() called on a disposed notifier! Check usages of close() for the relevant instance")
         }

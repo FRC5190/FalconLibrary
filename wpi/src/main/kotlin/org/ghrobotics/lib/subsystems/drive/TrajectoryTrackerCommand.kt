@@ -32,7 +32,7 @@ class TrajectoryTrackerCommand(
     private val driveBase: TrajectoryTrackerDriveBase,
     val trajectorySource: Source<Trajectory>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    val dt: SIUnit<Second> = 20.milli.second
+    val dt: SIUnit<Second> = 20.milli.seconds
 ) : NotifierCommand(
     Runnable {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))

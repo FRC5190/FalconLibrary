@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.utils.Source
 import kotlin.reflect.KProperty
 
@@ -66,7 +66,7 @@ abstract class Localization(
         prevHeading = newHeading
 
         // Add the global robot pose to the interpolatable buffer
-        localizationBuffer[Timer.getFPGATimestamp().second] = robotPosition
+        localizationBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
     }
 
     protected abstract fun update(deltaHeading: Rotation2d): Twist2d

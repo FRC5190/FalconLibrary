@@ -8,19 +8,15 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.centi
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.milli
-import org.ghrobotics.lib.mathematics.units.millimeter
+import org.ghrobotics.lib.mathematics.units.*
 import org.junit.Test
 
 class LengthTest {
 
     @Test
     fun testLength() {
-        val one = 1.0.meter
-        val two = 12.0.inch
+        val one = 1.0.meters
+        val two = 12.0.inches
 
         val three = one + two
 
@@ -29,8 +25,8 @@ class LengthTest {
 
     @Test
     fun testPrefix() {
-        val one = 1.0.meter
-        val two = 100.centi.meter
+        val one = 1.0.meters
+        val two = 100.centi.meters
 
         val three = one + two
 
@@ -39,7 +35,7 @@ class LengthTest {
 
     @Test
     fun testScalar() {
-        val one = 12.meter
+        val one = 12.meters
 
         val two = one / 3.0
         val three = two * 3.0
@@ -50,7 +46,7 @@ class LengthTest {
 
     @Test
     fun testToMetric() {
-        val one = 40.inch
+        val one = 40.inches
 
         val two = one.millimeter
 
@@ -59,7 +55,7 @@ class LengthTest {
 
     @Test
     fun testFromMetric() {
-        val one = 1016.milli.meter
+        val one = 1016.milli.meters
 
         val two = one.inch
 

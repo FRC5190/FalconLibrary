@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.meters
 import kotlin.math.absoluteValue
 
 /* Translation2d Unit-Safe Constructors */
@@ -38,8 +38,8 @@ fun Transform2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: Rotation2d) =
     edu.wpi.first.wpilibj.geometry.Transform2d(Translation2d(x, y), angle)
 
 /* Translation2d Unit Accessors */
-val Translation2d.x_u get() = x.meter
-val Translation2d.y_u get() = y.meter
+val Translation2d.x_u get() = x.meters
+val Translation2d.y_u get() = y.meters
 
 /* Interpolation */
 fun Pose2d.interpolate(endValue: Pose2d, t: Double): Pose2d {

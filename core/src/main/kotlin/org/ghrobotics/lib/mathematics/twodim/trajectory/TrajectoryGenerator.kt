@@ -26,9 +26,9 @@ import org.ghrobotics.lib.mathematics.units.derived.*
 import kotlin.math.*
 
 val DefaultTrajectoryGenerator = TrajectoryGenerator(
-    2.0.inch,
-    0.25.inch,
-    5.0.degree
+    2.0.inches,
+    0.25.inches,
+    5.0.degrees
 )
 
 class TrajectoryGenerator(
@@ -39,14 +39,14 @@ class TrajectoryGenerator(
 
     val baseline = generateTrajectory(
         listOf(
-            Pose2d(0.0.meter, 0.0.meter, Rotation2d.fromDegrees(0.0)),
-            Pose2d(10.0.feet, 0.0.meter, Rotation2d.fromDegrees(0.0))
+            Pose2d(0.0.meters, 0.0.meters, Rotation2d.fromDegrees(0.0)),
+            Pose2d(10.0.foot, 0.0.meters, Rotation2d.fromDegrees(0.0))
         ),
         listOf(),
-        0.0.meter.velocity,
-        0.0.meter.velocity,
-        10.0.feet.velocity,
-        4.0.feet.acceleration,
+        0.0.meters.velocity,
+        0.0.meters.velocity,
+        10.0.foot.velocity,
+        4.0.foot.acceleration,
         false
     )
 

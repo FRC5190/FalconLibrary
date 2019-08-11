@@ -16,7 +16,7 @@ import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.operations.times
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 
 class Trajectory(private val timedStates: List<TimedState>, val reversed: Boolean) {
@@ -25,7 +25,7 @@ class Trajectory(private val timedStates: List<TimedState>, val reversed: Boolea
     var currentState = timedStates.first()
         private set
 
-    var progress = 0.second
+    var progress = 0.seconds
         private set
 
     val isDone: Boolean

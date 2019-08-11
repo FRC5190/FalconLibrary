@@ -10,9 +10,15 @@ package org.ghrobotics.lib.mathematics.units
 
 object Ampere : SIKey
 
-val Double.amp get() = SIUnit<Ampere>(this)
+@Deprecated("Replaced with Plural version", ReplaceWith("amps"))
+val Double.amp get() = amps
 
-val Number.amp get() = toDouble().amp
+@Deprecated("Replaced with Plural version", ReplaceWith("amps"))
+val Number.amp get() = amps
+
+val Double.amps get() = SIUnit<Ampere>(this)
+
+val Number.amps get() = toDouble().amps
 
 val SIUnit<Ampere>.yottaamp get() = value.div(kYotta)
 val SIUnit<Ampere>.zettaamp get() = value.div(kZetta)

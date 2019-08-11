@@ -13,34 +13,72 @@ object Meter : SIKey
 const val kInchToMeter = 0.0254
 const val kThouToMeter = kInchToMeter * 0.001
 const val kLineToMeter = kInchToMeter * (1.0 / 12.0)
-const val kFeetToMeter = kInchToMeter * 12
-const val kYardToMeter = kFeetToMeter * 3
-const val kMileToMeter = kFeetToMeter * 5280
-const val kLeagueToMeter = kMileToMeter * 3
+const val kFeetToMeter = kInchToMeter * 12.0
+const val kYardToMeter = kFeetToMeter * 3.0
+const val kMileToMeter = kFeetToMeter * 5280.0
+const val kLeagueToMeter = kMileToMeter * 3.0
 const val kNauticalMile = 1852.0
 const val kLightYearToMeter = 9460730472580800.0
 
-val Double.meter get() = SIUnit<Meter>(this)
-val Double.thou get() = SIUnit<Meter>(times(kThouToMeter))
-val Double.line get() = SIUnit<Meter>(times(kLineToMeter))
-val Double.inch get() = SIUnit<Meter>(times(kInchToMeter))
-val Double.feet get() = SIUnit<Meter>(times(kFeetToMeter))
-val Double.yard get() = SIUnit<Meter>(times(kYardToMeter))
-val Double.mile get() = SIUnit<Meter>(times(kMileToMeter))
-val Double.league get() = SIUnit<Meter>(times(kLeagueToMeter))
-val Double.nauticalMile get() = SIUnit<Meter>(times(kNauticalMile))
-val Double.lightYear get() = SIUnit<Meter>(times(kLightYearToMeter))
+@Deprecated("Replaced with Plural version", ReplaceWith("meters"))
+val Double.meter get() = meters
+@Deprecated("Replaced with Plural version", ReplaceWith("lines"))
+val Double.line get() = lines
+@Deprecated("Replaced with Plural version", ReplaceWith("inches"))
+val Double.inch get() = inches
+@Deprecated("Replaced with Plural version", ReplaceWith("foot"))
+val Double.feet get() = foot
+@Deprecated("Replaced with Plural version", ReplaceWith("yards"))
+val Double.yard get() = yards
+@Deprecated("Replaced with Plural version", ReplaceWith("miles"))
+val Double.mile get() = miles
+@Deprecated("Replaced with Plural version", ReplaceWith("leagues"))
+val Double.league get() = leagues
+@Deprecated("Replaced with Plural version", ReplaceWith("nauticalMiles"))
+val Double.nauticalMile get() = nauticalMiles
+@Deprecated("Replaced with Plural version", ReplaceWith("lightYears"))
+val Double.lightYear get() = lightYears
 
-val Number.meter get() = toDouble().meter
+@Deprecated("Replaced with Plural version", ReplaceWith("meters"))
+val Number.meter get() = meters
+@Deprecated("Replaced with Plural version", ReplaceWith("lines"))
+val Number.line get() = lines
+@Deprecated("Replaced with Plural version", ReplaceWith("inches"))
+val Number.inch get() = inches
+@Deprecated("Replaced with Plural version", ReplaceWith("foot"))
+val Number.feet get() = foot
+@Deprecated("Replaced with Plural version", ReplaceWith("yards"))
+val Number.yard get() = yards
+@Deprecated("Replaced with Plural version", ReplaceWith("miles"))
+val Number.mile get() = miles
+@Deprecated("Replaced with Plural version", ReplaceWith("leagues"))
+val Number.league get() = leagues
+@Deprecated("Replaced with Plural version", ReplaceWith("nauticalMiles"))
+val Number.nauticalMile get() = nauticalMiles
+@Deprecated("Replaced with Plural version", ReplaceWith("lightYears"))
+val Number.lightYear get() = lightYears
+
+val Double.meters get() = SIUnit<Meter>(this)
+val Double.thou get() = SIUnit<Meter>(times(kThouToMeter))
+val Double.lines get() = SIUnit<Meter>(times(kLineToMeter))
+val Double.inches get() = SIUnit<Meter>(times(kInchToMeter))
+val Double.foot get() = SIUnit<Meter>(times(kFeetToMeter))
+val Double.yards get() = SIUnit<Meter>(times(kYardToMeter))
+val Double.miles get() = SIUnit<Meter>(times(kMileToMeter))
+val Double.leagues get() = SIUnit<Meter>(times(kLeagueToMeter))
+val Double.nauticalMiles get() = SIUnit<Meter>(times(kNauticalMile))
+val Double.lightYears get() = SIUnit<Meter>(times(kLightYearToMeter))
+
+val Number.meters get() = toDouble().meters
 val Number.thou get() = toDouble().thou
-val Number.line get() = toDouble().line
-val Number.inch get() = toDouble().inch
-val Number.feet get() = toDouble().feet
-val Number.yard get() = toDouble().yard
-val Number.mile get() = toDouble().mile
-val Number.league get() = toDouble().league
-val Number.nauticalMile get() = toDouble().nauticalMile
-val Number.lightYear get() = toDouble().lightYear
+val Number.lines get() = toDouble().lines
+val Number.inches get() = toDouble().inches
+val Number.foot get() = toDouble().foot
+val Number.yards get() = toDouble().yards
+val Number.miles get() = toDouble().miles
+val Number.leagues get() = toDouble().leagues
+val Number.nauticalMiles get() = toDouble().nauticalMiles
+val Number.lightYears get() = toDouble().lightYears
 
 val SIUnit<Meter>.thou get() = value.div(kThouToMeter)
 val SIUnit<Meter>.line get() = value.div(kLineToMeter)

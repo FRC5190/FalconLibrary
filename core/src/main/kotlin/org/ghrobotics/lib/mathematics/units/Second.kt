@@ -13,22 +13,48 @@ object Second : SIKey
 const val kMinuteToSecond = 60.0
 const val kHourToSecond = kMinuteToSecond * 60.0
 const val kDayToSecond = kHourToSecond * 24.0
-const val kWeekToSecond = kDayToSecond * 7
+const val kWeekToSecond = kDayToSecond * 7.0
 const val kMomentToSecond = 90.0
 
-val Double.second get() = SIUnit<Second>(this)
-val Double.minute get() = SIUnit<Second>(times(kMinuteToSecond))
-val Double.hour get() = SIUnit<Second>(times(kHourToSecond))
-val Double.day get() = SIUnit<Second>(times(kDayToSecond))
-val Double.week get() = SIUnit<Second>(times(kWeekToSecond))
-val Double.moment get() = SIUnit<Second>(times(kMomentToSecond))
+@Deprecated("Replaced with Plural version", ReplaceWith("seconds"))
+val Double.second get() = seconds
+@Deprecated("Replaced with Plural version", ReplaceWith("minutes"))
+val Double.minute get() = minutes
+@Deprecated("Replaced with Plural version", ReplaceWith("hours"))
+val Double.hour get() = hours
+@Deprecated("Replaced with Plural version", ReplaceWith("days"))
+val Double.day get() = days
+@Deprecated("Replaced with Plural version", ReplaceWith("weeks"))
+val Double.week get() = weeks
+@Deprecated("Replaced with Plural version", ReplaceWith("moments"))
+val Double.moment get() = moments
 
-val Number.second get() = toDouble().second
-val Number.minute get() = toDouble().minute
-val Number.hour get() = toDouble().hour
-val Number.day get() = toDouble().day
-val Number.week get() = toDouble().week
-val Number.moment get() = toDouble().moment
+@Deprecated("Replaced with Plural version", ReplaceWith("seconds"))
+val Number.second get() = seconds
+@Deprecated("Replaced with Plural version", ReplaceWith("minutes"))
+val Number.minute get() = minutes
+@Deprecated("Replaced with Plural version", ReplaceWith("hours"))
+val Number.hour get() = hours
+@Deprecated("Replaced with Plural version", ReplaceWith("days"))
+val Number.day get() = days
+@Deprecated("Replaced with Plural version", ReplaceWith("weeks"))
+val Number.week get() = weeks
+@Deprecated("Replaced with Plural version", ReplaceWith("moments"))
+val Number.moment get() = moments
+
+val Double.seconds get() = SIUnit<Second>(this)
+val Double.minutes get() = SIUnit<Second>(times(kMinuteToSecond))
+val Double.hours get() = SIUnit<Second>(times(kHourToSecond))
+val Double.days get() = SIUnit<Second>(times(kDayToSecond))
+val Double.weeks get() = SIUnit<Second>(times(kWeekToSecond))
+val Double.moments get() = SIUnit<Second>(times(kMomentToSecond))
+
+val Number.seconds get() = toDouble().seconds
+val Number.minutes get() = toDouble().minutes
+val Number.hours get() = toDouble().hours
+val Number.days get() = toDouble().days
+val Number.weeks get() = toDouble().weeks
+val Number.moments get() = toDouble().moments
 
 val SIUnit<Second>.minute get() = value.div(kMinuteToSecond)
 val SIUnit<Second>.hour get() = value.div(kHourToSecond)

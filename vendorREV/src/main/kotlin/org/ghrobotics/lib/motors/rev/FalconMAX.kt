@@ -15,11 +15,8 @@ import com.revrobotics.ControlType
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.amp
-import org.ghrobotics.lib.mathematics.units.derived.Acceleration
-import org.ghrobotics.lib.mathematics.units.derived.Velocity
-import org.ghrobotics.lib.mathematics.units.derived.Volt
-import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.amps
+import org.ghrobotics.lib.mathematics.units.derived.*
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
@@ -38,10 +35,10 @@ class FalconMAX<K : SIKey>(
     override val encoder = FalconMAXEncoder(canSparkMax.encoder, model)
 
     override val voltageOutput: SIUnit<Volt>
-        get() = (canSparkMax.appliedOutput * canSparkMax.busVoltage).volt
+        get() = (canSparkMax.appliedOutput * canSparkMax.busVoltage).volts
 
     override val drawnCurrent: SIUnit<Ampere>
-        get() = canSparkMax.outputCurrent.amp
+        get() = canSparkMax.outputCurrent.amps
 
     override var outputInverted: Boolean by Delegates.observable(false) { _, _, newValue ->
         canSparkMax.inverted = newValue
@@ -51,7 +48,7 @@ class FalconMAX<K : SIKey>(
         canSparkMax.idleMode = if (newValue) CANSparkMax.IdleMode.kBrake else CANSparkMax.IdleMode.kCoast
     }
 
-    override var voltageCompSaturation: SIUnit<Volt> by Delegates.observable(12.0.volt) { _, _, newValue ->
+    override var voltageCompSaturation: SIUnit<Volt> by Delegates.observable(12.0.volts) { _, _, newValue ->
         canSparkMax.enableVoltageCompensation(newValue.value)
     }
 

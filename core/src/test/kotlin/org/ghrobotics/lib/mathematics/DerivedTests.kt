@@ -9,23 +9,20 @@
 package org.ghrobotics.lib.mathematics
 
 
-import org.ghrobotics.lib.mathematics.units.amp
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derived.feetPerMinute
 import org.ghrobotics.lib.mathematics.units.derived.feetPerSecond
-import org.ghrobotics.lib.mathematics.units.derived.volt
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.operations.times
-import org.ghrobotics.lib.mathematics.units.second
-import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.junit.Test
 
 class DerivedTests {
 
     @Test
     fun testVelocity() {
-        val one = 5.meter
-        val two = 2.second
+        val one = 5.meters
+        val two = 2.seconds
 
         val three = one / two
 
@@ -34,8 +31,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityAdjust() {
-        val one = 5.meter
-        val two = 2.second
+        val one = 5.meters
+        val two = 2.seconds
 
         val three = one / two
 
@@ -46,15 +43,15 @@ class DerivedTests {
 
     @Test
     fun testAcceleration() {
-        val one = 10.meter / 2.second / 4.second
+        val one = 10.meters / 2.seconds / 4.seconds
 
         assert(one.value == 1.25)
     }
 
     @Test
     fun testAccelerationToVelocity() {
-        val one = 10.meter / 1.6.second / 2.second
-        val two = 5.second
+        val one = 10.meters / 1.6.seconds / 2.seconds
+        val two = 5.seconds
 
         val three = one * two
 
@@ -65,8 +62,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityToLength() {
-        val one = 5.meter / 2.second
-        val two = 6.second
+        val one = 5.meters / 2.seconds
+        val two = 6.seconds
 
         val three = one * two
         val four = three.meter
@@ -76,8 +73,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityAndAccelerationToTime() {
-        val one = 22.meter / 2.second
-        val two = 18.meter / 0.5.second / 4.second
+        val one = 22.meters / 2.seconds
+        val two = 18.meters / 0.5.seconds / 4.seconds
 
         val three = one / two
 
@@ -86,8 +83,8 @@ class DerivedTests {
 
     @Test
     fun testAccelerationDividedByAcceleration() {
-        val one = 33.meter / 1.second / 1.second
-        val two = 22.meter / 2.second / 1.second
+        val one = 33.meters / 1.seconds / 1.seconds
+        val two = 22.meters / 2.seconds / 1.seconds
 
         val three = (one / two).unitlessValue
 
@@ -96,8 +93,8 @@ class DerivedTests {
 
     @Test
     fun testVelocityDividedByVelocity() {
-        val one = 33.meter / 1.second
-        val two = 22.meter / 2.second
+        val one = 33.meters / 1.seconds
+        val two = 22.meters / 2.seconds
 
         val three = (one / two).unitlessValue
 
@@ -106,8 +103,8 @@ class DerivedTests {
 
     @Test
     fun testVoltage() {
-        val one = 1.volt
-        val two = 5.amp
+        val one = 1.volts
+        val two = 5.amps
 
         val three = one * two
 
@@ -116,8 +113,8 @@ class DerivedTests {
 
     @Test
     fun testOhm() {
-        val one = 2.volt
-        val two = 5.amp
+        val one = 2.volts
+        val two = 5.amps
 
         val three = one / two
 

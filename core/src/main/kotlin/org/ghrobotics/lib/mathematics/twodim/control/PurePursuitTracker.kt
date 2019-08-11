@@ -28,7 +28,7 @@ import kotlin.math.pow
 class PurePursuitTracker(
     private val kLat: Double,
     private val kLookaheadTime: SIUnit<Second>,
-    private val kMinLookaheadDistance: SIUnit<Meter> = 1.0.meter
+    private val kMinLookaheadDistance: SIUnit<Meter> = 1.0.meters
 ) : TrajectoryTracker() {
 
     /**
@@ -90,7 +90,7 @@ class PurePursuitTracker(
         // Run the loop until a distance that is greater than the minimum lookahead distance is found or until
         // we run out of "trajectory" to search. If this happens, we will simply extend the end of the trajectory.
         while (trajectory.remainingProgress > previewedTime) {
-            previewedTime += 0.02.second
+            previewedTime += 0.02.seconds
 
             lookaheadPoseByDistance = trajectory.preview(previewedTime).state.pose
             val lookaheadDistance = (lookaheadPoseByDistance.relativeTo(robotPose)).translation.norm

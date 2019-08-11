@@ -17,11 +17,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.Meter
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.utils.*
 import java.lang.Math.sqrt
 import kotlin.math.pow
@@ -79,8 +75,8 @@ class PathFinder(
 
             Pose2d(
                 Translation2d(
-                    splineX.value(distanceTraveled).meter,
-                    splineY.value(distanceTraveled).meter
+                    splineX.value(distanceTraveled).meters,
+                    splineY.value(distanceTraveled).meters
                 ),
                 Rotation2d(
                     splineDx.value(distanceTraveled),
@@ -166,8 +162,8 @@ class PathFinder(
     )
 
     private fun Vector2D.toRobotRectangle() = Rectangle2d(
-        (x - robotSize.value / 3).meter, (y - robotSize.value / 3).meter,
-        (robotSize.value / 3 * 2).meter, (robotSize.value / 3 * 2).meter
+        (x - robotSize.value / 3).meters, (y - robotSize.value / 3).meters,
+        (robotSize.value / 3 * 2).meters, (robotSize.value / 3 * 2).meters
     )
 
     private fun createNodes(restrictedAreas: Set<Rectangle2d>): Set<Vector2D> {
@@ -189,7 +185,7 @@ class PathFinder(
             .filterNotToSet { point ->
                 val translation = point.toTranslation2d()
                 !fieldRectangleWithOffset.contains(translation) ||
-                    restrictedAreas.any { it.contains(translation) }
+                        restrictedAreas.any { it.contains(translation) }
             }
     }
 
@@ -224,24 +220,24 @@ class PathFinder(
     }
 
     private fun Translation2d.toVector2d() = Vector2D(x, y)
-    private fun Vector2D.toTranslation2d() = Translation2d(x.meter, y.meter)
+    private fun Vector2D.toTranslation2d() = Translation2d(x.meters, y.meters)
 
     companion object {
         private val kFieldRectangle = Rectangle2d(
             Translation2d(),
-            Translation2d((54.0 / 2.0).feet, 27.0.feet)
+            Translation2d((54.0 / 2.0).foot, 27.0.foot)
         )
         val k2018LeftSwitch = Rectangle2d(
-            Translation2d(140.0.inch, 85.25.inch),
-            Translation2d(196.0.inch, 238.75.inch)
+            Translation2d(140.0.inches, 85.25.inches),
+            Translation2d(196.0.inches, 238.75.inches)
         )
         val k2018Platform = Rectangle2d(
-            Translation2d(261.47.inch, 95.25.inch),
-            Translation2d(386.53.inch, 228.75.inch)
+            Translation2d(261.47.inches, 95.25.inches),
+            Translation2d(386.53.inches, 228.75.inches)
         )
         val k2018CubesSwitch = Rectangle2d(
-            Translation2d(196.0.inch, 85.25.inch),
-            Translation2d(211.0.inch, 238.75.inch)
+            Translation2d(196.0.inches, 85.25.inches),
+            Translation2d(211.0.inches, 238.75.inches)
         )
     }
 }
