@@ -11,8 +11,10 @@ package org.ghrobotics.lib.motors.rev
 import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
 import com.revrobotics.ControlType
+import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
@@ -32,6 +34,9 @@ class FalconMAX<K : SIKey>(
 
     override val voltageOutput: SIUnit<Volt>
         get() = (canSparkMax.appliedOutput * canSparkMax.busVoltage).volt
+
+    override val drawnCurrent: SIUnit<Ampere>
+        get() = canSparkMax.outputCurrent.amp
 
     override var outputInverted: Boolean by Delegates.observable(false) { _, _, newValue ->
         canSparkMax.inverted = newValue

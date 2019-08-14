@@ -10,12 +10,7 @@ package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import org.ghrobotics.lib.mathematics.units.Ampere
-import org.ghrobotics.lib.mathematics.units.SIKey
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.amp
-import org.ghrobotics.lib.mathematics.units.millisecond
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import kotlin.properties.Delegates
 
@@ -23,6 +18,9 @@ class FalconSRX<K : SIKey>(
     val talonSRX: TalonSRX,
     model: NativeUnitModel<K>
 ) : FalconCTRE<K>(talonSRX, model) {
+
+    override val drawnCurrent: SIUnit<Ampere>
+        get() = talonSRX.outputCurrent.amp
 
     constructor(id: Int, model: NativeUnitModel<K>) : this(TalonSRX(id), model)
 

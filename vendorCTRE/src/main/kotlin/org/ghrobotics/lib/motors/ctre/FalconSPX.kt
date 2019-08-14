@@ -9,13 +9,22 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX
+import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
 class FalconSPX<K : SIKey>(
     val victorSPX: VictorSPX,
     model: NativeUnitModel<K>
 ) : FalconCTRE<K>(victorSPX, model) {
+
+    override val drawnCurrent: SIUnit<Ampere>
+        get() {
+            println("Current monitoring is not supported on the VictorSPX")
+            return 0.0.amp
+        }
 
     constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
 

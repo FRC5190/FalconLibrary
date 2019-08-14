@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.motors
 
+import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -30,6 +31,11 @@ interface FalconMotor<K : SIKey> {
      * The voltage output of the motor controller in volts
      */
     val voltageOutput: SIUnit<Volt>
+
+    /**
+     * The current drawn by the motor
+     */
+    val drawnCurrent: SIUnit<Ampere>
 
     /**
      * Inverts the output given to the motor
