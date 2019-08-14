@@ -10,6 +10,7 @@ package org.ghrobotics.lib.motors.rev
 
 import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
+import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.ControlType
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -28,6 +29,10 @@ class FalconMAX<K : SIKey>(
     val canSparkMax: CANSparkMax,
     val model: NativeUnitModel<K>
 ) : AbstractFalconMotor<K>() {
+
+    constructor(id: Int, type: CANSparkMaxLowLevel.MotorType, model: NativeUnitModel<K>) : this(
+        CANSparkMax(id, type), model
+    )
 
     val controller: CANPIDController = canSparkMax.pidController
     override val encoder = FalconMAXEncoder(canSparkMax.encoder, model)
