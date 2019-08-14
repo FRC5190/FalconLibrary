@@ -8,8 +8,10 @@
 
 package org.ghrobotics.lib.simulation
 
+import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.amp
 import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
@@ -23,6 +25,7 @@ class SimFalconMotor<K : SIKey> : FalconMotor<K> {
 
     var velocity = SIUnit<Velocity<K>>(0.0)
     override val voltageOutput = 0.0.volt
+    override val drawnCurrent = 0.amp
 
     override val encoder = object : FalconEncoder<K> {
         override val velocity: SIUnit<Velocity<K>> get() = this@SimFalconMotor.velocity
