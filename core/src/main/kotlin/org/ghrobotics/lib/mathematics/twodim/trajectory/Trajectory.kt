@@ -46,7 +46,7 @@ class Trajectory(private val timedStates: List<TimedState>, val reversed: Boolea
             if (deltaT.value < 0.0) return endValue.interpolate(this, 1.0 - t)
 
             val reversing =
-                this.velocity.value < 0.0 || this.velocity.value epsilonEquals 0.0 && this.velocity.value < 0.0
+                this.velocity.value < 0.0 || this.velocity.value epsilonEquals 0.0 && this.acceleration.value < 0.0
 
             val newV = this.velocity + (this.acceleration * deltaT)
             val newS =
