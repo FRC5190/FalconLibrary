@@ -12,7 +12,7 @@ import edu.wpi.first.hal.FRCNetComm
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
-import edu.wpi.first.wpilibj.experimental.command.CommandScheduler
+import edu.wpi.first.wpilibj.frc2.command.CommandScheduler
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.FalconSubsystemHandler
@@ -27,6 +27,7 @@ abstract class FalconTimedRobot {
         TELEOP,
         TEST
     }
+
     var currentMode = Mode.NONE
         private set
 

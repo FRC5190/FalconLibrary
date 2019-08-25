@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj.experimental.command.SendableCommandBase
-import edu.wpi.first.wpilibj.experimental.command.Subsystem
+import edu.wpi.first.wpilibj.frc2.command.SendableCommandBase
+import edu.wpi.first.wpilibj.frc2.command.Subsystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job

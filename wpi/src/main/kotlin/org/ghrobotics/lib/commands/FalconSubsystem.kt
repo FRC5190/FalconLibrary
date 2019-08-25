@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj.experimental.command.SendableSubsystemBase
+import edu.wpi.first.wpilibj.frc2.command.SendableSubsystemBase
 
 abstract class FalconSubsystem : SendableSubsystemBase() {
     open fun lateInit() {}
