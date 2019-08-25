@@ -9,7 +9,7 @@
 package org.ghrobotics.lib.wrappers.hid
 
 import edu.wpi.first.wpilibj.GenericHID
-import edu.wpi.first.wpilibj.experimental.command.Command
+import edu.wpi.first.wpilibj.frc2.command.Command
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
 
@@ -33,22 +33,22 @@ class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
     ) = button(HIDAxisSource(genericHID, axisId), threshold, block)
 
     fun lessThanAxisButton(
-            axisId: Int,
-            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-            block: FalconHIDButtonBuilder.() -> Unit = {}
+        axisId: Int,
+        threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+        block: FalconHIDButtonBuilder.() -> Unit = {}
     ) = boundedAxisButton(axisId, threshold, -1.0..0.0, block)
 
     fun greaterThanAxisButton(
-            axisId: Int,
-            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-            block: FalconHIDButtonBuilder.() -> Unit = {}
+        axisId: Int,
+        threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+        block: FalconHIDButtonBuilder.() -> Unit = {}
     ) = boundedAxisButton(axisId, threshold, 0.0..1.0, block)
 
     fun boundedAxisButton(
-            axisId: Int,
-            threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-            range: ClosedFloatingPointRange<Double>,
-            block: FalconHIDButtonBuilder.() -> Unit = {}
+        axisId: Int,
+        threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+        range: ClosedFloatingPointRange<Double>,
+        block: FalconHIDButtonBuilder.() -> Unit = {}
     ) = button(BoundedHIDAxisSource(genericHID, axisId, range), threshold, block)
 
     fun pov(angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = pov(0, angle, block)
