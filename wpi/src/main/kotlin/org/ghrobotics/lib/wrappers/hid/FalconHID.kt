@@ -9,7 +9,7 @@
 package org.ghrobotics.lib.wrappers.hid
 
 import edu.wpi.first.wpilibj.GenericHID
-import edu.wpi.first.wpilibj.frc2.command.Command
+import edu.wpi.first.wpilibj2.command.Command
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
 

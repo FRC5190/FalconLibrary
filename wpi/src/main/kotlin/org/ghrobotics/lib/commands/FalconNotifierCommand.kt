@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj.frc2.command.SendableCommandBase
-import edu.wpi.first.wpilibj.frc2.command.Subsystem
+import edu.wpi.first.wpilibj2.command.CommandBase
+import edu.wpi.first.wpilibj2.command.Subsystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -21,7 +21,7 @@ open class FalconNotifierCommand(
     private val period: SIUnit<Second>,
     vararg requirements: Subsystem,
     private val block: suspend CoroutineScope.() -> Unit
-) : SendableCommandBase() {
+) : CommandBase() {
 
     init {
         addRequirements(*requirements)
