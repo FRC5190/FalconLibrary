@@ -9,7 +9,7 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.Notifier
-import edu.wpi.first.wpilibj.frc2.command.WaitUntilCommand
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.localization.Localization

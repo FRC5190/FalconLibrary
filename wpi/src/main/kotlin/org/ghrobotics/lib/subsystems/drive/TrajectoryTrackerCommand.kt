@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
-import edu.wpi.first.wpilibj.frc2.command.NotifierCommand
-import edu.wpi.first.wpilibj.frc2.command.Subsystem
+import edu.wpi.first.wpilibj2.command.NotifierCommand
+import edu.wpi.first.wpilibj2.command.Subsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature

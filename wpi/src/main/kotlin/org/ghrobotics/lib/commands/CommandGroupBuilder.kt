@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj.frc2.command.*
+import edu.wpi.first.wpilibj2.command.*
 import org.ghrobotics.lib.utils.Source
 import java.util.function.BooleanSupplier
 

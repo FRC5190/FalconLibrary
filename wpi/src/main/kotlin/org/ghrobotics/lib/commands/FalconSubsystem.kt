@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj.frc2.command.SendableSubsystemBase
+import edu.wpi.first.wpilibj2.command.SubsystemBase
 
-abstract class FalconSubsystem : SendableSubsystemBase() {
+abstract class FalconSubsystem : SubsystemBase() {
     open fun lateInit() {}
     open fun autoReset() {}
     open fun teleopReset() {}
