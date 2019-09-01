@@ -40,9 +40,6 @@ import org.ghrobotics.lib.utils.map
  * Represents a typical west coast drive that is built by Team 5190.
  */
 abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), EmergencyHandleable {
-
-    private var quickStopAccumulator = 0.0
-
     /**
      * The current inputs and outputs
      */
@@ -176,6 +173,16 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      */
     fun setPercent(left: Double, right: Double) {
         periodicIO.desiredOutput = Output.Percent(left, right)
+        periodicIO.leftFeedforward = 0.volts
+        periodicIO.rightFeedforward = 0.volts
+    }
+
+    /**
+     * Set a percent output to the drive motors.
+     * @param pair The left and right velocities.
+     */
+    fun setPercent(pair: Pair<Double, Double>) {
+        periodicIO.desiredOutput = Output.Percent(pair.first, pair.second)
         periodicIO.leftFeedforward = 0.volts
         periodicIO.rightFeedforward = 0.volts
     }

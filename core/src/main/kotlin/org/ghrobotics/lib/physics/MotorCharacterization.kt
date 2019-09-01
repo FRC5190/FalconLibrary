@@ -22,11 +22,17 @@ import kotlin.math.sign
  * All units are SI.
  *
  * @param K The type of unit to use. This is either Meter or Radian.
+ *
+ * @param kV The characterization constant for velocity. The represents the voltage
+ *           required for the robot to travel a certain velocity at steady state.
+ * @param kA The characterization constant for acceleration. This represents the
+ *           voltage required for the robot to acceleration a certain amount.
+ * @param kS The voltage required to break static friction.
  */
 class MotorCharacterization<K : SIKey>(
-    val kV: SIUnit<Frac<Volt, Velocity<K>>>,
-    val kA: SIUnit<Frac<Volt, Acceleration<K>>>,
-    val kS: SIUnit<Volt>
+    private val kV: SIUnit<Frac<Volt, Velocity<K>>>,
+    private val kA: SIUnit<Frac<Volt, Acceleration<K>>>,
+    private val kS: SIUnit<Volt>
 ) {
     /**
      * Returns the feedforward voltage.
