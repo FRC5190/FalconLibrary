@@ -9,26 +9,17 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.geometry.Pose2d
+import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
-import org.ghrobotics.lib.motors.LinearFalconMotor
 
 /**
- * Just implement this if you want to use the TrajectoryTrackerCommand.
+ * An interface to implement to follow trajectories.
  */
-interface TrajectoryTrackerDriveBase {
-    val leftMotor: LinearFalconMotor
-    val rightMotor: LinearFalconMotor
+abstract class TrajectoryTrackerDriveBase : FalconSubsystem() {
 
-    val trajectoryTracker: TrajectoryTracker
+    abstract val trajectoryTracker: TrajectoryTracker
+    abstract var robotPosition: Pose2d
 
-    val robotPosition: Pose2d
-
-    fun setOutput(output: TrajectoryTrackerOutput)
-
-    @JvmDefault
-    fun zeroOutputs() {
-        leftMotor.setNeutral()
-        rightMotor.setNeutral()
-    }
+    abstract fun setOutput(output: TrajectoryTrackerOutput)
 }

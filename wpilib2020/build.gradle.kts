@@ -9,3 +9,7 @@
 plugins {
     id("java")
 }
+
+dependencies {
+    compile("org.ejml:ejml-simple:0.38")
+}

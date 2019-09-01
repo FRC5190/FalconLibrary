@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
-import org.ghrobotics.lib.commands.FalconSubsystem
+import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
+import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
+import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -21,22 +25,33 @@ import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
+import org.ghrobotics.lib.mathematics.units.inFeet
 import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.motors.FalconMotor
+import org.ghrobotics.lib.physics.MotorCharacterization
 import org.ghrobotics.lib.subsystems.EmergencyHandleable
+import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
+import org.ghrobotics.lib.utils.map
 
 /**
  * Represents a typical west coast drive that is built by Team 5190.
  */
-abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleable {
+abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), EmergencyHandleable {
+
+    private var quickStopAccumulator = 0.0
 
     /**
      * The current inputs and outputs
      */
     protected val periodicIO = PeriodicIO()
+
+    /**
+     * Helper for different drive styles.
+     */
+    protected val driveHelper = FalconDriveHelper()
 
     /**
      * The kinematics object that represents the drivetrain. Kinematics
@@ -61,6 +76,16 @@ abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleabl
     abstract val rightMotor: FalconMotor<Meter>
 
     /**
+     * The characterization for the left gearbox.
+     */
+    abstract val leftCharacterization: MotorCharacterization<Meter>
+
+    /**
+     * The characterization for the right gearbox.
+     */
+    abstract val rightCharacterization: MotorCharacterization<Meter>
+
+    /**
      * The rotation source / gyro
      */
     abstract val gyro: Source<Rotation2d>
@@ -68,8 +93,7 @@ abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleabl
     /**
      * Get the robot's position on the field.
      */
-    var robotPosition: Pose2d = Pose2d()
-        protected set
+    override var robotPosition: Pose2d = Pose2d()
 
     /**
      * Periodic function -- runs every 20 ms.
@@ -112,6 +136,10 @@ abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleabl
                 rightMotor.setVelocity(desiredOutput.right, rightFeedforward)
             }
         }
+
+        LiveDashboard.robotHeading = robotPosition.rotation.radians
+        LiveDashboard.robotX = robotPosition.translation.x_u.inFeet()
+        LiveDashboard.robotY = robotPosition.translation.y_u.inFeet()
     }
 
     /**
@@ -121,6 +149,24 @@ abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleabl
         periodicIO.desiredOutput = Output.Nothing
         periodicIO.leftFeedforward = 0.volts
         periodicIO.rightFeedforward = 0.volts
+    }
+
+    /**
+     * Set the trajectory tracker output
+     */
+    override fun setOutput(output: TrajectoryTrackerOutput) {
+        val wheelSpeeds = kinematics.toWheelSpeeds(output.chassisSpeeds)
+        val wheelAccelerations = kinematics.toWheelSpeeds(output.chassisAccelerations)
+
+        periodicIO.leftFeedforward = leftCharacterization.getVoltage(
+            SIUnit(wheelSpeeds.leftMetersPerSecond), SIUnit(wheelAccelerations.leftMetersPerSecond)
+        )
+        periodicIO.rightFeedforward = rightCharacterization.getVoltage(
+            SIUnit(wheelSpeeds.rightMetersPerSecond), SIUnit(wheelAccelerations.rightMetersPerSecond)
+        )
+        periodicIO.desiredOutput = Output.Velocity(
+            SIUnit(wheelSpeeds.leftMetersPerSecond), SIUnit(wheelSpeeds.rightMetersPerSecond)
+        )
     }
 
     /**
@@ -134,10 +180,21 @@ abstract class FalconWestCoastDrivetrain : FalconSubsystem(), EmergencyHandleabl
         periodicIO.rightFeedforward = 0.volts
     }
 
+    fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
+        TrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
+
+    fun followTrajectory(trajectory: Trajectory, mirrored: BooleanSource) =
+        TrajectoryTrackerCommand(this, mirrored.map(trajectory.mirror(), trajectory))
+
+    fun followTrajectory(trajectory: Source<Trajectory>) =
+        TrajectoryTrackerCommand(this, trajectory)
+
     /**
      * Represents periodic data
      */
-    protected class PeriodicIO {
+    protected
+
+    class PeriodicIO {
         var leftVoltage: SIUnit<Volt> = 0.volts
         var rightVoltage: SIUnit<Volt> = 0.volts
 

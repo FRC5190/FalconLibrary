@@ -8,12 +8,17 @@
 
 package org.ghrobotics.lib.mathematics.twodim.control
 
-import com.team254.lib.physics.DifferentialDrive
 import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.units.derived.AngularAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.AngularVelocity
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
+import org.ghrobotics.lib.mathematics.units.derived.acceleration
+import org.ghrobotics.lib.mathematics.units.derived.radians
 import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.mathematics.units.operations.div
@@ -81,24 +86,19 @@ abstract class TrajectoryTracker {
     )
 }
 
-data class TrajectoryTrackerOutput constructor(
+data class TrajectoryTrackerOutput(
     val linearVelocity: SIUnit<LinearVelocity>,
     val linearAcceleration: SIUnit<LinearAcceleration>,
     val angularVelocity: SIUnit<AngularVelocity>,
     val angularAcceleration: SIUnit<AngularAcceleration>
 ) {
-
-    val differentialDriveVelocity
-        get() = DifferentialDrive.ChassisState(
-            linearVelocity.value,
-            angularVelocity.value
+    val chassisSpeeds
+        get() = ChassisSpeeds(
+            linearVelocity.value, 0.0, angularVelocity.value
         )
 
-    val differentialDriveAcceleration
-        get() = DifferentialDrive.ChassisState(
-            linearAcceleration.value,
-            angularAcceleration.value
-        )
+    val chassisAccelerations
+        get() = ChassisSpeeds(linearAcceleration.value, 0.0, angularAcceleration.value)
 }
 
 
