@@ -26,7 +26,7 @@ class VelocityLimitRegionConstraint constructor(
     val velocityLimit: SIUnit<LinearVelocity>
 ) : TrajectoryConstraint {
 
-    override fun getMaxVelocity(state: Pose2dWithCurvature) =
+    override fun getMaxVelocity(state: Pose2dWithCurvature, velocity: Double) =
         if (state.pose.translation in region) velocityLimit.value else Double.POSITIVE_INFINITY
 
     override fun getMinMaxAcceleration(

@@ -23,7 +23,7 @@ class AngularAccelerationConstraint constructor(
         require(maxAngularAcceleration.value >= 0) { "Cannot have negative Angular Acceleration." }
     }
 
-    override fun getMaxVelocity(state: Pose2dWithCurvature): Double {
+    override fun getMaxVelocity(state: Pose2dWithCurvature, velocity: Double): Double {
         /**
          * We don't want v^2 * dk/ds alone to go over the max angular acceleration.
          * v^2 * dk/ds = maxAngularAcceleration when linear acceleration = 0.
