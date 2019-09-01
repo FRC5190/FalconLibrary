@@ -77,7 +77,7 @@ class GeometryTests {
             armRotation
         )
 
-        val deltaState = (secondState - firstState) / 20.milli.second.value
+        val deltaState = (secondState - firstState) / 20.milli.seconds.value
 
         println(deltaState.translation * armRotation)
     }

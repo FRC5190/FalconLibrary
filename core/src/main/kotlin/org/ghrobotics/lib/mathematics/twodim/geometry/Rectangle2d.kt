@@ -8,22 +8,22 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
+import edu.wpi.first.wpilibj.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.max
 import org.ghrobotics.lib.mathematics.min
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.operations.div
 
 @Suppress("FunctionName")
 fun Rectangle2d(
     one: Translation2d,
     two: Translation2d
 ): Rectangle2d {
-    val minX = min(one.x, two.x)
-    val minY = min(one.y, two.y)
-    val maxX = max(one.x, two.x)
-    val maxY = max(one.y, two.y)
+    val minX = min(one.x_u, two.x_u)
+    val minY = min(one.y_u, two.y_u)
+    val maxX = max(one.x_u, two.x_u)
+    val maxY = max(one.y_u, two.y_u)
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
@@ -34,10 +34,10 @@ fun Rectangle2d(
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {
-    val minX = pointsToInclude.minBy { it.x }!!.x
-    val minY = pointsToInclude.minBy { it.y }!!.y
-    val maxX = pointsToInclude.maxBy { it.x }!!.x
-    val maxY = pointsToInclude.maxBy { it.y }!!.y
+    val minX = pointsToInclude.minBy { it.x }!!.x_u
+    val minY = pointsToInclude.minBy { it.y }!!.y_u
+    val maxX = pointsToInclude.maxBy { it.x }!!.x_u
+    val maxY = pointsToInclude.maxBy { it.y }!!.y_u
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY
@@ -66,11 +66,11 @@ data class Rectangle2d constructor(
 
     fun isWithin(r: Rectangle2d) = r.x in x..(x + w - r.w) && r.y in y..(y + h - r.h)
 
-    operator fun contains(p: Translation2d) = p.x in x..(x + w) && p.y in y..(y + h)
+    operator fun contains(p: Translation2d) = p.x_u in x..(x + w) && p.y_u in y..(y + h)
 
     @Suppress("ComplexMethod")
     fun doesCollide(rectangle: Rectangle2d, translation: Translation2d): Boolean {
-        if (translation.x.value epsilonEquals 0.0 && translation.y.value epsilonEquals 0.0) return false
+        if (translation.x epsilonEquals 0.0 && translation.y epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
             rectangle.topLeft, rectangle.bottomRight,
@@ -84,14 +84,14 @@ data class Rectangle2d constructor(
         val xInvExit: SIUnit<Meter>
         val yInvEntry: SIUnit<Meter>
         val yInvExit: SIUnit<Meter>
-        if (translation.x.value > 0.0) {
+        if (translation.x > 0.0) {
             xInvEntry = (x - (rectangle.x + rectangle.w))
             xInvExit = ((x + w) - rectangle.x)
         } else {
             xInvEntry = ((x + w) - rectangle.x)
             xInvExit = (x - (rectangle.x + rectangle.w))
         }
-        if (translation.y.value > 0.0) {
+        if (translation.y > 0.0) {
             yInvEntry = (y - (rectangle.y + rectangle.h))
             yInvExit = ((y + h) - rectangle.y)
         } else {
@@ -103,14 +103,14 @@ data class Rectangle2d constructor(
         val xExit: Double
         val yEntry: Double
         val yExit: Double
-        if (translation.x.value epsilonEquals 0.0) {
+        if (translation.x epsilonEquals 0.0) {
             xEntry = Double.NEGATIVE_INFINITY
             xExit = Double.POSITIVE_INFINITY
         } else {
             xEntry = (xInvEntry / translation.x).value
             xExit = (xInvExit / translation.x).value
         }
-        if (translation.y.value epsilonEquals 0.0) {
+        if (translation.y epsilonEquals 0.0) {
             yEntry = Double.NEGATIVE_INFINITY
             yExit = Double.POSITIVE_INFINITY
         } else {

@@ -17,7 +17,7 @@ import kotlin.math.sqrt
 
 class AngularAccelerationConstraint constructor(
     val maxAngularAcceleration: SIUnit<AngularAcceleration>
-) : TimingConstraint<Pose2dWithCurvature> {
+) : TrajectoryConstraint {
 
     init {
         require(maxAngularAcceleration.value >= 0) { "Cannot have negative Angular Acceleration." }
@@ -36,7 +36,7 @@ class AngularAccelerationConstraint constructor(
     override fun getMinMaxAcceleration(
         state: Pose2dWithCurvature,
         velocity: Double
-    ): TimingConstraint.MinMaxAcceleration {
+    ): TrajectoryConstraint.MinMaxAcceleration {
 
         /**
          * We want to limit the acceleration such that we never go above the specified angular acceleration.
@@ -68,6 +68,6 @@ class AngularAccelerationConstraint constructor(
         val maxAbsoluteAcceleration =
             abs((maxAngularAcceleration.value - (velocity * velocity * state.dkds)) / state.curvature)
 
-        return TimingConstraint.MinMaxAcceleration(-maxAbsoluteAcceleration, maxAbsoluteAcceleration)
+        return TrajectoryConstraint.MinMaxAcceleration(-maxAbsoluteAcceleration, maxAbsoluteAcceleration)
     }
 }

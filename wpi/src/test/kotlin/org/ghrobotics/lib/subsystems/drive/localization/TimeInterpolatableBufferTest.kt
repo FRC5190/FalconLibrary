@@ -8,26 +8,38 @@
 
 package org.ghrobotics.lib.subsystems.drive.localization
 
-import org.ghrobotics.lib.localization.TimeInterpolatableBuffer
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
+import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
+import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.units.meter
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.meters
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.junit.Assert
 import org.junit.Test
 
 class TimeInterpolatableBufferTest {
     @Test
     fun testInterpolation() {
-        val buffer = TimeInterpolatableBuffer<Pose2d>(
-            2.second,
-            timeSource = { 2.second }
+        val buffer = TimePoseInterpolatableBuffer(
+            2.seconds,
+            timeSource = { 2.seconds }
         )
-        buffer[1000.second] = Pose2d()
-        buffer[2000.second] = Pose2d(10.meter, 0.meter)
+        buffer[1000.seconds] = Pose2d()
+        buffer[2000.seconds] = Pose2d(10.meters, 0.meters, Rotation2d())
 
-        Assert.assertEquals(Pose2d(), buffer[500.second])
-        Assert.assertEquals(Pose2d(2.5.meter, 0.meter), buffer[1250.second])
-        Assert.assertEquals(Pose2d(5.meter, 0.meter), buffer[1500.second])
-        Assert.assertEquals(Pose2d(10.meter, 0.meter), buffer[2500.second])
+        Assert.assertEquals(Pose2d().translation.norm, buffer[500.seconds]!!.translation.norm, kEpsilon)
+        Assert.assertEquals(
+            Pose2d(2.5.meters, 0.meters, Rotation2d()).translation.norm,
+            buffer[1250.seconds]!!.translation.norm, kEpsilon
+        )
+        Assert.assertEquals(
+            Pose2d(5.meters, 0.meters, Rotation2d()).translation.norm,
+            buffer[1500.seconds]!!.translation.norm, kEpsilon
+        )
+        Assert.assertEquals(
+            Pose2d(10.meters, 0.meters, Rotation2d()).translation.norm,
+            buffer[2500.seconds]!!.translation.norm, kEpsilon
+        )
     }
 }

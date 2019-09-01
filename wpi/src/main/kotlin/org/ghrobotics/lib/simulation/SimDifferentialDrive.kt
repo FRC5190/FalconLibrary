@@ -9,14 +9,12 @@
 package org.ghrobotics.lib.simulation
 
 import com.team254.lib.physics.DifferentialDrive
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.derived.radian
-import org.ghrobotics.lib.mathematics.units.meter
 import org.ghrobotics.lib.mathematics.units.operations.times
 import org.ghrobotics.lib.subsystems.drive.DifferentialTrackerDriveBase
 
@@ -38,11 +36,13 @@ class SimDifferentialDrive(
 
         val forwardKinematics = differentialDrive.solveForwardKinematics(wheelState)
 
-        robotPosition += Twist2d(
-            forwardKinematics.linear.meter,
-            0.0.meter,
-            (forwardKinematics.angular * angularFactor).radian
-        ).asPose
+        robotPosition = robotPosition.exp(
+            Twist2d(
+                forwardKinematics.linear,
+                0.0,
+                (forwardKinematics.angular * angularFactor)
+            )
+        )
     }
 
 }

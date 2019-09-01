@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.wpilibj.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.motors.LinearFalconMotor
 
 /**

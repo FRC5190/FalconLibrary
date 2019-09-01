@@ -12,13 +12,10 @@ import edu.wpi.first.wpilibj2.command.NotifierCommand
 import edu.wpi.first.wpilibj2.command.Subsystem
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.milli
+import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
+import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.utils.Source
 
 /**
@@ -30,21 +27,21 @@ import org.ghrobotics.lib.utils.Source
 class TrajectoryTrackerCommand(
     driveSubsystem: Subsystem,
     private val driveBase: TrajectoryTrackerDriveBase,
-    val trajectorySource: Source<Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>>,
+    val trajectorySource: Source<Trajectory>,
     private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    val dt: SIUnit<Second> = 20.milli.second
+    val dt: SIUnit<Second> = 20.milli.seconds
 ) : NotifierCommand(
     Runnable {
         driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
 
         val referencePoint = trajectoryTracker.referencePoint
         if (referencePoint != null) {
-            val referencePose = referencePoint.state.state.pose
+            val referencePose = referencePoint.state.pose
 
             // Update Current Path Location on Live Dashboard
-            LiveDashboard.pathX = referencePose.translation.x.feet
-            LiveDashboard.pathY = referencePose.translation.y.feet
-            LiveDashboard.pathHeading = referencePose.rotation.radian
+            LiveDashboard.pathX = referencePose.translation.x_u.inFeet()
+            LiveDashboard.pathY = referencePose.translation.y_u.inFeet()
+            LiveDashboard.pathHeading = referencePose.rotation.radians
         }
     },
     dt.value,

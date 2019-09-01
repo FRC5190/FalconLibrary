@@ -8,22 +8,19 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-
 import com.team254.lib.physics.DCMotorTransmission
 import com.team254.lib.physics.DifferentialDrive
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.Transform2d
+import org.ghrobotics.lib.mathematics.twodim.geometry.mirror
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.AngularAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
-import org.ghrobotics.lib.mathematics.units.derived.acceleration
-import org.ghrobotics.lib.mathematics.units.derived.degree
-import org.ghrobotics.lib.mathematics.units.derived.radian
-import org.ghrobotics.lib.mathematics.units.derived.velocity
-import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.derived.*
 import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inch
+import org.ghrobotics.lib.mathematics.units.inches
 import org.ghrobotics.lib.mathematics.units.milli
-import org.ghrobotics.lib.mathematics.units.second
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.junit.Test
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -38,8 +35,8 @@ class TrajectoryGeneratorTest {
         private const val kDriveKv = 0.135  // V per rad/s
         private const val kDriveKa = 0.012  // V per rad/s^2
 
-        private val kDriveWheelRadiusInches = 3.0.inch
-        private val kWheelBaseDiameter = 29.5.inch
+        private val kDriveWheelRadiusInches = 3.0.inches
+        private val kWheelBaseDiameter = 29.5.inches
 
         private val transmission = DCMotorTransmission(
             speedPerVolt = 1 / kDriveKv,
@@ -59,25 +56,25 @@ class TrajectoryGeneratorTest {
 
         private val kMaxCentripetalAcceleration = 4.0.feet.acceleration
         private val kMaxAcceleration = 4.0.feet.acceleration
-        private val kMaxAngularAcceleration = 2.0.radian.acceleration
+        private val kMaxAngularAcceleration = 2.0.radians.acceleration
         private val kMaxVelocity = 10.0.feet.velocity
 
         private const val kTolerance = 0.1
 
-        private val kSideStart = Pose2d(1.54.feet, 23.234167.feet, 180.0.degree)
-        private val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.0.degree)
+        private val kSideStart = Pose2d(1.54.feet, 23.234167.feet, 180.0.degrees.toRotation2d())
+        private val kNearScaleEmpty = Pose2d(23.7.feet, 20.2.feet, 160.0.degrees.toRotation2d())
 
         val trajectory = DefaultTrajectoryGenerator.generateTrajectory(
             listOf(
                 kSideStart,
-                kSideStart + Pose2d((-13.0).feet, 0.0.feet, 0.0.degree),
-                kSideStart + Pose2d((-19.5).feet, 5.0.feet, (-90.0).degree),
-                kSideStart + Pose2d((-19.5).feet, 14.0.feet, (-90.0).degree),
-                kNearScaleEmpty.mirror
+                kSideStart + Transform2d((-13.0).feet, 0.0.feet, 0.0.degrees.toRotation2d()),
+                kSideStart + Transform2d((-19.5).feet, 5.0.feet, (-90.0).degrees.toRotation2d()),
+                kSideStart + Transform2d((-19.5).feet, 14.0.feet, (-90.0).degrees.toRotation2d()),
+                kNearScaleEmpty.mirror()
             ),
             listOf(
                 CentripetalAccelerationConstraint(kMaxCentripetalAcceleration),
-                DifferentialDriveDynamicsConstraint(drive, 9.0.volt),
+                DifferentialDriveDynamicsConstraint(drive, 9.0.volts),
                 AngularAccelerationConstraint(kMaxAngularAcceleration)
             ),
             0.0.feet.velocity,
@@ -90,25 +87,25 @@ class TrajectoryGeneratorTest {
 
     @Test
     fun testTrajectoryGenerationAndConstraints() {
-        val iterator = trajectory.iterator()
+        val iterator = trajectory
 
-        var time = 0.0.second
-        val dt = 20.0.milli.second
+        var time = 0.0.seconds
+        val dt = 20.0.milli.seconds
 
         while (!iterator.isDone) {
             val pt = iterator.advance(dt)
             time += dt
 
-            val ac = pt.state.velocity.value.pow(2) * pt.state.state.curvature
+            val ac = pt.velocity.value.pow(2) * pt.state.curvature
 
             assert(ac <= kMaxCentripetalAcceleration.value + kTolerance)
-            assert(pt.state.velocity.value.absoluteValue < kMaxVelocity.value + kTolerance)
-            assert(pt.state.acceleration.value.absoluteValue < kMaxAcceleration.value + kTolerance)
+            assert(pt.velocity.value.absoluteValue < kMaxVelocity.value + kTolerance)
+            assert(pt.acceleration.value.absoluteValue < kMaxAcceleration.value + kTolerance)
 
             assert(
-                pt.state.acceleration.value * pt.state.state.curvature +
-                    pt.state.velocity.value.pow(2) * pt.state.state.dkds
-                    < kMaxAngularAcceleration.value + kTolerance
+                pt.acceleration.value * pt.state.curvature +
+                        pt.velocity.value.pow(2) * pt.state.dkds
+                        < kMaxAngularAcceleration.value + kTolerance
             )
         }
     }

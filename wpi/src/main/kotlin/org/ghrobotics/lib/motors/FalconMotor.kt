@@ -12,11 +12,7 @@ import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.Acceleration
-import org.ghrobotics.lib.mathematics.units.derived.Radian
-import org.ghrobotics.lib.mathematics.units.derived.Velocity
-import org.ghrobotics.lib.mathematics.units.derived.Volt
-import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.derived.*
 
 typealias LinearFalconMotor = FalconMotor<Meter>
 typealias AngularFalconMotor = FalconMotor<Radian>
@@ -72,22 +68,22 @@ interface FalconMotor<K : SIKey> {
     /**
      * Sets the output [voltage] in volts and [arbitraryFeedForward] in volts
      */
-    fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
+    fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Sets the output [dutyCycle] in percent and [arbitraryFeedForward] in volts
      */
-    fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
+    fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Sets the output [velocity] in [K]/s and [arbitraryFeedForward] in volts
      */
-    fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
+    fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Sets the output [position] in [K] and [arbitraryFeedForward] in volts
      */
-    fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volt)
+    fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Sets the output of the motor to neutral

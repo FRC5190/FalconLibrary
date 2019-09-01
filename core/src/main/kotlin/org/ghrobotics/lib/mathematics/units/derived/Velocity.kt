@@ -24,6 +24,13 @@ typealias AngularVelocity = Velocity<Radian>
 
 val <K : SIKey> SIUnit<K>.velocity get() = SIUnit<Velocity<K>>(value)
 
-val SIUnit<LinearVelocity>.feetPerSecond get() = value.div(kFeetToMeter)
-val SIUnit<LinearVelocity>.feetPerMinute get() = feetPerSecond.times(kMinuteToSecond)
-val SIUnit<LinearVelocity>.inchesPerSecond get() = value.div(kInchToMeter)
+@Deprecated("", ReplaceWith("inFeetPerSecond()"))
+val SIUnit<LinearVelocity>.feetPerSecond get() = inFeetPerSecond()
+@Deprecated("", ReplaceWith("inFeetPerMinute()"))
+val SIUnit<LinearVelocity>.feetPerMinute get() = inFeetPerMinute()
+@Deprecated("", ReplaceWith("inInchesPerSecond()"))
+val SIUnit<LinearVelocity>.inchesPerSecond get() = inInchesPerSecond()
+
+fun SIUnit<LinearVelocity>.inFeetPerSecond() = value.div(kFeetToMeter)
+fun SIUnit<LinearVelocity>.inFeetPerMinute() = inFeetPerSecond().times(kMinuteToSecond)
+fun SIUnit<LinearVelocity>.inInchesPerSecond() = value.div(kInchToMeter)

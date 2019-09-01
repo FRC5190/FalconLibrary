@@ -9,20 +9,12 @@
 package org.ghrobotics.lib.mathematics.twodim.control
 
 import com.team254.lib.physics.DifferentialDrive
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
-import org.ghrobotics.lib.mathematics.twodim.trajectory.TrajectoryIterator
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.TimedEntry
-import org.ghrobotics.lib.mathematics.twodim.trajectory.types.Trajectory
+import edu.wpi.first.wpilibj.geometry.Pose2d
+import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.derived.AngularAcceleration
-import org.ghrobotics.lib.mathematics.units.derived.AngularVelocity
-import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
-import org.ghrobotics.lib.mathematics.units.derived.acceleration
-import org.ghrobotics.lib.mathematics.units.derived.radian
-import org.ghrobotics.lib.mathematics.units.meter
+import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.utils.DeltaTime
@@ -32,24 +24,24 @@ import org.ghrobotics.lib.utils.DeltaTime
  */
 abstract class TrajectoryTracker {
 
-    private var trajectoryIterator: TrajectoryIterator<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>? = null
+    private var trajectory: Trajectory? = null
     private var deltaTimeController = DeltaTime()
     private var previousVelocity: TrajectoryTrackerVelocityOutput? = null
 
-    val referencePoint get() = trajectoryIterator?.currentState
-    val isFinished get() = trajectoryIterator?.isDone ?: true
+    val referencePoint get() = trajectory?.currentState
+    val isFinished get() = trajectory?.isDone ?: true
 
-    fun reset(trajectory: Trajectory<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>) {
-        trajectoryIterator = trajectory.iterator()
+    fun reset(trajectory: Trajectory) {
+        this.trajectory = trajectory
         deltaTimeController.reset()
         previousVelocity = null
     }
 
     fun nextState(
         currentRobotPose: Pose2d,
-        currentTime: SIUnit<Second> = System.currentTimeMillis().toDouble().milli.second
+        currentTime: SIUnit<Second> = System.currentTimeMillis().toDouble().milli.seconds
     ): TrajectoryTrackerOutput {
-        val iterator = trajectoryIterator
+        val iterator = trajectory
         require(iterator != null) {
             "You cannot get the next state from the TrajectoryTracker without a trajectory! Call TrajectoryTracker#reset first!"
         }
@@ -64,9 +56,9 @@ abstract class TrajectoryTracker {
         return if (previousVelocity == null || deltaTime.value <= 0) {
             TrajectoryTrackerOutput(
                 linearVelocity = velocity.linearVelocity,
-                linearAcceleration = 0.0.meter.acceleration,
+                linearAcceleration = 0.0.meters.acceleration,
                 angularVelocity = velocity.angularVelocity,
-                angularAcceleration = 0.0.radian.acceleration
+                angularAcceleration = 0.0.radians.acceleration
             )
         } else {
             TrajectoryTrackerOutput(
@@ -79,7 +71,7 @@ abstract class TrajectoryTracker {
     }
 
     protected abstract fun calculateState(
-        iterator: TrajectoryIterator<SIUnit<Second>, TimedEntry<Pose2dWithCurvature>>,
+        trajectory: Trajectory,
         robotPose: Pose2d
     ): TrajectoryTrackerVelocityOutput
 

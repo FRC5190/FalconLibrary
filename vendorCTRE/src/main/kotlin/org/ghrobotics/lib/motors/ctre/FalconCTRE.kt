@@ -14,13 +14,10 @@ import com.ctre.phoenix.motorcontrol.IMotorController
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.Acceleration
-import org.ghrobotics.lib.mathematics.units.derived.Velocity
-import org.ghrobotics.lib.mathematics.units.derived.Volt
-import org.ghrobotics.lib.mathematics.units.derived.volt
+import org.ghrobotics.lib.mathematics.units.derived.*
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
-import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100ms
-import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100msPerSecond
+import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100msPerSecond
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
@@ -39,7 +36,7 @@ abstract class FalconCTRE<K : SIKey>(
     override val encoder = FalconCTREEncoder(motorController, 0, model)
 
     override val voltageOutput: SIUnit<Volt>
-        get() = motorController.motorOutputVoltage.volt
+        get() = motorController.motorOutputVoltage.volts
 
     override var outputInverted: Boolean by Delegates.observable(false) { _, _, newValue ->
         motorController.inverted = newValue
@@ -49,20 +46,20 @@ abstract class FalconCTRE<K : SIKey>(
         motorController.setNeutralMode(if (newValue) NeutralMode.Brake else NeutralMode.Coast)
     }
 
-    override var voltageCompSaturation: SIUnit<Volt> by Delegates.observable(12.0.volt) { _, _, newValue ->
+    override var voltageCompSaturation: SIUnit<Volt> by Delegates.observable(12.0.volts) { _, _, newValue ->
         motorController.configVoltageCompSaturation(newValue.value, 0)
         motorController.enableVoltageCompensation(true)
     }
 
     override var motionProfileCruiseVelocity: SIUnit<Velocity<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
         motorController.configMotionCruiseVelocity(
-            model.toNativeUnitVelocity(newValue).nativeUnitsPer100ms.roundToInt(),
+            model.toNativeUnitVelocity(newValue).inNativeUnitsPer100ms().roundToInt(),
             0
         )
     }
     override var motionProfileAcceleration: SIUnit<Acceleration<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
         motorController.configMotionAcceleration(
-            model.toNativeUnitAcceleration(newValue).nativeUnitsPer100msPerSecond.roundToInt(),
+            model.toNativeUnitAcceleration(newValue).inNativeUnitsPer100msPerSecond().roundToInt(),
             0
         )
     }
@@ -91,7 +88,7 @@ abstract class FalconCTRE<K : SIKey>(
     override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.Velocity, model.toNativeUnitVelocity(velocity).nativeUnitsPer100ms,
+                ControlMode.Velocity, model.toNativeUnitVelocity(velocity).inNativeUnitsPer100ms(),
                 DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )

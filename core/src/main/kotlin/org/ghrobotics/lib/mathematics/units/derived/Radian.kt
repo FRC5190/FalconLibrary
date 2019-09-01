@@ -8,20 +8,25 @@
 
 package org.ghrobotics.lib.mathematics.units.derived
 
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import edu.wpi.first.wpilibj.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Unitless
 
 typealias Radian = Unitless
 
-val Double.radian get() = SIUnit<Radian>(this)
-val Double.degree get() = SIUnit<Radian>(Math.toRadians(this))
+val Double.radians get() = SIUnit<Radian>(this)
+val Double.degrees get() = SIUnit<Radian>(Math.toRadians(this))
 
-val Number.radian get() = toDouble().radian
-val Number.degree get() = toDouble().degree
+val Number.radians get() = toDouble().radians
+val Number.degrees get() = toDouble().degrees
 
-val SIUnit<Radian>.radian get() = value
-val SIUnit<Radian>.degree get() = Math.toDegrees(value)
+@Deprecated("Replaced with Plural version", ReplaceWith("inRadians()"))
+val SIUnit<Radian>.radian get() = inRadians()
+@Deprecated("Replaced with Plural version", ReplaceWith("inDegrees()"))
+val SIUnit<Radian>.degree get() = inDegrees()
 
-fun SIUnit<Radian>.toRotation2d() = Rotation2d(radian)
-fun Rotation2d.toUnbounded() = SIUnit<Radian>(radian)
+fun SIUnit<Radian>.inRadians() = value
+fun SIUnit<Radian>.inDegrees() = Math.toDegrees(value)
+
+fun SIUnit<Radian>.toRotation2d() = Rotation2d(inRadians())
+fun Rotation2d.toUnbounded() = SIUnit<Radian>(radians)
