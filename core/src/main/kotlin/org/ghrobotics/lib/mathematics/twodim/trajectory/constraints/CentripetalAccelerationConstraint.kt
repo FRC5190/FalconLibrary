@@ -24,7 +24,7 @@ class CentripetalAccelerationConstraint constructor(
     val mMaxCentripetalAcceleration: SIUnit<LinearAcceleration>
 ) : TrajectoryConstraint {
 
-    override fun getMaxVelocity(state: Pose2dWithCurvature) =
+    override fun getMaxVelocity(state: Pose2dWithCurvature, velocity: Double) =
         sqrt((mMaxCentripetalAcceleration.value / state.curvature).absoluteValue)
 
     override fun getMinMaxAcceleration(

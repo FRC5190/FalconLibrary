@@ -177,7 +177,7 @@ class TrajectoryGenerator(
                 for (constraint in constraints) {
                     constrainedPose.maxVelocity = min(
                         constrainedPose.maxVelocity,
-                        constraint.getMaxVelocity(constrainedPose.state)
+                        constraint.getMaxVelocity(constrainedPose.state, constrainedPose.maxVelocity)
                     )
                 }
 

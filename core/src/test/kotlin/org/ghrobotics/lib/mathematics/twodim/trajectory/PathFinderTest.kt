@@ -14,7 +14,6 @@ import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
-import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.optimization.PathFinder
 import org.ghrobotics.lib.mathematics.units.derived.*
 import org.ghrobotics.lib.mathematics.units.feet
@@ -59,8 +58,7 @@ class PathFinderTest {
             trajectory = DefaultTrajectoryGenerator.generateTrajectory(
                 path,
                 listOf(
-                    CentripetalAccelerationConstraint(4.0.feet.acceleration),
-                    DifferentialDriveDynamicsConstraint(TrajectoryGeneratorTest.drive, 9.0.volts)
+                    CentripetalAccelerationConstraint(4.0.feet.acceleration)
                 ),
                 0.0.feet.velocity,
                 0.0.feet.velocity,

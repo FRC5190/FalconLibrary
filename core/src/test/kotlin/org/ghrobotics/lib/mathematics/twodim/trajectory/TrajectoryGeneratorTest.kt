@@ -8,17 +8,20 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import com.team254.lib.physics.DCMotorTransmission
-import com.team254.lib.physics.DifferentialDrive
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Transform2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.mirror
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.AngularAccelerationConstraint
 import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.CentripetalAccelerationConstraint
-import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveDynamicsConstraint
-import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.twodim.trajectory.constraints.DifferentialDriveKinematicsConstraint
+import org.ghrobotics.lib.mathematics.units.derived.acceleration
+import org.ghrobotics.lib.mathematics.units.derived.degrees
+import org.ghrobotics.lib.mathematics.units.derived.radians
+import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
+import org.ghrobotics.lib.mathematics.units.derived.velocity
 import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inches
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.junit.Test
@@ -28,31 +31,7 @@ import kotlin.math.pow
 class TrajectoryGeneratorTest {
 
     companion object {
-        private const val kRobotLinearInertia = 60.0 // kg
-        private const val kRobotAngularInertia = 10.0 // kg m^2
-        private const val kRobotAngularDrag = 12.0  // N*m / (rad/sec)
-        private const val kDriveVIntercept = 1.055  // V
-        private const val kDriveKv = 0.135  // V per rad/s
-        private const val kDriveKa = 0.012  // V per rad/s^2
-
-        private val kDriveWheelRadiusInches = 3.0.inches
-        private val kWheelBaseDiameter = 29.5.inches
-
-        private val transmission = DCMotorTransmission(
-            speedPerVolt = 1 / kDriveKv,
-            torquePerVolt = kDriveWheelRadiusInches.value.pow(2) * kRobotLinearInertia / (2.0 * kDriveKa),
-            frictionVoltage = kDriveVIntercept
-        )
-
-        val drive = DifferentialDrive(
-            mass = kRobotLinearInertia,
-            moi = kRobotAngularInertia,
-            angularDrag = kRobotAngularDrag,
-            wheelRadius = kDriveWheelRadiusInches.value,
-            effectiveWheelBaseRadius = kWheelBaseDiameter.value / 2.0,
-            leftTransmission = transmission,
-            rightTransmission = transmission
-        )
+        val kinematics = DifferentialDriveKinematics(0.381)
 
         private val kMaxCentripetalAcceleration = 4.0.feet.acceleration
         private val kMaxAcceleration = 4.0.feet.acceleration
@@ -74,8 +53,8 @@ class TrajectoryGeneratorTest {
             ),
             listOf(
                 CentripetalAccelerationConstraint(kMaxCentripetalAcceleration),
-                DifferentialDriveDynamicsConstraint(drive, 9.0.volts),
-                AngularAccelerationConstraint(kMaxAngularAcceleration)
+                AngularAccelerationConstraint(kMaxAngularAcceleration),
+                DifferentialDriveKinematicsConstraint(kinematics, 9.feet.velocity)
             ),
             0.0.feet.velocity,
             0.0.feet.velocity,
@@ -96,6 +75,16 @@ class TrajectoryGeneratorTest {
             val pt = iterator.advance(dt)
             time += dt
 
+            val wheelSpeeds = kinematics.toWheelSpeeds(
+                ChassisSpeeds(
+                    pt.velocity.value, 0.0, pt.velocity.value * pt.state
+                        .curvature
+                )
+            )
+
+            assert(wheelSpeeds.leftMetersPerSecond <= 2.7432 + kTolerance)
+            assert(wheelSpeeds.rightMetersPerSecond <= 2.7432 + kTolerance)
+
             val ac = pt.velocity.value.pow(2) * pt.state.curvature
 
             assert(ac <= kMaxCentripetalAcceleration.value + kTolerance)
@@ -104,8 +93,8 @@ class TrajectoryGeneratorTest {
 
             assert(
                 pt.acceleration.value * pt.state.curvature +
-                        pt.velocity.value.pow(2) * pt.state.dkds
-                        < kMaxAngularAcceleration.value + kTolerance
+                    pt.velocity.value.pow(2) * pt.state.dkds
+                    < kMaxAngularAcceleration.value + kTolerance
             )
         }
     }

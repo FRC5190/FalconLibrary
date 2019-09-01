@@ -11,7 +11,7 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2dWithCurvature
 
 interface TrajectoryConstraint {
-    fun getMaxVelocity(state: Pose2dWithCurvature): Double
+    fun getMaxVelocity(state: Pose2dWithCurvature, velocity: Double): Double
     fun getMinMaxAcceleration(state: Pose2dWithCurvature, velocity: Double): MinMaxAcceleration
 
     data class MinMaxAcceleration(

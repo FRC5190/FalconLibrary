@@ -8,33 +8,41 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
-import edu.wpi.first.wpilibj2.command.NotifierCommand
-import edu.wpi.first.wpilibj2.command.Subsystem
+import edu.wpi.first.wpilibj.DriverStation
+import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.debug.LiveDashboard
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
 import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.inFeet
 import org.ghrobotics.lib.utils.Source
 
 /**
- * Command to follow a smooth trajectory using a trajectory following controller
+ * Represents a command that is used to follow a trajectory.
  *
- * @param driveSubsystem Instance of the drive subsystem to use
- * @param trajectorySource Source that contains the trajectory to follow.
+ * @param drivetrain The drivetrain being used to follow the trajectory.
+ * @param trajectory The trajectory source.
  */
 class TrajectoryTrackerCommand(
-    driveSubsystem: Subsystem,
-    private val driveBase: TrajectoryTrackerDriveBase,
-    val trajectorySource: Source<Trajectory>,
-    private val trajectoryTracker: TrajectoryTracker = driveBase.trajectoryTracker,
-    val dt: SIUnit<Second> = 20.milli.seconds
-) : NotifierCommand(
-    Runnable {
-        driveBase.setOutput(trajectoryTracker.nextState(driveBase.robotPosition))
+    private val drivetrain: TrajectoryTrackerDriveBase,
+    private val trajectory: Source<Trajectory>
+) : FalconCommand(drivetrain) {
 
-        val referencePoint = trajectoryTracker.referencePoint
+    /**
+     * Initializes the command,
+     */
+    override fun initialize() {
+        drivetrain.trajectoryTracker.reset(trajectory())
+        LiveDashboard.isFollowingPath = true
+    }
+
+    /**
+     * Executes at 50 Hz.
+     */
+    override fun execute() {
+        drivetrain.setOutput(drivetrain.trajectoryTracker.nextState(drivetrain.robotPosition))
+
+        val referencePoint = drivetrain.trajectoryTracker.referencePoint
         if (referencePoint != null) {
             val referencePose = referencePoint.state.pose
 
@@ -43,26 +51,22 @@ class TrajectoryTrackerCommand(
             LiveDashboard.pathY = referencePose.translation.y_u.inFeet()
             LiveDashboard.pathHeading = referencePose.rotation.radians
         }
-    },
-    dt.value,
-    driveSubsystem
-) {
-
-    /**
-     * Reset the trajectory follower with the new trajectory.
-     */
-    override fun initialize() {
-        trajectoryTracker.reset(trajectorySource())
-        LiveDashboard.isFollowingPath = true
     }
 
     /**
-     * Make sure that the drivetrain is stopped at the end of the command.
+     * Ends the command.
      */
     override fun end(interrupted: Boolean) {
-        driveBase.zeroOutputs()
+        drivetrain.setNeutral()
         LiveDashboard.isFollowingPath = false
+
+        if (interrupted) {
+            DriverStation.reportError("Trajectory tracking was interrupted.", false)
+        }
     }
 
-    override fun isFinished() = trajectoryTracker.isFinished
+    /**
+     * Checks if the trajectory has finished executing.
+     */
+    override fun isFinished() = drivetrain.trajectoryTracker.isFinished
 }

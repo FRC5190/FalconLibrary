@@ -20,7 +20,7 @@ class VelocityLimitRadiusConstraint constructor(
     val velocityLimit: SIUnit<LinearVelocity>
 ) : TrajectoryConstraint {
 
-    override fun getMaxVelocity(state: Pose2dWithCurvature) =
+    override fun getMaxVelocity(state: Pose2dWithCurvature, velocity: Double) =
         if (state.pose.translation.getDistance(point) <= radius.value) velocityLimit.value else Double.POSITIVE_INFINITY
 
     override fun getMinMaxAcceleration(
