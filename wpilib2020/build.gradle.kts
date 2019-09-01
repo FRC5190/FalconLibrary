@@ -6,9 +6,6 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-package org.ghrobotics.lib.utils
-
-import com.kauailabs.navx.frc.AHRS
-import edu.wpi.first.wpilibj.geometry.Rotation2d
-
-fun AHRS.asSource(): Source<Rotation2d> = { Rotation2d.fromDegrees(-fusedHeading.toDouble()) }
+plugins {
+    id("java")
+}
