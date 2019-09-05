@@ -167,6 +167,36 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     }
 
     /**
+     * Drives the robot using arcade drive.
+     *
+     * @param linearPercent The percent for linear motion.
+     * @param rotationPercent The percent for angular rotation.
+     */
+    fun arcadeDrive(
+        linearPercent: Double,
+        rotationPercent: Double
+    ) {
+        val (l, r) = driveHelper.arcadeDrive(linearPercent, rotationPercent)
+        setPercent(l, r)
+    }
+
+    /**
+     * Drives the robot using curvature drive.
+     *
+     * @param linearPercent The percent for linear motion.
+     * @param curvaturePercent The percent for curvature of the robot.
+     * @param isQuickTurn Whether to use arcade drive or not.
+     */
+    fun curvatureDrive(
+        linearPercent: Double,
+        curvaturePercent: Double,
+        isQuickTurn: Boolean
+    ) {
+        val (l, r) = driveHelper.curvatureDrive(linearPercent, curvaturePercent, isQuickTurn)
+        setPercent(l, r)
+    }
+
+    /**
      * Set a percent output to the drive motors.
      * @param left The left percent.
      * @param right The right percent.
