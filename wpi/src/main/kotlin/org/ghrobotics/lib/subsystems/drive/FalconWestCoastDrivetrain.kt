@@ -48,7 +48,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * Helper for different drive styles.
      */
-    protected val driveHelper = FalconDriveHelper()
+    val driveHelper = FalconDriveHelper()
 
     /**
      * The kinematics object that represents the drivetrain. Kinematics
