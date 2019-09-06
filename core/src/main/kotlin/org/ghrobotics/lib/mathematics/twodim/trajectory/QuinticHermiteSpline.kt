@@ -24,6 +24,7 @@ import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.Radian
 import org.ghrobotics.lib.mathematics.units.meters
+import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -228,23 +229,12 @@ class QuinticHermiteSpline(
 
             val twist = transformation.log()
 
-            return if (twist.dy > maxDy.value || twist.dx > maxDx.value || twist.dtheta > maxDTheta.value) {
-                getSegmentArc(
-                    s,
-                    t0,
-                    (t0 + t1) / 2,
-                    maxDx,
-                    maxDy,
-                    maxDTheta
-                ) +
-                        getSegmentArc(
-                            s,
-                            (t0 + t1) / 2,
-                            t1,
-                            maxDx,
-                            maxDy,
-                            maxDTheta
-                        )
+            return if (abs(twist.dy) > maxDy.value ||
+                abs(twist.dx) > maxDx.value ||
+                abs(twist.dtheta) > maxDTheta.value
+            ) {
+                getSegmentArc(s, t0, (t0 + t1) / 2, maxDx, maxDy, maxDTheta) +
+                    getSegmentArc(s, (t0 + t1) / 2, t1, maxDx, maxDy, maxDTheta)
             } else {
                 arrayOf(s.getPose2dWithCurvature(t1))
             }
