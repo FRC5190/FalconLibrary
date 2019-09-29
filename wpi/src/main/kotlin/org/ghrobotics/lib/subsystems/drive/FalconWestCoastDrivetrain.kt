@@ -226,12 +226,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     fun followTrajectory(trajectory: Source<Trajectory>) =
         TrajectoryTrackerCommand(this, trajectory)
 
+    fun characterize() = CharacterizationCommand(this)
+
     /**
      * Represents periodic data
      */
-    protected
-
-    class PeriodicIO {
+    protected class PeriodicIO {
         var leftVoltage: SIUnit<Volt> = 0.volts
         var rightVoltage: SIUnit<Volt> = 0.volts
 
