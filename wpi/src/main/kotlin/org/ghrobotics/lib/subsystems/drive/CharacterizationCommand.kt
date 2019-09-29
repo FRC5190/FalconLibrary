@@ -29,7 +29,6 @@ class CharacterizationCommand(private val drivetrain: FalconWestCoastDrivetrain)
     private var priorAutoSpeed = 0.0
 
     override fun execute() {
-
         val autospeed = autoSpeedEntry.getDouble(0.0)
         priorAutoSpeed = autospeed
 
@@ -46,5 +45,9 @@ class CharacterizationCommand(private val drivetrain: FalconWestCoastDrivetrain)
         numberArray[8] = drivetrain.rightMotor.encoder.velocity.value
 
         telemetryEntry.setNumberArray(numberArray.toTypedArray())
+    }
+
+    override fun end(interrupted: Boolean) {
+        drivetrain.setNeutral()
     }
 }
