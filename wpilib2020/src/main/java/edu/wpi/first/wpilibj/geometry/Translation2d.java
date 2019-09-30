@@ -1,18 +1,13 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- *
- * Copyright 2019, Green Hope Falcons
- */
-
 /*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj.geometry;
+
+import java.util.Objects;
 
 /**
  * Represents a translation in 2d space.
@@ -168,5 +163,25 @@ public class Translation2d {
    */
   public Translation2d div(double scalar) {
     return new Translation2d(m_x / scalar, m_y / scalar);
+  }
+
+  /**
+   * Checks equality between this Translation2d and another object.
+   *
+   * @param obj The other object.
+   * @return Whether the two objects are equal or not.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Translation2d) {
+      return Math.abs(((Translation2d) obj).m_x - m_x) < 1E-9
+          && Math.abs(((Translation2d) obj).m_y - m_y) < 1E-9;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(m_x, m_y);
   }
 }

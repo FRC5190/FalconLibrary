@@ -10,18 +10,18 @@ package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
+import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.debug.LiveDashboard
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
-import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
+import org.ghrobotics.lib.mathematics.twodim.trajectory.mirror
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.amps
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
@@ -49,12 +49,6 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      * Helper for different drive styles.
      */
     protected val driveHelper = FalconDriveHelper()
-
-    /**
-     * The kinematics object that represents the drivetrain. Kinematics
-     * is used to convert wheel speeds to chassis speeds and vice versa.
-     */
-    abstract val kinematics: DifferentialDriveKinematics
 
     /**
      * The odometry object that is used to calculate the robot's position
@@ -151,18 +145,20 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * Set the trajectory tracker output
      */
-    override fun setOutput(output: TrajectoryTrackerOutput) {
-        val wheelSpeeds = kinematics.toWheelSpeeds(output.chassisSpeeds)
-        val wheelAccelerations = kinematics.toWheelSpeeds(output.chassisAccelerations)
-
+    override fun setOutput(
+        leftVelocity: SIUnit<LinearVelocity>,
+        rightVelocity: SIUnit<LinearVelocity>,
+        leftAcceleration: SIUnit<LinearAcceleration>,
+        rightAcceleration: SIUnit<LinearAcceleration>
+    ) {
         periodicIO.leftFeedforward = leftCharacterization.getVoltage(
-            SIUnit(wheelSpeeds.leftMetersPerSecond), SIUnit(wheelAccelerations.leftMetersPerSecond)
+            leftVelocity, leftAcceleration
         )
         periodicIO.rightFeedforward = rightCharacterization.getVoltage(
-            SIUnit(wheelSpeeds.rightMetersPerSecond), SIUnit(wheelAccelerations.rightMetersPerSecond)
+            rightVelocity, rightAcceleration
         )
         periodicIO.desiredOutput = Output.Velocity(
-            SIUnit(wheelSpeeds.leftMetersPerSecond), SIUnit(wheelSpeeds.rightMetersPerSecond)
+            leftVelocity, rightVelocity
         )
     }
 
