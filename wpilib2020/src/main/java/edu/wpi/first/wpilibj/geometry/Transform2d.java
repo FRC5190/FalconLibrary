@@ -1,18 +1,13 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- *
- * Copyright 2019, Green Hope Falcons
- */
-
 /*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj.geometry;
+
+import java.util.Objects;
 
 /**
  * Represents a transformation for a Pose2d.
@@ -57,6 +52,16 @@ public class Transform2d {
   }
 
   /**
+   * Scales the transform by the scalar.
+   *
+   * @param scalar The scalar.
+   * @return The scaled Transform2d.
+   */
+  public Transform2d times(double scalar) {
+    return new Transform2d(m_translation.times(scalar), m_rotation.times(scalar));
+  }
+
+  /**
    * Returns the translation component of the transformation.
    *
    * @return The translational component of the transform.
@@ -72,5 +77,25 @@ public class Transform2d {
    */
   public Rotation2d getRotation() {
     return m_rotation;
+  }
+
+  /**
+   * Checks equality between this Transform2d and another object.
+   *
+   * @param obj The other object.
+   * @return Whether the two objects are equal or not.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Transform2d) {
+      return ((Transform2d) obj).m_translation.equals(m_translation)
+          && ((Transform2d) obj).m_rotation.equals(m_rotation);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(m_translation, m_rotation);
   }
 }

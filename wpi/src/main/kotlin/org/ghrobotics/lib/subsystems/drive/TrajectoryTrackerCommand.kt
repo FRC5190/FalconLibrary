@@ -9,11 +9,13 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.debug.LiveDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
-import org.ghrobotics.lib.mathematics.twodim.trajectory.Trajectory
+import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.inFeet
 import org.ghrobotics.lib.utils.Source
 
@@ -21,18 +23,30 @@ import org.ghrobotics.lib.utils.Source
  * Represents a command that is used to follow a trajectory.
  *
  * @param drivetrain The drivetrain being used to follow the trajectory.
- * @param trajectory The trajectory source.
+ * @param trajectorySource The trajectory source.
  */
 class TrajectoryTrackerCommand(
     private val drivetrain: TrajectoryTrackerDriveBase,
-    private val trajectory: Source<Trajectory>
+    private val trajectorySource: Source<Trajectory>
 ) : FalconCommand(drivetrain) {
+
+    private var prevLeftVelocity = 0.0
+    private var prevRightVelocity = 0.0
+
+    private val timer = Timer()
+    private var elapsed = 0.0
+    private lateinit var trajectory: Trajectory
 
     /**
      * Initializes the command,
      */
     override fun initialize() {
-        drivetrain.trajectoryTracker.reset(trajectory())
+        trajectory = trajectorySource()
+        timer.start()
+
+        prevLeftVelocity = 0.0
+        prevRightVelocity = 0.0
+
         LiveDashboard.isFollowingPath = true
     }
 
@@ -40,11 +54,38 @@ class TrajectoryTrackerCommand(
      * Executes at 50 Hz.
      */
     override fun execute() {
-        drivetrain.setOutput(drivetrain.trajectoryTracker.nextState(drivetrain.robotPosition))
+        // Get the elapsed time
+        elapsed = timer.get()
 
-        val referencePoint = drivetrain.trajectoryTracker.referencePoint
-        if (referencePoint != null) {
-            val referencePose = referencePoint.state.pose
+        // Get the current trajectory state.
+        val currentTrajectoryState = trajectory.sample(elapsed)
+
+        // Get the adjusted chassis speeds from the controller.
+        val chassisSpeeds = drivetrain.controller.calculate(
+            drivetrain.robotPosition,
+            currentTrajectoryState
+        )
+
+        // Get the wheel speeds from the chassis speeds.
+        val wheelSpeeds = drivetrain.kinematics.toWheelSpeeds(chassisSpeeds)
+
+        // Calculate accelerations
+        val leftAcceleration = (wheelSpeeds.leftMetersPerSecond - prevLeftVelocity) * 50
+        val rightAcceleration = (wheelSpeeds.rightMetersPerSecond - prevRightVelocity) * 50
+
+        prevLeftVelocity = wheelSpeeds.leftMetersPerSecond
+        prevRightVelocity = wheelSpeeds.rightMetersPerSecond
+
+        drivetrain.setOutput(
+            SIUnit(wheelSpeeds.leftMetersPerSecond),
+            SIUnit(wheelSpeeds.rightMetersPerSecond),
+            SIUnit(leftAcceleration),
+            SIUnit(rightAcceleration)
+        )
+
+
+        if (currentTrajectoryState != null) {
+            val referencePose = currentTrajectoryState.poseMeters
 
             // Update Current Path Location on Live Dashboard
             LiveDashboard.pathX = referencePose.translation.x_u.inFeet()
@@ -68,5 +109,5 @@ class TrajectoryTrackerCommand(
     /**
      * Checks if the trajectory has finished executing.
      */
-    override fun isFinished() = drivetrain.trajectoryTracker.isFinished
+    override fun isFinished() = elapsed > trajectory.totalTimeSeconds
 }

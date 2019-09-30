@@ -1,18 +1,13 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- *
- * Copyright 2019, Green Hope Falcons
- */
-
 /*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj.geometry;
+
+import java.util.Objects;
 
 /**
  * A change in distance along arc since the last pose update. We can use ideas
@@ -51,5 +46,26 @@ public class Twist2d {
     this.dx = dx;
     this.dy = dy;
     this.dtheta = dtheta;
+  }
+
+  /**
+   * Checks equality between this Twist2d and another object.
+   *
+   * @param obj The other object.
+   * @return Whether the two objects are equal or not.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof Twist2d) {
+      return Math.abs(((Twist2d) obj).dx - dx) < 1E-9
+          && Math.abs(((Twist2d) obj).dy - dy) < 1E-9
+          && Math.abs(((Twist2d) obj).dtheta - dtheta) < 1E-9;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(dx, dy, dtheta);
   }
 }

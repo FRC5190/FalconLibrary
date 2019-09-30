@@ -8,18 +8,27 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.wpilibj.controller.RamseteController
 import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import org.ghrobotics.lib.commands.FalconSubsystem
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTracker
-import org.ghrobotics.lib.mathematics.twodim.control.TrajectoryTrackerOutput
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
+import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
 /**
  * An interface to implement to follow trajectories.
  */
 abstract class TrajectoryTrackerDriveBase : FalconSubsystem() {
 
-    abstract val trajectoryTracker: TrajectoryTracker
+    abstract val controller: RamseteController
     abstract var robotPosition: Pose2d
+    abstract val kinematics: DifferentialDriveKinematics
 
-    abstract fun setOutput(output: TrajectoryTrackerOutput)
+    abstract fun setOutput(
+        leftVelocity: SIUnit<LinearVelocity>,
+        rightVelocity: SIUnit<LinearVelocity>,
+        leftAcceleration: SIUnit<LinearAcceleration>,
+        rightAcceleration: SIUnit<LinearAcceleration>
+    )
 }
