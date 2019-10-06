@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.motors.ctre
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX
 import com.ctre.phoenix.motorcontrol.can.VictorSPX
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -29,3 +30,15 @@ class FalconSPX<K : SIKey>(
     constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
 
 }
+
+fun <K: SIKey> falconSPX(
+    victorSPX: VictorSPX,
+    model: NativeUnitModel<K>,
+    block: FalconSPX<K>.() -> Unit
+) = FalconSPX(victorSPX, model).also(block)
+
+fun <K: SIKey> falconSPX(
+    id: Int,
+    model: NativeUnitModel<K>,
+    block: FalconSPX<K>.() -> Unit
+) = FalconSPX(id, model).also(block)

@@ -97,3 +97,16 @@ class FalconMAX<K : SIKey>(
     override fun setNeutral() = setDutyCycle(0.0)
 
 }
+
+fun <K: SIKey> falconMAX(
+    canSparkMax: CANSparkMax,
+    model: NativeUnitModel<K>,
+    block: FalconMAX<K>.() -> Unit
+) = FalconMAX(canSparkMax, model).also(block)
+
+fun <K: SIKey> falconMAX(
+    id: Int,
+    type: CANSparkMaxLowLevel.MotorType,
+    model: NativeUnitModel<K>,
+    block: FalconMAX<K>.() -> Unit
+) = FalconMAX(id, type, model).also(block)
