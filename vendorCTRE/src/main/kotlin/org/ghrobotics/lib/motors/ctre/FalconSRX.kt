@@ -42,6 +42,16 @@ class FalconSRX<K : SIKey>(
         val peakCurrentLimitDuration: SIUnit<Second>,
         val continuousCurrentLimit: SIUnit<Ampere>
     )
-
-
 }
+
+fun <K: SIKey> falconSRX(
+    talonSRX: TalonSRX,
+    model: NativeUnitModel<K>,
+    block: FalconSRX<K>.() -> Unit
+) = FalconSRX(talonSRX, model).also(block)
+
+fun <K: SIKey> falconSRX(
+    id: Int,
+    model: NativeUnitModel<K>,
+    block: FalconSRX<K>.() -> Unit
+) = FalconSRX(id, model).also(block)
