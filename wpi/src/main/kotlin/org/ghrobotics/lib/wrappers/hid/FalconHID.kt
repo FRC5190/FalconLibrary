@@ -88,9 +88,10 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
     private val changeOn = mutableListOf<HIDControlListener>()
     private val changeOff = mutableListOf<HIDControlListener>()
 
-    fun change(command: Command) {
+    fun change(command: Command): FalconHIDButtonBuilder {
         changeOn(command)
         changeOff { command.cancel() }
+        return this
     }
 
     fun changeOn(command: Command) = changeOn { command.schedule() }
