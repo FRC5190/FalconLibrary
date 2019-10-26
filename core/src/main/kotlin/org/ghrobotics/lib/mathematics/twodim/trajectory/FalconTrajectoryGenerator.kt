@@ -12,11 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Translation2d
 import edu.wpi.first.wpilibj.trajectory.Trajectory
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint
 import org.ghrobotics.lib.mathematics.twodim.geometry.mirror
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
 /**
  * Wrapper class over WPILib's trajectory generator that adds
@@ -28,29 +24,14 @@ object FalconTrajectoryGenerator {
      * Generates a trajectory from the given waypoints and constraints.
      *
      * @param waypoints A list of waypoints.
-     * @param constraints A list of user-defined constraints on velocity and acceleration.
-     * @param startVelocity The start velocity.
-     * @param endVelocity The end velocity.
-     * @param maxVelocity The max velocity.
-     * @param maxAcceleration The max acceleration.
-     * @param reversed Whether the path is reversed.
+     * @param config The configuration for the trajectory.
      *
      * @return The trajectory.
      */
     fun generateTrajectory(
         waypoints: List<Pose2d>,
-        constraints: List<TrajectoryConstraint>,
-        startVelocity: SIUnit<LinearVelocity>,
-        endVelocity: SIUnit<LinearVelocity>,
-        maxVelocity: SIUnit<LinearVelocity>,
-        maxAcceleration: SIUnit<LinearAcceleration>,
-        reversed: Boolean
-    ) = TrajectoryGenerator.generateTrajectory(
-        waypoints, constraints,
-        startVelocity.value, endVelocity.value,
-        maxVelocity.value, maxAcceleration.value,
-        reversed
-    )
+        config: FalconTrajectoryConfig
+    ): Trajectory = TrajectoryGenerator.generateTrajectory(waypoints, config)
 
     /**
      * Generates a trajectory from the given waypoints and constraints.
@@ -58,12 +39,7 @@ object FalconTrajectoryGenerator {
      * @param start The starting waypoint.
      * @param interiorWaypoints The interior waypoint translations.
      * @param end The ending waypoint.
-     * @param constraints A list of user-defined constraints on velocity and acceleration.
-     * @param startVelocity The start velocity.
-     * @param endVelocity The end velocity.
-     * @param maxVelocity The max velocity.
-     * @param maxAcceleration The max acceleration.
-     * @param reversed Whether the path is reversed.
+     * @param config The configuration for the trajectory.
      *
      * @return The trajectory.
      */
@@ -71,18 +47,8 @@ object FalconTrajectoryGenerator {
         start: Pose2d,
         interiorWaypoints: List<Translation2d>,
         end: Pose2d,
-        constraints: List<TrajectoryConstraint>,
-        startVelocity: SIUnit<LinearVelocity>,
-        endVelocity: SIUnit<LinearVelocity>,
-        maxVelocity: SIUnit<LinearVelocity>,
-        maxAcceleration: SIUnit<LinearAcceleration>,
-        reversed: Boolean
-    ) = TrajectoryGenerator.generateTrajectory(
-        start, interiorWaypoints, end, constraints,
-        startVelocity.value, endVelocity.value,
-        maxVelocity.value, maxAcceleration.value,
-        reversed
-    )
+        config: FalconTrajectoryConfig
+    ): Trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config)
 }
 
 fun Trajectory.mirror(): Trajectory = Trajectory(

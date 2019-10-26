@@ -1,12 +1,5 @@
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- *
- * Copyright 2019, Green Hope Falcons
- */
-
 /*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -15,6 +8,7 @@
 package edu.wpi.first.wpilibj.trajectory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 
@@ -226,5 +220,19 @@ public class Trajectory {
           lerp(curvatureRadPerMeter, endValue.curvatureRadPerMeter, interpolationFrac)
       );
     }
+
+    @Override
+    public String toString() {
+      return String.format(
+        "State(Sec: %.2f, Vel m/s: %.2f, Accel m/s/s: %.2f, Pose: %s, Curvature: %.2f)",
+        timeSeconds, velocityMetersPerSecond, accelerationMetersPerSecondSq,
+        poseMeters, curvatureRadPerMeter);
+    }
+  }
+
+  @Override
+  public String toString() {
+    String stateList = m_states.stream().map(State::toString).collect(Collectors.joining(", \n"));
+    return String.format("Trajectory - Seconds: %.2f, States:\n%s", m_totalTimeSeconds, stateList);
   }
 }
