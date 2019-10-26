@@ -24,10 +24,6 @@ import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inches
 import org.ghrobotics.lib.mathematics.units.milli
 import org.junit.Test
-import org.knowm.xchart.XYChartBuilder
-import java.awt.Color
-import java.awt.Font
-import java.text.DecimalFormat
 import kotlin.system.measureTimeMillis
 
 class PathFinderTest {
@@ -57,17 +53,13 @@ class PathFinderTest {
         }
         println("Generated Nodes in $nodeCreationTime ms")
         lateinit var trajectory: Trajectory
+        val config = FalconTrajectoryConfig(10.feet.velocity, 4.feet.acceleration).apply {
+            addConstraint(CentripetalAccelerationConstraint(4.0))
+        }
         val trajectoryTime = measureTimeMillis {
             trajectory = FalconTrajectoryGenerator.generateTrajectory(
                 path,
-                listOf(
-                    CentripetalAccelerationConstraint(4.0)
-                ),
-                0.0.feet.velocity,
-                0.0.feet.velocity,
-                10.0.feet.velocity,
-                4.0.feet.acceleration,
-                false
+                config
             )
         }
         println(
