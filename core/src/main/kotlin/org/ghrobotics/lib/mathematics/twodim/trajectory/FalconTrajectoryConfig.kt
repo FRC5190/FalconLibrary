@@ -9,6 +9,7 @@
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig
+import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
@@ -50,5 +51,17 @@ class FalconTrajectoryConfig(
      */
     fun setEndVelocity(endVelocity: SIUnit<LinearVelocity>) {
         super.setEndVelocity(endVelocity.value)
+    }
+
+    override fun addConstraint(constraint: TrajectoryConstraint): FalconTrajectoryConfig = also {
+        super.addConstraint(constraint)
+    }
+
+    override fun addConstraints(constraints: List<TrajectoryConstraint>): FalconTrajectoryConfig = also {
+        super.addConstraints(constraints)
+    }
+
+    fun addConstraints(vararg constraints: TrajectoryConstraint): FalconTrajectoryConfig = also {
+        super.addConstraints(constraints.asList())
     }
 }
