@@ -41,7 +41,7 @@ class FalconTrajectoryConfig(
      * Set the starting velocity of the trajectory.
      * @param startVelocity The start velocity of the trajectory.
      */
-    fun setStartVelocity(startVelocity: SIUnit<LinearVelocity>) {
+    fun setStartVelocity(startVelocity: SIUnit<LinearVelocity>): FalconTrajectoryConfig = also {
         super.setStartVelocity(startVelocity.value)
     }
 
@@ -49,7 +49,7 @@ class FalconTrajectoryConfig(
      * Set the ending velocity of the trajectory.
      * @param endVelocity The ending velocity of the trajectory.
      */
-    fun setEndVelocity(endVelocity: SIUnit<LinearVelocity>) {
+    fun setEndVelocity(endVelocity: SIUnit<LinearVelocity>): FalconTrajectoryConfig = also {
         super.setEndVelocity(endVelocity.value)
     }
 
