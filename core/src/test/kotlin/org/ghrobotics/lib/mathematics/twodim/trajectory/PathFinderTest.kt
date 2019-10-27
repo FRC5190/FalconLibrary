@@ -53,9 +53,9 @@ class PathFinderTest {
         }
         println("Generated Nodes in $nodeCreationTime ms")
         lateinit var trajectory: Trajectory
-        val config = FalconTrajectoryConfig(10.feet.velocity, 4.feet.acceleration).apply {
-            addConstraint(CentripetalAccelerationConstraint(4.0))
-        }
+        val config = FalconTrajectoryConfig(10.feet.velocity, 4.feet.acceleration)
+            .addConstraint(CentripetalAccelerationConstraint(4.0))
+
         val trajectoryTime = measureTimeMillis {
             trajectory = FalconTrajectoryGenerator.generateTrajectory(
                 path,
