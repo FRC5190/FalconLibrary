@@ -7,4 +7,4 @@
  */
 
 rootProject.name = "FalconLibrary"
-include("core", "wpi", "vendorCTRE", "vendorREV", "vendorNAVX", "wpilib2020")
+include("core", "wpi", "vendorCTRE", "vendorREV", "vendorNAVX")

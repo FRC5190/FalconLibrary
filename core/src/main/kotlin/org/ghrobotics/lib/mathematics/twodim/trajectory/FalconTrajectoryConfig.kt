@@ -23,20 +23,9 @@ import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
  */
 @Suppress("MemberVisibilityCanBePrivate")
 class FalconTrajectoryConfig(
-    val maxVelocity: SIUnit<LinearVelocity>,
-    val maxAcceleration: SIUnit<LinearAcceleration>
+    maxVelocity: SIUnit<LinearVelocity>,
+    maxAcceleration: SIUnit<LinearAcceleration>
 ) : TrajectoryConfig(maxVelocity.value, maxAcceleration.value) {
-
-    /**
-     * Get the starting velocity of the trajectory.
-     */
-    val startVelocity get() = SIUnit<LinearVelocity>(super.getStartVelocityMetersPerSecond())
-
-    /**
-     * Get the ending velocity of the trajectory.
-     */
-    val endVelocity get() = SIUnit<LinearVelocity>(super.getEndVelocityMetersPerSecond())
-
     /**
      * Set the starting velocity of the trajectory.
      * @param startVelocity The start velocity of the trajectory.
