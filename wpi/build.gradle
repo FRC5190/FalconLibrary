@@ -6,9 +6,7 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-package org.ghrobotics.lib.mathematics.units.operations
-
-import org.ghrobotics.lib.mathematics.units.SIKey
-import org.ghrobotics.lib.mathematics.units.SIUnit
-
-operator fun <A : SIKey> Double.times(other: SIUnit<A>) = other.times(this)
+dependencies {
+    compile project(":core")
+    compile "com.github.salomonbrys.kotson:kotson:2.5.0"
+}

@@ -36,5 +36,4 @@ data class Pose3d(
     operator fun div(scalar: Double) = times(1.0 / scalar)
 
     infix fun inFrameOfReferenceOf(fieldRelativeOrigin: Pose3d) = (-fieldRelativeOrigin) + this
-
 }

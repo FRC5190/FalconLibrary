@@ -20,6 +20,7 @@ object FalconNetworkTable {
 
     operator fun get(name: String): NetworkTableEntry =
         getEntry(name)
+
     fun getEntry(name: String): NetworkTableEntry = instance.getEntry(name)
 
     fun getTable(name: String): NetworkTable = instance.getTable(name)

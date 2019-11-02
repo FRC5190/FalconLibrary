@@ -31,58 +31,84 @@ val Number.weeks get() = toDouble().weeks
 val Number.moments get() = toDouble().moments
 
 @Deprecated("Replaced with Plural version", ReplaceWith("inMinutes()"))
-val SIUnit<Second>.minute get() = inMinutes()
+val SIUnit<Second>.minute
+    get() = inMinutes()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMinutes()"))
-val SIUnit<Second>.hour get() = inHours()
+val SIUnit<Second>.hour
+    get() = inHours()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMinutes()"))
-val SIUnit<Second>.day get() = inDays()
+val SIUnit<Second>.day
+    get() = inDays()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMinutes()"))
-val SIUnit<Second>.week get() = inWeeks()
+val SIUnit<Second>.week
+    get() = inWeeks()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMinutes()"))
-val SIUnit<Second>.moment get() = inMoments()
+val SIUnit<Second>.moment
+    get() = inMoments()
 
 @Deprecated("Replaced with Plural version", ReplaceWith("inYottaseconds()"))
-val SIUnit<Second>.yottasecond get() = inYottaseconds()
+val SIUnit<Second>.yottasecond
+    get() = inYottaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inZettaseconds()"))
-val SIUnit<Second>.zettasecond get() = inZettaseconds()
+val SIUnit<Second>.zettasecond
+    get() = inZettaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inExaseconds()"))
-val SIUnit<Second>.exasecond get() = inExaseconds()
+val SIUnit<Second>.exasecond
+    get() = inExaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inPetaseconds()"))
-val SIUnit<Second>.petasecond get() = inPetaseconds()
+val SIUnit<Second>.petasecond
+    get() = inPetaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inTeraseconds()"))
-val SIUnit<Second>.terasecond get() = inTeraseconds()
+val SIUnit<Second>.terasecond
+    get() = inTeraseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inGigaseconds()"))
-val SIUnit<Second>.gigasecond get() = inGigaseconds()
+val SIUnit<Second>.gigasecond
+    get() = inGigaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMegaseconds()"))
-val SIUnit<Second>.megasecond get() = inMegaseconds()
+val SIUnit<Second>.megasecond
+    get() = inMegaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inKiloseconds()"))
-val SIUnit<Second>.kilosecond get() = inKiloseconds()
+val SIUnit<Second>.kilosecond
+    get() = inKiloseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inHectoseconds()"))
-val SIUnit<Second>.hectosecond get() = inHectoseconds()
+val SIUnit<Second>.hectosecond
+    get() = inHectoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecaseconds()"))
-val SIUnit<Second>.decasecond get() = inDecaseconds()
+val SIUnit<Second>.decasecond
+    get() = inDecaseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inSeconds()"))
-val SIUnit<Second>.second get() = inSeconds()
+val SIUnit<Second>.second
+    get() = inSeconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inDeciseconds()"))
-val SIUnit<Second>.decisecond get() = inDeciseconds()
+val SIUnit<Second>.decisecond
+    get() = inDeciseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inCentiseconds()"))
-val SIUnit<Second>.centisecond get() = inCentiseconds()
+val SIUnit<Second>.centisecond
+    get() = inCentiseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMilliseconds()"))
-val SIUnit<Second>.millisecond get() = inMilliseconds()
+val SIUnit<Second>.millisecond
+    get() = inMilliseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMicroseconds()"))
-val SIUnit<Second>.microsecond get() = inMicroseconds()
+val SIUnit<Second>.microsecond
+    get() = inMicroseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inNanoseconds()"))
-val SIUnit<Second>.nanosecond get() = inNanoseconds()
+val SIUnit<Second>.nanosecond
+    get() = inNanoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inPicoseconds()"))
-val SIUnit<Second>.picosecond get() = inPicoseconds()
+val SIUnit<Second>.picosecond
+    get() = inPicoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inFemtoseconds()"))
-val SIUnit<Second>.femtosecond get() = inFemtoseconds()
+val SIUnit<Second>.femtosecond
+    get() = inFemtoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inAttoseconds()"))
-val SIUnit<Second>.attosecond get() = inAttoseconds()
+val SIUnit<Second>.attosecond
+    get() = inAttoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inZeptoseconds()"))
-val SIUnit<Second>.zeptosecond get() = inZeptoseconds()
+val SIUnit<Second>.zeptosecond
+    get() = inZeptoseconds()
 @Deprecated("Replaced with Plural version", ReplaceWith("inYoctoseconds()"))
-val SIUnit<Second>.yoctosecond get() = inYoctoseconds()
+val SIUnit<Second>.yoctosecond
+    get() = inYoctoseconds()
 
 fun SIUnit<Second>.inMinutes() = value.div(kMinuteToSecond)
 fun SIUnit<Second>.inHours() = value.div(kHourToSecond)

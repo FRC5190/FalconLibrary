@@ -8,8 +8,11 @@
 
 package org.ghrobotics.lib.mathematics.statespace
 
-import frc.team4069.keigen.*
-
+import frc.team4069.keigen.Num
+import frc.team4069.keigen.Vector
+import frc.team4069.keigen.get
+import frc.team4069.keigen.set
+import frc.team4069.keigen.zeros
 
 /**
  * Contains the controller coefficients and logic for a state-space controller.
@@ -69,5 +72,4 @@ class StateSpaceController<States : Num, Inputs : Num, Outputs : Num>(
             u[i] = u[i].coerceIn(UMin[i], UMax[i])
         }
     }
-
 }

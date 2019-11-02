@@ -17,8 +17,17 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
-import org.ghrobotics.lib.mathematics.units.*
-import org.ghrobotics.lib.utils.*
+import org.ghrobotics.lib.mathematics.units.Meter
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inches
+import org.ghrobotics.lib.mathematics.units.meters
+import org.ghrobotics.lib.utils.combinationPairs
+import org.ghrobotics.lib.utils.filterNotToSet
+import org.ghrobotics.lib.utils.flatMapToSet
+import org.ghrobotics.lib.utils.mapNotNullToSet
+import org.ghrobotics.lib.utils.mapToSet
+import org.ghrobotics.lib.utils.plusToSet
 import java.lang.Math.sqrt
 import kotlin.math.pow
 
@@ -185,7 +194,7 @@ class PathFinder(
             .filterNotToSet { point ->
                 val translation = point.toTranslation2d()
                 !fieldRectangleWithOffset.contains(translation) ||
-                        restrictedAreas.any { it.contains(translation) }
+                    restrictedAreas.any { it.contains(translation) }
             }
     }
 

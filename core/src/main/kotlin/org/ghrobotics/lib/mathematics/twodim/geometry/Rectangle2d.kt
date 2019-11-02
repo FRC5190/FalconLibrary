@@ -76,7 +76,7 @@ data class Rectangle2d constructor(
             rectangle.topLeft, rectangle.bottomRight,
             rectangle.topLeft + translation, rectangle.bottomRight + translation
         )
-        //println(boxRect)
+        // println(boxRect)
         if (!boxRect.isIn(this)) return false
         // AABB collision
         // Calculate distances

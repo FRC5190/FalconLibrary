@@ -8,7 +8,11 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.days
+import org.ghrobotics.lib.mathematics.units.inDays
+import org.ghrobotics.lib.mathematics.units.inMinutes
+import org.ghrobotics.lib.mathematics.units.minutes
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.junit.Test
 
 class TimeTest {

@@ -20,10 +20,12 @@ typealias Volt = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
     Mult<Ampere, Mult<Second, Mult<Second, Second>>>>
 
 @Deprecated("Replaced with Plural version", ReplaceWith("volts"))
-val Double.volt get() = volts
+val Double.volt
+    get() = volts
 
 @Deprecated("Replaced with Plural version", ReplaceWith("volts"))
-val Number.volt get() = volts
+val Number.volt
+    get() = volts
 
 val Double.volts get() = SIUnit<Volt>(this)
 

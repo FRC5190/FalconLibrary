@@ -6,11 +6,8 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-plugins {
-    id("edu.wpi.first.GradleRIO")
-}
-
 dependencies {
-    compile(project(":core"))
-    compile("com.github.salomonbrys.kotson", "kotson", "2.5.0")
+    compile "org.apache.commons:commons-math3:3.6.1"
+    compile "com.github.FRCTeam4069:Keigen:1.4.0"
+    compile wpi.deps.wpilib()
 }

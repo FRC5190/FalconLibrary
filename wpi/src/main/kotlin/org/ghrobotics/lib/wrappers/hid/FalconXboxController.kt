@@ -41,6 +41,7 @@ fun FalconXboxController.getX(hand: GenericHID.Hand) = getRawAxis(
         hand
     )
 )
+
 fun FalconXboxController.getRawButton(button: XboxButton) = getRawButton(button.value)
 
 private fun yAxisToRawAxis(hand: GenericHID.Hand) = if (hand == GenericHID.Hand.kLeft) 1 else 5

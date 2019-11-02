@@ -8,7 +8,13 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.centi
+import org.ghrobotics.lib.mathematics.units.inInches
+import org.ghrobotics.lib.mathematics.units.inMeters
+import org.ghrobotics.lib.mathematics.units.inMillimeters
+import org.ghrobotics.lib.mathematics.units.inches
+import org.ghrobotics.lib.mathematics.units.meters
+import org.ghrobotics.lib.mathematics.units.milli
 import org.junit.Test
 
 class LengthTest {

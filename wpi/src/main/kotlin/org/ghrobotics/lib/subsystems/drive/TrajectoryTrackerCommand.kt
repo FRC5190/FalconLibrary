@@ -83,7 +83,6 @@ class TrajectoryTrackerCommand(
             SIUnit(rightAcceleration)
         )
 
-
         if (currentTrajectoryState != null) {
             val referencePose = currentTrajectoryState.poseMeters
 
