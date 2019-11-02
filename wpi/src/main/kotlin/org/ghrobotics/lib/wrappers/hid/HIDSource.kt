@@ -29,9 +29,9 @@ class HIDAxisSource(
 }
 
 class BoundedHIDAxisSource(
-        private val genericHID: GenericHID,
-        private val axisId: Int,
-        private val range: ClosedFloatingPointRange<Double>
+    private val genericHID: GenericHID,
+    private val axisId: Int,
+    private val range: ClosedFloatingPointRange<Double>
 ) : HIDSource {
     override fun invoke() = genericHID.getRawAxis(axisId).coerceIn(range)
 }

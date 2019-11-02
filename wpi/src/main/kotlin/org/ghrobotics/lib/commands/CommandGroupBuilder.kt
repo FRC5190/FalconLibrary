@@ -8,10 +8,16 @@
 
 package org.ghrobotics.lib.commands
 
-import edu.wpi.first.wpilibj2.command.*
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.CommandGroupBase
+import edu.wpi.first.wpilibj2.command.ConditionalCommand
+import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import org.ghrobotics.lib.utils.Source
 import java.util.function.BooleanSupplier
-
 
 fun sequential(block: BasicCommandGroupBuilder.() -> Unit) =
     commandGroup(BasicCommandGroupBuilder.Type.Sequential, block)
@@ -34,7 +40,6 @@ private fun commandGroup(type: BasicCommandGroupBuilder.Type, block: BasicComman
 private fun parallelDeadlineGroup(deadline: Command, block: ParallelDeadlineGroupBuilder.() -> Unit) =
     ParallelDeadlineGroupBuilder(deadline).apply(block).build()
 
-
 interface CommandGroupBuilder {
     fun build(): CommandGroupBase
 }
@@ -56,7 +61,6 @@ class BasicCommandGroupBuilder(private val type: Type) : CommandGroupBuilder {
     enum class Type {
         Sequential, Parallel, ParallelRace
     }
-
 }
 
 class ParallelDeadlineGroupBuilder(private val deadline: Command) : CommandGroupBuilder {

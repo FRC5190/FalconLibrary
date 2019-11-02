@@ -20,10 +20,12 @@ typealias Ohm = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
     Mult<Second, Mult<Second, Mult<Second, Mult<Ampere, Ampere>>>>>
 
 @Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
-val Double.ohm get() = ohms
+val Double.ohm
+    get() = ohms
 
 @Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
-val Number.ohm get() = ohms
+val Number.ohm
+    get() = ohms
 
 val Double.ohms get() = SIUnit<Ohm>(this)
 

@@ -16,7 +16,10 @@ import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.amps
-import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
@@ -95,16 +98,15 @@ class FalconMAX<K : SIKey>(
         }
 
     override fun setNeutral() = setDutyCycle(0.0)
-
 }
 
-fun <K: SIKey> falconMAX(
+fun <K : SIKey> falconMAX(
     canSparkMax: CANSparkMax,
     model: NativeUnitModel<K>,
     block: FalconMAX<K>.() -> Unit
 ) = FalconMAX(canSparkMax, model).also(block)
 
-fun <K: SIKey> falconMAX(
+fun <K : SIKey> falconMAX(
     id: Int,
     type: CANSparkMaxLowLevel.MotorType,
     model: NativeUnitModel<K>,

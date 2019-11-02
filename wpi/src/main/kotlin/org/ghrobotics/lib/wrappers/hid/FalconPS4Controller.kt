@@ -8,7 +8,6 @@
 
 package org.ghrobotics.lib.wrappers.hid
 
-
 import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.Joystick
 
@@ -17,17 +16,17 @@ typealias FalconPS4Builder = FalconHIDBuilder<Joystick>
 
 // Builder helpers
 fun ps4Controller(port: Int, block: FalconPS4Builder.() -> Unit): FalconPS4Controller =
-        Joystick(port).mapControls(block)
+    Joystick(port).mapControls(block)
 
 fun FalconPS4Builder.button(
-        button: PS4Button,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+    button: PS4Button,
+    block: FalconHIDButtonBuilder.() -> Unit = {}
 ) = button(button.value, block)
 
 fun FalconPS4Builder.triggerAxisButton(
-        hand: GenericHID.Hand,
-        threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+    hand: GenericHID.Hand,
+    threshold: Double = HIDButton.DEFAULT_THRESHOLD,
+    block: FalconHIDButtonBuilder.() -> Unit = {}
 ) = axisButton(yTriggerAxisToRawAxis(hand), threshold, block)
 
 // Source helpers

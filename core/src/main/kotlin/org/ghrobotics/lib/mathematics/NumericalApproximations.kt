@@ -23,4 +23,3 @@ class NumericalApproximations private constructor() {
             }
     }
 }
-

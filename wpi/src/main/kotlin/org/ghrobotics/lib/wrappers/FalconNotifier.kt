@@ -11,7 +11,10 @@ package org.ghrobotics.lib.wrappers
 import edu.wpi.first.hal.NotifierJNI
 import edu.wpi.first.wpilibj.Notifier
 import edu.wpi.first.wpilibj.Timer
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.inMicroseconds
+import org.ghrobotics.lib.mathematics.units.seconds
 import java.util.concurrent.TimeUnit
 
 /**

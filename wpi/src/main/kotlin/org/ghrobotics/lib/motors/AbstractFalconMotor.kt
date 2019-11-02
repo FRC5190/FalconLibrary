@@ -17,5 +17,4 @@ abstract class AbstractFalconMotor<K : SIKey> : FalconMotor<K> {
     override fun follow(motor: FalconMotor<*>): Boolean {
         TODO("Cross brand motor controller following not yet implemented!")
     }
-
 }

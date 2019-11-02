@@ -8,9 +8,14 @@
 
 package org.ghrobotics.lib.mathematics.statespace
 
-import frc.team4069.keigen.*
+import frc.team4069.keigen.Matrix
+import frc.team4069.keigen.Nat
+import frc.team4069.keigen.Num
+
 data class StateSpacePlantCoeffs<States : Num, Inputs : Num, Outputs : Num>(
-    val states: Nat<States>, val inputs: Nat<Inputs>, val outputs: Nat<Outputs>,
+    val states: Nat<States>,
+    val inputs: Nat<Inputs>,
+    val outputs: Nat<Outputs>,
     val A: Matrix<States, States>,
     val B: Matrix<States, Inputs>,
     val C: Matrix<Outputs, States>,

@@ -37,7 +37,6 @@ abstract class NativeUnitModel<K : SIKey> {
 
     open fun toNativeUnitAcceleration(modelledUnitAcceleration: SIUnit<Acceleration<K>>): SIUnit<NativeUnitAcceleration> =
         SIUnit(toNativeUnitVelocity(SIUnit(modelledUnitAcceleration.value)).value)
-
 }
 
 object DefaultNativeUnitModel : NativeUnitModel<NativeUnit>() {

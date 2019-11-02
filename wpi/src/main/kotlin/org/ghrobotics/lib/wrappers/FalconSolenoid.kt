@@ -52,8 +52,8 @@ class FalconDoubleSolenoid(forwardChannel: Int, reverseChannel: Int, module: Int
     FalconSolenoid {
 
     private val wpiSolenoid: DoubleSolenoid =
-            if (module == null) DoubleSolenoid(forwardChannel, reverseChannel)
-            else DoubleSolenoid(module, forwardChannel, reverseChannel)
+        if (module == null) DoubleSolenoid(forwardChannel, reverseChannel)
+        else DoubleSolenoid(module, forwardChannel, reverseChannel)
 
     // Set the solenoid to the desired position
     override var state: FalconSolenoid.State by Delegates.observable(FalconSolenoid.State.Off) { _, _, newValue ->

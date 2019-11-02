@@ -21,9 +21,11 @@ val Number.radians get() = toDouble().radians
 val Number.degrees get() = toDouble().degrees
 
 @Deprecated("Replaced with Plural version", ReplaceWith("inRadians()"))
-val SIUnit<Radian>.radian get() = inRadians()
+val SIUnit<Radian>.radian
+    get() = inRadians()
 @Deprecated("Replaced with Plural version", ReplaceWith("inDegrees()"))
-val SIUnit<Radian>.degree get() = inDegrees()
+val SIUnit<Radian>.degree
+    get() = inDegrees()
 
 fun SIUnit<Radian>.inRadians() = value
 fun SIUnit<Radian>.inDegrees() = Math.toDegrees(value)

@@ -12,7 +12,11 @@ import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volts
 
 typealias LinearFalconMotor = FalconMotor<Meter>
 typealias AngularFalconMotor = FalconMotor<Radian>
@@ -89,5 +93,4 @@ interface FalconMotor<K : SIKey> {
      * Sets the output of the motor to neutral
      */
     fun setNeutral()
-
 }

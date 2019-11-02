@@ -10,7 +10,13 @@ package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import org.ghrobotics.lib.mathematics.units.*
+import org.ghrobotics.lib.mathematics.units.Ampere
+import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.amp
+import org.ghrobotics.lib.mathematics.units.inAmps
+import org.ghrobotics.lib.mathematics.units.inMilliseconds
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import kotlin.properties.Delegates
 
@@ -44,13 +50,13 @@ class FalconSRX<K : SIKey>(
     )
 }
 
-fun <K: SIKey> falconSRX(
+fun <K : SIKey> falconSRX(
     talonSRX: TalonSRX,
     model: NativeUnitModel<K>,
     block: FalconSRX<K>.() -> Unit
 ) = FalconSRX(talonSRX, model).also(block)
 
-fun <K: SIKey> falconSRX(
+fun <K : SIKey> falconSRX(
     id: Int,
     model: NativeUnitModel<K>,
     block: FalconSRX<K>.() -> Unit

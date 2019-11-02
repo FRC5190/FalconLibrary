@@ -43,66 +43,96 @@ val Number.nauticalMiles get() = toDouble().nauticalMiles
 val Number.lightYears get() = toDouble().lightYears
 
 @Deprecated("Replaced with Plural version", ReplaceWith("inThous()"))
-val SIUnit<Meter>.thou get() = inThou()
+val SIUnit<Meter>.thou
+    get() = inThou()
 @Deprecated("Replaced with Plural version", ReplaceWith("inLines()"))
-val SIUnit<Meter>.line get() = inLines()
+val SIUnit<Meter>.line
+    get() = inLines()
 @Deprecated("Replaced with Plural version", ReplaceWith("inInchs()"))
-val SIUnit<Meter>.inch get() = inInches()
+val SIUnit<Meter>.inch
+    get() = inInches()
 @Deprecated("Replaced with Plural version", ReplaceWith("inFeets()"))
-val SIUnit<Meter>.feet get() = inFeet()
+val SIUnit<Meter>.feet
+    get() = inFeet()
 @Deprecated("Replaced with Plural version", ReplaceWith("inYards()"))
-val SIUnit<Meter>.yard get() = inYards()
+val SIUnit<Meter>.yard
+    get() = inYards()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMiles()"))
-val SIUnit<Meter>.mile get() = inMiles()
+val SIUnit<Meter>.mile
+    get() = inMiles()
 @Deprecated("Replaced with Plural version", ReplaceWith("inLeagues()"))
-val SIUnit<Meter>.league get() = inLeagues()
+val SIUnit<Meter>.league
+    get() = inLeagues()
 @Deprecated("Replaced with Plural version", ReplaceWith("inNauticalMiles()"))
-val SIUnit<Meter>.nauticalMile get() = inNauticalMiles()
+val SIUnit<Meter>.nauticalMile
+    get() = inNauticalMiles()
 @Deprecated("Replaced with Plural version", ReplaceWith("inLightYears()"))
-val SIUnit<Meter>.lightYear get() = inLightYears()
+val SIUnit<Meter>.lightYear
+    get() = inLightYears()
 
 @Deprecated("Replaced with Plural version", ReplaceWith("inYottameters()"))
-val SIUnit<Meter>.yottameter get() = inYottameters()
+val SIUnit<Meter>.yottameter
+    get() = inYottameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inZettameters()"))
-val SIUnit<Meter>.zettameter get() = inZettameters()
+val SIUnit<Meter>.zettameter
+    get() = inZettameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inExameters()"))
-val SIUnit<Meter>.exameter get() = inExameters()
+val SIUnit<Meter>.exameter
+    get() = inExameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inPetameters()"))
-val SIUnit<Meter>.petameter get() = inPetameters()
+val SIUnit<Meter>.petameter
+    get() = inPetameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inTerameters()"))
-val SIUnit<Meter>.terameter get() = inTerameters()
+val SIUnit<Meter>.terameter
+    get() = inTerameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inGigameters()"))
-val SIUnit<Meter>.gigameter get() = inGigameters()
+val SIUnit<Meter>.gigameter
+    get() = inGigameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMegameters()"))
-val SIUnit<Meter>.megameter get() = inMegameters()
+val SIUnit<Meter>.megameter
+    get() = inMegameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inKilometers()"))
-val SIUnit<Meter>.kilometer get() = inKilometers()
+val SIUnit<Meter>.kilometer
+    get() = inKilometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inHectometers()"))
-val SIUnit<Meter>.hectometer get() = inHectometers()
+val SIUnit<Meter>.hectometer
+    get() = inHectometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecameters()"))
-val SIUnit<Meter>.decameter get() = inDecameters()
+val SIUnit<Meter>.decameter
+    get() = inDecameters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMeters()"))
-val SIUnit<Meter>.meter get() = inMeters()
+val SIUnit<Meter>.meter
+    get() = inMeters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecimeters()"))
-val SIUnit<Meter>.decimeter get() = inDecimeters()
+val SIUnit<Meter>.decimeter
+    get() = inDecimeters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inCentimeters()"))
-val SIUnit<Meter>.centimeter get() = inCentimeters()
+val SIUnit<Meter>.centimeter
+    get() = inCentimeters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMillimeters()"))
-val SIUnit<Meter>.millimeter get() = inMillimeters()
+val SIUnit<Meter>.millimeter
+    get() = inMillimeters()
 @Deprecated("Replaced with Plural version", ReplaceWith("inMicrometers()"))
-val SIUnit<Meter>.micrometer get() = inMicrometers()
+val SIUnit<Meter>.micrometer
+    get() = inMicrometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inNanometers()"))
-val SIUnit<Meter>.nanometer get() = inNanometers()
+val SIUnit<Meter>.nanometer
+    get() = inNanometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inPicometers()"))
-val SIUnit<Meter>.picometer get() = inPicometers()
+val SIUnit<Meter>.picometer
+    get() = inPicometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inFemtometers()"))
-val SIUnit<Meter>.femtometer get() = inFemtometers()
+val SIUnit<Meter>.femtometer
+    get() = inFemtometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inAttometers()"))
-val SIUnit<Meter>.attometer get() = inAttometers()
+val SIUnit<Meter>.attometer
+    get() = inAttometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inZeptometers()"))
-val SIUnit<Meter>.zeptometer get() = inZeptometers()
+val SIUnit<Meter>.zeptometer
+    get() = inZeptometers()
 @Deprecated("Replaced with Plural version", ReplaceWith("inYoctometers()"))
-val SIUnit<Meter>.yoctometer get() = inYoctometers()
+val SIUnit<Meter>.yoctometer
+    get() = inYoctometers()
 
 fun SIUnit<Meter>.inThou() = value.div(kThouToMeter)
 fun SIUnit<Meter>.inLines() = value.div(kLineToMeter)

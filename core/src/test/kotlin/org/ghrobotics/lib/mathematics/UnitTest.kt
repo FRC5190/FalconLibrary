@@ -8,11 +8,24 @@
 
 package org.ghrobotics.lib.mathematics
 
-import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derived.radians
 import org.ghrobotics.lib.mathematics.units.derived.velocity
-import org.ghrobotics.lib.mathematics.units.nativeunit.*
+import org.ghrobotics.lib.mathematics.units.feet
+import org.ghrobotics.lib.mathematics.units.inInches
+import org.ghrobotics.lib.mathematics.units.inLbs
+import org.ghrobotics.lib.mathematics.units.inMeters
+import org.ghrobotics.lib.mathematics.units.inches
+import org.ghrobotics.lib.mathematics.units.kilo
+import org.ghrobotics.lib.mathematics.units.meters
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
+import org.ghrobotics.lib.mathematics.units.nativeunit.fromNativeUnitPosition
+import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100ms
+import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100msPerSecond
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
+import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitAcceleration
+import org.ghrobotics.lib.mathematics.units.nativeunit.toNativeUnitVelocity
 import org.ghrobotics.lib.mathematics.units.operations.div
+import org.ghrobotics.lib.mathematics.units.seconds
 import org.junit.Test
 
 class UnitTest {

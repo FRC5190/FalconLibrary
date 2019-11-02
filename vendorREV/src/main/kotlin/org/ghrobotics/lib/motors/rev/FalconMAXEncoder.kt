@@ -26,5 +26,4 @@ class FalconMAXEncoder<K : SIKey>(
     override fun resetPositionRaw(newPosition: SIUnit<NativeUnit>) {
         canEncoder.position = newPosition.value
     }
-
 }

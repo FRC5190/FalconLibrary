@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.utils
 
-import java.util.*
+import java.util.HashSet
 
 fun <T> Collection<T>.plusToSet(other: Collection<T>): Set<T> {
     val result = HashSet<T>(size + other.size)

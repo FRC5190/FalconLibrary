@@ -14,7 +14,10 @@ import com.ctre.phoenix.motorcontrol.IMotorController
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.*
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
+import org.ghrobotics.lib.mathematics.units.derived.Volt
+import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100ms
 import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100msPerSecond
@@ -132,5 +135,4 @@ abstract class FalconCTRE<K : SIKey>(
         val demand1Type: DemandType,
         val demand1: Double
     )
-
 }

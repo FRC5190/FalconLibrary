@@ -55,13 +55,18 @@ fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(
         trueMap
     ), Source(falseMap)
 )
-fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(trueMap,
+
+fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(
+    trueMap,
     Source(falseMap)
 )
+
 fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(
     Source(
         trueMap
-    ), falseMap)
+    ), falseMap
+)
+
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }
 
 operator fun BooleanSource.not() = map { !it }

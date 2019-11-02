@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.utils
 
-import java.util.*
+import java.util.ArrayList
 
 class CircularBuffer(private val size: Int) {
 

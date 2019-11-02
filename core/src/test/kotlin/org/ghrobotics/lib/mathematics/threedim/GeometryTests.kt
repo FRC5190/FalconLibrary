@@ -81,5 +81,4 @@ class GeometryTests {
 
         println(deltaState.translation * armRotation)
     }
-
 }

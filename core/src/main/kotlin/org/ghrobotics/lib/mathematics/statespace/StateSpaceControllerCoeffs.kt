@@ -8,7 +8,9 @@
 
 package org.ghrobotics.lib.mathematics.statespace
 
-import frc.team4069.keigen.*
+import frc.team4069.keigen.Matrix
+import frc.team4069.keigen.Num
+import frc.team4069.keigen.Vector
 
 data class StateSpaceControllerCoeffs<States : Num, Inputs : Num, Outputs : Num>(
     val K: Matrix<Inputs, States>,

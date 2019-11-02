@@ -19,10 +19,12 @@ typealias Watt = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
     Mult<Second, Mult<Second, Second>>>
 
 @Deprecated("Replaced with Plural version", ReplaceWith("watts"))
-val Double.watt get() = watts
+val Double.watt
+    get() = watts
 
 @Deprecated("Replaced with Plural version", ReplaceWith("watts"))
-val Number.watt get() = watts
+val Number.watt
+    get() = watts
 
 val Double.watts get() = SIUnit<Watt>(this)
 
