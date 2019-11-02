@@ -30,9 +30,9 @@ import kotlin.math.sign
  * @param kS The voltage required to break static friction.
  */
 class MotorCharacterization<K : SIKey>(
-    private val kV: SIUnit<Frac<Volt, Velocity<K>>>,
-    private val kA: SIUnit<Frac<Volt, Acceleration<K>>>,
-    private val kS: SIUnit<Volt>
+    val kV: SIUnit<Frac<Volt, Velocity<K>>>,
+    val kA: SIUnit<Frac<Volt, Acceleration<K>>>,
+    val kS: SIUnit<Volt>
 ) {
     /**
      * Returns the feedforward voltage.
