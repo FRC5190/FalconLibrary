@@ -1,3 +1,11 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib.mathematics.twodim.trajectory.constraints
 
 import edu.wpi.first.wpilibj.geometry.Pose2d
@@ -13,7 +21,10 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.inMeters
 import org.ghrobotics.lib.physics.MotorCharacterization
-import kotlin.math.*
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sign
+import kotlin.math.abs
 
 @Suppress("unused")
 class DifferentailDriveDynamicsConstraint(
@@ -22,7 +33,7 @@ class DifferentailDriveDynamicsConstraint(
     private val kinematics: DifferentialDriveKinematics,
     private val maxVoltage: SIUnit<Volt>,
     private val wheelBase: SIUnit<Meter>
-): TrajectoryConstraint {
+) : TrajectoryConstraint {
 
     val A = SimpleMatrix(arrayOf(
         doubleArrayOf(-((leftMotor.kV + rightMotor.kV).value / 2.0) / ((leftMotor.kA + rightMotor.kA).value / 2.0), 0.0),
@@ -38,8 +49,11 @@ class DifferentailDriveDynamicsConstraint(
     private val uMin = SimpleMatrix(arrayOf(doubleArrayOf(-maxVoltage.value + maxKs), doubleArrayOf(-maxVoltage.value + maxKs)))
     private val uMax = SimpleMatrix(arrayOf(doubleArrayOf(maxVoltage.value - maxKs), doubleArrayOf(maxVoltage.value - maxKs)))
 
-    override fun getMinMaxAccelerationMetersPerSecondSq(poseMeters: Pose2d, curvatureRadPerMeter: Double,
-                                                        velocityMetersPerSecond: Double): TrajectoryConstraint.MinMax {
+    override fun getMinMaxAccelerationMetersPerSecondSq(
+        poseMeters: Pose2d,
+        curvatureRadPerMeter: Double,
+        velocityMetersPerSecond: Double
+    ): TrajectoryConstraint.MinMax {
         // Calculate wheel speeds from velocity and curvature
         val wheelSpeeds = kinematics.toWheelSpeeds(ChassisSpeeds(
                 velocityMetersPerSecond,
@@ -70,15 +84,14 @@ class DifferentailDriveDynamicsConstraint(
         )
     }
 
-
     override fun getMaxVelocityMetersPerSecond(poseMeters: Pose2d, curvatureRadPerMeter: Double, velocityMetersPerSecond: Double): Double {
         val leftMax = leftMotor.kV.value * maxVoltage.value
         val rightMax = rightMotor.kV.value * maxVoltage.value
         val effectiveWheelBaseRadius = wheelBase.inMeters()
 
-        if(curvatureRadPerMeter epsilonEquals 0.0) return min(leftMax, rightMax)
-        if(java.lang.Double.isInfinite(curvatureRadPerMeter))
-            return sign(curvatureRadPerMeter) * min(leftMax, rightMax) /effectiveWheelBaseRadius
+        if (curvatureRadPerMeter epsilonEquals 0.0) return min(leftMax, rightMax)
+        if (java.lang.Double.isInfinite(curvatureRadPerMeter))
+            return sign(curvatureRadPerMeter) * min(leftMax, rightMax) / effectiveWheelBaseRadius
 
         val rightSpeedIfLeftMax =
             leftMax * (effectiveWheelBaseRadius * curvatureRadPerMeter + 1.0) / (1.0 - effectiveWheelBaseRadius * curvatureRadPerMeter)
