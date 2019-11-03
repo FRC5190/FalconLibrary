@@ -27,7 +27,7 @@ import kotlin.math.sign
 import kotlin.math.abs
 
 @Suppress("unused")
-class DifferentailDriveDynamicsConstraint(
+class DifferentialDriveDynamicsConstraint(
     private val leftMotor: MotorCharacterization<Meter>,
     private val rightMotor: MotorCharacterization<Meter>,
     private val kinematics: DifferentialDriveKinematics,
