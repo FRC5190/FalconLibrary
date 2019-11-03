@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj.geometry.Twist2d
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.degrees
+import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
 import org.ghrobotics.lib.mathematics.units.meters
 import kotlin.math.absoluteValue
 
@@ -32,6 +35,9 @@ fun Translation2d(distance: SIUnit<Meter>, angle: Rotation2d) =
 
 fun Pose2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: Rotation2d) =
     Pose2d(x.value, y.value, angle)
+
+fun Pose2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: SIUnit<Radian> = 0.degrees) =
+    Pose2d(x.value, y.value, angle.toRotation2d())
 
 /* Transform2d Unit-Safe Constructors */
 fun Transform2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: Rotation2d) =
