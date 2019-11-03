@@ -40,21 +40,24 @@ class DifferentailDriveDynamicsConstraint(
 
     override fun getMinMaxAccelerationMetersPerSecondSq(poseMeters: Pose2d, curvatureRadPerMeter: Double,
                                                         velocityMetersPerSecond: Double): TrajectoryConstraint.MinMax {
-        // left and right vel
+        // Calculate wheel speeds from velocity and curvature
         val wheelSpeeds = kinematics.toWheelSpeeds(ChassisSpeeds(
                 velocityMetersPerSecond,
                 0.0,
                 curvatureRadPerMeter * velocityMetersPerSecond))
 
+        // construct our current state vector
         val x = SimpleMatrix(arrayOf(
             doubleArrayOf(wheelSpeeds.leftMetersPerSecond),
             doubleArrayOf(wheelSpeeds.rightMetersPerSecond
         )))
 
-        val xdotMax = A.mult(x).plus(B.dot(uMax))
-        val xdotMin = A.mult(x).plus(B.dot(uMin))
+        // calculate the min and maximum accelerations of each wheel from the current state vectors
+        // and min/max control efforts
+        val xdotMax = A.mult(x).plus(B.mult(uMax))
+        val xdotMin = A.mult(x).plus(B.mult(uMin))
 
-        // go back from wheel speeds to chassis speeds
+        // go back from wheel accelerations to chassis accelerations (roughly)
         val minChassisSpeed = kinematics.toChassisSpeeds(DifferentialDriveWheelSpeeds(
             xdotMin[0], xdotMin[1]
         ))
