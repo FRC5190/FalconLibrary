@@ -59,12 +59,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * The left motor
      */
-    abstract val leftMotor: FalconMotor<Meter>
+    protected abstract val leftMotor: FalconMotor<Meter>
 
     /**
      * The right motor
      */
-    abstract val rightMotor: FalconMotor<Meter>
+    protected abstract val rightMotor: FalconMotor<Meter>
 
     /**
      * The characterization for the left gearbox.
@@ -85,6 +85,36 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      * Get the robot's position on the field.
      */
     override var robotPosition: Pose2d = Pose2d()
+
+    /**
+     * Returns the voltage output of the left motor.
+     */
+    val leftVoltage get() = periodicIO.leftVoltage
+
+    /**
+     * Returns the voltage output of the right motor.
+     */
+    val rightVoltage get() = periodicIO.rightVoltage
+
+    /**
+     * Returns the position of the left side of the drivetrain.
+     */
+    val leftPosition get() = periodicIO.leftPosition
+
+    /**
+     * Returns the position of the right side of the drivetrain.
+     */
+    val rightPosition get() = periodicIO.rightPosition
+
+    /**
+     * Returns the velocity of the left side of the drivetrain.
+     */
+    val leftVelocity get() = periodicIO.leftVelocity
+
+    /**
+     * Returns the velocity of the right side of the drivetrain.
+     */
+    val rightVelocity get() = periodicIO.rightVelocity
 
     /**
      * Periodic function -- runs every 20 ms.
