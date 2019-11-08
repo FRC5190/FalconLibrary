@@ -59,12 +59,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * The left motor
      */
-    abstract val leftMotor: FalconMotor<Meter>
+    protected abstract val leftMotor: FalconMotor<Meter>
 
     /**
      * The right motor
      */
-    abstract val rightMotor: FalconMotor<Meter>
+    protected abstract val rightMotor: FalconMotor<Meter>
 
     /**
      * The characterization for the left gearbox.
