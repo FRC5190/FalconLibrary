@@ -8,18 +8,22 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
 import org.ghrobotics.lib.mathematics.twodim.trajectory.mirror
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
@@ -55,6 +59,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      * on the field.
      */
     abstract val odometry: DifferentialDriveOdometry
+
+    /**
+     * Buffer for storing the pose over a span of time. This is useful for
+     * Vision and latency compensation.
+     */
+    protected open val poseBuffer = TimePoseInterpolatableBuffer()
 
     /**
      * The left motor
@@ -142,6 +152,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
                 periodicIO.leftVelocity.value, periodicIO.rightVelocity.value
             )
         )
+        poseBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
 
         when (val desiredOutput = periodicIO.desiredOutput) {
             is Output.Nothing -> {
@@ -190,6 +201,19 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
         periodicIO.desiredOutput = Output.Velocity(
             leftVelocity, rightVelocity
         )
+    }
+
+    /**
+     * Returns the pose at the specified timestamp.
+     * @param timestamp The timestamp to retrieve the pose at.
+     *
+     * @return The pose at the specified timestamp.
+     */
+    fun getPose(timestamp: SIUnit<Second>): Pose2d {
+        return poseBuffer[timestamp] ?: {
+            DriverStation.reportError("[FalconWCD] Pose Buffer is Empty!", false)
+            Pose2d()
+        }()
     }
 
     /**
