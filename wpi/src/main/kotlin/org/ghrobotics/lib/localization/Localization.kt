@@ -22,6 +22,7 @@ import kotlin.reflect.KProperty
  * @param localizationBuffer Stores the previous 100 states so that we can interpolate if needed.
  * Especially useful for Vision
  */
+@Deprecated("The FalconLibrary localization class is no longer supported.")
 abstract class Localization(
     protected val robotHeading: Source<Rotation2d>,
     private val localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
