@@ -37,12 +37,12 @@ class CharacterizationCommand(private val drivetrain: FalconWestCoastDrivetrain)
         numberArray[0] = Timer.getFPGATimestamp()
         numberArray[1] = RobotController.getBatteryVoltage()
         numberArray[2] = autospeed
-        numberArray[3] = drivetrain.leftMotor.voltageOutput.value
-        numberArray[4] = drivetrain.rightMotor.voltageOutput.value
-        numberArray[5] = drivetrain.leftMotor.encoder.position.value
-        numberArray[6] = drivetrain.rightMotor.encoder.position.value
-        numberArray[7] = drivetrain.leftMotor.encoder.velocity.value
-        numberArray[8] = drivetrain.rightMotor.encoder.velocity.value
+        numberArray[3] = drivetrain.leftVoltage.value
+        numberArray[4] = drivetrain.rightVoltage.value
+        numberArray[5] = drivetrain.leftPosition.value
+        numberArray[6] = drivetrain.rightPosition.value
+        numberArray[7] = drivetrain.leftVelocity.value
+        numberArray[8] = drivetrain.rightVelocity.value
 
         telemetryEntry.setNumberArray(numberArray.toTypedArray())
     }

@@ -87,6 +87,36 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     override var robotPosition: Pose2d = Pose2d()
 
     /**
+     * Returns the voltage output of the left motor.
+     */
+    val leftVoltage get() = periodicIO.leftVoltage
+
+    /**
+     * Returns the voltage output of the right motor.
+     */
+    val rightVoltage get() = periodicIO.rightVoltage
+
+    /**
+     * Returns the position of the left side of the drivetrain.
+     */
+    val leftPosition get() = periodicIO.leftPosition
+
+    /**
+     * Returns the position of the right side of the drivetrain.
+     */
+    val rightPosition get() = periodicIO.rightPosition
+
+    /**
+     * Returns the velocity of the left side of the drivetrain.
+     */
+    val leftVelocity get() = periodicIO.leftVelocity
+
+    /**
+     * Returns the velocity of the right side of the drivetrain.
+     */
+    val rightVelocity get() = periodicIO.rightVelocity
+
+    /**
      * Periodic function -- runs every 20 ms.
      */
     override fun periodic() {
