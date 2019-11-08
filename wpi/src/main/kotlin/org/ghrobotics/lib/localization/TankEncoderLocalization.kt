@@ -16,6 +16,8 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.utils.Source
 
+@Deprecated("The TankEncoderLocalization class is no longer supported.",
+    ReplaceWith("DifferentialDriveOdometry", "edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry"))
 class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
     val leftEncoder: Source<SIUnit<Meter>>,
