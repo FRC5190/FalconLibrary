@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.commands.FalconCommand
-import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -47,7 +47,7 @@ class TrajectoryTrackerCommand(
         prevLeftVelocity = 0.0
         prevRightVelocity = 0.0
 
-        LiveDashboard.isFollowingPath = true
+        FalconDashboard.isFollowingPath = true
     }
 
     /**
@@ -87,9 +87,9 @@ class TrajectoryTrackerCommand(
             val referencePose = currentTrajectoryState.poseMeters
 
             // Update Current Path Location on Live Dashboard
-            LiveDashboard.pathX = referencePose.translation.x_u.inFeet()
-            LiveDashboard.pathY = referencePose.translation.y_u.inFeet()
-            LiveDashboard.pathHeading = referencePose.rotation.radians
+            FalconDashboard.pathX = referencePose.translation.x_u.inFeet()
+            FalconDashboard.pathY = referencePose.translation.y_u.inFeet()
+            FalconDashboard.pathHeading = referencePose.rotation.radians
         }
     }
 
@@ -98,7 +98,7 @@ class TrajectoryTrackerCommand(
      */
     override fun end(interrupted: Boolean) {
         drivetrain.setNeutral()
-        LiveDashboard.isFollowingPath = false
+        FalconDashboard.isFollowingPath = false
 
         if (interrupted) {
             DriverStation.reportError("Trajectory tracking was interrupted.", false)

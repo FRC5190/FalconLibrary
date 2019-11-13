@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.trajectory.Trajectory
-import org.ghrobotics.lib.debug.LiveDashboard
+import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
@@ -169,9 +169,9 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
             }
         }
 
-        LiveDashboard.robotHeading = robotPosition.rotation.radians
-        LiveDashboard.robotX = robotPosition.translation.x_u.inFeet()
-        LiveDashboard.robotY = robotPosition.translation.y_u.inFeet()
+        FalconDashboard.robotHeading = robotPosition.rotation.radians
+        FalconDashboard.robotX = robotPosition.translation.x_u.inFeet()
+        FalconDashboard.robotY = robotPosition.translation.y_u.inFeet()
     }
 
     /**

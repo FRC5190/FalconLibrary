@@ -21,22 +21,25 @@ import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.delegate
 import org.ghrobotics.lib.wrappers.networktables.get
 
+@Deprecated("This usage will no longer be supported. Use the FalconDashboard object instead.")
+typealias LiveDashboard = FalconDashboard
+
 /**
- * Singleton Object representing the network table for the Live Dashboard
+ * Helper object for sending data to Falcon Dashboard
  */
-object LiveDashboard {
-    val liveDashboardTable = FalconNetworkTable.getTable("Live_Dashboard")
+object FalconDashboard {
+    private val falconDashboardTable = FalconNetworkTable.getTable("Live_Dashboard")
 
-    var robotX by liveDashboardTable["robotX"].delegate(0.0)
-    var robotY by liveDashboardTable["robotY"].delegate(0.0)
-    var robotHeading by liveDashboardTable["robotHeading"].delegate(0.0)
+    var robotX by falconDashboardTable["robotX"].delegate(0.0)
+    var robotY by falconDashboardTable["robotY"].delegate(0.0)
+    var robotHeading by falconDashboardTable["robotHeading"].delegate(0.0)
 
-    var isFollowingPath by liveDashboardTable["isFollowingPath"].delegate(false)
-    var pathX by liveDashboardTable["pathX"].delegate(0.0)
-    var pathY by liveDashboardTable["pathY"].delegate(0.0)
-    var pathHeading by liveDashboardTable["pathHeading"].delegate(0.0)
+    var isFollowingPath by falconDashboardTable["isFollowingPath"].delegate(false)
+    var pathX by falconDashboardTable["pathX"].delegate(0.0)
+    var pathY by falconDashboardTable["pathY"].delegate(0.0)
+    var pathHeading by falconDashboardTable["pathHeading"].delegate(0.0)
 
-    private val visionTargetEntry = liveDashboardTable["visionTargets"]
+    private val visionTargetEntry = falconDashboardTable["visionTargets"]
     var visionTargets: List<Pose2d>
         set(value) {
             visionTargetEntry.setStringArray(
