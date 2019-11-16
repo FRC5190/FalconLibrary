@@ -7,18 +7,16 @@
  */
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.41"
-    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-2"
-    id "com.diffplug.gradle.spotless" version "3.24.2"
-    id "maven"
+    id "org.jetbrains.kotlin.jvm" version "1.3.41" apply false
+    id "edu.wpi.first.GradleRIO" version "2020.1.1-beta-2" apply false
+    id "com.diffplug.gradle.spotless" version "3.24.2" apply false
     id "maven-publish"
 }
 
-allprojects {
+subprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "edu.wpi.first.GradleRIO"
     apply plugin: "com.diffplug.gradle.spotless"
-    apply plugin: "maven"
     apply plugin: "maven-publish"
 
     repositories {
@@ -27,11 +25,11 @@ allprojects {
     }
 
     dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib"
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
 
-        testCompile "org.knowm.xchart:xchart:3.2.2"
-        testCompile "junit:junit:4.12"
+        testImplementation "org.knowm.xchart:xchart:3.2.2"
+        testImplementation "junit:junit:4.12"
     }
 
     compileKotlin {
@@ -50,5 +48,5 @@ allprojects {
 }
 
 wrapper {
-    gradleVersion = "5.0"
+    gradleVersion = "6.0"
 }
