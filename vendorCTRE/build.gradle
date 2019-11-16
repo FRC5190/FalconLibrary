@@ -7,7 +7,7 @@
  */
 
 dependencies {
-    compile project(":core")
-    compile project(":wpi")
-    compile wpi.deps.vendor.java()
+    api project(":core")
+    api project(":wpi")
+    api wpi.deps.vendor.java()
 }
