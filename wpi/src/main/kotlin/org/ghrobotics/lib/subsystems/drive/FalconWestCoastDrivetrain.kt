@@ -267,6 +267,14 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
         periodicIO.rightFeedforward = 0.volts
     }
 
+    /**
+     * Resets the position on the field.
+     * @param pose The position to reset to.
+     */
+    fun resetPosition(pose: Pose2d) {
+        odometry.resetPosition(pose)
+    }
+
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
         TrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
 
