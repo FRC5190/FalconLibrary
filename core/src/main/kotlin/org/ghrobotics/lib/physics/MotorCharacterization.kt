@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.physics
 
+import kotlin.math.sign
 import org.ghrobotics.lib.mathematics.units.Frac
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -15,7 +16,6 @@ import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.operations.times
-import kotlin.math.sign
 
 /**
  * Represents a gearbox that was characterized for kV, kA, and kS parameters.

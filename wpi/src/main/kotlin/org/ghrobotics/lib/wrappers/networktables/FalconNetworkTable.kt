@@ -12,8 +12,8 @@ import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
-import org.ghrobotics.lib.utils.capitalizeEachWord
 import kotlin.reflect.KProperty
+import org.ghrobotics.lib.utils.capitalizeEachWord
 
 object FalconNetworkTable {
     val instance: NetworkTableInstance = NetworkTableInstance.getDefault()

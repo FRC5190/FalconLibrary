@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
-import org.ghrobotics.lib.utils.Source
 import java.util.function.BooleanSupplier
+import org.ghrobotics.lib.utils.Source
 
 fun sequential(block: BasicCommandGroupBuilder.() -> Unit) =
     commandGroup(BasicCommandGroupBuilder.Type.Sequential, block)
