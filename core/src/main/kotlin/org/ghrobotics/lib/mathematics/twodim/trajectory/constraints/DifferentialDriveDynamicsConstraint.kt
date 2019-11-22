@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sign
 import org.ejml.simple.SimpleMatrix
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.kEpsilon
@@ -21,10 +25,6 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.inMeters
 import org.ghrobotics.lib.physics.MotorCharacterization
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sign
-import kotlin.math.abs
 
 @Suppress("unused")
 class DifferentialDriveDynamicsConstraint(

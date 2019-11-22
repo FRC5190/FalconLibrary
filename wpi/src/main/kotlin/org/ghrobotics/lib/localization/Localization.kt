@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.geometry.Twist2d
+import kotlin.reflect.KProperty
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.utils.Source
-import kotlin.reflect.KProperty
 
 /**
  * @param localizationBuffer Stores the previous 100 states so that we can interpolate if needed.

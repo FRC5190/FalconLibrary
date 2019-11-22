@@ -11,6 +11,7 @@ package org.ghrobotics.lib.sensors
 import edu.wpi.first.wpilibj.SPI
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.geometry.Translation2d
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
@@ -18,7 +19,6 @@ import kotlinx.coroutines.launch
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.utils.Source
-import kotlin.coroutines.CoroutineContext
 
 /**
  *  Implementation of the ADNS3080 Optical Flow Sensor connected over SPI

@@ -12,6 +12,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.IMotorController
 import com.ctre.phoenix.motorcontrol.NeutralMode
+import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.Acceleration
@@ -25,8 +27,6 @@ import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
-import kotlin.math.roundToInt
-import kotlin.properties.Delegates
 
 abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,

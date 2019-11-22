@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
@@ -148,9 +147,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
         val rightFeedforward = periodicIO.rightFeedforward
 
         robotPosition = odometry.update(
-            periodicIO.gyro, DifferentialDriveWheelSpeeds(
-                periodicIO.leftVelocity.value, periodicIO.rightVelocity.value
-            )
+            periodicIO.gyro, periodicIO.leftPosition.value, periodicIO.rightPosition.value
         )
         poseBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
 
@@ -172,6 +169,13 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
         FalconDashboard.robotHeading = robotPosition.rotation.radians
         FalconDashboard.robotX = robotPosition.translation.x_u.inFeet()
         FalconDashboard.robotY = robotPosition.translation.y_u.inFeet()
+    }
+
+    /**
+     * Reset pose and encoders to zero.
+     */
+    override fun lateInit() {
+        resetPosition(Pose2d())
     }
 
     /**
@@ -272,7 +276,9 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      * @param pose The position to reset to.
      */
     fun resetPosition(pose: Pose2d) {
-        odometry.resetPosition(pose)
+        leftMotor.encoder.resetPosition(0.meters)
+        rightMotor.encoder.resetPosition(0.meters)
+        odometry.resetPosition(pose, gyro())
     }
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =

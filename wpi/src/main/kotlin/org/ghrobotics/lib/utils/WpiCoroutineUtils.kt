@@ -8,14 +8,14 @@
 
 package org.ghrobotics.lib.utils
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.ghrobotics.lib.wrappers.FalconNotifier
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 fun CoroutineScope.launchFrequency(
     frequency: Int = 50,

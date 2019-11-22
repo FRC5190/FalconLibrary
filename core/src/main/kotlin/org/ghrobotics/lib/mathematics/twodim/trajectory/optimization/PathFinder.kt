@@ -11,6 +11,8 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.optimization
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.geometry.Translation2d
+import java.lang.Math.sqrt
+import kotlin.math.pow
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.apache.commons.math3.geometry.euclidean.twod.Line
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
@@ -28,8 +30,6 @@ import org.ghrobotics.lib.utils.flatMapToSet
 import org.ghrobotics.lib.utils.mapNotNullToSet
 import org.ghrobotics.lib.utils.mapToSet
 import org.ghrobotics.lib.utils.plusToSet
-import java.lang.Math.sqrt
-import kotlin.math.pow
 
 class PathFinder(
     private val robotSize: SIUnit<Meter>,
