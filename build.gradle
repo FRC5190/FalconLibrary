@@ -13,7 +13,7 @@ plugins {
     id "maven-publish"
 }
 
-subprojects {
+allprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "edu.wpi.first.GradleRIO"
     apply plugin: "com.diffplug.gradle.spotless"
