@@ -18,6 +18,7 @@ allprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "edu.wpi.first.GradleRIO"
     apply plugin: "com.diffplug.gradle.spotless"
+    apply plugin: "maven"
     apply plugin: "maven-publish"
 
     repositories {
