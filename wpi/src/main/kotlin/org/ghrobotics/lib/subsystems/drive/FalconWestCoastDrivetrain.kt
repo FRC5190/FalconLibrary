@@ -213,7 +213,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
      *
      * @return The pose at the specified timestamp.
      */
-    fun getPose(timestamp: SIUnit<Second>): Pose2d {
+    fun getPose(timestamp: SIUnit<Second> = Timer.getFPGATimestamp().seconds): Pose2d {
         return poseBuffer[timestamp] ?: {
             DriverStation.reportError("[FalconWCD] Pose Buffer is Empty!", false)
             Pose2d()
