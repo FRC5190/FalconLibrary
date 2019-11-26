@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.get
 
@@ -44,11 +45,18 @@ class ChameleonCamera(cameraName: String) {
         get() = Rotation2d.fromDegrees(-yawEntry.getDouble(0.0)) // Negating to make it CCW positive.
 
     /**
-     * Returns the timestamp when the image was taken. This is synced
-     * with the roboRIO FPGA time.
+     * Returns the timestamp when the image was taken relative
+     * to the epoch.
      */
     val timestamp: SIUnit<Second>
-        get() = SIUnit(timestampEntry.getDouble(0.0))
+        get() = SIUnit(timestampEntry.getDouble(0.0) / 1E6)
+
+    /**
+     * Represents the latency in the pipeline between the capture
+     * and reception of data on the roboRIO.
+     */
+    val latency: SIUnit<Second>
+        get() = timestamp - System.currentTimeMillis().milli.seconds
 
     /**
      * Returns whether a target exists and is valid.
