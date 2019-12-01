@@ -25,10 +25,10 @@ abstract class TrajectoryTrackerDriveBase : FalconSubsystem() {
     abstract var robotPosition: Pose2d
     abstract val kinematics: DifferentialDriveKinematics
 
-    abstract fun setOutput(
-        leftVelocity: SIUnit<LinearVelocity>,
-        rightVelocity: SIUnit<LinearVelocity>,
-        leftAcceleration: SIUnit<LinearAcceleration>,
-        rightAcceleration: SIUnit<LinearAcceleration>
+    abstract fun setOutputSI(
+        leftVelocity: Double,
+        rightVelocity: Double,
+        leftAcceleration: Double,
+        rightAcceleration: Double
     )
 }

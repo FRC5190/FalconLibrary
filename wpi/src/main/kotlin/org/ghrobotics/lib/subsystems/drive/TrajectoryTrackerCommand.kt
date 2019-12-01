@@ -15,7 +15,6 @@ import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
 import org.ghrobotics.lib.mathematics.twodim.geometry.y_u
-import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.inFeet
 import org.ghrobotics.lib.utils.Source
 
@@ -76,11 +75,11 @@ class TrajectoryTrackerCommand(
         prevLeftVelocity = wheelSpeeds.leftMetersPerSecond
         prevRightVelocity = wheelSpeeds.rightMetersPerSecond
 
-        drivetrain.setOutput(
-            SIUnit(wheelSpeeds.leftMetersPerSecond),
-            SIUnit(wheelSpeeds.rightMetersPerSecond),
-            SIUnit(leftAcceleration),
-            SIUnit(rightAcceleration)
+        drivetrain.setOutputSI(
+            wheelSpeeds.leftMetersPerSecond,
+            wheelSpeeds.rightMetersPerSecond,
+            leftAcceleration,
+            rightAcceleration
         )
 
         if (currentTrajectoryState != null) {
