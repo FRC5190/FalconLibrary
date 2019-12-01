@@ -10,6 +10,7 @@ package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry
@@ -24,7 +25,6 @@ import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.amps
-import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
@@ -33,7 +33,6 @@ import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.motors.FalconMotor
-import org.ghrobotics.lib.physics.MotorCharacterization
 import org.ghrobotics.lib.subsystems.EmergencyHandleable
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
@@ -78,12 +77,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * The characterization for the left gearbox.
      */
-    abstract val leftCharacterization: MotorCharacterization<Meter>
+    abstract val leftCharacterization: SimpleMotorFeedforward
 
     /**
      * The characterization for the right gearbox.
      */
-    abstract val rightCharacterization: MotorCharacterization<Meter>
+    abstract val rightCharacterization: SimpleMotorFeedforward
 
     /**
      * The rotation source / gyro
@@ -190,21 +189,15 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Emergen
     /**
      * Set the trajectory tracker output
      */
-    override fun setOutput(
-        leftVelocity: SIUnit<LinearVelocity>,
-        rightVelocity: SIUnit<LinearVelocity>,
-        leftAcceleration: SIUnit<LinearAcceleration>,
-        rightAcceleration: SIUnit<LinearAcceleration>
+    override fun setOutputSI(
+        leftVelocity: Double,
+        rightVelocity: Double,
+        leftAcceleration: Double,
+        rightAcceleration: Double
     ) {
-        periodicIO.leftFeedforward = leftCharacterization.getVoltage(
-            leftVelocity, leftAcceleration
-        )
-        periodicIO.rightFeedforward = rightCharacterization.getVoltage(
-            rightVelocity, rightAcceleration
-        )
-        periodicIO.desiredOutput = Output.Velocity(
-            leftVelocity, rightVelocity
-        )
+        periodicIO.leftFeedforward = SIUnit(leftCharacterization.calculate(leftVelocity, leftAcceleration))
+        periodicIO.rightFeedforward = SIUnit(rightCharacterization.calculate(rightVelocity, rightAcceleration))
+        periodicIO.desiredOutput = Output.Velocity(SIUnit(leftVelocity), SIUnit(rightVelocity))
     }
 
     /**

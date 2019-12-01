@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj.controller.RamseteController
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import org.ghrobotics.lib.commands.FalconSubsystem
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
 /**
  * An interface to implement to follow trajectories.
@@ -25,10 +22,10 @@ abstract class TrajectoryTrackerDriveBase : FalconSubsystem() {
     abstract var robotPosition: Pose2d
     abstract val kinematics: DifferentialDriveKinematics
 
-    abstract fun setOutput(
-        leftVelocity: SIUnit<LinearVelocity>,
-        rightVelocity: SIUnit<LinearVelocity>,
-        leftAcceleration: SIUnit<LinearAcceleration>,
-        rightAcceleration: SIUnit<LinearAcceleration>
+    abstract fun setOutputSI(
+        leftVelocity: Double,
+        rightVelocity: Double,
+        leftAcceleration: Double,
+        rightAcceleration: Double
     )
 }
