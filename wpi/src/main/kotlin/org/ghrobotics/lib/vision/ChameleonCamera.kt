@@ -12,7 +12,7 @@ import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.milli
+import org.ghrobotics.lib.mathematics.units.nano
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.get
 
@@ -49,14 +49,14 @@ class ChameleonCamera(cameraName: String) {
      * to the epoch.
      */
     val timestamp: SIUnit<Second>
-        get() = SIUnit(timestampEntry.getDouble(0.0) / 1E6)
+        get() = SIUnit(timestampEntry.getDouble(0.0) / 1E9)
 
     /**
      * Represents the latency in the pipeline between the capture
      * and reception of data on the roboRIO.
      */
     val latency: SIUnit<Second>
-        get() = timestamp - System.currentTimeMillis().milli.seconds
+        get() = timestamp - System.nanoTime().nano.seconds
 
     /**
      * Returns whether a target exists and is valid.
