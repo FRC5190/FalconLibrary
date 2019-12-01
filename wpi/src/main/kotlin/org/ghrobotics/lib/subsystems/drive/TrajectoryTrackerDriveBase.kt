@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj.controller.RamseteController
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics
 import org.ghrobotics.lib.commands.FalconSubsystem
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
-import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
 /**
  * An interface to implement to follow trajectories.
