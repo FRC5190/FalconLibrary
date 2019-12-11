@@ -33,7 +33,7 @@ import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.motors.FalconMotor
-import org.ghrobotics.lib.subsystems.EmergencyHandleable
+import org.ghrobotics.lib.subsystems.SensorlessCompatibleSubsystem
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
 import org.ghrobotics.lib.utils.map
@@ -41,7 +41,7 @@ import org.ghrobotics.lib.utils.map
 /**
  * Represents a typical west coast drive that is built by Team 5190.
  */
-abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), EmergencyHandleable {
+abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), SensorlessCompatibleSubsystem {
     /**
      * The current inputs and outputs
      */
