@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.subsystems
 
-interface EmergencyHandleable {
-    fun activateEmergency()
-    fun recoverFromEmergency()
+interface SensorlessCompatibleSubsystem {
+    fun disableClosedLoopControl()
+    fun enableClosedLoopControl()
 }
