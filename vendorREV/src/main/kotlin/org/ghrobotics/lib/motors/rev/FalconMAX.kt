@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.motors.rev
 
+import com.revrobotics.AlternateEncoderType
 import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
@@ -25,17 +26,42 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
 
+/**
+ * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted
+ * to the CPR of the REV Through Bore Encoder.
+ */
 class FalconMAX<K : SIKey>(
     val canSparkMax: CANSparkMax,
-    val model: NativeUnitModel<K>
+    val model: NativeUnitModel<K>,
+    useAlternateEncoder: Boolean = false,
+    alternateEncoderCPR: Int = 8192
 ) : AbstractFalconMotor<K>() {
 
-    constructor(id: Int, type: CANSparkMaxLowLevel.MotorType, model: NativeUnitModel<K>) : this(
-        CANSparkMax(id, type), model
+    /**
+     * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted
+     * to the CPR of the REV Through Bore Encoder.
+     */
+    constructor(
+        id: Int,
+        type: CANSparkMaxLowLevel.MotorType,
+        model: NativeUnitModel<K>,
+        useAlternateEncoder: Boolean = false,
+        alternateEncoderCPR: Int = 8196
+    ) : this(
+        CANSparkMax(id, type), model, useAlternateEncoder, alternateEncoderCPR
     )
 
     val controller: CANPIDController = canSparkMax.pidController
-    override val encoder = FalconMAXEncoder(canSparkMax.encoder, model)
+    override val encoder = FalconMAXEncoder(
+        if (useAlternateEncoder) canSparkMax.getAlternateEncoder(
+            AlternateEncoderType.kQuadrature,
+            alternateEncoderCPR
+        ) else canSparkMax.encoder, model
+    )
+
+    init {
+        controller.setFeedbackDevice(encoder.canEncoder)
+    }
 
     override val voltageOutput: SIUnit<Volt>
         get() = (canSparkMax.appliedOutput * canSparkMax.busVoltage).volts
@@ -103,12 +129,16 @@ class FalconMAX<K : SIKey>(
 fun <K : SIKey> falconMAX(
     canSparkMax: CANSparkMax,
     model: NativeUnitModel<K>,
+    useAlternateEncoder: Boolean = false,
+    alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(canSparkMax, model).also(block)
+) = FalconMAX(canSparkMax, model, useAlternateEncoder, alternateEncoderCPR).also(block)
 
 fun <K : SIKey> falconMAX(
     id: Int,
     type: CANSparkMaxLowLevel.MotorType,
     model: NativeUnitModel<K>,
+    useAlternateEncoder: Boolean = false,
+    alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(id, type, model).also(block)
+) = FalconMAX(id, type, model, useAlternateEncoder, alternateEncoderCPR).also(block)
