@@ -12,7 +12,7 @@ import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.wpilibj.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
-import org.ghrobotics.lib.mathematics.units.nano
+import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.get
 
@@ -28,7 +28,7 @@ class ChameleonCamera(cameraName: String) {
     private val pitchEntry = table["pitch"]
     private val yawEntry = table["yaw"]
     private val pipelineEntry = table["pipeline"]
-    private val timestampEntry = table["timestamp"]
+    private val latencyEntry = table["latency"]
     private val driverModeEntry = table["driver_mode"]
     private val isValidEntry = table["is_valid"]
 
@@ -45,18 +45,11 @@ class ChameleonCamera(cameraName: String) {
         get() = Rotation2d.fromDegrees(-yawEntry.getDouble(0.0)) // Negating to make it CCW positive.
 
     /**
-     * Returns the timestamp when the image was taken relative
-     * to the epoch.
-     */
-    val timestamp: SIUnit<Second>
-        get() = SIUnit(timestampEntry.getDouble(0.0) / 1E9)
-
-    /**
      * Represents the latency in the pipeline between the capture
      * and reception of data on the roboRIO.
      */
     val latency: SIUnit<Second>
-        get() = timestamp - System.nanoTime().nano.seconds
+        get() = latencyEntry.getDouble(0.0).milli.seconds
 
     /**
      * Returns whether a target exists and is valid.
