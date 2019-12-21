@@ -105,7 +105,7 @@ abstract class FalconTimedRobot {
     protected open fun disabledPeriodic() {}
 
     protected fun getSubsystemChecks() {
-        FalconSubsystemHandler.testCommand
+        return FalconSubsystemHandler.testCommand
     }
 
     open operator fun FalconSubsystem.unaryPlus() {
