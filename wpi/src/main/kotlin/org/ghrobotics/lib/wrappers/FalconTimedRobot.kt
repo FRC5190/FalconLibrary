@@ -13,6 +13,7 @@ import edu.wpi.first.hal.HAL
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.livewindow.LiveWindow
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.ghrobotics.lib.commands.FalconSubsystem
 import org.ghrobotics.lib.commands.FalconSubsystemHandler
@@ -104,8 +105,8 @@ abstract class FalconTimedRobot {
     protected open fun teleopPeriodic() {}
     protected open fun disabledPeriodic() {}
 
-    protected fun runSubsystemChecks() {
-        FalconSubsystemHandler.testCommand.schedule()
+    protected fun getSubsystemChecks(): Command {
+        return FalconSubsystemHandler.testCommand
     }
 
     open operator fun FalconSubsystem.unaryPlus() {
