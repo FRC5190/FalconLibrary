@@ -10,7 +10,6 @@ package org.ghrobotics.lib.vision
 
 import com.github.salomonbrys.kotson.fromJson
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
@@ -19,7 +18,6 @@ import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.milli
 import org.ghrobotics.lib.wrappers.networktables.FalconNetworkTable
 import org.ghrobotics.lib.wrappers.networktables.get
-import org.opencv.core.RotatedRect
 
 /**
  * Represents a camera connected to a co-processor which is running
