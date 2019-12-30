@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.vision
 
+import edu.wpi.first.wpilibj.MedianFilter
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Rotation2d
@@ -114,6 +115,11 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
         var averagePose = initialSample.pose
             private set
 
+        // a filter to average the pose of this target
+        private val xFilter = MedianFilter(constants.kMedianWindowSize)
+        private val yFilter = MedianFilter(constants.kMedianWindowSize)
+        private val thetaFilter = MedianFilter(constants.kMedianWindowSize)
+
         // The target is alive when it has at least one data point for a
         // certain amount of time.
         var isAlive = true
@@ -123,6 +129,12 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
         // data points for a certain period of time.
         var isReal = true
             private set
+
+        fun resetFilters() {
+            xFilter.reset()
+            yFilter.reset()
+            thetaFilter.reset()
+        }
 
         /**
          * Adds a sample to the tracked target.
@@ -145,16 +157,18 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
             isReal = samples.size > 2
 
             // Update average pose.
-            var accumulatedX = 0.0
-            var accumulatedY = 0.0
-            var accumulatedAngle = 0.0
-            for (sample in samples) {
-                accumulatedX += sample.pose.translation.x
-                accumulatedY += sample.pose.translation.y
-                accumulatedAngle += sample.pose.rotation.radians
+            resetFilters()
+            var averageX = 0.0
+            var averageY = 0.0
+            var averageTheta = 0.0
+
+            samples.forEach {
+                averageX = xFilter.calculate(it.pose.translation.x)
+                averageY = yFilter.calculate(it.pose.translation.y)
+                averageTheta = thetaFilter.calculate(it.pose.rotation.radians)
             }
-            val size = samples.size
-            averagePose = Pose2d(accumulatedX / size, accumulatedY / size, Rotation2d(accumulatedAngle / size))
+
+            averagePose = Pose2d(averageX, averageY, Rotation2d(averageTheta))
         }
     }
 
@@ -173,9 +187,11 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
      * should be tracked after a specific data point has been received.
      * @param kTargetTrackingDistanceErrorTolerance The distance tolerance to
      * create a new target given a sample.
+     * @param kMedianWindowSize The number of samples to average the pose over.
      */
     data class TargetTrackerConstants(
         val kMaxTargetTrackingLifetime: SIUnit<Second>,
-        val kTargetTrackingDistanceErrorTolerance: SIUnit<Meter>
+        val kTargetTrackingDistanceErrorTolerance: SIUnit<Meter>,
+        val kMedianWindowSize: Int
     )
 }
