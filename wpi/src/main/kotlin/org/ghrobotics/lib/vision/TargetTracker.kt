@@ -116,9 +116,9 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
             private set
 
         // a filter to average the pose of this target
-        private val xFilter = MedianFilter(constants.kMedianWindowSize);
-        private val yFilter = MedianFilter(constants.kMedianWindowSize);
-        private val thetaFilter = MedianFilter(constants.kMedianWindowSize);
+        private val xFilter = MedianFilter(constants.kMedianWindowSize)
+        private val yFilter = MedianFilter(constants.kMedianWindowSize)
+        private val thetaFilter = MedianFilter(constants.kMedianWindowSize)
 
         // The target is alive when it has at least one data point for a
         // certain amount of time.
@@ -164,8 +164,8 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
 
             samples.forEach {
                 averageX = xFilter.calculate(it.pose.translation.x)
-                averageY = xFilter.calculate(it.pose.translation.y)
-                averageTheta = xFilter.calculate(it.pose.rotation.radians)
+                averageY = yFilter.calculate(it.pose.translation.y)
+                averageTheta = thetaFilter.calculate(it.pose.rotation.radians)
             }
 
             averagePose = Pose2d(averageX, averageY, Rotation2d(averageTheta))
