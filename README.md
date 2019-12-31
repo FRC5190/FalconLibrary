@@ -44,7 +44,7 @@ compile 'org.ghrobotics.FalconLibrary:vendorREV:2020.1.1'
 
 Alternatively, you can include all submodules at once:
 ```groovy
-compile 'org.ghrobotics:FalconLibrary:2020.0.0-8'
+compile 'org.ghrobotics:FalconLibrary:2020.1.1'
 ```
 
 Note that you must include the `vendordeps` JSON file in your own robot project to correctly use the `vendorXXX` modules.
