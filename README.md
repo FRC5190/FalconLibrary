@@ -35,17 +35,19 @@ repositories {
 Under the `dependencies` section of your `build.gradle`, add the specific submodules that you want in your project. All of the submodules are presented below.
 
 ```groovy
-compile 'org.ghrobotics.FalconLibrary:core:2020.0.0-8'
-compile 'org.ghrobotics.FalconLibrary:wpi:2020.0.0-8'
-compile 'org.ghrobotics.FalconLibrary:vendorCTRE:2020.0.0-8'
-compile 'org.ghrobotics.FalconLibrary:vendorNAVX:2020.0.0-8'
-compile 'org.ghrobotics.FalconLibrary:vendorREV:2020.0.0-8'
+compile 'org.ghrobotics.FalconLibrary:core:2020.1.1'
+compile 'org.ghrobotics.FalconLibrary:wpi:2020.1.1'
+compile 'org.ghrobotics.FalconLibrary:vendorCTRE:2020.1.1'
+compile 'org.ghrobotics.FalconLibrary:vendorNAVX:2020.1.1'
+compile 'org.ghrobotics.FalconLibrary:vendorREV:2020.1.1'
 ```
 
 Alternatively, you can include all submodules at once:
 ```groovy
 compile 'org.ghrobotics:FalconLibrary:2020.0.0-8'
 ```
+
+Note that you must include the `vendordeps` JSON file in your own robot project to correctly use the `vendorXXX` modules.
 
 ## Contributing
 You are always welcome to submit a PR if you think that you can contribute something to this library. Remember that this is a FRC-game-agnostic library, so please don't ask for season-specific code to be merged.
