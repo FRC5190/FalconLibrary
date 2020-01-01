@@ -38,7 +38,7 @@ fun NetworkTableEntry.delegate(defaultValue: Boolean = false): NetworkTableEntry
     delegate { this.getBoolean(defaultValue) }
 
 private fun <T> NetworkTableEntry.delegate(get: () -> T) =
-    org.ghrobotics.lib.wrappers.networktables.NetworkTableEntryDelegate(this, get)
+    NetworkTableEntryDelegate(this, get)
 
 class NetworkTableEntryDelegate<T>(
     private val entry: NetworkTableEntry,
