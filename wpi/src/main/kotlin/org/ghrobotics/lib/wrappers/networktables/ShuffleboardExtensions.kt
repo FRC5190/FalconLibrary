@@ -100,7 +100,7 @@ class ShuffleboardTabBuilder(name: String) {
     fun grid(name: String, block: ShuffleboardLayoutBuilder.() -> Unit) = layout(name, BuiltInLayouts.kGrid, block)
 }
 
-open class Updating(open val updateBlock: () -> Unit) {
+open class Updating(internal open val updateBlock: () -> Unit) {
     fun update() { updateBlock() }
 }
 
