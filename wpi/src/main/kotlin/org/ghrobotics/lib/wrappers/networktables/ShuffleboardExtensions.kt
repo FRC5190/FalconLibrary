@@ -8,7 +8,6 @@
 
 package org.ghrobotics.lib.wrappers.networktables
 
-import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.Sendable
 import edu.wpi.first.wpilibj.shuffleboard.* // ktlint-disable no-wildcard-imports
 import org.ghrobotics.lib.utils.Source
