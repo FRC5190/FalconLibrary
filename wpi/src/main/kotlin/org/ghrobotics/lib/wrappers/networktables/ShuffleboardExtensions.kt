@@ -6,6 +6,18 @@
  * Copyright 2019, Green Hope Falcons
  */
 
+package org.ghrobotics.lib.wrappers.networktables
+
+import edu.wpi.first.networktables.NetworkTableEntry
+import edu.wpi.first.wpilibj.Sendable
+import edu.wpi.first.wpilibj.shuffleboard.* // ktlint-disable no-wildcard-imports
+import org.ghrobotics.lib.utils.Source
+
+fun tab(name: String, block: ShuffleboardTabBuilder.() -> Unit) =
+    ShuffleboardTabBuilder(name).apply(block).build()
+
+class FalconShuffleboardTab(val tab: ShuffleboardTab, updateBlock: () -> Unit) : Updating(updateBlock)
+
 /*
  * Copyright 2019 Lo-Ellen Robotics
  *
@@ -24,18 +36,6 @@
  * SaturnLibrary can be found online at https://github.com/FRCTeam4069/SaturnLibrary
  */
 
-package org.ghrobotics.lib.wrappers.networktables
-
-import edu.wpi.first.networktables.NetworkTableEntry
-import edu.wpi.first.wpilibj.Sendable
-import edu.wpi.first.wpilibj.shuffleboard.*
-import org.ghrobotics.lib.utils.Source
-
-fun tab(name: String, block: ShuffleboardTabBuilder.() -> Unit)
-    = ShuffleboardTabBuilder(name).apply(block).build()
-
-class FalconShuffleboardTab(val tab: ShuffleboardTab, updateBlock: () -> Unit): Updating(updateBlock)
-
 class ShuffleboardTabBuilder(name: String) {
 
     val tab: ShuffleboardTab = Shuffleboard.getTab(name)
@@ -48,43 +48,43 @@ class ShuffleboardTabBuilder(name: String) {
         updatableComponents.forEach(Updating::update)
     }
 
-    fun textView(name: String, value: () -> Any, block: ShuffleboardWidgetBuilder<String>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addString(name) { value().toString() }.withWidget(BuiltInWidgets.kTextView))
+    fun textView(name: String, value: () -> Any, block: ShuffleboardWidgetBuilder<String>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addString(name) { value().toString() }.withWidget(BuiltInWidgets.kTextView))
             .apply(block)
             .build()
 
-    fun numberSlider(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kNumberSlider))
+    fun numberSlider(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kNumberSlider))
             .apply(block)
             .build()
 
-    fun numberBar(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kNumberBar))
+    fun numberBar(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kNumberBar))
             .apply(block)
             .build()
 
-    fun dial(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kDial))
+    fun dial(name: String, value: () -> Number, block: ShuffleboardWidgetBuilder<Double>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addNumber(name) { value().toDouble() }.withWidget(BuiltInWidgets.kDial))
             .apply(block)
             .build()
 
-    fun booleanBox(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kBooleanBox))
+    fun booleanBox(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kBooleanBox))
             .apply(block)
             .build()
 
-    fun toggleButton(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kToggleButton))
+    fun toggleButton(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kToggleButton))
             .apply(block)
             .build()
 
-    fun toggleSwitch(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kToggleSwitch))
+    fun toggleSwitch(name: String, value: () -> Boolean, block: ShuffleboardWidgetBuilder<Boolean>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addBoolean(name, value).withWidget(BuiltInWidgets.kToggleSwitch))
             .apply(block)
             .build()
 
-    fun voltageView(name: String, value: () -> Double, block: ShuffleboardWidgetBuilder<Double>.() -> Unit)
-        = ShuffleboardWidgetBuilder(tab.addNumber(name, value).withWidget(BuiltInWidgets.kVoltageView))
+    fun voltageView(name: String, value: () -> Double, block: ShuffleboardWidgetBuilder<Double>.() -> Unit) =
+        ShuffleboardWidgetBuilder(tab.addNumber(name, value).withWidget(BuiltInWidgets.kVoltageView))
             .apply(block)
             .build()
 
@@ -94,8 +94,8 @@ class ShuffleboardTabBuilder(name: String) {
             .build()
             .apply { updatableComponents.add(this) }
 
-    fun list(name: String, block: ShuffleboardLayoutBuilder.() -> Unit)
-        = layout(name, BuiltInLayouts.kList, block)
+    fun list(name: String, block: ShuffleboardLayoutBuilder.() -> Unit) =
+        layout(name, BuiltInLayouts.kList, block)
 
     fun grid(name: String, block: ShuffleboardLayoutBuilder.() -> Unit) = layout(name, BuiltInLayouts.kGrid, block)
 }
@@ -122,8 +122,10 @@ class ShuffleboardWidgetBuilder<T>(val widget: SuppliedValueWidget<T>) {
     }
 }
 
-class FalconShuffleboardProperty(widget: SimpleWidget,
-                                 val update: FalconShuffleboardProperty.() -> Unit): () -> Unit {
+class FalconShuffleboardProperty(
+    widget: SimpleWidget,
+    val update: FalconShuffleboardProperty.() -> Unit
+) : () -> Unit {
     val entry: NetworkTableEntry = widget.entry
 
     override fun invoke() {
@@ -131,7 +133,7 @@ class FalconShuffleboardProperty(widget: SimpleWidget,
     }
 }
 
-class FalconShuffleboardLayout(val layout: ShuffleboardLayout, updateBlock: () -> Unit): Updating(updateBlock)
+class FalconShuffleboardLayout(val layout: ShuffleboardLayout, updateBlock: () -> Unit) : Updating(updateBlock)
 
 class ShuffleboardLayoutBuilder(val layout: ShuffleboardLayout) {
     fun position(column: Int, row: Int) {
