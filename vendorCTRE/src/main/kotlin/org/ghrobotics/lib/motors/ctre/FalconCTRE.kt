@@ -30,7 +30,7 @@ import org.ghrobotics.lib.motors.FalconMotor
 
 abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,
-    val model: NativeUnitModel<K>
+    private val model: NativeUnitModel<K>
 ) : AbstractFalconMotor<K>() {
 
     private var lastDemand =
