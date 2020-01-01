@@ -16,8 +16,6 @@ import org.ghrobotics.lib.utils.Source
 fun tab(name: String, block: ShuffleboardTabBuilder.() -> Unit) =
     ShuffleboardTabBuilder(name).apply(block).build()
 
-class FalconShuffleboardTab(val tab: ShuffleboardTab, updateBlock: () -> Unit) : Updating(updateBlock)
-
 /*
  * Copyright 2019 Lo-Ellen Robotics
  *
@@ -38,15 +36,9 @@ class FalconShuffleboardTab(val tab: ShuffleboardTab, updateBlock: () -> Unit) :
 
 class ShuffleboardTabBuilder(name: String) {
 
-    val tab: ShuffleboardTab = Shuffleboard.getTab(name)
+    private val tab: ShuffleboardTab = Shuffleboard.getTab(name)
 
-    internal fun build() = FalconShuffleboardTab(tab, this::update)
-
-    private val updatableComponents: ArrayList<Updating> = arrayListOf()
-
-    private fun update() {
-        updatableComponents.forEach(Updating::update)
-    }
+    internal fun build() = tab
 
     fun textView(name: String, value: () -> Any, block: ShuffleboardWidgetBuilder<String>.() -> Unit) =
         ShuffleboardWidgetBuilder(tab.addString(name) { value().toString() }.withWidget(BuiltInWidgets.kTextView))
@@ -92,7 +84,6 @@ class ShuffleboardTabBuilder(name: String) {
         ShuffleboardLayoutBuilder(tab.getLayout(name, layoutType))
             .apply(block)
             .build()
-            .apply { updatableComponents.add(this) }
 
     fun list(name: String, block: ShuffleboardLayoutBuilder.() -> Unit) =
         layout(name, BuiltInLayouts.kList, block)
@@ -100,11 +91,7 @@ class ShuffleboardTabBuilder(name: String) {
     fun grid(name: String, block: ShuffleboardLayoutBuilder.() -> Unit) = layout(name, BuiltInLayouts.kGrid, block)
 }
 
-open class Updating(internal open val updateBlock: () -> Unit) {
-    fun update() { updateBlock() }
-}
-
-class ShuffleboardWidgetBuilder<T>(val widget: SuppliedValueWidget<T>) {
+class ShuffleboardWidgetBuilder<T>(private val widget: SuppliedValueWidget<T>) {
     fun position(column: Int, row: Int) {
         widget.withPosition(column, row)
     }
@@ -122,20 +109,9 @@ class ShuffleboardWidgetBuilder<T>(val widget: SuppliedValueWidget<T>) {
     }
 }
 
-class FalconShuffleboardProperty(
-    widget: SimpleWidget,
-    val update: FalconShuffleboardProperty.() -> Unit
-) : () -> Unit {
-    val entry: NetworkTableEntry = widget.entry
+class FalconShuffleboardLayout(val layout: ShuffleboardLayout)
 
-    override fun invoke() {
-        update()
-    }
-}
-
-class FalconShuffleboardLayout(val layout: ShuffleboardLayout, updateBlock: () -> Unit) : Updating(updateBlock)
-
-class ShuffleboardLayoutBuilder(val layout: ShuffleboardLayout) {
+class ShuffleboardLayoutBuilder(private val layout: ShuffleboardLayout) {
     fun position(column: Int, row: Int) {
         layout.withPosition(column, row)
     }
@@ -148,40 +124,26 @@ class ShuffleboardLayoutBuilder(val layout: ShuffleboardLayout) {
         layout.withProperties(mapOf(*props))
     }
 
-    internal var updatableComponents: ArrayList<() -> Unit> = arrayListOf()
+    fun sendable(name: String, sendable: Sendable): ComplexWidget =
+        layout.add(name, sendable)
 
-    fun send(name: String, sendable: Sendable): ComplexWidget = layout.add(name, sendable)
+    fun number(name: String, value: Source<Double>): SuppliedValueWidget<Double> =
+        layout.addNumber(name, value)
 
-    fun property(name: String, defaultValue: Any, block: FalconShuffleboardProperty.() -> Unit) =
-        FalconShuffleboardProperty(layout.add(name, defaultValue), block).apply { updatableComponents.add(this) }
+    fun booleanProperty(name: String, value: Source<Boolean>): SuppliedValueWidget<Boolean> =
+        layout.addBoolean(name, value)
 
-    fun doubleProperty(name: String, value: Source<Double>) = property(name, value()) {
-        entry.setDouble(value())
-    }
+    fun booleanArrayProperty(name: String, value: Source<BooleanArray>): SuppliedValueWidget<BooleanArray> =
+        layout.addBooleanArray(name, value)
 
-    fun numberProperty(name: String, value: Source<Number>) = property(name, value()) {
-        entry.setNumber(value())
-    }
+    fun numberArrayProperty(name: String, value: Source<DoubleArray>): SuppliedValueWidget<DoubleArray> =
+        layout.addDoubleArray(name, value)
 
-    fun booleanProperty(name: String, value: Source<Boolean>) = property(name, value()) {
-        entry.setBoolean(value())
-    }
+    fun stringProperty(name: String, value: Source<String>): SuppliedValueWidget<String> =
+        layout.addString(name, value)
 
-    fun booleanArrayProperty(name: String, value: Source<Array<out Boolean>>) = property(name, value()) {
-        entry.setBooleanArray(value())
-    }
+    fun stringArrayProperty(name: String, value: Source<Array<out String>>): SuppliedValueWidget<Array<String>> =
+        layout.addStringArray(name, value)
 
-    fun numberArrayProperty(name: String, value: Source<Array<out Number>>) = property(name, value()) {
-        entry.setNumberArray(value())
-    }
-
-    fun stringProperty(name: String, value: Source<String>) = property(name, value()) {
-        entry.setString(value())
-    }
-
-    fun stringArrayProperty(name: String, value: Source<Array<out String>>) = property(name, value()) {
-        entry.setStringArray(value())
-    }
-
-    fun build() = FalconShuffleboardLayout(layout) { updatableComponents.forEach { it.invoke() } }
+    fun build() = FalconShuffleboardLayout(layout)
 }
