@@ -8,10 +8,51 @@
 
 package org.ghrobotics.lib.wrappers.networktables
 
-import edu.wpi.first.wpilibj.Sendable
+import edu.wpi.first.wpilibj.*
+import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.shuffleboard.* // ktlint-disable no-wildcard-imports
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
+import edu.wpi.first.wpilibj2.command.CommandBase
+import edu.wpi.first.wpilibj2.command.PIDCommand
 import org.ghrobotics.lib.utils.Source
 
+
+/**
+ * A helper DSL to create ShuffleBoard layouts. For example:
+ *
+ * <pre>
+ * {@code
+ * val chooser = enumSendableChooser<StartingPositions>()
+ * val tab = tab("Croissant") {
+ *   sendableChooser("Starting Position", chooser) {
+ *     position(row = 0, column = 0)
+ *     size(width = 2, height = 1)
+ *   }
+ *   list("angles") {
+ *     position(column = 1, row = 0)
+ *     size(width = 2, height = 4)
+ *     double("FL angle (deg)" { DriveSubsystem.flModule.angle.degrees }),
+ *     double("FR angle (deg)" { DriveSubsystem.frModule.angle.degrees }),
+ *     double("BL angle (deg)" { DriveSubsystem.blModule.angle.degrees }),
+ *     double("BR angle (deg)" { DriveSubsystem.brModule.angle.degrees })
+ *   }
+ *   list("Azimuth angle controllers") {
+ *     position(column = 2, row = 0)
+ *     size(width = 2, height = 4)
+ *     sendable("FL controller", DriveSubsystem.flModule.angleController)
+ *     sendable("FR controller", DriveSubsystem.flModule.angleController)
+ *     sendable("BL controller", DriveSubsystem.flModule.angleController)
+ *     sendable("BR controller", DriveSubsystem.flModule.angleController)
+ *   }
+ *   textView("A number", { Math.random() }) {
+ *     position(column = 4, row = 0)
+ *     size(width = 1, height = 1)
+ *   }
+ * }
+ * }
+ </pre>
+ *
+ */
 fun tab(name: String, block: ShuffleboardTabBuilder.() -> Unit) =
     ShuffleboardTabBuilder(name).apply(block).build()
 
@@ -33,6 +74,42 @@ fun tab(name: String, block: ShuffleboardTabBuilder.() -> Unit) =
  * SaturnLibrary can be found online at https://github.com/FRCTeam4069/SaturnLibrary
  */
 
+/**
+ * A helper DSL to create ShuffleBoard layouts. For example:
+ *
+ * <pre>
+ * {@code
+ * val chooser = enumSendableChooser<StartingPositions>()
+ * val tab = tab("Croissant") {
+ *   sendableChooser("Starting Position", chooser) {
+ *     position(row = 0, column = 0)
+ *     size(width = 2, height = 1)
+ *   }
+ *   list("angles") {
+ *     position(column = 1, row = 0)
+ *     size(width = 2, height = 4)
+ *     double("FL angle (deg)" { DriveSubsystem.flModule.angle.degrees }),
+ *     double("FR angle (deg)" { DriveSubsystem.frModule.angle.degrees }),
+ *     double("BL angle (deg)" { DriveSubsystem.blModule.angle.degrees }),
+ *     double("BR angle (deg)" { DriveSubsystem.brModule.angle.degrees })
+ *   }
+ *   list("Azimuth angle controllers") {
+ *     position(column = 2, row = 0)
+ *     size(width = 2, height = 4)
+ *     sendable("FL controller", DriveSubsystem.flModule.angleController)
+ *     sendable("FR controller", DriveSubsystem.flModule.angleController)
+ *     sendable("BL controller", DriveSubsystem.flModule.angleController)
+ *     sendable("BR controller", DriveSubsystem.flModule.angleController)
+ *   }
+ *   textView("A number", { Math.random() }) {
+ *     position(column = 4, row = 0)
+ *     size(width = 1, height = 1)
+ *   }
+ * }
+ * }
+</pre>
+ *
+ */
 class ShuffleboardTabBuilder(name: String) {
 
     private val tab: ShuffleboardTab = Shuffleboard.getTab(name)
@@ -79,6 +156,62 @@ class ShuffleboardTabBuilder(name: String) {
             .apply(block)
             .build()
 
+    fun pdpView(name: String, value: PowerDistributionPanel, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kPowerDistributionPanel))
+            .apply(block)
+            .build()
+
+    fun <T> sendableChooser(name: String, value: SendableChooser<T>, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kComboBoxChooser))
+            .apply(block)
+            .build()
+
+    fun encoder(name: String, value: Encoder, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kEncoder))
+            .apply(block)
+            .build()
+
+    fun <T> speedController(name: String, value: T, block: ShuffleboardComplexWidgetBuilder.() -> Unit)
+        where T : SpeedController, T: Sendable =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kSpeedController))
+            .apply(block)
+            .build()
+
+    fun command(name: String, value: CommandBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kCommand))
+            .apply(block)
+            .build()
+
+    fun pidCommand(name: String, value: PIDCommand, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kPIDCommand))
+            .apply(block)
+            .build()
+
+    fun pidController(name: String, value: PIDController, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kPIDController))
+            .apply(block)
+            .build()
+
+    fun accelerometer(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kAccelerometer))
+            .apply(block)
+            .build()
+
+    fun gyro(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kGyro))
+            .apply(block)
+            .build()
+
+    fun relay(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kRelay))
+            .apply(block)
+            .build()
+
+    fun sendable(name: String, value: Sendable, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value))
+            .apply(block)
+            .build()
+
     fun layout(name: String, layoutType: LayoutType, block: ShuffleboardLayoutBuilder.() -> Unit) =
         ShuffleboardLayoutBuilder(tab.getLayout(name, layoutType))
             .apply(block)
@@ -108,6 +241,24 @@ class ShuffleboardWidgetBuilder<T>(private val widget: SuppliedValueWidget<T>) {
     }
 }
 
+class ShuffleboardComplexWidgetBuilder(private val widget: ComplexWidget) {
+    fun position(column: Int, row: Int) {
+        widget.withPosition(column, row)
+    }
+
+    fun size(width: Int, height: Int) {
+        widget.withSize(width, height)
+    }
+
+    fun properties(vararg props: Pair<String, Any>) {
+        widget.withProperties(mapOf(*props))
+    }
+
+    fun build(): ComplexWidget {
+        return widget
+    }
+}
+
 class FalconShuffleboardLayout(val layout: ShuffleboardLayout)
 
 class ShuffleboardLayoutBuilder(private val layout: ShuffleboardLayout) {
@@ -128,6 +279,8 @@ class ShuffleboardLayoutBuilder(private val layout: ShuffleboardLayout) {
 
     fun number(name: String, value: Source<Double>): SuppliedValueWidget<Double> =
         layout.addNumber(name, value)
+
+    fun double(name: String, value: Source<Double>) = number(name, value)
 
     fun booleanProperty(name: String, value: Source<Boolean>): SuppliedValueWidget<Boolean> =
         layout.addBoolean(name, value)
