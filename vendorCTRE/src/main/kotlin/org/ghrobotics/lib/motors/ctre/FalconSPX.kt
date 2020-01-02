@@ -9,24 +9,40 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX
+import edu.wpi.first.wpilibj.DriverStation
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.amp
+import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
+/**
+ * Wrapper around the VictorSPX motor controller.
+ *
+ * @param victorSPX The underlying motor controller.
+ * @param model The native unit model.
+ */
 class FalconSPX<K : SIKey>(
-    val victorSPX: VictorSPX,
+    @Suppress("MemberVisibilityCanBePrivate") val victorSPX: VictorSPX,
     model: NativeUnitModel<K>
 ) : FalconCTRE<K>(victorSPX, model) {
 
+    /**
+     * Alternate constructor where users can supply ID and native unit model.
+     *
+     * @param id The ID of the motor controller.
+     * @param model The native unit model.
+     */
+    constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
+
+    /**
+     * Returns the current drawn by the motor.
+     */
     override val drawnCurrent: SIUnit<Ampere>
         get() {
-            println("Current monitoring is not supported on the VictorSPX")
-            return 0.0.amp
+            DriverStation.reportError("Current monitoring is not supported on the VictorSPX", false)
+            return 0.0.amps
         }
-
-    constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
 }
 
 fun <K : SIKey> falconSPX(

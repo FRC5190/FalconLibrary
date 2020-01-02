@@ -11,10 +11,14 @@ package org.ghrobotics.lib.motors.ctre
 import com.ctre.phoenix.motorcontrol.MotorCommutation
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonFX
 import com.ctre.phoenix.sensors.SensorInitializationStrategy
 import kotlin.properties.Delegates
+import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
+import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
 /**
@@ -27,7 +31,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 class FalconFX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonFX: TalonFX,
     model: NativeUnitModel<K>
-) : FalconBaseTalon<K>(talonFX, model) {
+) : FalconCTRE<K>(talonFX, model) {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -36,6 +40,13 @@ class FalconFX<K : SIKey>(
      * @param model The native unit model.
      */
     constructor(id: Int, model: NativeUnitModel<K>) : this(TalonFX(id), model)
+
+    /**
+     * Configures the feedback device for the motor controller.
+     */
+    var feedbackDevice by Delegates.observable(TalonFXFeedbackDevice.IntegratedSensor) { _, _, newValue ->
+        talonFX.configSelectedFeedbackSensor(newValue, 0, 0)
+    }
 
     /**
      * Configures the motor commutation type for the Falcon 500.
@@ -53,6 +64,12 @@ class FalconFX<K : SIKey>(
     var sensorInitializerStrategy by Delegates.observable(SensorInitializationStrategy.BootToZero) { _, _, newValue ->
         talonFX.configIntegratedSensorInitializationStrategy(newValue, 0)
     }
+
+    /**
+     * Returns the current drawn by the motor.
+     */
+    override val drawnCurrent: SIUnit<Ampere>
+        get() = talonFX.outputCurrent.amps
 
     /**
      * Configures the supply-side current limit for the motor.
