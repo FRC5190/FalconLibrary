@@ -8,14 +8,13 @@
 
 package org.ghrobotics.lib.wrappers.networktables
 
-import edu.wpi.first.wpilibj.*
+import edu.wpi.first.wpilibj.* // ktlint-disable no-wildcard-imports
 import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.shuffleboard.* // ktlint-disable no-wildcard-imports
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj2.command.PIDCommand
 import org.ghrobotics.lib.utils.Source
-
 
 /**
  * A helper DSL to create ShuffleBoard layouts. For example:
@@ -172,7 +171,7 @@ class ShuffleboardTabBuilder(name: String) {
             .build()
 
     fun <T> speedController(name: String, value: T, block: ShuffleboardComplexWidgetBuilder.() -> Unit)
-        where T : SpeedController, T: Sendable =
+        where T : SpeedController, T : Sendable =
         ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kSpeedController))
             .apply(block)
             .build()
