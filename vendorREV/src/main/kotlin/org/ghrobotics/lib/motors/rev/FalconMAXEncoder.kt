@@ -16,13 +16,31 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
 
+/**
+ * Represents an encoder connected to a Spark MAX.
+ *
+ * @param canEncoder The underlying encoder.
+ * @param model The native unit model.
+ */
 class FalconMAXEncoder<K : SIKey>(
     val canEncoder: CANEncoder,
     model: NativeUnitModel<K>
 ) : AbstractFalconEncoder<K>(model) {
+    /**
+     * Returns the raw velocity from the encoder.
+     */
     override val rawVelocity: SIUnit<NativeUnitVelocity> get() = SIUnit(canEncoder.velocity / 60.0)
+
+    /**
+     * Returns the raw position from the encoder.
+     */
     override val rawPosition: SIUnit<NativeUnit> get() = SIUnit(canEncoder.position)
 
+    /**
+     * Resets the encoder position to a certain value.
+     *
+     * @param newPosition The position to reset to.
+     */
     override fun resetPositionRaw(newPosition: SIUnit<NativeUnit>) {
         canEncoder.position = newPosition.value
     }
