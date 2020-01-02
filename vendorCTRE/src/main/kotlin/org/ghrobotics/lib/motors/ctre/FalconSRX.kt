@@ -9,11 +9,14 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
+import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
+import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.inAmps
 import org.ghrobotics.lib.mathematics.units.inMilliseconds
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
@@ -28,7 +31,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 class FalconSRX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonSRX: TalonSRX,
     model: NativeUnitModel<K>
-) : FalconBaseTalon<K>(talonSRX, model) {
+) : FalconCTRE<K>(talonSRX, model) {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -39,9 +42,22 @@ class FalconSRX<K : SIKey>(
     constructor(id: Int, model: NativeUnitModel<K>) : this(TalonSRX(id), model)
 
     /**
+     * Returns the current drawn by the motor.
+     */
+    override val drawnCurrent: SIUnit<Ampere>
+        get() = talonSRX.outputCurrent.amps
+
+    /**
+     * Configures the feedback device for the motor controller.
+     */
+    var feedbackDevice by Delegates.observable(TalonSRXFeedbackDevice.QuadEncoder) { _, _, newValue ->
+        talonSRX.configSelectedFeedbackSensor(newValue, 0, 0)
+    }
+
+    /**
      * Configure the supply-side current limit for the motor.
      *
-     * @param config The sypply-side current limit configuration.
+     * @param config The supply-side current limit configuration.
      */
     fun configSupplyCurrentLimit(config: SupplyCurrentLimitConfiguration) {
         talonSRX.configSupplyCurrentLimit(config, 0)
