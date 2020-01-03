@@ -6,5 +6,8 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-rootProject.name = "FalconLibrary"
-include("core", "wpi", "vendorCTRE", "vendorREV", "vendorNAVX", "vendorCU", "vendorPWF")
+dependencies {
+    api project(":core")
+    api project(":wpi")
+    api wpi.deps.vendor.java()
+}
