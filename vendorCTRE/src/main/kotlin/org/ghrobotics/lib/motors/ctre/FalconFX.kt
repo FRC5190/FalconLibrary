@@ -51,7 +51,7 @@ class FalconFX<K : SIKey>(
     /**
      * Configures the motor commutation type for the Falcon 500.
      */
-    var motorCommutation by Delegates.observable(MotorCommutation.Trapeziodal) { _, _, newValue ->
+    var motorCommutation by Delegates.observable(MotorCommutation.Trapezoidal) { _, _, newValue ->
         talonFX.configMotorCommutation(newValue, 0)
     }
 
