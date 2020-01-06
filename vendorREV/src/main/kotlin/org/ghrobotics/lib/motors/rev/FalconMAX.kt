@@ -81,7 +81,7 @@ class FalconMAX<K : SIKey>(
      * Constructor that sets the feedback device and enables voltage compensation.
      */
     init {
-        controller.setFeedbackDevice(encoder.canEncoder)
+        // controller.setFeedbackDevice(encoder.canEncoder)
         canSparkMax.enableVoltageCompensation(12.0)
     }
 
