@@ -105,6 +105,22 @@ abstract class FalconCTRE<K : SIKey>(
     }
 
     /**
+     * Configures the forward soft limit and enables it.
+     */
+    override var softLimitForward: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        motorController.configForwardSoftLimitThreshold(model.toNativeUnitPosition(newValue).value.toInt(), 0)
+        motorController.configForwardSoftLimitEnable(true, 0)
+    }
+
+    /**
+     * Configures the reverse soft limit and enables it.
+     */
+    override var softLimitReverse: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        motorController.configReverseSoftLimitThreshold(model.toNativeUnitPosition(newValue).value.toInt(), 0)
+        motorController.configReverseSoftLimitEnable(true, 0)
+    }
+
+    /**
      * Configures the open loop ramp.
      */
     var openLoopRamp by Delegates.observable(0.seconds) { _, _, newValue ->

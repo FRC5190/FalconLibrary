@@ -135,6 +135,26 @@ class FalconMAX<K : SIKey>(
     }
 
     /**
+     * Configures the forward soft limit and enables it.
+     */
+    override var softLimitForward: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        canSparkMax.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward,
+            model.toNativeUnitPosition(newValue).value.toFloat()
+        )
+        canSparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true)
+    }
+
+    /**
+     * Configures the reverse soft limit and enables it.
+     */
+    override var softLimitReverse: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
+        canSparkMax.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse,
+            model.toNativeUnitPosition(newValue).value.toFloat()
+        )
+        canSparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true)
+    }
+
+    /**
      * Sets a certain voltage across the motor windings.
      *
      * @param voltage The voltage to set.
