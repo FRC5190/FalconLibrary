@@ -94,6 +94,14 @@ class FalconVenom<K : SIKey>(
         venom.maxAcceleration = model.toNativeUnitAcceleration(newValue).value * 60.0
     }
 
+    override var softLimitForward: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, _ ->
+        DriverStation.reportError("Soft Limits are not supported on the Venom.", false)
+    }
+
+    override var softLimitReverse: SIUnit<K> by Delegates.observable(SIUnit(0.0)) { _, _, _ ->
+        DriverStation.reportError("Soft Limits are not supported on the Venom.", false)
+    }
+
     /**
      * Sets a certain voltage across the motor windings.
      *

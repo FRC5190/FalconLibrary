@@ -67,6 +67,15 @@ interface FalconMotor<K : SIKey> {
      */
     var useMotionProfileForPosition: Boolean
 
+    /**
+     * Soft limit in the forward direction.
+     */
+    var softLimitForward: SIUnit<K>
+    /**
+     * Soft limit in the reverse direction.
+     */
+    var softLimitReverse: SIUnit<K>
+
     fun follow(motor: FalconMotor<*>): Boolean
 
     /**
