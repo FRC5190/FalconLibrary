@@ -8,14 +8,15 @@
 
 package org.ghrobotics.lib.mathematics.units
 
-import kotlin.math.absoluteValue
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.lerp
+import org.ghrobotics.lib.types.Interpolatable
+import kotlin.math.absoluteValue
 
 /**
  * @param value This is the value expressed in its SI Base Unit
  */
-inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
+inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>>, Interpolatable<SIUnit<K>> {
 
     val absoluteValue get() = SIUnit<K>(value.absoluteValue)
 
@@ -34,6 +35,8 @@ inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
 
     fun lerp(endValue: SIUnit<K>, t: Double) = SIUnit<K>(value.lerp(endValue.value, t))
     infix fun epsilonEquals(other: SIUnit<K>) = value.epsilonEquals(other.value)
+
+    override fun interpolate(endValue: SIUnit<K>, t: Double): SIUnit<K> = lerp(endValue, t)
 }
 
 interface SIKey
