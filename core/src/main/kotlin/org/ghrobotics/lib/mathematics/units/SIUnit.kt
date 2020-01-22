@@ -8,10 +8,10 @@
 
 package org.ghrobotics.lib.mathematics.units
 
+import kotlin.math.absoluteValue
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.lerp
 import org.ghrobotics.lib.types.Interpolatable
-import kotlin.math.absoluteValue
 
 /**
  * @param value This is the value expressed in its SI Base Unit
