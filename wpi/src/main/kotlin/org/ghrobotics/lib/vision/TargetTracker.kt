@@ -130,6 +130,11 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
         var isReal = true
             private set
 
+        // Add the initial sample to the list of samples.
+        init {
+            addSample(initialSample)
+        }
+
         fun resetFilters() {
             xFilter.reset()
             yFilter.reset()
