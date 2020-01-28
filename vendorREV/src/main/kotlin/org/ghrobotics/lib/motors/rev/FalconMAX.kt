@@ -13,7 +13,6 @@ import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.ControlType
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -22,9 +21,11 @@ import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
+import org.ghrobotics.lib.mathematics.units.inAmps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
+import kotlin.properties.Delegates
 
 /**
  * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted
@@ -142,6 +143,13 @@ class FalconMAX<K : SIKey>(
             model.toNativeUnitPosition(newValue).value.toFloat()
         )
         canSparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true)
+    }
+
+    /**
+     * Configures a smart current limit for the motor.
+     */
+    var smartCurrentLimit: SIUnit<Ampere> by Delegates.observable(SIUnit(60.0)) { _, _, newValue ->
+        canSparkMax.setSmartCurrentLimit(newValue.inAmps().toInt())
     }
 
     /**
