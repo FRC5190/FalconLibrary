@@ -22,6 +22,7 @@ import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
+import org.ghrobotics.lib.mathematics.units.inAmps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
@@ -142,6 +143,13 @@ class FalconMAX<K : SIKey>(
             model.toNativeUnitPosition(newValue).value.toFloat()
         )
         canSparkMax.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true)
+    }
+
+    /**
+     * Configures a smart current limit for the motor.
+     */
+    var smartCurrentLimit: SIUnit<Ampere> by Delegates.observable(SIUnit(60.0)) { _, _, newValue ->
+        canSparkMax.setSmartCurrentLimit(newValue.inAmps().toInt())
     }
 
     /**
