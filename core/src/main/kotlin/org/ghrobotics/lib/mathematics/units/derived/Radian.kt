@@ -17,6 +17,9 @@ typealias Radian = Unitless
 val Double.radians get() = SIUnit<Radian>(this)
 val Double.degrees get() = SIUnit<Radian>(Math.toRadians(this))
 
+val Double.rpm get() = SIUnit<AngularVelocity>(this * 0.104719755)
+val Number.rpm get() = toDouble().rpm
+
 val Number.radians get() = toDouble().radians
 val Number.degrees get() = toDouble().degrees
 
