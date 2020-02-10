@@ -9,6 +9,7 @@
 package org.ghrobotics.lib.mathematics
 
 import org.ghrobotics.lib.mathematics.units.derived.radians
+import org.ghrobotics.lib.mathematics.units.derived.rpm
 import org.ghrobotics.lib.mathematics.units.derived.velocity
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.mathematics.units.inInches
@@ -79,5 +80,11 @@ class UnitTest {
     fun testUnboundedRotationUnits() {
         val speed = 250.radians.velocity
         assert(speed.value epsilonEquals 250.0)
+    }
+
+    @Test
+    fun testRPM() {
+        val speed = 3000.rpm
+        assert(speed.value epsilonEquals 314.159265)
     }
 }
