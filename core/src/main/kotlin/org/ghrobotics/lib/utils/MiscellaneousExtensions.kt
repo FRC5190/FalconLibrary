@@ -10,7 +10,6 @@ package org.ghrobotics.lib.utils
 
 import edu.wpi.first.wpilibj.geometry.Pose2d
 import edu.wpi.first.wpilibj.geometry.Transform2d
-import org.ghrobotics.lib.motors.rev.FalconMAX
 
 /**
  * Converts a Pose2d to a Transform2d.
@@ -21,5 +20,3 @@ fun Pose2d.toTransform(): Transform2d = minus(Pose2d())
  * Converts a Transform2d to a Pose2d.
  */
 fun Transform2d.toPose(): Pose2d = Pose2d(translation, rotation)
-
-fun FalconMAX<*>.isConnected() = canSparkMax.firmwareString != "v0.0.0"
