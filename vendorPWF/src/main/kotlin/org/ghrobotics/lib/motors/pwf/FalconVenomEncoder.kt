@@ -22,7 +22,7 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
 class FalconVenomEncoder<K : SIKey>(
     private val venom: CANVenom,
     model: NativeUnitModel<K>
-) : AbstractFalconEncoder<K>(model) {
+) : AbstractFalconEncoder<K>(model, "FalconVenomEncoder[${getVenomID(venom)}]") {
     /**
      * Returns the raw velocity from the encoder.
      */

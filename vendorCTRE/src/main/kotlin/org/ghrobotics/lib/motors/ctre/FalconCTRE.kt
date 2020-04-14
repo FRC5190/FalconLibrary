@@ -40,8 +40,9 @@ import org.ghrobotics.lib.motors.FalconMotor
  */
 abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,
-    private val model: NativeUnitModel<K>
-) : AbstractFalconMotor<K>() {
+    private val model: NativeUnitModel<K>,
+    simName: String = "FalconCTRE[${motorController.deviceID}]"
+) : AbstractFalconMotor<K>(simName) {
 
     /**
      * The previous demand.

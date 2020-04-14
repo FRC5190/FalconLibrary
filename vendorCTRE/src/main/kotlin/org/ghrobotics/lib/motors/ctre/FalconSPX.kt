@@ -25,7 +25,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 class FalconSPX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val victorSPX: VictorSPX,
     model: NativeUnitModel<K>
-) : FalconCTRE<K>(victorSPX, model) {
+) : FalconCTRE<K>(victorSPX, model, "FalconSPX[${victorSPX.deviceID}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.

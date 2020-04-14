@@ -8,9 +8,12 @@
 
 package org.ghrobotics.lib.motors
 
+import edu.wpi.first.hal.SimDevice
 import org.ghrobotics.lib.mathematics.units.SIKey
 
-abstract class AbstractFalconMotor<K : SIKey> : FalconMotor<K> {
+abstract class AbstractFalconMotor<K : SIKey>(simName: String) : FalconMotor<K> {
+
+    private val simDevice: SimDevice? = SimDevice.create(simName)
 
     override var useMotionProfileForPosition: Boolean = false
 

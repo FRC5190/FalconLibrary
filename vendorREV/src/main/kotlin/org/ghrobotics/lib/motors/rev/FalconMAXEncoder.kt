@@ -16,6 +16,12 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
 
+fun getCanEncoderID(canEncoder: CANEncoder): Int {
+    val method = canEncoder.javaClass.getDeclaredMethod("getID")
+    method.isAccessible = true
+    return method.invoke(canEncoder) as Int
+}
+
 /**
  * Represents an encoder connected to a Spark MAX.
  *
@@ -25,7 +31,7 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
 class FalconMAXEncoder<K : SIKey>(
     val canEncoder: CANEncoder,
     model: NativeUnitModel<K>
-) : AbstractFalconEncoder<K>(model) {
+) : AbstractFalconEncoder<K>(model, "FalconMAXEncoder[${getCanEncoderID(canEncoder)}]") {
     /**
      * Returns the raw velocity from the encoder.
      */

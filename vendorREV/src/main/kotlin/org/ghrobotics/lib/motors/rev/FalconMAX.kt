@@ -41,7 +41,7 @@ class FalconMAX<K : SIKey>(
     private val model: NativeUnitModel<K>,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192
-) : AbstractFalconMotor<K>() {
+) : AbstractFalconMotor<K>("FalconMAX[${canSparkMax.deviceId}]") {
 
     /**
      * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted

@@ -23,6 +23,12 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
 
+internal fun getVenomID(venom: CANVenom): Int {
+    val field = venom.javaClass.getDeclaredField("m_motorID")
+    field.isAccessible = true
+    return field.getInt(venom)
+}
+
 /**
  * Wrapper around the Venom motor controller.
  *
@@ -32,7 +38,7 @@ import org.ghrobotics.lib.motors.FalconMotor
 class FalconVenom<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val venom: CANVenom,
     private val model: NativeUnitModel<K>
-) : AbstractFalconMotor<K>() {
+) : AbstractFalconMotor<K>("FalconVenom[${getVenomID(venom)}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
