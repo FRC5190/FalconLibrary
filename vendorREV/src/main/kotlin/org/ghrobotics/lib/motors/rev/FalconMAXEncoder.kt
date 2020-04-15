@@ -9,6 +9,7 @@
 package org.ghrobotics.lib.motors.rev
 
 import com.revrobotics.CANEncoder
+import com.revrobotics.CANSensor
 import com.revrobotics.CANSparkMax
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -18,7 +19,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
 
 fun getCanEncoderID(canEncoder: CANEncoder): Int {
-    val field = Class.forName("com.revrobotics.CANSensor").getDeclaredField("m_device")
+    val field = CANSensor::class.java.getDeclaredField("m_device")
     val canSparkMax = field.apply { isAccessible = true }.get(canEncoder) as CANSparkMax
     return canSparkMax.deviceId
 }
