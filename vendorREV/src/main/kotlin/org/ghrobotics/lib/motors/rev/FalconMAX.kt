@@ -13,6 +13,7 @@ import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.ControlType
+import edu.wpi.first.wpilibj.RobotController
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -169,6 +170,11 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
+            return
+        }
+
         controller.setReference(voltage.value, ControlType.kVoltage, 0, arbitraryFeedForward.value)
     }
 
@@ -179,6 +185,10 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(dutyCycle * RobotController.getBatteryVoltage() + arbitraryFeedForward.value)
+            return
+        }
         controller.setReference(dutyCycle, ControlType.kDutyCycle, 0, arbitraryFeedForward.value)
     }
 

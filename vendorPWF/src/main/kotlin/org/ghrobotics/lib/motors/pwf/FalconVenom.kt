@@ -10,6 +10,7 @@ package org.ghrobotics.lib.motors.pwf
 
 import com.playingwithfusion.CANVenom
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.RobotController
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -115,6 +116,11 @@ class FalconVenom<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
+            return
+        }
+        
         venom.setCommand(CANVenom.ControlMode.VoltageControl, voltage.value, 0.0, arbitraryFeedForward.value / 6.0)
     }
 
@@ -125,6 +131,10 @@ class FalconVenom<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(dutyCycle * RobotController.getBatteryVoltage() + arbitraryFeedForward.value)
+            return
+        }
         venom.setCommand(CANVenom.ControlMode.Proportional, dutyCycle, 0.0, arbitraryFeedForward.value / 6.0)
     }
 

@@ -8,29 +8,21 @@
 
 package org.ghrobotics.lib.motors.ctre
 
-import com.ctre.phoenix.motorcontrol.ControlMode
-import com.ctre.phoenix.motorcontrol.DemandType
-import com.ctre.phoenix.motorcontrol.IMotorController
-import com.ctre.phoenix.motorcontrol.NeutralMode
-import com.ctre.phoenix.motorcontrol.StatusFrame
-import kotlin.math.roundToInt
-import kotlin.properties.Delegates
-import org.ghrobotics.lib.mathematics.units.SIKey
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.Second
+import com.ctre.phoenix.motorcontrol.*
+import edu.wpi.first.wpilibj.RobotController
+import org.ghrobotics.lib.mathematics.units.*
 import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
-import org.ghrobotics.lib.mathematics.units.inMilliseconds
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100ms
 import org.ghrobotics.lib.mathematics.units.nativeunit.inNativeUnitsPer100msPerSecond
 import org.ghrobotics.lib.mathematics.units.operations.div
-import org.ghrobotics.lib.mathematics.units.seconds
-import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
+import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 
 /**
  * Represents the abstract class for all CTRE motor controllers.
@@ -194,13 +186,19 @@ abstract class FalconCTRE<K : SIKey>(
      * @param voltage The voltage to set.
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
-    override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) =
+    override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
+            return
+        }
+
         sendDemand(
-            Demand(
-                ControlMode.PercentOutput, (voltage / voltageCompSaturation).unitlessValue,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
-            )
+                Demand(
+                    ControlMode.PercentOutput, (voltage / voltageCompSaturation).unitlessValue,
+                    DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
+                )
         )
+    }
 
     /**
      * Commands a certain duty cycle to the motor.
@@ -208,13 +206,19 @@ abstract class FalconCTRE<K : SIKey>(
      * @param dutyCycle The duty cycle to command.
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
-    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) =
+    override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(dutyCycle * RobotController.getBatteryVoltage() + arbitraryFeedForward.value)
+            return
+        }
+
         sendDemand(
             Demand(
                 ControlMode.PercentOutput, dutyCycle,
                 DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
             )
         )
+    }
 
     /**
      * Sets the velocity setpoint of the motor controller.
