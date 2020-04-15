@@ -38,7 +38,8 @@ internal fun getVenomID(venom: CANVenom): Int {
  */
 class FalconVenom<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val venom: CANVenom,
-    private val model: NativeUnitModel<K>
+    private val model: NativeUnitModel<K>,
+    units: K
 ) : AbstractFalconMotor<K>("FalconVenom[${getVenomID(venom)}]") {
 
     /**
@@ -47,12 +48,12 @@ class FalconVenom<K : SIKey>(
      * @param id The ID of the motor controller.
      * @param model The native unit model.
      */
-    constructor(id: Int, model: NativeUnitModel<K>) : this(CANVenom(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>, units: K) : this(CANVenom(id), model, units)
 
     /**
      * The encoder for the Spark MAX.
      */
-    override val encoder = FalconVenomEncoder(venom, model)
+    override val encoder = FalconVenomEncoder(venom, model, units)
 
     /**
      * Returns the voltage across the motor windings.
@@ -188,11 +189,13 @@ class FalconVenom<K : SIKey>(
 fun <K : SIKey> falconVenom(
     venom: CANVenom,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconVenom<K>.() -> Unit
-) = FalconVenom(venom, model).also(block)
+) = FalconVenom(venom, model, units).also(block)
 
 fun <K : SIKey> falconVenom(
     id: Int,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconVenom<K>.() -> Unit
-) = FalconVenom(id, model).also(block)
+) = FalconVenom(id, model, units).also(block)

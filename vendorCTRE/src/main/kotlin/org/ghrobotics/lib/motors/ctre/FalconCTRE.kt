@@ -42,6 +42,7 @@ import org.ghrobotics.lib.motors.FalconMotor
 abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,
     private val model: NativeUnitModel<K>,
+    units: K,
     simName: String = "FalconCTRE[${motorController.deviceID}]"
 ) : AbstractFalconMotor<K>(simName) {
 
@@ -54,7 +55,7 @@ abstract class FalconCTRE<K : SIKey>(
     /**
      * The encoder (if any) that is connected to the motor controller.
      */
-    override val encoder = FalconCTREEncoder(motorController, 0, model)
+    override val encoder = FalconCTREEncoder(motorController, 0, model, units)
 
     /**
      * Returns the voltage across the motor windings.

@@ -32,8 +32,9 @@ fun getCanEncoderID(canEncoder: CANEncoder): Int {
  */
 class FalconMAXEncoder<K : SIKey>(
     val canEncoder: CANEncoder,
-    model: NativeUnitModel<K>
-) : AbstractFalconEncoder<K>(model, "FalconMAXEncoder[${getCanEncoderID(canEncoder)}]") {
+    model: NativeUnitModel<K>,
+    units: K
+) : AbstractFalconEncoder<K>(model, units, "FalconMAXEncoder[${getCanEncoderID(canEncoder)}]") {
 /**
  * Returns the raw velocity from the encoder.
  */

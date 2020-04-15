@@ -40,6 +40,7 @@ import org.ghrobotics.lib.motors.FalconMotor
 class FalconMAX<K : SIKey>(
     val canSparkMax: CANSparkMax,
     private val model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192
 ) : AbstractFalconMotor<K>("FalconMAX[${canSparkMax.deviceId}]") {
@@ -57,10 +58,11 @@ class FalconMAX<K : SIKey>(
         id: Int,
         type: CANSparkMaxLowLevel.MotorType,
         model: NativeUnitModel<K>,
+        units: K,
         useAlternateEncoder: Boolean = false,
         alternateEncoderCPR: Int = 8196
     ) : this(
-        CANSparkMax(id, type), model, useAlternateEncoder, alternateEncoderCPR
+        CANSparkMax(id, type), model, units, useAlternateEncoder, alternateEncoderCPR
     )
 
     /**
@@ -76,7 +78,7 @@ class FalconMAX<K : SIKey>(
         if (useAlternateEncoder) canSparkMax.getAlternateEncoder(
             AlternateEncoderType.kQuadrature,
             alternateEncoderCPR
-        ) else canSparkMax.encoder, model
+        ) else canSparkMax.encoder, model, units
     )
 
     /**
@@ -242,16 +244,18 @@ class FalconMAX<K : SIKey>(
 fun <K : SIKey> falconMAX(
     canSparkMax: CANSparkMax,
     model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(canSparkMax, model, useAlternateEncoder, alternateEncoderCPR).also(block)
+) = FalconMAX(canSparkMax, model, units, useAlternateEncoder, alternateEncoderCPR).also(block)
 
 fun <K : SIKey> falconMAX(
     id: Int,
     type: CANSparkMaxLowLevel.MotorType,
     model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(id, type, model, useAlternateEncoder, alternateEncoderCPR).also(block)
+) = FalconMAX(id, type, model, units, useAlternateEncoder, alternateEncoderCPR).also(block)

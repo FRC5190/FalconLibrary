@@ -17,12 +17,13 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 
 abstract class AbstractFalconEncoder<K : SIKey>(
     val model: NativeUnitModel<K>,
+    units: K,
     simName: String
 ) : FalconEncoder<K> {
 
     private val simDevice: SimDevice? = SimDevice.create(simName)
-    private val simPositionHandle: SimDouble? = simDevice?.createDouble("Position", false, 0.0)
-    private val simVelocityHandle: SimDouble? = simDevice?.createDouble("Position", false, 0.0)
+    private val simPositionHandle: SimDouble? = simDevice?.createDouble("Position, ${units::class.java.simpleName}", false, 0.0)
+    private val simVelocityHandle: SimDouble? = simDevice?.createDouble("Velocity, ${units::class.java.simpleName}/s", false, 0.0)
 
     override fun setSimulatedPosition(position: SIUnit<K>) {
         simPositionHandle?.set(position.value)
