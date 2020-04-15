@@ -120,7 +120,7 @@ class FalconVenom<K : SIKey>(
             simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
             return
         }
-        
+
         venom.setCommand(CANVenom.ControlMode.VoltageControl, voltage.value, 0.0, arbitraryFeedForward.value / 6.0)
     }
 

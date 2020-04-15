@@ -16,7 +16,7 @@ abstract class AbstractFalconMotor<K : SIKey>(simName: String) : FalconMotor<K> 
 
     private val simDevice: SimDevice? = SimDevice.create(simName)
 
-    val simVoltageOutput: SimDouble? = simDevice?.createDouble("Voltage output", true, 0.0);
+    val simVoltageOutput: SimDouble? = simDevice?.createDouble("Voltage output", true, 0.0)
 
     override var useMotionProfileForPosition: Boolean = false
 
