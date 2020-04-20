@@ -29,7 +29,7 @@ abstract class AbstractFalconEncoder<K : SIKey>(
         simPositionHandle?.set(position.value)
     }
 
-    override fun setSimulatedVelocity(position: SIUnit<K>) {
+    override fun setSimulatedVelocity(velocity: SIUnit<Velocity<K>>) {
         simVelocityHandle?.set(position.value)
     }
 

@@ -24,7 +24,7 @@ interface FalconEncoder<K : SIKey> {
     /**
      * Sets the simulated [velocity] of this motor.
      */
-    fun setSimulatedVelocity(position: SIUnit<K>)
+    fun setSimulatedVelocity(velocity: SIUnit<Velocity<K>>)
 
     /**
      * The velocity of the encoder in [K]/s. When in a simulation, returns the simulated velocity.
