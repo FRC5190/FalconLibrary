@@ -25,12 +25,12 @@ abstract class AbstractFalconEncoder<K : SIKey>(
     private val simPositionHandle: SimDouble? = simDevice?.createDouble("Position, ${units::class.java.simpleName}s", false, 0.0)
     private val simVelocityHandle: SimDouble? = simDevice?.createDouble("Velocity, ${units::class.java.simpleName}s/s", false, 0.0)
 
-    override fun setSimulatedPosition(position: SIUnit<K>) {
-        simPositionHandle?.set(position.value)
+    override fun setSimulatedPosition(simPosition: SIUnit<K>) {
+        simPositionHandle?.set(simPosition.value)
     }
 
-    override fun setSimulatedVelocity(velocity: SIUnit<Velocity<K>>) {
-        simVelocityHandle?.set(position.value)
+    override fun setSimulatedVelocity(simVelocity: SIUnit<Velocity<K>>) {
+        simVelocityHandle?.set(simVelocity.value)
     }
 
     override val position: SIUnit<K>

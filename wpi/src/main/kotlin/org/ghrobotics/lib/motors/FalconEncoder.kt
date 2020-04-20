@@ -17,14 +17,14 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 interface FalconEncoder<K : SIKey> {
 
     /**
-     * Sets the simulated [position] of this motor.
+     * Sets the simulated [simPosition] of this motor.
      */
-    fun setSimulatedPosition(position: SIUnit<K>)
+    fun setSimulatedPosition(simPosition: SIUnit<K>)
 
     /**
-     * Sets the simulated [velocity] of this motor.
+     * Sets the simulated [simVelocity] of this motor.
      */
-    fun setSimulatedVelocity(velocity: SIUnit<Velocity<K>>)
+    fun setSimulatedVelocity(simVelocity: SIUnit<Velocity<K>>)
 
     /**
      * The velocity of the encoder in [K]/s. When in a simulation, returns the simulated velocity.
