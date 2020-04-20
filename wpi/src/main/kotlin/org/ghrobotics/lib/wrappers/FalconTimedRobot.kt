@@ -38,6 +38,9 @@ abstract class FalconTimedRobot {
 
     protected val wrappedValue = WpiTimedRobot()
 
+    val isEnabled
+        get() = wrappedValue.isEnabled
+
     protected inner class WpiTimedRobot : TimedRobot() {
 
         private val kLanguage_Kotlin = 6

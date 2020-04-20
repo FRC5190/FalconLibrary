@@ -59,7 +59,8 @@ class FalconVenom<K : SIKey>(
      * Returns the voltage across the motor windings.
      */
     override val voltageOutput: SIUnit<Volt>
-        get() = venom.outputVoltage.volts
+        get() = if(simVoltageOutput != null) simVoltageOutput.get().volts else
+            venom.outputVoltage.volts
 
     /**
      * Returns the current drawn by the motor.
