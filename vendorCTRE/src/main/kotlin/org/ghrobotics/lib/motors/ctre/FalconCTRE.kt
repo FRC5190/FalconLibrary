@@ -61,7 +61,7 @@ abstract class FalconCTRE<K : SIKey>(
      * Returns the voltage across the motor windings.
      */
     override val voltageOutput: SIUnit<Volt>
-        get() = if(simVoltageOutput != null) simVoltageOutput.get().volts else
+        get() = if (simVoltageOutput != null) simVoltageOutput.get().volts else
             motorController.motorOutputVoltage.volts
 
     /**
