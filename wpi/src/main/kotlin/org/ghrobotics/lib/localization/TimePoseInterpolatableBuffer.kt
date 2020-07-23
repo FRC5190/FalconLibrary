@@ -57,7 +57,7 @@ class TimePoseInterpolatableBuffer(
         val bottomBound = bufferMap.floorEntry(time)
 
         return when {
-            topBound == null -> bottomBound.value
+            topBound == null -> bottomBound?.value
             bottomBound == null -> topBound.value
             else -> bottomBound.value.interpolate(
                 topBound.value,
