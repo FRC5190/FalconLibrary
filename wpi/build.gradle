@@ -8,6 +8,7 @@
 
 dependencies {
     api project(":core")
+    api wpi.deps.wpilib()
     api wpi.deps.vendor.java()
     api "com.github.salomonbrys.kotson:kotson:2.5.0"
 }
