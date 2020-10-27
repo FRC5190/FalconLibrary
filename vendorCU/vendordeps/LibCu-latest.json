@@ -4,9 +4,9 @@
     "version": "2020.2.1",
     "uuid": "libcufrc-e6e8-4db6-89f0-copperforge0", 
     "mavenUrls": [
-        "https://copperforge.cc/dev/files/maven"
+        "https://copperforge.cc/files/dev/maven"
     ],
-    "jsonUrl": "https://copperforge.cc/dev/files/vendordeps/LibCu-latest.json",
+    "jsonUrl": "https://copperforge.cc/files/dev/vendordeps/LibCu-latest.json",
     "cppDependencies": [
         {
             "groupId": "com.cuforge.libcu",
