@@ -30,8 +30,9 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 @Suppress("Unused")
 class FalconFX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonFX: TalonFX,
-    model: NativeUnitModel<K>
-) : FalconCTRE<K>(talonFX, model) {
+    model: NativeUnitModel<K>,
+    units: K
+) : FalconCTRE<K>(talonFX, model, units, "FalconFX[${talonFX.deviceID}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -39,7 +40,7 @@ class FalconFX<K : SIKey>(
      * @param id The ID of the motor controller.
      * @param model The native unit model.
      */
-    constructor(id: Int, model: NativeUnitModel<K>) : this(TalonFX(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>, units: K) : this(TalonFX(id), model, units)
 
     /**
      * Configures the feedback device for the motor controller.
@@ -93,11 +94,13 @@ class FalconFX<K : SIKey>(
 fun <K : SIKey> falconFX(
     talonFX: TalonFX,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconFX<K>.() -> Unit
-) = FalconFX(talonFX, model).also(block)
+) = FalconFX(talonFX, model, units).also(block)
 
 fun <K : SIKey> falconFX(
     id: Int,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconFX<K>.() -> Unit
-) = FalconFX(id, model).also(block)
+) = FalconFX(id, model, units).also(block)

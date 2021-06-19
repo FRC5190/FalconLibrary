@@ -38,6 +38,9 @@ abstract class FalconTimedRobot {
 
     protected val wrappedValue = WpiTimedRobot()
 
+    val isEnabled
+        get() = wrappedValue.isEnabled
+
     protected inner class WpiTimedRobot : TimedRobot() {
 
         private val kLanguage_Kotlin = 6
@@ -76,6 +79,10 @@ abstract class FalconTimedRobot {
             this@FalconTimedRobot.testInit()
         }
 
+        override fun simulationInit() {
+            this@FalconTimedRobot.simulationInit()
+        }
+
         override fun robotPeriodic() {
             this@FalconTimedRobot.robotPeriodic()
             CommandScheduler.getInstance().run()
@@ -89,8 +96,16 @@ abstract class FalconTimedRobot {
             this@FalconTimedRobot.teleopPeriodic()
         }
 
+        override fun testPeriodic() {
+            this@FalconTimedRobot.testPeriodic()
+        }
+
         override fun disabledPeriodic() {
             this@FalconTimedRobot.disabledPeriodic()
+        }
+
+        override fun simulationPeriodic() {
+            this@FalconTimedRobot.simulationPeriodic()
         }
     }
 
@@ -98,12 +113,15 @@ abstract class FalconTimedRobot {
     protected open fun autonomousInit() {}
     protected open fun teleopInit() {}
     protected open fun disabledInit() {}
-    private fun testInit() {}
+    protected open fun testInit() {}
+    protected open fun simulationInit() {}
 
     protected open fun robotPeriodic() {}
     protected open fun autonomousPeriodic() {}
     protected open fun teleopPeriodic() {}
     protected open fun disabledPeriodic() {}
+    protected open fun testPeriodic() {}
+    protected open fun simulationPeriodic() {}
 
     protected fun getSubsystemChecks(): Command {
         return FalconSubsystemHandler.testCommand

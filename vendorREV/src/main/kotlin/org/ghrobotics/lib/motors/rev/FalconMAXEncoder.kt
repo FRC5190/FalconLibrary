@@ -9,12 +9,20 @@
 package org.ghrobotics.lib.motors.rev
 
 import com.revrobotics.CANEncoder
+import com.revrobotics.CANSensor
+import com.revrobotics.CANSparkMax
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnit
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
+
+fun getCanEncoderID(canEncoder: CANEncoder): Int {
+    val field = CANSensor::class.java.getDeclaredField("m_device")
+    val canSparkMax = field.apply { isAccessible = true }.get(canEncoder) as CANSparkMax
+    return canSparkMax.deviceId
+}
 
 /**
  * Represents an encoder connected to a Spark MAX.
@@ -24,11 +32,12 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
  */
 class FalconMAXEncoder<K : SIKey>(
     val canEncoder: CANEncoder,
-    model: NativeUnitModel<K>
-) : AbstractFalconEncoder<K>(model) {
-    /**
-     * Returns the raw velocity from the encoder.
-     */
+    model: NativeUnitModel<K>,
+    units: K
+) : AbstractFalconEncoder<K>(model, units, "FalconMAXEncoder[${getCanEncoderID(canEncoder)}]") {
+/**
+ * Returns the raw velocity from the encoder.
+ */
     override val rawVelocity: SIUnit<NativeUnitVelocity> get() = SIUnit(canEncoder.velocity / 60.0)
 
     /**

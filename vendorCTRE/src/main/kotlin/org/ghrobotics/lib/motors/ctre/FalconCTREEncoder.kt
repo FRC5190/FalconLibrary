@@ -30,8 +30,9 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
 class FalconCTREEncoder<K : SIKey>(
     private val motorController: IMotorController,
     private val pidIdx: Int = 0,
-    model: NativeUnitModel<K>
-) : AbstractFalconEncoder<K>(model) {
+    model: NativeUnitModel<K>,
+    units: K
+) : AbstractFalconEncoder<K>(model, units, "FalconCTREEncoder[${motorController.deviceID}]") {
     /**
      * Returns the raw velocity from the encoder.
      */

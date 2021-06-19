@@ -10,6 +10,7 @@ package org.ghrobotics.lib.motors.pwf
 
 import com.playingwithfusion.CANVenom
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.RobotController
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -23,6 +24,12 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
 
+internal fun getVenomID(venom: CANVenom): Int {
+    val field = venom.javaClass.getDeclaredField("m_motorID")
+    field.isAccessible = true
+    return field.getInt(venom)
+}
+
 /**
  * Wrapper around the Venom motor controller.
  *
@@ -31,8 +38,9 @@ import org.ghrobotics.lib.motors.FalconMotor
  */
 class FalconVenom<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val venom: CANVenom,
-    private val model: NativeUnitModel<K>
-) : AbstractFalconMotor<K>() {
+    private val model: NativeUnitModel<K>,
+    units: K
+) : AbstractFalconMotor<K>("FalconVenom[${getVenomID(venom)}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -40,18 +48,19 @@ class FalconVenom<K : SIKey>(
      * @param id The ID of the motor controller.
      * @param model The native unit model.
      */
-    constructor(id: Int, model: NativeUnitModel<K>) : this(CANVenom(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>, units: K) : this(CANVenom(id), model, units)
 
     /**
      * The encoder for the Spark MAX.
      */
-    override val encoder = FalconVenomEncoder(venom, model)
+    override val encoder = FalconVenomEncoder(venom, model, units)
 
     /**
      * Returns the voltage across the motor windings.
      */
     override val voltageOutput: SIUnit<Volt>
-        get() = venom.outputVoltage.volts
+        get() = if (simVoltageOutput != null) simVoltageOutput.get().volts else
+            venom.outputVoltage.volts
 
     /**
      * Returns the current drawn by the motor.
@@ -109,6 +118,11 @@ class FalconVenom<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
+            return
+        }
+
         venom.setCommand(CANVenom.ControlMode.VoltageControl, voltage.value, 0.0, arbitraryFeedForward.value / 6.0)
     }
 
@@ -119,6 +133,10 @@ class FalconVenom<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(dutyCycle * RobotController.getBatteryVoltage() + arbitraryFeedForward.value)
+            return
+        }
         venom.setCommand(CANVenom.ControlMode.Proportional, dutyCycle, 0.0, arbitraryFeedForward.value / 6.0)
     }
 
@@ -172,11 +190,13 @@ class FalconVenom<K : SIKey>(
 fun <K : SIKey> falconVenom(
     venom: CANVenom,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconVenom<K>.() -> Unit
-) = FalconVenom(venom, model).also(block)
+) = FalconVenom(venom, model, units).also(block)
 
 fun <K : SIKey> falconVenom(
     id: Int,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconVenom<K>.() -> Unit
-) = FalconVenom(id, model).also(block)
+) = FalconVenom(id, model, units).also(block)

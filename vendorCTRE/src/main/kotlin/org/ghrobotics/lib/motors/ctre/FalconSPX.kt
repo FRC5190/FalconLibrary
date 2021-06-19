@@ -24,8 +24,9 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
  */
 class FalconSPX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val victorSPX: VictorSPX,
-    model: NativeUnitModel<K>
-) : FalconCTRE<K>(victorSPX, model) {
+    model: NativeUnitModel<K>,
+    units: K
+) : FalconCTRE<K>(victorSPX, model, units, "FalconSPX[${victorSPX.deviceID}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -33,7 +34,7 @@ class FalconSPX<K : SIKey>(
      * @param id The ID of the motor controller.
      * @param model The native unit model.
      */
-    constructor(id: Int, model: NativeUnitModel<K>) : this(VictorSPX(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>, units: K) : this(VictorSPX(id), model, units)
 
     /**
      * Returns the current drawn by the motor.
@@ -48,11 +49,13 @@ class FalconSPX<K : SIKey>(
 fun <K : SIKey> falconSPX(
     victorSPX: VictorSPX,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconSPX<K>.() -> Unit
-) = FalconSPX(victorSPX, model).also(block)
+) = FalconSPX(victorSPX, model, units).also(block)
 
 fun <K : SIKey> falconSPX(
     id: Int,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconSPX<K>.() -> Unit
-) = FalconSPX(id, model).also(block)
+) = FalconSPX(id, model, units).also(block)

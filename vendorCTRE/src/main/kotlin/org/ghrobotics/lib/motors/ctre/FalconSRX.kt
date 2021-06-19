@@ -30,8 +30,9 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 @Suppress("Unused")
 class FalconSRX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonSRX: TalonSRX,
-    model: NativeUnitModel<K>
-) : FalconCTRE<K>(talonSRX, model) {
+    model: NativeUnitModel<K>,
+    units: K
+) : FalconCTRE<K>(talonSRX, model, units, "FalconCTRE[${talonSRX.deviceID}]") {
 
     /**
      * Alternate constructor where users can supply ID and native unit model.
@@ -39,7 +40,7 @@ class FalconSRX<K : SIKey>(
      * @param id The ID of the motor controller.
      * @param model The native unit model.
      */
-    constructor(id: Int, model: NativeUnitModel<K>) : this(TalonSRX(id), model)
+    constructor(id: Int, model: NativeUnitModel<K>, units: K) : this(TalonSRX(id), model, units)
 
     /**
      * Returns the current drawn by the motor.
@@ -102,11 +103,13 @@ class FalconSRX<K : SIKey>(
 fun <K : SIKey> falconSRX(
     talonSRX: TalonSRX,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconSRX<K>.() -> Unit
-) = FalconSRX(talonSRX, model).also(block)
+) = FalconSRX(talonSRX, model, units).also(block)
 
 fun <K : SIKey> falconSRX(
     id: Int,
     model: NativeUnitModel<K>,
+    units: K,
     block: FalconSRX<K>.() -> Unit
-) = FalconSRX(id, model).also(block)
+) = FalconSRX(id, model, units).also(block)

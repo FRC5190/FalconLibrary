@@ -13,6 +13,7 @@ import com.revrobotics.CANPIDController
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
 import com.revrobotics.ControlType
+import edu.wpi.first.wpilibj.RobotController
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -39,9 +40,10 @@ import org.ghrobotics.lib.motors.FalconMotor
 class FalconMAX<K : SIKey>(
     val canSparkMax: CANSparkMax,
     private val model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192
-) : AbstractFalconMotor<K>() {
+) : AbstractFalconMotor<K>("FalconMAX[${canSparkMax.deviceId}]") {
 
     /**
      * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted
@@ -56,10 +58,11 @@ class FalconMAX<K : SIKey>(
         id: Int,
         type: CANSparkMaxLowLevel.MotorType,
         model: NativeUnitModel<K>,
+        units: K,
         useAlternateEncoder: Boolean = false,
         alternateEncoderCPR: Int = 8196
     ) : this(
-        CANSparkMax(id, type), model, useAlternateEncoder, alternateEncoderCPR
+        CANSparkMax(id, type), model, units, useAlternateEncoder, alternateEncoderCPR
     )
 
     /**
@@ -75,7 +78,7 @@ class FalconMAX<K : SIKey>(
         if (useAlternateEncoder) canSparkMax.getAlternateEncoder(
             AlternateEncoderType.kQuadrature,
             alternateEncoderCPR
-        ) else canSparkMax.encoder, model
+        ) else canSparkMax.encoder, model, units
     )
 
     /**
@@ -91,7 +94,8 @@ class FalconMAX<K : SIKey>(
      * Returns the voltage across the motor windings.
      */
     override val voltageOutput: SIUnit<Volt>
-        get() = (canSparkMax.appliedOutput * canSparkMax.busVoltage).volts
+        get() = if (simVoltageOutput != null) simVoltageOutput.get().volts else
+            (canSparkMax.appliedOutput * canSparkMax.busVoltage).volts
 
     /**
      * Returns the current drawn by the motor.
@@ -169,6 +173,11 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(voltage.value + arbitraryFeedForward.value)
+            return
+        }
+
         controller.setReference(voltage.value, ControlType.kVoltage, 0, arbitraryFeedForward.value)
     }
 
@@ -179,6 +188,10 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
+        if (simVoltageOutput != null) {
+            simVoltageOutput.set(dutyCycle * RobotController.getBatteryVoltage() + arbitraryFeedForward.value)
+            return
+        }
         controller.setReference(dutyCycle, ControlType.kDutyCycle, 0, arbitraryFeedForward.value)
     }
 
@@ -232,16 +245,18 @@ class FalconMAX<K : SIKey>(
 fun <K : SIKey> falconMAX(
     canSparkMax: CANSparkMax,
     model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(canSparkMax, model, useAlternateEncoder, alternateEncoderCPR).also(block)
+) = FalconMAX(canSparkMax, model, units, useAlternateEncoder, alternateEncoderCPR).also(block)
 
 fun <K : SIKey> falconMAX(
     id: Int,
     type: CANSparkMaxLowLevel.MotorType,
     model: NativeUnitModel<K>,
+    units: K,
     useAlternateEncoder: Boolean = false,
     alternateEncoderCPR: Int = 8192,
     block: FalconMAX<K>.() -> Unit
-) = FalconMAX(id, type, model, useAlternateEncoder, alternateEncoderCPR).also(block)
+) = FalconMAX(id, type, model, units, useAlternateEncoder, alternateEncoderCPR).also(block)
