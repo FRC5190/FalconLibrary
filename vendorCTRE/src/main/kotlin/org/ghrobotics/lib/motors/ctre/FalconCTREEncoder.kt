@@ -53,6 +53,6 @@ class FalconCTREEncoder<K : SIKey>(
      * @param newPosition The position to reset to.
      */
     override fun resetPositionRaw(newPosition: SIUnit<NativeUnit>) {
-        motorController.setSelectedSensorPosition(newPosition.value.roundToInt(), pidIdx, 0)
+        motorController.setSelectedSensorPosition(newPosition.value.roundToInt().toDouble(), pidIdx, 0)
     }
 }

@@ -10,7 +10,6 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.61" apply false
     id "edu.wpi.first.GradleRIO" version "2021.3.1" apply false
     id "com.diffplug.gradle.spotless" version "3.26.1" apply false
-    id "maven"
     id "maven-publish"
 }
 
@@ -25,11 +24,13 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://frcmaven.wpi.edu/artifactory/release" }
+        maven { url "https://maven.ctr-electronics.com/release/" }
     }
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib"
         implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2"
+        implementation "com.ctre.phoenix:api-java:5.20.2"
 
         testImplementation "org.knowm.xchart:xchart:3.2.2"
         testImplementation "junit:junit:4.12"
