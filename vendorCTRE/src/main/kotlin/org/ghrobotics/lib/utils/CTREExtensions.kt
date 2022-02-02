@@ -10,7 +10,7 @@ package org.ghrobotics.lib.utils
 
 import com.ctre.phoenix.CANifier
 import com.ctre.phoenix.sensors.PigeonIMU
-import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Rotation2d
 import java.awt.Color
 
 fun CANifier.setLEDOutput(color: Color) = setLEDOutput(color.red, color.green, color.blue)

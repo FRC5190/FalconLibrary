@@ -8,10 +8,10 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Translation2d
-import edu.wpi.first.wpilibj.trajectory.Trajectory
-import edu.wpi.first.wpilibj.trajectory.constraint.CentripetalAccelerationConstraint
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.trajectory.Trajectory
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint
 import kotlin.system.measureTimeMillis
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d

@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.mathematics.units.derived
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Unitless
 

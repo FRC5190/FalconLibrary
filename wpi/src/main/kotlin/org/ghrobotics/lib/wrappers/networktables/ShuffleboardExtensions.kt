@@ -8,8 +8,9 @@
 
 package org.ghrobotics.lib.wrappers.networktables
 
+import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.util.sendable.Sendable
 import edu.wpi.first.wpilibj.* // ktlint-disable no-wildcard-imports
-import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.shuffleboard.* // ktlint-disable no-wildcard-imports
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.CommandBase
@@ -155,8 +156,8 @@ class ShuffleboardTabBuilder(name: String) {
             .apply(block)
             .build()
 
-    fun pdpView(name: String, value: PowerDistributionPanel, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
-        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kPowerDistributionPanel))
+    fun pdpView(name: String, value: PowerDistribution, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kPowerDistribution))
             .apply(block)
             .build()
 
@@ -167,12 +168,6 @@ class ShuffleboardTabBuilder(name: String) {
 
     fun encoder(name: String, value: Encoder, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
         ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kEncoder))
-            .apply(block)
-            .build()
-
-    fun <T> speedController(name: String, value: T, block: ShuffleboardComplexWidgetBuilder.() -> Unit)
-        where T : SpeedController, T : Sendable =
-        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kSpeedController))
             .apply(block)
             .build()
 
@@ -191,20 +186,20 @@ class ShuffleboardTabBuilder(name: String) {
             .apply(block)
             .build()
 
-    fun accelerometer(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
-        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kAccelerometer))
-            .apply(block)
-            .build()
-
-    fun gyro(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
-        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kGyro))
-            .apply(block)
-            .build()
-
-    fun relay(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
-        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kRelay))
-            .apply(block)
-            .build()
+//    fun accelerometer(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+//        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kAccelerometer))
+//            .apply(block)
+//            .build()
+//
+//    fun gyro(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+//        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kGyro))
+//            .apply(block)
+//            .build()
+//
+//    fun relay(name: String, value: GyroBase, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
+//        ShuffleboardComplexWidgetBuilder(tab.add(name, value).withWidget(BuiltInWidgets.kRelay))
+//            .apply(block)
+//            .build()
 
     fun sendable(name: String, value: Sendable, block: ShuffleboardComplexWidgetBuilder.() -> Unit) =
         ShuffleboardComplexWidgetBuilder(tab.add(name, value))

@@ -8,7 +8,7 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import edu.wpi.first.wpilibj.geometry.Translation2d
+import edu.wpi.first.math.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.max
 import org.ghrobotics.lib.mathematics.min
@@ -34,10 +34,10 @@ fun Rectangle2d(
 fun Rectangle2d(
     vararg pointsToInclude: Translation2d
 ): Rectangle2d {
-    val minX = pointsToInclude.minBy { it.x }!!.x_u
-    val minY = pointsToInclude.minBy { it.y }!!.y_u
-    val maxX = pointsToInclude.maxBy { it.x }!!.x_u
-    val maxY = pointsToInclude.maxBy { it.y }!!.y_u
+    val minX = pointsToInclude.minByOrNull { it.x }!!.x_u
+    val minY = pointsToInclude.minByOrNull { it.y }!!.y_u
+    val maxX = pointsToInclude.maxByOrNull { it.x }!!.x_u
+    val maxY = pointsToInclude.maxByOrNull { it.y }!!.y_u
     return Rectangle2d(
         minX, minY,
         maxX - minX, maxY - minY

@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory.optimization
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Rotation2d
-import edu.wpi.first.wpilibj.geometry.Translation2d
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
 import java.lang.Math.sqrt
 import kotlin.math.pow
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
@@ -135,7 +135,7 @@ class PathFinder(
         Q.first { it.point == source }.dist = 0.0
 
         while (Q.isNotEmpty()) {
-            val u = Q.minBy { it.dist }!!
+            val u = Q.minByOrNull { it.dist }!!
             Q -= u
             if (u.point == target) {
                 val S = mutableListOf<Vector2D>()

@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.localization
 
+import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.geometry.Pose2d
 import java.util.TreeMap
 import org.ghrobotics.lib.mathematics.twodim.geometry.interpolate
 import org.ghrobotics.lib.mathematics.units.SIUnit

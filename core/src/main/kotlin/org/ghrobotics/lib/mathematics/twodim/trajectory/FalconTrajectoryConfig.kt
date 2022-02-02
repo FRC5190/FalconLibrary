@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint
+import edu.wpi.first.math.trajectory.TrajectoryConfig
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.derived.LinearAcceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity

@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
+import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.trajectory.Trajectory
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u

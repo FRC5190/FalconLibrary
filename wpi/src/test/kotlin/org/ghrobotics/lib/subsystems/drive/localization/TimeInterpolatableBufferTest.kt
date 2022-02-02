@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.subsystems.drive.localization
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
 import org.ghrobotics.lib.localization.TimePoseInterpolatableBuffer
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d

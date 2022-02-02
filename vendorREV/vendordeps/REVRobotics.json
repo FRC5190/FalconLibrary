@@ -1,70 +1,73 @@
 {
-  "cppDependencies": [
-    {
-      "artifactId": "SparkMax-cpp",
-      "binaryPlatforms": [
-        "windowsx86-64",
-        "windowsx86",
-        "linuxaarch64bionic",
-        "linuxx86-64",
-        "linuxathena",
-        "linuxraspbian"
-      ],
-      "groupId": "com.revrobotics.frc",
-      "headerClassifier": "headers",
-      "libName": "SparkMax",
-      "sharedLibrary": false,
-      "skipInvalidPlatforms": true,
-      "version": "1.5.1"
-    },
-    {
-      "artifactId": "SparkMax-driver",
-      "binaryPlatforms": [
-        "windowsx86-64",
-        "windowsx86",
-        "linuxaarch64bionic",
-        "linuxx86-64",
-        "linuxathena",
-        "linuxraspbian"
-      ],
-      "groupId": "com.revrobotics.frc",
-      "headerClassifier": "headers",
-      "libName": "SparkMaxDriver",
-      "sharedLibrary": false,
-      "skipInvalidPlatforms": true,
-      "version": "1.5.1"
-    }
+  "fileName": "REVLib.json",
+  "name": "REVLib",
+  "version": "2022.1.1",
+  "uuid": "3f48eb8c-50fe-43a6-9cb7-44c86353c4cb",
+  "mavenUrls": [
+    "https://maven.revrobotics.com/"
   ],
-  "fileName": "REVRobotics.json",
+  "jsonUrl": "https://software-metadata.revrobotics.com/REVLib.json",
   "javaDependencies": [
     {
-      "artifactId": "SparkMax-java",
       "groupId": "com.revrobotics.frc",
-      "version": "1.5.1"
+      "artifactId": "REVLib-java",
+      "version": "2022.1.1"
     }
   ],
   "jniDependencies": [
     {
-      "artifactId": "SparkMax-driver",
       "groupId": "com.revrobotics.frc",
-      "isJar": false,
+      "artifactId": "REVLib-driver",
+      "version": "2022.1.1",
       "skipInvalidPlatforms": true,
+      "isJar": false,
       "validPlatforms": [
         "windowsx86-64",
         "windowsx86",
         "linuxaarch64bionic",
         "linuxx86-64",
         "linuxathena",
-        "linuxraspbian"
-      ],
-      "version": "1.5.1"
+        "linuxraspbian",
+        "osxx86-64"
+      ]
     }
   ],
-  "jsonUrl": "http://www.revrobotics.com/content/sw/max/sdk/REVRobotics.json",
-  "mavenUrls": [
-    "http://www.revrobotics.com/content/sw/max/sdk/maven/"
-  ],
-  "name": "REVRobotics",
-  "uuid": "3f48eb8c-50fe-43a6-9cb7-44c86353c4cb",
-  "version": "1.5.1"
+  "cppDependencies": [
+    {
+      "groupId": "com.revrobotics.frc",
+      "artifactId": "REVLib-cpp",
+      "version": "2022.1.1",
+      "libName": "REVLib",
+      "headerClassifier": "headers",
+      "sharedLibrary": false,
+      "skipInvalidPlatforms": true,
+      "binaryPlatforms": [
+        "windowsx86-64",
+        "windowsx86",
+        "linuxaarch64bionic",
+        "linuxx86-64",
+        "linuxathena",
+        "linuxraspbian",
+        "osxx86-64"
+      ]
+    },
+    {
+      "groupId": "com.revrobotics.frc",
+      "artifactId": "REVLib-driver",
+      "version": "2022.1.1",
+      "libName": "REVLibDriver",
+      "headerClassifier": "headers",
+      "sharedLibrary": false,
+      "skipInvalidPlatforms": true,
+      "binaryPlatforms": [
+        "windowsx86-64",
+        "windowsx86",
+        "linuxaarch64bionic",
+        "linuxx86-64",
+        "linuxathena",
+        "linuxraspbian",
+        "osxx86-64"
+      ]
+    }
+  ]
 }

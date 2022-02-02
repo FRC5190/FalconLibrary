@@ -12,7 +12,7 @@ import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.jsonObject
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import edu.wpi.first.wpilibj.geometry.Pose2d
+import edu.wpi.first.math.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.units.derived.degrees
 import org.ghrobotics.lib.mathematics.units.derived.toRotation2d

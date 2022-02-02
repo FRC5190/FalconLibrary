@@ -7,15 +7,15 @@
  */
 
 package org.ghrobotics.lib.utils
-
-import com.cuforge.libcu.Lasershark
-import org.ghrobotics.lib.mathematics.units.Meter
-import org.ghrobotics.lib.mathematics.units.SIUnit
-import org.ghrobotics.lib.mathematics.units.inches
-
+//
+// import com.github.CopperSource.libcu.Lasershark
+// import org.ghrobotics.lib.mathematics.units.Meter
+// import org.ghrobotics.lib.mathematics.units.SIUnit
+// import org.ghrobotics.lib.mathematics.units.inches
+//
 /**
  * Returns the distance from the rangefinder sensor in a typesafe
  * unit wrapper.
  */
-val Lasershark.distance: SIUnit<Meter>
-    get() = distanceInches.inches
+// val Lasershark.distance: SIUnit<Meter>
+//    get() = distanceInches.inches

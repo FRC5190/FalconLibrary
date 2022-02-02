@@ -8,7 +8,6 @@
 
 package org.ghrobotics.lib.wrappers.hid
 
-import edu.wpi.first.wpilibj.GenericHID
 import edu.wpi.first.wpilibj.XboxController
 
 typealias FalconXboxController = FalconHID<XboxController>
@@ -24,19 +23,19 @@ fun FalconXboxBuilder.button(
 ) = button(button.value, block)
 
 fun FalconXboxBuilder.triggerAxisButton(
-    hand: GenericHID.Hand,
+    hand: Hand,
     threshold: Double = HIDButton.DEFAULT_THRESHOLD,
     block: FalconHIDButtonBuilder.() -> Unit = {}
 ) = axisButton(yTriggerAxisToRawAxis(hand), threshold, block)
 
 // Source Helpers
-fun FalconXboxController.getY(hand: GenericHID.Hand) = getRawAxis(
+fun FalconXboxController.getY(hand: Hand) = getRawAxis(
     yAxisToRawAxis(
         hand
     )
 )
 
-fun FalconXboxController.getX(hand: GenericHID.Hand) = getRawAxis(
+fun FalconXboxController.getX(hand: Hand) = getRawAxis(
     xAxisToRawAxis(
         hand
     )
@@ -44,9 +43,9 @@ fun FalconXboxController.getX(hand: GenericHID.Hand) = getRawAxis(
 
 fun FalconXboxController.getRawButton(button: XboxButton) = getRawButton(button.value)
 
-private fun yAxisToRawAxis(hand: GenericHID.Hand) = if (hand == GenericHID.Hand.kLeft) 1 else 5
-private fun xAxisToRawAxis(hand: GenericHID.Hand) = if (hand == GenericHID.Hand.kLeft) 0 else 4
-private fun yTriggerAxisToRawAxis(hand: GenericHID.Hand) = if (hand == GenericHID.Hand.kLeft) 2 else 3
+private fun yAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 1 else 5
+private fun xAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 0 else 4
+private fun yTriggerAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 2 else 3
 
 val kBumperLeft = XboxButton(5)
 val kBumperRight = XboxButton(6)

@@ -8,7 +8,6 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
@@ -75,10 +74,10 @@ class FalconDriveHelper {
         val overPower: Boolean
 
         if (isQuickTurn) {
-            if (linearPercent.absoluteValue < kQuickStopThreshold) {
-                quickStopAccumulator = (1 - kQuickStopAlpha) * quickStopAccumulator +
-                    kQuickStopAlpha * curvaturePercent.coerceIn(-1.0, 1.0) * 2.0
-            }
+//            if (linearPercent.absoluteValue < kQuickStopThreshold) {
+//                quickStopAccumulator = (1 - kQuickStopAlpha) * quickStopAccumulator +
+//                    kQuickStopAlpha * curvaturePercent.coerceIn(-1.0, 1.0) * 2.0
+//            }
             overPower = true
             angularPower = curvaturePercent
         } else {
@@ -127,8 +126,8 @@ class FalconDriveHelper {
         return Pair(leftMotorOutput, rightMotorOutput)
     }
 
-    companion object {
-        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
-        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
-    }
+//    companion object {
+//        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
+//        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
+//    }
 }

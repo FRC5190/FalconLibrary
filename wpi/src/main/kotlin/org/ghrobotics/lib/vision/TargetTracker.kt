@@ -8,11 +8,11 @@
 
 package org.ghrobotics.lib.vision
 
-import edu.wpi.first.wpilibj.MedianFilter
+import edu.wpi.first.math.filter.MedianFilter
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Rotation2d
-import edu.wpi.first.wpilibj.geometry.Translation2d
 import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -66,7 +66,7 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
         // Find the target to add this sample to.
         for (pose in poses) {
             // Get the closest target to this pose.
-            val closestTarget = targets.minBy { it.averagePose.translation.getDistance(pose.translation) }
+            val closestTarget = targets.minByOrNull { it.averagePose.translation.getDistance(pose.translation) }
 
             // Create the sample.
             val sample = TrackedTargetSample(captureTime, pose)
@@ -96,7 +96,7 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
             .filter {
                 it.isReal && translation.getDistance(it.averagePose.translation) <
                     constants.kTargetTrackingDistanceErrorTolerance.value
-            }.minBy { it.averagePose.translation.getDistance(translation) }
+            }.minByOrNull { it.averagePose.translation.getDistance(translation) }
     }
 
     /**

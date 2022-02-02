@@ -10,10 +10,10 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Rotation2d
-import edu.wpi.first.wpilibj.geometry.Translation2d
-import edu.wpi.first.wpilibj.geometry.Twist2d
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.geometry.Twist2d
 import kotlin.math.absoluteValue
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Meter
@@ -41,7 +41,7 @@ fun Pose2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: SIUnit<Radian> = 0.degrees
 
 /* Transform2d Unit-Safe Constructors */
 fun Transform2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: Rotation2d) =
-    edu.wpi.first.wpilibj.geometry.Transform2d(Translation2d(x, y), angle)
+    edu.wpi.first.math.geometry.Transform2d(Translation2d(x, y), angle)
 
 /* Translation2d Unit Accessors */
 val Translation2d.x_u get() = x.meters

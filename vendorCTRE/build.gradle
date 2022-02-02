@@ -9,5 +9,5 @@
 dependencies {
     api project(":core")
     api project(":wpi")
-    api wpi.deps.vendor.java()
+    api wpi.java.vendor.java()
 }

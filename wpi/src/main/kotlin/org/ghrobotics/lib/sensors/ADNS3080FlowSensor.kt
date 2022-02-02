@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.sensors
 
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.SPI
-import edu.wpi.first.wpilibj.geometry.Rotation2d
-import edu.wpi.first.wpilibj.geometry.Translation2d
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

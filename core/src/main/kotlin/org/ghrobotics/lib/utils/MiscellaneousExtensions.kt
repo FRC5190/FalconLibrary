@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.utils
 
-import edu.wpi.first.wpilibj.geometry.Pose2d
-import edu.wpi.first.wpilibj.geometry.Transform2d
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Transform2d
 
 /**
  * Converts a Pose2d to a Transform2d.
