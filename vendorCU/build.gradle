@@ -6,8 +6,8 @@
  * Copyright 2019, Green Hope Falcons
  */
 //
-//dependencies {
-//    api project(":core")
-//    api project(":wpi")
+dependencies {
+    api project(":core")
+    api project(":wpi")
 //    api wpi.java.vendor.java()
-//}
+}
