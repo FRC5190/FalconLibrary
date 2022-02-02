@@ -25,7 +25,6 @@ allprojects {
         maven { url "https://maven.ctr-electronics.com/release/" }
         maven { url "https://copperforge.cc/files/dev/maven" }
         mavenCentral()
-        mavenLocal()
     }
 
     dependencies {
