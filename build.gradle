@@ -23,7 +23,9 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url "https://frcmaven.wpi.edu/artifactory/release" }
         maven { url "https://maven.ctr-electronics.com/release/" }
+        maven { url "https://copperforge.cc/files/dev/maven" }
         mavenCentral()
+        mavenLocal()
     }
 
     dependencies {
@@ -31,7 +33,7 @@ allprojects {
         implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
         implementation "com.ctre.phoenix:api-java:5.20.2"
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
-//        implementation 'com.github.CopperSource:LibCU:-SNAPSHOT'
+        implementation 'com.cuforge.libcu:LibCu-java:2022.1.1'
 
         testImplementation 'org.knowm.xchart:xchart:3.8.0'
         testImplementation 'junit:junit:4.13.2'

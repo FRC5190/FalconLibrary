@@ -9,5 +9,6 @@
 dependencies {
     api project(":core")
     api project(":wpi")
+    api "com.cuforge.libcu:LibCu-java:2022.1.1"
 //    api wpi.java.vendor.java()
 }
