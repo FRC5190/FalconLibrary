@@ -9,8 +9,8 @@
 package org.ghrobotics.lib.mathematics
 
 import org.ghrobotics.lib.mathematics.units.amps
-import org.ghrobotics.lib.mathematics.units.derived.feetPerMinute
-import org.ghrobotics.lib.mathematics.units.derived.feetPerSecond
+import org.ghrobotics.lib.mathematics.units.derived.inFeetPerMinute
+import org.ghrobotics.lib.mathematics.units.derived.inFeetPerSecond
 import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.inMeters
 import org.ghrobotics.lib.mathematics.units.inSeconds
@@ -40,7 +40,7 @@ class DerivedTests {
 
         val three = one / two
 
-        val four = three.feetPerMinute
+        val four = three.inFeetPerMinute()
 
         assert(four epsilonEquals 492.12598425196853)
     }
@@ -59,7 +59,7 @@ class DerivedTests {
 
         val three = one * two
 
-        val four = three.feetPerSecond
+        val four = three.inFeetPerSecond()
 
         assert(four epsilonEquals 51.26312335958006)
     }

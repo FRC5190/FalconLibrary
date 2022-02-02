@@ -33,9 +33,8 @@ allprojects {
         implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
         implementation "com.ctre.phoenix:api-java:5.20.2"
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
-//        implementation 'com.github.CopperSource:LibCu:master-SNAPSHOT'
 
-        testImplementation 'org.knowm.xchart:xchart:3.8.0'
+        testImplementation 'org.knowm.xchart:xchart:3.8.1'
         testImplementation 'junit:junit:4.13.2'
     }
 
