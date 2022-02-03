@@ -49,6 +49,19 @@ allprojects {
     }
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'org.ghrobotics'
+            artifactId = 'FalconLibrary'
+            version = '2022.1.14'
+
+            from components.java
+        }
+    }
+
+}
+
 wrapper {
     gradleVersion = "7.3.2"
 }
