@@ -11,3 +11,14 @@ dependencies {
     api project(":wpi")
     api wpi.java.vendor.java()
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+
+            from components.java
+        }
+    }
+
+}

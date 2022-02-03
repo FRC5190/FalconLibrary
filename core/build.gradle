@@ -11,3 +11,14 @@ dependencies {
     api "com.github.FRCTeam4069:Keigen:1.4.0"
     api "edu.wpi.first.wpimath:wpimath-java:2022.2.1"
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+
+
+            from components.java
+        }
+    }
+
+}
