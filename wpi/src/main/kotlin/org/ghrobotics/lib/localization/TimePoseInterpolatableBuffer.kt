@@ -11,7 +11,6 @@ package org.ghrobotics.lib.localization
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.Timer
 import java.util.TreeMap
-import org.ghrobotics.lib.mathematics.twodim.geometry.interpolate
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.operations.div

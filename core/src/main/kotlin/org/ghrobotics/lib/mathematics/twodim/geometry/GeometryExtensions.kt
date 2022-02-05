@@ -47,18 +47,6 @@ fun Transform2d(x: SIUnit<Meter>, y: SIUnit<Meter>, angle: Rotation2d) =
 val Translation2d.x_u get() = x.meters
 val Translation2d.y_u get() = y.meters
 
-/* Interpolation */
-fun Pose2d.interpolate(endValue: Pose2d, t: Double): Pose2d {
-    return if (t < 0) {
-        this
-    } else if (t >= 1) {
-        endValue
-    } else {
-        val twist = (endValue.relativeTo(this)).log()
-        exp(twist * t)
-    }
-}
-
 /* Misc Extensions */
 fun Pose2d.mirror() =
     Pose2d(translation.x, 8.2296 - translation.y, -rotation)

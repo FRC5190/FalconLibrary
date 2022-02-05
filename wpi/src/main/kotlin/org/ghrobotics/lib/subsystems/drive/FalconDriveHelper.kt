@@ -11,7 +11,6 @@ package org.ghrobotics.lib.subsystems.drive
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.withSign
-
 /**
  * Helper class that contains all types of driving -- tank drive,
  * curvature drive, arcade drive.
@@ -74,10 +73,10 @@ class FalconDriveHelper {
         val overPower: Boolean
 
         if (isQuickTurn) {
-//            if (linearPercent.absoluteValue < kQuickStopThreshold) {
-//                quickStopAccumulator = (1 - kQuickStopAlpha) * quickStopAccumulator +
-//                    kQuickStopAlpha * curvaturePercent.coerceIn(-1.0, 1.0) * 2.0
-//            }
+            if (linearPercent.absoluteValue < kQuickStopThreshold) {
+                quickStopAccumulator = (1 - kQuickStopAlpha) * quickStopAccumulator +
+                    kQuickStopAlpha * curvaturePercent.coerceIn(-1.0, 1.0) * 2.0
+            }
             overPower = true
             angularPower = curvaturePercent
         } else {
@@ -126,8 +125,8 @@ class FalconDriveHelper {
         return Pair(leftMotorOutput, rightMotorOutput)
     }
 
-//    companion object {
-//        const val kQuickStopThreshold = DifferentialDrive.kDefaultQuickStopThreshold
-//        const val kQuickStopAlpha = DifferentialDrive.kDefaultQuickStopAlpha
-//    }
+    companion object {
+        const val kQuickStopThreshold = 0.2
+        const val kQuickStopAlpha = 0.1
+    }
 }
