@@ -15,7 +15,8 @@ import org.ghrobotics.lib.mathematics.lerp
 /**
  * @param value This is the value expressed in its SI Base Unit
  */
-inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
+@JvmInline
+value class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
 
     val absoluteValue get() = SIUnit<K>(value.absoluteValue)
 
