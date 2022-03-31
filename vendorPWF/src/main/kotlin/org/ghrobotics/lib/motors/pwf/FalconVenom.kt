@@ -21,7 +21,7 @@ import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
-import org.ghrobotics.lib.motors.FalconMotor
+import org.ghrobotics.lib.motors.`FalconSwerveDrive\`
 
 /**
  * Wrapper around the Venom motor controller.
@@ -161,7 +161,7 @@ class FalconVenom<K : SIKey>(
      *
      * @param motor The other motor controller.
      */
-    override fun follow(motor: FalconMotor<*>): Boolean = if (motor is FalconVenom<*>) {
+    override fun follow(motor: `FalconSwerveDrive\`<*>): Boolean = if (motor is FalconVenom<*>) {
         venom.follow(motor.venom)
         true
     } else {

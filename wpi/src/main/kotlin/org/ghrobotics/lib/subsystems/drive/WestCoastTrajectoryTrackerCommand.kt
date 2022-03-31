@@ -24,8 +24,8 @@ import org.ghrobotics.lib.utils.Source
  * @param drivetrain The drivetrain being used to follow the trajectory.
  * @param trajectorySource The trajectory source.
  */
-class TrajectoryTrackerCommand(
-    private val drivetrain: TrajectoryTrackerDriveBase,
+class WestCoastTrajectoryTrackerCommand(
+    private val drivetrain: TrajectoryTrackerWestCoastDriveBase,
     private val trajectorySource: Source<Trajectory>
 ) : FalconCommand(drivetrain) {
 

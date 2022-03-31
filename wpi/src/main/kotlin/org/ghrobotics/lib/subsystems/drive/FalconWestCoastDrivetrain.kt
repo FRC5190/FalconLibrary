@@ -41,7 +41,7 @@ import org.ghrobotics.lib.utils.map
 /**
  * Represents a typical west coast drive that is built by Team 5190.
  */
-abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), SensorlessCompatibleSubsystem {
+abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase(), SensorlessCompatibleSubsystem {
     /**
      * The current inputs and outputs
      */
@@ -275,13 +275,13 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerDriveBase(), Sensorl
     }
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
-        TrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
+        WestCoastTrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
 
     fun followTrajectory(trajectory: Trajectory, mirrored: BooleanSource) =
-        TrajectoryTrackerCommand(this, mirrored.map(trajectory.mirror(), trajectory))
+        WestCoastTrajectoryTrackerCommand(this, mirrored.map(trajectory.mirror(), trajectory))
 
     fun followTrajectory(trajectory: Source<Trajectory>) =
-        TrajectoryTrackerCommand(this, trajectory)
+        WestCoastTrajectoryTrackerCommand(this, trajectory)
 
     fun characterize() = CharacterizationCommand(this)
 

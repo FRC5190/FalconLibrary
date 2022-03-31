@@ -16,7 +16,7 @@ import org.ghrobotics.lib.commands.FalconSubsystem
 /**
  * An interface to implement to follow trajectories.
  */
-abstract class TrajectoryTrackerDriveBase : FalconSubsystem() {
+abstract class TrajectoryTrackerWestCoastDriveBase : FalconSubsystem() {
 
     abstract val controller: RamseteController
     abstract var robotPosition: Pose2d

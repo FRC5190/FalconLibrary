@@ -30,7 +30,7 @@ import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
-import org.ghrobotics.lib.motors.FalconMotor
+import org.ghrobotics.lib.motors.`FalconSwerveDrive\`
 
 /**
  * Represents the abstract class for all CTRE motor controllers.
@@ -269,7 +269,7 @@ abstract class FalconCTRE<K : SIKey>(
      *
      * @param motor The other motor controller.
      */
-    override fun follow(motor: FalconMotor<*>): Boolean =
+    override fun follow(motor: `FalconSwerveDrive\`<*>): Boolean =
         if (motor is FalconCTRE<*>) {
             motorController.follow(motor.motorController)
             true

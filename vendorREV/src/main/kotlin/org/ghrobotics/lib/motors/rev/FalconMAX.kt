@@ -25,7 +25,7 @@ import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.inAmps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
-import org.ghrobotics.lib.motors.FalconMotor
+import org.ghrobotics.lib.motors.`FalconSwerveDrive\`
 
 /**
  * Creates a Spark MAX motor controller. The alternate encoder CPR is defaulted
@@ -220,7 +220,7 @@ class FalconMAX<K : SIKey>(
      *
      * @param motor The other motor controller.
      */
-    override fun follow(motor: FalconMotor<*>): Boolean =
+    override fun follow(motor: `FalconSwerveDrive\`<*>): Boolean =
         if (motor is FalconMAX<*>) {
             canSparkMax.follow(motor.canSparkMax)
             true
