@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.utils.Source
 
@@ -75,7 +74,7 @@ class ADNS3080FlowSensor(
         return dataReceived[0]
     }
 
-    override fun invoke() = Translation2d(accumX.feet, accumY.feet).rotateBy(rotation2d)
+    override fun invoke() = Translation2d(accumX.feet.value, accumY.feet.value).rotateBy(rotation2d)
 
     fun free() {
         job.cancel()

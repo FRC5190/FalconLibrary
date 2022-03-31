@@ -15,7 +15,6 @@ import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstrain
 import kotlin.system.measureTimeMillis
 import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.mathematics.twodim.trajectory.optimization.PathFinder
 import org.ghrobotics.lib.mathematics.units.derived.acceleration
 import org.ghrobotics.lib.mathematics.units.derived.degrees
@@ -43,8 +42,8 @@ class PathFinderTest {
                 Pose2d(1.54.feet, 23.234167.feet, 0.0.degrees.toRotation2d()),
                 Pose2d(23.7.feet, (27 - 20.2).feet, 0.0.degrees.toRotation2d()),
                 Rectangle2d(
-                    Translation2d(0.0.feet, 0.0.feet),
-                    Translation2d(10.0.feet, 10.0.feet)
+                    Translation2d(0.0.feet.value, 0.0.feet.value),
+                    Translation2d(10.0.feet.value, 10.0.feet.value)
                 )
             )!!
             println(path.joinToString(separator = "\n") {
