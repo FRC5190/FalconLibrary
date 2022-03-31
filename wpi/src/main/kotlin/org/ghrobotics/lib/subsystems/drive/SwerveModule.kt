@@ -9,14 +9,22 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.math.kinematics.SwerveModuleState
+import edu.wpi.first.wpilibj.drive.RobotDriveBase
+import kotlin.math.abs
 import kotlin.math.sign
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
+import org.ghrobotics.lib.mathematics.units.derived.Acceleration
 import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 import org.ghrobotics.lib.mathematics.units.derived.Radian
+import org.ghrobotics.lib.mathematics.units.derived.Velocity
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
+import org.ghrobotics.lib.mathematics.units.inches
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
+import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitRotationModel
+import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.motors.FalconMotor
 
 /**
@@ -26,9 +34,88 @@ import org.ghrobotics.lib.motors.FalconMotor
  * @property turn
  * @constructor Create empty Falcon swerve module
  */
-class FalconSwerveModule() {
-    private lateinit var driveMotor: FalconMotor<Meter>
-    private lateinit var turnMotor: FalconMotor<Radian>
+class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
+    var driveMotor: FalconMotor<Meter> = with(swerveModuleConstants) {
+        kDriveMotorBuilder(kDriveTalonId, kDriveNativeUnitModel).also {
+            with(it) {
+                brakeMode = kDriveBrakeMode
+                outputInverted = kInvertDrive
+                voltageCompSaturation = kDriveMaxVoltage.volts
+            }
+        }
+
+    }
+
+    var turnMotor: FalconMotor<Radian> = with(swerveModuleConstants) {
+        kAzimuthMotorBuilder(kAzimuthTalonId, kAzimuthNativeUnitModel).also {
+            with(it) {
+                brakeMode = kAzimuthBrakeMode
+                outputInverted = kInvertAzimuth
+                voltageCompSaturation = kAzimuthMaxVoltage.volts
+            }
+        }
+    }
+
+
+    class SwerveModuleConstants {
+        var kName = "Name"
+        var kDriveTalonId = -1
+        var kAzimuthTalonId = -1
+
+        // general azimuth
+        lateinit var kAzimuthMotorBuilder: (id: Int, unitModel: NativeUnitRotationModel) -> FalconMotor<Radian>
+        var kInvertAzimuth = false
+        var kInvertAzimuthSensorPhase = false
+        var kAzimuthBrakeMode = true// neutral mode could change
+//        var kAzimuthTicksPerRadian = 4096.0 / (2 * Math.PI) // for azimuth
+        var kAzimuthNativeUnitModel = NativeUnitRotationModel(2048.nativeUnits)
+        var kAzimuthEncoderHomeOffset = 0.0
+
+        // azimuth motion
+        var kAzimuthKp = 1.3
+        var kAzimuthKi = 0.05
+        var kAzimuthKd = 20.0
+        var kAzimuthKf = 0.5421
+        var kAzimuthIZone = 25
+        var kAzimuthCruiseVelocity = SIUnit<Velocity<Radian>>(2.6) // 1698 native units
+        var kAzimuthAcceleration = SIUnit<Acceleration<Radian>>(31.26) // 20379 Native Units | 12 * kAzimuthCruiseVelocity
+        var kAzimuthClosedLoopAllowableError = 5
+
+        // azimuth current/voltage
+        var kAzimuthContinuousCurrentLimit = 30 // amps
+        var kAzimuthPeakCurrentLimit = 60 // amps
+        var kAzimuthPeakCurrentDuration = 200 // ms
+        var kAzimuthEnableCurrentLimit = true
+        var kAzimuthMaxVoltage = 10.0 // volts
+        var kAzimuthVoltageMeasurementFilter = 8 // # of samples in rolling average
+
+        // azimuth measurement
+        var kAzimuthStatusFrame2UpdateRate = 10 // feedback for selected sensor, ms
+        var kAzimuthStatusFrame10UpdateRate = 10 // motion magic, ms// dt for velocity measurements, ms
+        var kAzimuthVelocityMeasurementWindow = 64 // # of samples in rolling average
+
+        // general drive
+        lateinit var kDriveMotorBuilder: (id: Int, unitModel: NativeUnitLengthModel) -> FalconMotor<Meter>
+        var kInvertDrive = true
+        var kInvertDriveSensorPhase = false
+        var kDriveBrakeMode = true// neutral mode could change
+        var kWheelDiameter = 4.0 // Probably should tune for each individual wheel maybe
+        var kDriveNativeUnitModel = NativeUnitLengthModel(4096.nativeUnits, kWheelDiameter.inches)
+        var kDriveDeadband = 0.01
+
+        // drive current/voltage
+        var kDriveContinuousCurrentLimit = 30 // amps
+        var kDrivePeakCurrentLimit = 50 // amps
+        var kDrivePeakCurrentDuration = 200 // ms
+        var kDriveEnableCurrentLimit = true
+        var kDriveMaxVoltage = 10.0 // volts
+        var kDriveVoltageMeasurementFilter = 8 // # of samples in rolling average
+
+        // drive measurement
+        var kDriveStatusFrame2UpdateRate = 15 // feedback for selected sensor, ms
+        var kDriveStatusFrame10UpdateRate = 200 // motion magic, ms// dt for velocity measurements, ms
+        var kDriveVelocityMeasurementWindow = 64 // # of samples in rolling average
+    }
 
     /**
      * Set percent output of drive motors
@@ -64,8 +151,8 @@ class FalconSwerveModule() {
         var speed = speed
 
         var raw_error = current.distance(azimuth)
-        if (Math.abs(raw_error) > Math.PI) {
-            raw_error -= Math.PI * 2 * Math.signum(raw_error)
+        if (abs(raw_error) > Math.PI) {
+            raw_error -= Math.PI * 2 * sign(raw_error)
         }
 
         // error is -180 to 180
@@ -73,7 +160,7 @@ class FalconSwerveModule() {
 
         // error is -180 to 180
         // is wheel reversible logic
-        if (Math.abs(raw_error) > Math.PI / 2) {
+        if (abs(raw_error) > Math.PI / 2) {
             speed *= -1
             raw_error -= Math.PI * sign(raw_error)
         }
@@ -117,6 +204,7 @@ class FalconSwerveModule() {
     fun state(): SwerveModuleState {
         return SwerveModuleState(driveMotor.encoder.velocity.value, edu.wpi.first.math.geometry.Rotation2d(turnMotor.encoder.position.value))
     }
+
 
     val voltageOutput get() = driveMotor.voltageOutput
 

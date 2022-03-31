@@ -183,10 +183,10 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
     }
 
     fun getPose(timestamp: SIUnit<Second> = Timer.getFPGATimestamp().seconds): Pose2d {
-        return poseBuffer[timestamp] ?: {
+        return poseBuffer[timestamp] ?: run {
             DriverStation.reportError("[FalconWCD] Pose Buffer is Empty!", false)
             Pose2d()
-        }()
+        }
     }
 
     fun swerveDrive(forwardInput: Double, strafeInput: Double, rotationInput: Double, fieldRelative: Boolean) {
@@ -198,6 +198,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         modules.forEach { it.resetDriveEncoder(0.meters) }
         odometry.resetPosition(pose, gyro())
     }
+
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
         SwerveTrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
