@@ -33,6 +33,7 @@ import org.ghrobotics.lib.mathematics.units.inFeet
 import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
+import org.ghrobotics.lib.subsystems.AbstractFalconSwerveModule
 import org.ghrobotics.lib.subsystems.SensorlessCompatibleSubsystem
 import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.Source
@@ -64,7 +65,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
     /**
      * The left front motor
      */
-    protected abstract val modules: Array<FalconSwerveModule>
+    protected abstract val modules: Array<AbstractFalconSwerveModule>
 
     abstract val wheelbase: Double
 

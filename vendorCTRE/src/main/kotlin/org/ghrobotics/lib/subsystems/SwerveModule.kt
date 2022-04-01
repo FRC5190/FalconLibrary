@@ -25,6 +25,10 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitRotationModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.motors.FalconMotor
+import org.ghrobotics.lib.motors.ctre.FalconFX
+import org.ghrobotics.lib.motors.ctre.falconFX
+import org.ghrobotics.lib.subsystems.AbstractFalconSwerveModule
+import org.ghrobotics.lib.wrappers.hid.kA
 
 /**
  * Falcon swerve module
@@ -33,23 +37,29 @@ import org.ghrobotics.lib.motors.FalconMotor
  * @property turn
  * @constructor Create empty Falcon swerve module
  */
-class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
-    var driveMotor: FalconMotor<Meter> = with(swerveModuleConstants) {
-        kDriveMotorBuilder(kDriveTalonId, kDriveNativeUnitModel).also {
-            with(it) {
-                brakeMode = kDriveBrakeMode
-                outputInverted = kInvertDrive
-                voltageCompSaturation = kDriveMaxVoltage.volts
-            }
+class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants): AbstractFalconSwerveModule() {
+    override var driveMotor: FalconMotor<Meter> = with(swerveModuleConstants) {
+        falconFX(kDriveTalonId, kDriveNativeUnitModel) {
+            brakeMode = kDriveBrakeMode
+            outputInverted = kInvertDrive
+            voltageCompSaturation = kDriveMaxVoltage.volts
         }
     }
 
-    var turnMotor: FalconMotor<Radian> = with(swerveModuleConstants) {
-        kAzimuthMotorBuilder(kAzimuthTalonId, kAzimuthNativeUnitModel).also {
-            with(it) {
-                brakeMode = kAzimuthBrakeMode
-                outputInverted = kInvertAzimuth
-                voltageCompSaturation = kAzimuthMaxVoltage.volts
+    override var turnMotor: FalconMotor<Radian> = with(swerveModuleConstants) {
+        falconFX(kAzimuthTalonId, kAzimuthNativeUnitModel) {
+            outputInverted = kInvertAzimuth
+            brakeMode = kAzimuthBrakeMode
+            voltageCompSaturation = kAzimuthMaxVoltage.volts
+            motionProfileAcceleration = kAzimuthAcceleration
+            motionProfileCruiseVelocity = kAzimuthCruiseVelocity
+
+            motorController.run {
+                config_kP(0, kAzimuthKp, 30)
+                config_kI(0, kAzimuthKi, 30)
+                config_kD(0, kAzimuthKd, 30)
+                config_kF(0, kAzimuthKf, 30)
+                config_IntegralZone(0, kAzimuthIZone.toDouble(), 30)
             }
         }
     }
@@ -60,7 +70,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         var kAzimuthTalonId = -1
 
         // general azimuth
-        lateinit var kAzimuthMotorBuilder: (id: Int, unitModel: NativeUnitRotationModel) -> FalconMotor<Radian>
         var kInvertAzimuth = false
         var kInvertAzimuthSensorPhase = false
         var kAzimuthBrakeMode = true // neutral mode could change
@@ -92,7 +101,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         var kAzimuthVelocityMeasurementWindow = 64 // # of samples in rolling average
 
         // general drive
-        lateinit var kDriveMotorBuilder: (id: Int, unitModel: NativeUnitLengthModel) -> FalconMotor<Meter>
         var kInvertDrive = true
         var kInvertDriveSensorPhase = false
         var kDriveBrakeMode = true // neutral mode could change
@@ -126,7 +134,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
      * Set drive motors of drive motors
      *
      */
-    fun setNeutral() { driveMotor.setNeutral() }
+    override fun setNeutral() { driveMotor.setNeutral() }
 
     /**
      * Set velocity of drive motor
@@ -143,7 +151,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
      */
     fun setAngle(angle: SIUnit<Radian>) { turnMotor.setPosition(angle) }
 
-    fun setControls(speed: Double, azimuth: Rotation2d) {
+    override fun setControls(speed: Double, azimuth: Rotation2d) {
         val current: Rotation2d = Rotation2d.fromRadians(turnMotor.encoder.position.value)
         var speed = speed
 
@@ -170,7 +178,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         turnMotor.setPosition(SIUnit(final_setpoint))
     }
 
-    fun setState(state: SwerveModuleState, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts) {
+    override fun setState(state: SwerveModuleState, arbitraryFeedForward: SIUnit<Volt>) {
         setVelocity(SIUnit(state.speedMetersPerSecond), arbitraryFeedForward)
         setAngle(SIUnit(state.angle.radians))
     }
@@ -180,37 +188,36 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
      *
      * @param angle
      */
-    fun resetAngle(angle: SIUnit<Radian> = SIUnit(0.0)) { turnMotor.encoder.resetPosition(angle) }
+    override fun resetAngle(angle: SIUnit<Radian>) { turnMotor.encoder.resetPosition(angle) }
 
     /**
      * Reset drive encoders
      *
      * @param position
      */
-    fun resetDriveEncoder(position: SIUnit<Meter> = SIUnit(0.0)) { driveMotor.encoder.resetPosition(position) }
+    override fun resetDriveEncoder(position: SIUnit<Meter>) { driveMotor.encoder.resetPosition(position) }
 
     /**
      * Resets encoders for drive and turn encoders
      *
      */
-    fun reset() {
+    override fun reset() {
         resetAngle()
         resetDriveEncoder()
     }
 
-    fun state(): SwerveModuleState {
+    override fun state(): SwerveModuleState {
         return SwerveModuleState(driveMotor.encoder.velocity.value, edu.wpi.first.math.geometry.Rotation2d(turnMotor.encoder.position.value))
     }
 
-    val voltageOutput get() = driveMotor.voltageOutput
+    override val voltageOutput get() = driveMotor.voltageOutput
 
-    val velocity get() = driveMotor.encoder.velocity
 
-    val drawnCurrent get() = driveMotor.drawnCurrent
+    override val drawnCurrent get() = driveMotor.drawnCurrent
 
-    val drivePosition get() = driveMotor.encoder.position
+    override val drivePosition get() = driveMotor.encoder.position
 
-    val driveVelocity get() = driveMotor.encoder.velocity
+    override val driveVelocity get() = driveMotor.encoder.velocity
 
-    val anglePosition get() = turnMotor.encoder.position
+    override val anglePosition get() = turnMotor.encoder.position
 }
