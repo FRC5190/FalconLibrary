@@ -59,5 +59,5 @@ interface AbstractFalconSwerveModule {
 
     val driveVelocity: SIUnit<Velocity<Meter>>
 
-    abstract val anglePosition: SIUnit<Radian>
+    val anglePosition: SIUnit<Radian>
 }

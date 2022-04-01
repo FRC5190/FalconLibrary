@@ -6,7 +6,7 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-package org.ghrobotics.lib.subsystems.drive
+package org.ghrobotics.lib.subsystems
 
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import kotlin.math.abs
@@ -26,7 +26,6 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitRotationModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.motors.FalconMotor
 import org.ghrobotics.lib.motors.ctre.falconFX
-import org.ghrobotics.lib.subsystems.AbstractFalconSwerveModule
 
 /**
  * Falcon swerve module
