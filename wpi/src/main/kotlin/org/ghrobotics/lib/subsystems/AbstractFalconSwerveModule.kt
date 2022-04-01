@@ -19,45 +19,45 @@ import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.motors.FalconMotor
 
-abstract class AbstractFalconSwerveModule {
-    abstract var driveMotor: FalconMotor<Meter>
-    abstract var turnMotor: FalconMotor<Radian>
+interface AbstractFalconSwerveModule {
+    var driveMotor: FalconMotor<Meter>
+    var turnMotor: FalconMotor<Radian>
 
-    abstract fun setControls(speed: Double, azimuth: Rotation2d)
+    fun setControls(speed: Double, azimuth: Rotation2d)
 
-    abstract fun setState(state: SwerveModuleState, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
+    fun setState(state: SwerveModuleState, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Resets turnMotor encoders
      *
      * @param angle
      */
-    abstract fun resetAngle(angle: SIUnit<Radian> = SIUnit(0.0))
+    fun resetAngle(angle: SIUnit<Radian> = SIUnit(0.0))
 
     /**
      * Reset drive encoders
      *
      * @param position
      */
-    abstract fun resetDriveEncoder(position: SIUnit<Meter> = SIUnit(0.0))
+    fun resetDriveEncoder(position: SIUnit<Meter> = SIUnit(0.0))
 
     /**
      * Resets encoders for drive and turn encoders
      *
      */
-    abstract fun reset()
+    fun reset()
 
-    abstract fun state(): SwerveModuleState
+    fun state(): SwerveModuleState
 
-    abstract fun setNeutral()
+    fun setNeutral()
 
-    abstract val voltageOutput: SIUnit<Volt>
+    val voltageOutput: SIUnit<Volt>
 
-    abstract val drawnCurrent: SIUnit<Ampere>
+    val drawnCurrent: SIUnit<Ampere>
 
-    abstract val drivePosition: SIUnit<Meter>
+    val drivePosition: SIUnit<Meter>
 
-    abstract val driveVelocity: SIUnit<Velocity<Meter>>
+    val driveVelocity: SIUnit<Velocity<Meter>>
 
     abstract val anglePosition: SIUnit<Radian>
 }

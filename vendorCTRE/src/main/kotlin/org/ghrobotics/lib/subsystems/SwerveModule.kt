@@ -35,7 +35,7 @@ import org.ghrobotics.lib.subsystems.AbstractFalconSwerveModule
  * @property turn
  * @constructor Create empty Falcon swerve module
  */
-class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : AbstractFalconSwerveModule() {
+class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : AbstractFalconSwerveModule {
     override var driveMotor: FalconMotor<Meter> = with(swerveModuleConstants) {
         falconFX(kDriveTalonId, kDriveNativeUnitModel) {
             brakeMode = kDriveBrakeMode
