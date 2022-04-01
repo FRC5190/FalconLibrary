@@ -199,7 +199,6 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         odometry.resetPosition(pose, gyro())
     }
 
-
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
         SwerveTrajectoryTrackerCommand(this, Source(if (mirrored) trajectory.mirror() else trajectory))
 

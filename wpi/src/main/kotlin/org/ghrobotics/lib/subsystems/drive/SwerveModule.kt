@@ -9,7 +9,6 @@
 package org.ghrobotics.lib.subsystems.drive
 
 import edu.wpi.first.math.kinematics.SwerveModuleState
-import edu.wpi.first.wpilibj.drive.RobotDriveBase
 import kotlin.math.abs
 import kotlin.math.sign
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
@@ -43,7 +42,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
                 voltageCompSaturation = kDriveMaxVoltage.volts
             }
         }
-
     }
 
     var turnMotor: FalconMotor<Radian> = with(swerveModuleConstants) {
@@ -56,7 +54,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         }
     }
 
-
     class SwerveModuleConstants {
         var kName = "Name"
         var kDriveTalonId = -1
@@ -66,7 +63,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         lateinit var kAzimuthMotorBuilder: (id: Int, unitModel: NativeUnitRotationModel) -> FalconMotor<Radian>
         var kInvertAzimuth = false
         var kInvertAzimuthSensorPhase = false
-        var kAzimuthBrakeMode = true// neutral mode could change
+        var kAzimuthBrakeMode = true // neutral mode could change
 //        var kAzimuthTicksPerRadian = 4096.0 / (2 * Math.PI) // for azimuth
         var kAzimuthNativeUnitModel = NativeUnitRotationModel(2048.nativeUnits)
         var kAzimuthEncoderHomeOffset = 0.0
@@ -98,7 +95,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
         lateinit var kDriveMotorBuilder: (id: Int, unitModel: NativeUnitLengthModel) -> FalconMotor<Meter>
         var kInvertDrive = true
         var kInvertDriveSensorPhase = false
-        var kDriveBrakeMode = true// neutral mode could change
+        var kDriveBrakeMode = true // neutral mode could change
         var kWheelDiameter = 4.0 // Probably should tune for each individual wheel maybe
         var kDriveNativeUnitModel = NativeUnitLengthModel(4096.nativeUnits, kWheelDiameter.inches)
         var kDriveDeadband = 0.01
@@ -204,7 +201,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) {
     fun state(): SwerveModuleState {
         return SwerveModuleState(driveMotor.encoder.velocity.value, edu.wpi.first.math.geometry.Rotation2d(turnMotor.encoder.position.value))
     }
-
 
     val voltageOutput get() = driveMotor.voltageOutput
 
