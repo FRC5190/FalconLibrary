@@ -25,10 +25,8 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitLengthModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitRotationModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.motors.FalconMotor
-import org.ghrobotics.lib.motors.ctre.FalconFX
 import org.ghrobotics.lib.motors.ctre.falconFX
 import org.ghrobotics.lib.subsystems.AbstractFalconSwerveModule
-import org.ghrobotics.lib.wrappers.hid.kA
 
 /**
  * Falcon swerve module
@@ -37,7 +35,7 @@ import org.ghrobotics.lib.wrappers.hid.kA
  * @property turn
  * @constructor Create empty Falcon swerve module
  */
-class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants): AbstractFalconSwerveModule() {
+class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : AbstractFalconSwerveModule() {
     override var driveMotor: FalconMotor<Meter> = with(swerveModuleConstants) {
         falconFX(kDriveTalonId, kDriveNativeUnitModel) {
             brakeMode = kDriveBrakeMode
@@ -211,7 +209,6 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants): Abst
     }
 
     override val voltageOutput get() = driveMotor.voltageOutput
-
 
     override val drawnCurrent get() = driveMotor.drawnCurrent
 
