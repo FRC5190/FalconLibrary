@@ -65,7 +65,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
     /**
      * The left front motor
      */
-    abstract val modules: Array<AbstractFalconSwerveModule>
+    protected abstract val modules: Array<out AbstractFalconSwerveModule>
 
     abstract val wheelbase: Double
 
