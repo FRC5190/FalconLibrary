@@ -57,6 +57,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
                 config_kD(0, kAzimuthKd, 30)
                 config_kF(0, kAzimuthKf, 30)
                 config_IntegralZone(0, kAzimuthIZone.toDouble(), 30)
+                configAllowableClosedloopError(0, kAzimuthClosedLoopAllowableError.toDouble(), 30)
             }
         }
     }
