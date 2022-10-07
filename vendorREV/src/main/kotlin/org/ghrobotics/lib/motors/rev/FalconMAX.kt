@@ -164,7 +164,7 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) {
-        controller.setReference(voltage.value, ControlType.kVoltage, 0, arbitraryFeedForward.value)
+        controller.setReference(voltage.value, CANSparkMax.ControlType.kVoltage, 0, arbitraryFeedForward.value)
     }
 
     /**
@@ -174,7 +174,7 @@ class FalconMAX<K : SIKey>(
      * @param arbitraryFeedForward The arbitrary feedforward to add to the motor output.
      */
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) {
-        controller.setReference(dutyCycle, ControlType.kDutyCycle, 0, arbitraryFeedForward.value)
+        controller.setReference(dutyCycle, CANSparkMax.ControlType.kDutyCycle, 0, arbitraryFeedForward.value)
     }
 
     /**
@@ -186,7 +186,7 @@ class FalconMAX<K : SIKey>(
     override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) {
         controller.setReference(
             model.toNativeUnitVelocity(velocity).value * 60,
-            ControlType.kVelocity, 0, arbitraryFeedForward.value
+            CANSparkMax.ControlType.kVelocity, 0, arbitraryFeedForward.value
         )
     }
 
@@ -200,7 +200,7 @@ class FalconMAX<K : SIKey>(
     override fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt>) {
         controller.setReference(
             model.toNativeUnitPosition(position).value,
-            if (useMotionProfileForPosition) ControlType.kSmartMotion else ControlType.kPosition,
+            if (useMotionProfileForPosition) CANSparkMax.ControlType.kSmartMotion else CANSparkMax.ControlType.kPosition,
             0, arbitraryFeedForward.value
         )
     }

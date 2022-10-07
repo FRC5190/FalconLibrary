@@ -9,6 +9,7 @@
 package org.ghrobotics.lib.motors.rev
 
 import com.revrobotics.CANEncoder
+import com.revrobotics.RelativeEncoder
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnit
@@ -23,7 +24,7 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
  * @param model The native unit model.
  */
 class FalconMAXEncoder<K : SIKey>(
-    val canEncoder: CANEncoder,
+    val canEncoder: RelativeEncoder,
     model: NativeUnitModel<K>
 ) : AbstractFalconEncoder<K>(model) {
     /**
