@@ -8,11 +8,7 @@
 
 package org.ghrobotics.lib.motors.rev
 
-import com.revrobotics.AlternateEncoderType
-import com.revrobotics.CANPIDController
-import com.revrobotics.CANSparkMax
-import com.revrobotics.CANSparkMaxLowLevel
-import com.revrobotics.ControlType
+import com.revrobotics.*
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
@@ -66,14 +62,13 @@ class FalconMAX<K : SIKey>(
      * The PID controller for the Spark MAX.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    val controller: CANPIDController = canSparkMax.pidController
+    val controller: SparkMaxPIDController = canSparkMax.pidController
 
     /**
      * The encoder for the Spark MAX.
      */
     override val encoder = FalconMAXEncoder(
         if (useAlternateEncoder) canSparkMax.getAlternateEncoder(
-            AlternateEncoderType.kQuadrature,
             alternateEncoderCPR
         ) else canSparkMax.encoder, model
     )
