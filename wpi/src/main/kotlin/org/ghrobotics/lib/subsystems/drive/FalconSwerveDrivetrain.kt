@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry
+import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.wpilibj.DriverStation
@@ -130,13 +131,13 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         feedForwards[2] = periodicIO.rightBackFeedforward
         feedForwards[3] = periodicIO.leftBackFeedforward
 
-        val states: Array<SwerveModuleState> = Array(4) { SwerveModuleState() }
+        periodicIO.positions = Array(4) { SwerveModulePosition() }
         for (i in 0..modules.size) {
-            states[i] = modules[i].state()
+            periodicIO.positions[i] = modules[i].swervePosition()
         }
 
         robotPosition = odometry.update(
-            periodicIO.gyro, *states
+            periodicIO.gyro, periodicIO.positions
         )
         poseBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
 
@@ -151,7 +152,8 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
             }
             is Output.States -> {
                 for (i in 0..modules.size) {
-                    modules[i].setState(states[i], feedForwards[i])
+//                    modules[i].setState(states[i], feedForwards[i])
+                    modules[i].setPositions(periodicIO.positions[i], feedForwards[i])
                 }
             }
         }
@@ -166,7 +168,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
      */
 
     override fun lateInit() {
-        resetPosition(Pose2d())
+        resetPosition(Pose2d(), periodicIO.positions)
     }
 
     override fun setNeutral() {
@@ -184,10 +186,11 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
     }
 
     fun getPose(timestamp: SIUnit<Second> = Timer.getFPGATimestamp().seconds): Pose2d {
-        return poseBuffer[timestamp] ?: run {
+        return poseBuffer[timestamp] ?: kotlin.run {
             DriverStation.reportError("[FalconWCD] Pose Buffer is Empty!", false)
             Pose2d()
         }
+
     }
 
     fun swerveDrive(forwardInput: Double, strafeInput: Double, rotationInput: Double, fieldRelative: Boolean) {
@@ -195,9 +198,10 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         periodicIO.desiredOutput = Output.Percent(signals.wheelSpeeds, signals.wheelAzimuths)
     }
 
-    fun resetPosition(pose: Pose2d) {
+    fun resetPosition(pose: Pose2d, positions: Array<SwerveModulePosition>) {
         modules.forEach { it.resetDriveEncoder(0.meters) }
-        odometry.resetPosition(pose, gyro())
+//        odometry.resetPosition(pose, gyro())
+        odometry.resetPosition(gyro(), positions, pose)
     }
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
@@ -233,6 +237,8 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         var gyro: Rotation2d = Rotation2d()
 
         var desiredOutput: Output = Output.Nothing
+
+        var positions: Array<SwerveModulePosition> = Array(4) {SwerveModulePosition()}
 
         var leftFrontFeedforward: SIUnit<Volt> = 0.volts
         var rightFrontFeedforward: SIUnit<Volt> = 0.volts

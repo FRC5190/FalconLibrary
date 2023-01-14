@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.subsystems
 
+import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import kotlin.math.abs
 import kotlin.math.sign
@@ -181,6 +182,10 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
         setAngle(SIUnit(state.angle.radians))
     }
 
+    override fun setPositions(positions: SwerveModulePosition, arbitraryFeedForward: SIUnit<Volt>) {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Resets turnMotor encoders
      *
@@ -206,6 +211,10 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
 
     override fun state(): SwerveModuleState {
         return SwerveModuleState(driveMotor.encoder.velocity.value, edu.wpi.first.math.geometry.Rotation2d(turnMotor.encoder.position.value))
+    }
+
+    override fun swervePosition(): SwerveModulePosition {
+        TODO("Not yet implemented")
     }
 
     override val voltageOutput get() = driveMotor.voltageOutput

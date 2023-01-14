@@ -269,9 +269,8 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
      * @param pose The position to reset to.
      */
     fun resetPosition(pose: Pose2d) {
-        leftMotor.encoder.resetPosition(0.meters)
-        rightMotor.encoder.resetPosition(0.meters)
-        odometry.resetPosition(pose, gyro())
+)
+        odometry.resetPosition(gyro(), leftMotor.encoderit)
     }
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =

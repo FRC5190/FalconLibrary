@@ -8,6 +8,7 @@
 
 package org.ghrobotics.lib.subsystems
 
+import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.Ampere
@@ -26,6 +27,8 @@ interface AbstractFalconSwerveModule {
     fun setControls(speed: Double, azimuth: Rotation2d)
 
     fun setState(state: SwerveModuleState, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
+
+    fun setPositions(positions: SwerveModulePosition, arbitraryFeedForward: SIUnit<Volt> = 0.0.volts)
 
     /**
      * Resets turnMotor encoders
@@ -48,6 +51,8 @@ interface AbstractFalconSwerveModule {
     fun reset()
 
     fun state(): SwerveModuleState
+
+    fun swervePosition() : SwerveModulePosition
 
     fun setNeutral()
 
