@@ -8,7 +8,9 @@
 
 package org.ghrobotics.lib.motors.rev
 
-import com.revrobotics.*
+import com.revrobotics.CANSparkMax
+import com.revrobotics.CANSparkMaxLowLevel
+import com.revrobotics.SparkMaxPIDController
 import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey

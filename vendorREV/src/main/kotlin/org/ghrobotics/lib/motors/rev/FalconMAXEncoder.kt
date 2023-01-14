@@ -8,7 +8,6 @@
 
 package org.ghrobotics.lib.motors.rev
 
-import com.revrobotics.CANEncoder
 import com.revrobotics.RelativeEncoder
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit

@@ -11,6 +11,7 @@ package org.ghrobotics.lib.subsystems.drive
 import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj2.command.Command
 import org.ghrobotics.lib.commands.FalconCommand
 import org.ghrobotics.lib.debug.FalconDashboard
 import org.ghrobotics.lib.mathematics.twodim.geometry.x_u
@@ -26,7 +27,8 @@ import org.ghrobotics.lib.utils.Source
  */
 class WestCoastTrajectoryTrackerCommand(
     private val drivetrain: TrajectoryTrackerWestCoastDriveBase,
-    private val trajectorySource: Source<Trajectory>
+    private val trajectorySource: Source<Trajectory>,
+    private val eventMap: Map<String, Command> = HashMap()
 ) : FalconCommand(drivetrain) {
 
     private var prevLeftVelocity = 0.0
