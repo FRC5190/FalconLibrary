@@ -1,9 +1,9 @@
 {
-    "fileName": "playingwithfusion2022.json",
+    "fileName": "playingwithfusion2023.json",
     "name": "PlayingWithFusion",
-    "version": "2022.01.17",
+    "version": "2023.00.17",
     "uuid": "14b8ad04-24df-11ea-978f-2e728ce88125",
-    "jsonUrl": "https://www.playingwithfusion.com/frc/playingwithfusion2022.json",
+    "jsonUrl": "https://www.playingwithfusion.com/frc/playingwithfusion2023.json",
     "mavenUrls": [
         "https://www.playingwithfusion.com/frc/maven/"
     ],
@@ -11,23 +11,23 @@
         {
             "groupId": "com.playingwithfusion.frc",
             "artifactId": "PlayingWithFusion-java",
-            "version": "2022.01.17"
+            "version": "2023.00.17"
         }
     ],
     "jniDependencies": [
         {
             "groupId": "com.playingwithfusion.frc",
             "artifactId": "PlayingWithFusion-driver",
-            "version": "2022.01.17",
+            "version": "2023.00.17",
             "isJar": false,
             "skipInvalidPlatforms": true,
             "validPlatforms": [
-                "linuxaarch64bionic",
                 "linuxathena",
                 "linuxraspbian",
+                "linuxaarch64bionic",
+                "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64",
-                "windowsx86-64"
+                "osxx86-64"
             ]
         }
     ],
@@ -35,35 +35,35 @@
         {
             "groupId": "com.playingwithfusion.frc",
             "artifactId": "PlayingWithFusion-cpp",
-            "version": "2022.01.17",
+            "version": "2023.00.17",
             "headerClassifier": "headers",
             "sharedLibrary": false,
             "libName": "PlayingWithFusion",
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
-                "linuxaarch64bionic",
                 "linuxathena",
                 "linuxraspbian",
+                "linuxaarch64bionic",
+                "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64",
-                "windowsx86-64"
+                "osxx86-64"
             ]
         },
         {
             "groupId": "com.playingwithfusion.frc",
             "artifactId": "PlayingWithFusion-driver",
-            "version": "2022.01.17",
+            "version": "2023.00.17",
             "headerClassifier": "headers",
             "sharedLibrary": true,
             "libName": "PlayingWithFusionDriver",
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
-                "linuxaarch64bionic",
                 "linuxathena",
                 "linuxraspbian",
+                "linuxaarch64bionic",
+                "windowsx86-64",
                 "linuxx86-64",
-                "osxx86-64",
-                "windowsx86-64"
+                "osxx86-64"
             ]
         }
     ]

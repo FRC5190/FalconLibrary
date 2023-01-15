@@ -52,7 +52,7 @@ interface AbstractFalconSwerveModule {
 
     fun state(): SwerveModuleState
 
-    fun swervePosition() : SwerveModulePosition
+    fun swervePosition(): SwerveModulePosition
 
     fun setNeutral()
 

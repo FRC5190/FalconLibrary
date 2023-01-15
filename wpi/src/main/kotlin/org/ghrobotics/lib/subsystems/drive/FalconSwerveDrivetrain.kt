@@ -190,7 +190,6 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
             DriverStation.reportError("[FalconWCD] Pose Buffer is Empty!", false)
             Pose2d()
         }
-
     }
 
     fun swerveDrive(forwardInput: Double, strafeInput: Double, rotationInput: Double, fieldRelative: Boolean) {
@@ -238,7 +237,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
 
         var desiredOutput: Output = Output.Nothing
 
-        var positions: Array<SwerveModulePosition> = Array(4) {SwerveModulePosition()}
+        var positions: Array<SwerveModulePosition> = Array(4) { SwerveModulePosition() }
 
         var leftFrontFeedforward: SIUnit<Volt> = 0.volts
         var rightFrontFeedforward: SIUnit<Volt> = 0.volts

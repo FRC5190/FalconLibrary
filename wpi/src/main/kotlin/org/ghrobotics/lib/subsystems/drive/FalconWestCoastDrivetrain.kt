@@ -155,10 +155,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
                 leftMotor.setNeutral()
                 rightMotor.setNeutral()
             }
+
             is Output.Percent -> {
                 leftMotor.setDutyCycle(desiredOutput.left, leftFeedforward)
                 rightMotor.setDutyCycle(desiredOutput.right, rightFeedforward)
             }
+
             is Output.Velocity -> {
                 leftMotor.setVelocity(desiredOutput.left, leftFeedforward)
                 rightMotor.setVelocity(desiredOutput.right, rightFeedforward)
@@ -269,8 +271,12 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
      * @param pose The position to reset to.
      */
     fun resetPosition(pose: Pose2d) {
-)
-        odometry.resetPosition(gyro(), leftMotor.encoderit)
+        odometry.resetPosition(
+            gyro(),
+            leftMotor.encoder.position.value,
+            rightMotor.encoder.position.value,
+            pose
+        )
     }
 
     fun followTrajectory(trajectory: Trajectory, mirrored: Boolean = false) =
