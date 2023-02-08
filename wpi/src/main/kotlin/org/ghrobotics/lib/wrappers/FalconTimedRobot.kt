@@ -76,6 +76,10 @@ abstract class FalconTimedRobot {
             this@FalconTimedRobot.testInit()
         }
 
+        override fun simulationInit() {
+            this@FalconTimedRobot.simulationInit()
+        }
+
         override fun robotPeriodic() {
             this@FalconTimedRobot.robotPeriodic()
             CommandScheduler.getInstance().run()
@@ -92,6 +96,15 @@ abstract class FalconTimedRobot {
         override fun disabledPeriodic() {
             this@FalconTimedRobot.disabledPeriodic()
         }
+
+        override fun simulationPeriodic() {
+            HAL.simPeriodicBefore()
+            this@FalconTimedRobot.simulationPeriodic()
+            HAL.simPeriodicBefore()
+//            m_watchdog.addEpoch("simulationPeriodic()")
+        }
+
+
     }
 
     protected open fun robotInit() {}
@@ -104,6 +117,10 @@ abstract class FalconTimedRobot {
     protected open fun autonomousPeriodic() {}
     protected open fun teleopPeriodic() {}
     protected open fun disabledPeriodic() {}
+
+    protected open fun simulationPeriodic() {}
+
+    protected open fun simulationInit() {}
 
     protected fun getSubsystemChecks(): Command {
         return FalconSubsystemHandler.testCommand
