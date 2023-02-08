@@ -103,8 +103,6 @@ abstract class FalconTimedRobot {
             HAL.simPeriodicBefore()
 //            m_watchdog.addEpoch("simulationPeriodic()")
         }
-
-
     }
 
     protected open fun robotInit() {}
