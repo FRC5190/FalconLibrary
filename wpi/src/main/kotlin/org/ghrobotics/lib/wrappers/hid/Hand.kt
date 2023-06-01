@@ -9,6 +9,6 @@
 package org.ghrobotics.lib.wrappers.hid
 
 enum class Hand(value: Int) {
-    kLeft(0),
-    kRight(1)
+    Left(0),
+    Right(1),
 }

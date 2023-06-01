@@ -8,8 +8,8 @@
 
 package org.ghrobotics.lib.subsystems.drive.utils
 
-import java.text.DecimalFormat
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import java.text.DecimalFormat
 
 /**
  * A drivetrain signal containing the speed and azimuth for each wheel
@@ -20,8 +20,8 @@ class DriveSignal @JvmOverloads constructor(
         Rotation2d.identity(),
         Rotation2d.identity(),
         Rotation2d.identity(),
-        Rotation2d.identity()
-    )
+        Rotation2d.identity(),
+    ),
 ) {
     private val mWheelAzimuths: Array<Rotation2d> // Radians!: Array<Rotation2d>
 

@@ -12,25 +12,32 @@ import org.ghrobotics.lib.mathematics.units.derived.Ohm
 import org.ghrobotics.lib.mathematics.units.derived.Volt
 import org.ghrobotics.lib.mathematics.units.derived.Watt
 
-inline class SIUnitBuilder(private val value: Double) {
+@JvmInline
+value class SIUnitBuilder(private val value: Double) {
     @Deprecated("Replaced with Plural version", ReplaceWith("seconds"))
     val second
         get() = seconds
+
     @Deprecated("Replaced with Plural version", ReplaceWith("meters"))
     val meter
         get() = meters
+
     @Deprecated("Replaced with Plural version", ReplaceWith("grams"))
     val gram
         get() = grams
+
     @Deprecated("Replaced with Plural version", ReplaceWith("amps"))
     val amp
         get() = amps
+
     @Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
     val ohm
         get() = ohms
+
     @Deprecated("Replaced with Plural version", ReplaceWith("volts"))
     val volt
         get() = volts
+
     @Deprecated("Replaced with Plural version", ReplaceWith("watts"))
     val watt
         get() = watts

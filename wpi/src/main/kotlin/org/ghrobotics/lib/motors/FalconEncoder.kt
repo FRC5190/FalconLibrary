@@ -20,6 +20,7 @@ interface FalconEncoder<K : SIKey> {
      * The velocity of the encoder in [K]/s
      */
     val velocity: SIUnit<Velocity<K>>
+
     /**
      * The position of the encoder in [K]
      */
@@ -29,6 +30,7 @@ interface FalconEncoder<K : SIKey> {
      * The velocity of the encoder in NativeUnits/s
      */
     val rawVelocity: SIUnit<NativeUnitVelocity>
+
     /**
      * The position of the encoder in NativeUnits
      */

@@ -16,8 +16,10 @@ import org.ghrobotics.lib.mathematics.units.Mult
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 
-typealias Ohm = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
-    Mult<Second, Mult<Second, Mult<Second, Mult<Ampere, Ampere>>>>>
+typealias Ohm = Frac<
+    Mult<Kilogram, Mult<Meter, Meter>>,
+    Mult<Second, Mult<Second, Mult<Second, Mult<Ampere, Ampere>>>>,
+    >
 
 @Deprecated("Replaced with Plural version", ReplaceWith("ohms"))
 val Double.ohm

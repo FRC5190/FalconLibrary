@@ -24,7 +24,7 @@ import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 @Suppress("MemberVisibilityCanBePrivate")
 class FalconTrajectoryConfig(
     maxVelocity: SIUnit<LinearVelocity>,
-    maxAcceleration: SIUnit<LinearAcceleration>
+    maxAcceleration: SIUnit<LinearAcceleration>,
 ) : TrajectoryConfig(maxVelocity.value, maxAcceleration.value) {
     /**
      * Set the starting velocity of the trajectory.

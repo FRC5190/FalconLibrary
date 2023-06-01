@@ -18,18 +18,18 @@ import org.ghrobotics.lib.mathematics.units.derived.LinearVelocity
 
 class VelocityLimitRegionConstraint constructor(
     val region: Rectangle2d,
-    val velocityLimit: SIUnit<LinearVelocity>
+    val velocityLimit: SIUnit<LinearVelocity>,
 ) : TrajectoryConstraint {
 
     override fun getMaxVelocityMetersPerSecond(
         poseMeters: Pose2d,
         curvatureRadPerMeter: Double,
-        velocityMetersPerSecond: Double
+        velocityMetersPerSecond: Double,
     ) = if (poseMeters.translation in region) velocityLimit.value else Double.POSITIVE_INFINITY
 
     override fun getMinMaxAccelerationMetersPerSecondSq(
         poseMeters: Pose2d?,
         curvatureRadPerMeter: Double,
-        velocityMetersPerSecond: Double
+        velocityMetersPerSecond: Double,
     ) = TrajectoryConstraint.MinMax()
 }

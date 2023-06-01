@@ -11,7 +11,6 @@ package org.ghrobotics.lib.motors.ctre
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonSRX
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -20,6 +19,7 @@ import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.inAmps
 import org.ghrobotics.lib.mathematics.units.inMilliseconds
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
+import kotlin.properties.Delegates
 
 /**
  * Wrapper around the TalonSRX motor controller.
@@ -30,7 +30,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 @Suppress("Unused")
 class FalconSRX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonSRX: TalonSRX,
-    model: NativeUnitModel<K>
+    model: NativeUnitModel<K>,
 ) : FalconCTRE<K>(talonSRX, model) {
 
     /**
@@ -87,26 +87,27 @@ class FalconSRX<K : SIKey>(
      * @param continuousCurrentLimit What the current should be dropped to.
      */
     @Deprecated(
-        "This data class has been deprecated.", ReplaceWith(
+        "This data class has been deprecated.",
+        ReplaceWith(
             "SupplyCurrentLimitConfiguration",
-            "import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration"
-        )
+            "import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration",
+        ),
     )
     data class CurrentLimitConfig(
         val peakCurrentLimit: SIUnit<Ampere>,
         val peakCurrentLimitDuration: SIUnit<Second>,
-        val continuousCurrentLimit: SIUnit<Ampere>
+        val continuousCurrentLimit: SIUnit<Ampere>,
     )
 }
 
 fun <K : SIKey> falconSRX(
     talonSRX: TalonSRX,
     model: NativeUnitModel<K>,
-    block: FalconSRX<K>.() -> Unit
+    block: FalconSRX<K>.() -> Unit,
 ) = FalconSRX(talonSRX, model).also(block)
 
 fun <K : SIKey> falconSRX(
     id: Int,
     model: NativeUnitModel<K>,
-    block: FalconSRX<K>.() -> Unit
+    block: FalconSRX<K>.() -> Unit,
 ) = FalconSRX(id, model).also(block)

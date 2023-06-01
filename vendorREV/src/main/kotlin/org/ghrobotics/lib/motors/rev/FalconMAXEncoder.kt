@@ -24,7 +24,7 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
  */
 class FalconMAXEncoder<K : SIKey>(
     val canEncoder: RelativeEncoder,
-    model: NativeUnitModel<K>
+    model: NativeUnitModel<K>,
 ) : AbstractFalconEncoder<K>(model) {
     /**
      * Returns the raw velocity from the encoder.

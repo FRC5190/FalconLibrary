@@ -14,7 +14,7 @@ import org.ghrobotics.lib.utils.BooleanSource
 import org.ghrobotics.lib.utils.DoubleSource
 
 fun <T : GenericHID> T.mapControls(
-    block: FalconHIDBuilder<T>.() -> Unit
+    block: FalconHIDBuilder<T>.() -> Unit,
 ) = FalconHIDBuilder(this).also(block).build()
 
 class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
@@ -23,32 +23,32 @@ class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
 
     fun button(
         buttonId: Int,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ) = button(HIDButtonSource(genericHID, buttonId), block = block)
 
     fun axisButton(
         axisId: Int,
         threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ) = button(HIDAxisSource(genericHID, axisId), threshold, block)
 
     fun lessThanAxisButton(
         axisId: Int,
         threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ) = boundedAxisButton(axisId, threshold, -1.0..0.0, block)
 
     fun greaterThanAxisButton(
         axisId: Int,
         threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ) = boundedAxisButton(axisId, threshold, 0.0..1.0, block)
 
     fun boundedAxisButton(
         axisId: Int,
         threshold: Double = HIDButton.DEFAULT_THRESHOLD,
         range: ClosedFloatingPointRange<Double>,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ) = button(BoundedHIDAxisSource(genericHID, axisId, range), threshold, block)
 
     fun pov(angle: Int, block: FalconHIDButtonBuilder.() -> Unit = {}) = pov(0, angle, block)
@@ -61,7 +61,7 @@ class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
     fun button(
         source: HIDSource,
         threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-        block: FalconHIDButtonBuilder.() -> Unit = {}
+        block: FalconHIDButtonBuilder.() -> Unit = {},
     ): FalconHIDButtonBuilder {
         val builder = FalconHIDButtonBuilder(source, threshold)
         controlBuilders.add(builder)
@@ -74,7 +74,8 @@ class FalconHIDBuilder<T : GenericHID>(val genericHID: T) {
         return FalconHID(
             genericHID,
             controls,
-            stateControlBuilders.mapValues { it.value.build() })
+            stateControlBuilders.mapValues { it.value.build() },
+        )
     }
 }
 
@@ -109,13 +110,13 @@ class FalconHIDButtonBuilder(source: HIDSource, private val threshold: Double) :
 class FalconHID<T : GenericHID>(
     private val genericHID: T,
     private val controls: List<HIDControl>,
-    private val stateControls: Map<BooleanSource, FalconHID<T>>
+    private val stateControls: Map<BooleanSource, FalconHID<T>>,
 ) {
 
     fun getRawAxis(axisId: Int): DoubleSource = HIDAxisSource(genericHID, axisId)
     fun getRawButton(buttonId: Int): BooleanSource = HIDButtonSource(
         genericHID,
-        buttonId
+        buttonId,
     ).booleanSource
 
     fun update() {

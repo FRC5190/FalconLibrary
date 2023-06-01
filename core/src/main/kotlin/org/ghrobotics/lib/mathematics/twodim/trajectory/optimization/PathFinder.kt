@@ -11,8 +11,6 @@ package org.ghrobotics.lib.mathematics.twodim.trajectory.optimization
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
-import java.lang.Math.sqrt
-import kotlin.math.pow
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator
 import org.apache.commons.math3.geometry.euclidean.twod.Line
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
@@ -29,10 +27,12 @@ import org.ghrobotics.lib.utils.flatMapToSet
 import org.ghrobotics.lib.utils.mapNotNullToSet
 import org.ghrobotics.lib.utils.mapToSet
 import org.ghrobotics.lib.utils.plusToSet
+import java.lang.Math.sqrt
+import kotlin.math.pow
 
 class PathFinder(
     private val robotSize: SIUnit<Meter>,
-    vararg restrictedAreas: Rectangle2d
+    vararg restrictedAreas: Rectangle2d,
 ) {
 
     private val robotSizeCorner = sqrt(robotSize.value.pow(2.0) / 2.0)
@@ -44,7 +44,7 @@ class PathFinder(
     private val robotBottomRightOffset = Translation2d((robotSize / 2.0).value, (-robotSize / 2.0).value)
     private val fieldRectangleWithOffset = Rectangle2d(
         kFieldRectangle.topLeft - robotTopLeftOffset,
-        kFieldRectangle.bottomRight - robotBottomRightOffset
+        kFieldRectangle.bottomRight - robotBottomRightOffset,
     )
     private val restrictedAreas = restrictedAreas.toList()
 
@@ -52,12 +52,12 @@ class PathFinder(
     fun findPath(
         start: Pose2d,
         end: Pose2d,
-        vararg restrictedAreas: Rectangle2d
+        vararg restrictedAreas: Rectangle2d,
     ): List<Pose2d>? {
         val pathNodes = findPath(
             start.translation.toVector2d(),
             end.translation.toVector2d(),
-            *restrictedAreas
+            *restrictedAreas,
         ) ?: return null
 
         val interpolator = SplineInterpolator()
@@ -84,26 +84,26 @@ class PathFinder(
             Pose2d(
                 Translation2d(
                     splineX.value(distanceTraveled).meters.value,
-                    splineY.value(distanceTraveled).meters.value
+                    splineY.value(distanceTraveled).meters.value,
                 ),
                 Rotation2d(
                     splineDx.value(distanceTraveled),
-                    splineDy.value(distanceTraveled)
-                )
+                    splineDy.value(distanceTraveled),
+                ),
             )
         }.toTypedArray()
 
         return listOf(
             start,
             *interpolatedNodes,
-            end
+            end,
         )
     }
 
     fun findPath(
         start: Vector2D,
         end: Vector2D,
-        vararg restrictedAreas: Rectangle2d
+        vararg restrictedAreas: Rectangle2d,
     ): List<Vector2D>? {
         val effectiveRestrictedAreas = this.restrictedAreas.plusToSet(restrictedAreas)
         val worldNodes = createNodes(effectiveRestrictedAreas) + setOf(start, end)
@@ -111,7 +111,7 @@ class PathFinder(
             start,
             end,
             worldNodes,
-            effectiveRestrictedAreas
+            effectiveRestrictedAreas,
         )
     }
 
@@ -121,13 +121,13 @@ class PathFinder(
         source: Vector2D,
         target: Vector2D,
         points: Set<Vector2D>,
-        effectiveRestrictedAreas: Set<Rectangle2d>
+        effectiveRestrictedAreas: Set<Rectangle2d>,
     ): List<Vector2D>? {
         val Q = points.map {
             Node(
                 it,
                 Double.POSITIVE_INFINITY,
-                null
+                null,
             )
         }.toMutableSet()
 
@@ -166,12 +166,14 @@ class PathFinder(
     private class Node(
         val point: Vector2D,
         var dist: Double,
-        var prev: Node?
+        var prev: Node?,
     )
 
     private fun Vector2D.toRobotRectangle() = Rectangle2d(
-        (x - robotSize.value / 3).meters, (y - robotSize.value / 3).meters,
-        (robotSize.value / 3 * 2).meters, (robotSize.value / 3 * 2).meters
+        (x - robotSize.value / 3).meters,
+        (y - robotSize.value / 3).meters,
+        (robotSize.value / 3 * 2).meters,
+        (robotSize.value / 3 * 2).meters,
     )
 
     private fun createNodes(restrictedAreas: Set<Rectangle2d>): Set<Vector2D> {
@@ -186,7 +188,7 @@ class PathFinder(
                 rect.topLeft.toVector2d().add(robotCornerTopLeft),
                 rect.topRight.toVector2d().add(robotCornerTopRight),
                 rect.bottomLeft.toVector2d().add(robotCornerBottomLeft),
-                rect.bottomRight.toVector2d().add(robotCornerBottomRight)
+                rect.bottomRight.toVector2d().add(robotCornerBottomRight),
             ).asList()
         }
         return result.plusToSet(restrictedCorners)
@@ -208,7 +210,7 @@ class PathFinder(
                     topLeft to topRight,
                     topLeft to bottomLeft,
                     bottomRight to bottomLeft,
-                    bottomRight to topRight
+                    bottomRight to topRight,
                 ).asList()
             }.mapToSet { pair ->
                 Triple(pair.first, pair.second, Line(pair.first, pair.second, kEpsilon))
@@ -218,11 +220,13 @@ class PathFinder(
             .mapNotNullToSet { (line1, line2) ->
                 if (!line1.third.isParallelTo(line2.third) ||
                     line1.third.getOffset(line2.third) < robotSize.value / 2.0
-                ) return@mapNotNullToSet null
+                ) {
+                    return@mapNotNullToSet null
+                }
                 Line(
                     line1.first.add(line2.first).scalarMultiply(0.5),
                     line1.second.add(line2.second).scalarMultiply(0.5),
-                    kEpsilon
+                    kEpsilon,
                 )
             }
     }
@@ -233,7 +237,7 @@ class PathFinder(
     companion object {
         private val kFieldRectangle = Rectangle2d(
             Translation2d(),
-            Translation2d((54.0.feet + 3.5.inches).value, (26.feet + 3.25.inches).value)
+            Translation2d((54.0.feet + 3.5.inches).value, (26.feet + 3.25.inches).value),
         )
     }
 }

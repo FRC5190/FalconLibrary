@@ -14,12 +14,12 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.TalonFX
 import com.ctre.phoenix.sensors.SensorInitializationStrategy
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.amps
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
+import kotlin.properties.Delegates
 
 /**
  * Wrapper around the TalonFX motor controller.
@@ -30,7 +30,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 @Suppress("Unused")
 class FalconFX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val talonFX: TalonFX,
-    model: NativeUnitModel<K>
+    model: NativeUnitModel<K>,
 ) : FalconCTRE<K>(talonFX, model) {
 
     /**
@@ -93,11 +93,11 @@ class FalconFX<K : SIKey>(
 fun <K : SIKey> falconFX(
     talonFX: TalonFX,
     model: NativeUnitModel<K>,
-    block: FalconFX<K>.() -> Unit
+    block: FalconFX<K>.() -> Unit,
 ) = FalconFX(talonFX, model).also(block)
 
 fun <K : SIKey> falconFX(
     id: Int,
     model: NativeUnitModel<K>,
-    block: FalconFX<K>.() -> Unit
+    block: FalconFX<K>.() -> Unit,
 ) = FalconFX(id, model).also(block)

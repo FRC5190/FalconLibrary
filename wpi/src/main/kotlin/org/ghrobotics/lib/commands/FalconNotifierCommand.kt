@@ -20,7 +20,7 @@ import org.ghrobotics.lib.utils.launchFrequency
 open class FalconNotifierCommand(
     private val period: SIUnit<Second>,
     vararg requirements: Subsystem,
-    private val block: suspend CoroutineScope.() -> Unit
+    private val block: suspend CoroutineScope.() -> Unit,
 ) : CommandBase() {
 
     init {

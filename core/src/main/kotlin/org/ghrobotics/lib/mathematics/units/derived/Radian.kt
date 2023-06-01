@@ -26,6 +26,7 @@ val Number.degrees get() = toDouble().degrees
 @Deprecated("Replaced with Plural version", ReplaceWith("inRadians()"))
 val SIUnit<Radian>.radian
     get() = inRadians()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inDegrees()"))
 val SIUnit<Radian>.degree
     get() = inDegrees()

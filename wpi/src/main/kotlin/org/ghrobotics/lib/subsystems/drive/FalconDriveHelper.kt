@@ -8,16 +8,16 @@
 
 package org.ghrobotics.lib.subsystems.drive
 
-import kotlin.math.abs
-import kotlin.math.absoluteValue
-import kotlin.math.pow
-import kotlin.math.sign
-import kotlin.math.withSign
 import org.ghrobotics.lib.mathematics.max
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.twodim.geometry.Translation2d
 import org.ghrobotics.lib.subsystems.drive.utils.DriveSignal
 import org.ghrobotics.lib.subsystems.drive.utils.Kinematics
+import kotlin.math.abs
+import kotlin.math.absoluteValue
+import kotlin.math.pow
+import kotlin.math.sign
+import kotlin.math.withSign
 
 /**
  * Helper class that contains all types of driving -- tank drive,
@@ -34,7 +34,7 @@ class FalconDriveHelper {
      */
     fun arcadeDrive(
         linearPercent: Double,
-        rotationPercent: Double
+        rotationPercent: Double,
     ): Pair<Double, Double> {
         val maxInput = max(linearPercent.absoluteValue, rotationPercent.absoluteValue)
             .withSign(linearPercent)
@@ -75,7 +75,7 @@ class FalconDriveHelper {
     fun curvatureDrive(
         linearPercent: Double,
         curvaturePercent: Double,
-        isQuickTurn: Boolean
+        isQuickTurn: Boolean,
     ): Pair<Double, Double> {
         val angularPower: Double
         val overPower: Boolean
@@ -133,7 +133,13 @@ class FalconDriveHelper {
         return Pair(leftMotorOutput, rightMotorOutput)
     }
 
-    fun swerveDrive(drivetrain: FalconSwerveDrivetrain, forwardInput: Double, strafeInput: Double, rotationInput: Double, fieldRelative: Boolean): DriveSignal {
+    fun swerveDrive(
+        drivetrain: FalconSwerveDrivetrain,
+        forwardInput: Double,
+        strafeInput: Double,
+        rotationInput: Double,
+        fieldRelative: Boolean,
+    ): DriveSignal {
         var translationalInput = Translation2d(forwardInput, strafeInput)
         var inputMagnitude: Double = translationalInput.norm()
         var rotationInput = rotationInput
@@ -143,7 +149,7 @@ class FalconDriveHelper {
         if (fieldRelative) {
             if (abs(
                     translationalInput.direction()
-                        .distance(translationalInput.direction().nearestPole())
+                        .distance(translationalInput.direction().nearestPole()),
                 ) < kPoleThreshold
             ) {
                 translationalInput = translationalInput.direction().nearestPole().toTranslation().scale(inputMagnitude)
@@ -151,7 +157,7 @@ class FalconDriveHelper {
         } else {
             if (abs(
                     translationalInput.direction()
-                        .distance(translationalInput.direction().nearestPole())
+                        .distance(translationalInput.direction().nearestPole()),
                 ) < kRobotRelativePoleThreshold
             ) {
                 translationalInput = translationalInput.direction().nearestPole().toTranslation().scale(inputMagnitude)
@@ -181,8 +187,10 @@ class FalconDriveHelper {
         rotationInput *= kHighPowerRotationScalar
 
         return Kinematics(drivetrain).inverseKinematics(
-            translationalInput.x(), translationalInput.y(), rotationInput,
-            fieldRelative
+            translationalInput.x(),
+            translationalInput.y(),
+            rotationInput,
+            fieldRelative,
         )
     }
 

@@ -30,7 +30,7 @@ object FalconTrajectoryGenerator {
      */
     fun generateTrajectory(
         waypoints: List<Pose2d>,
-        config: FalconTrajectoryConfig
+        config: FalconTrajectoryConfig,
     ): Trajectory = TrajectoryGenerator.generateTrajectory(waypoints, config)
 
     /**
@@ -47,7 +47,7 @@ object FalconTrajectoryGenerator {
         start: Pose2d,
         interiorWaypoints: List<Translation2d>,
         end: Pose2d,
-        config: FalconTrajectoryConfig
+        config: FalconTrajectoryConfig,
     ): Trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config)
 }
 
@@ -58,7 +58,7 @@ fun Trajectory.mirror(): Trajectory = Trajectory(
             it.velocityMetersPerSecond,
             it.accelerationMetersPerSecondSq,
             it.poseMeters.mirror(),
-            -it.curvatureRadPerMeter
+            -it.curvatureRadPerMeter,
         )
-    }
+    },
 )

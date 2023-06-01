@@ -26,6 +26,6 @@ abstract class TrajectoryTrackerWestCoastDriveBase : FalconSubsystem() {
         leftVelocity: Double,
         rightVelocity: Double,
         leftAcceleration: Double,
-        rightAcceleration: Double
+        rightAcceleration: Double,
     )
 }

@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
-import java.util.function.BooleanSupplier
 import org.ghrobotics.lib.utils.Source
+import java.util.function.BooleanSupplier
 
 fun sequential(block: BasicCommandGroupBuilder.() -> Unit) =
     commandGroup(BasicCommandGroupBuilder.Type.Sequential, block)
@@ -92,7 +92,7 @@ class StateCommandGroupBuilder<T>(private val state: Source<T>) :
         SequentialCommandGroup(
             *stateMap.entries.map { (key, command) ->
                 ConditionalCommand(command, InstantCommand(), BooleanSupplier { state() == key })
-            }.toTypedArray()
+            }.toTypedArray(),
         )
 }
 

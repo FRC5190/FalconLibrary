@@ -28,7 +28,7 @@ import org.ghrobotics.lib.utils.Source
 class WestCoastTrajectoryTrackerCommand(
     private val drivetrain: TrajectoryTrackerWestCoastDriveBase,
     private val trajectorySource: Source<Trajectory>,
-    private val eventMap: Map<String, Command> = HashMap()
+    private val eventMap: Map<String, Command> = HashMap(),
 ) : FalconCommand(drivetrain) {
 
     private var prevLeftVelocity = 0.0
@@ -64,7 +64,7 @@ class WestCoastTrajectoryTrackerCommand(
         // Get the adjusted chassis speeds from the controller.
         val chassisSpeeds = drivetrain.controller.calculate(
             drivetrain.robotPosition,
-            currentTrajectoryState
+            currentTrajectoryState,
         )
 
         // Get the wheel speeds from the chassis speeds.
@@ -81,7 +81,7 @@ class WestCoastTrajectoryTrackerCommand(
             wheelSpeeds.leftMetersPerSecond,
             wheelSpeeds.rightMetersPerSecond,
             leftAcceleration,
-            rightAcceleration
+            rightAcceleration,
         )
 
         if (currentTrajectoryState != null) {

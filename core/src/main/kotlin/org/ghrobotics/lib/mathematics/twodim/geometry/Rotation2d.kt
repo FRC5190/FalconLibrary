@@ -8,13 +8,13 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
+import org.ghrobotics.lib.mathematics.kEpsilon
+import org.ghrobotics.lib.utils.Util
 import java.text.DecimalFormat
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.sign
-import org.ghrobotics.lib.mathematics.kEpsilon
-import org.ghrobotics.lib.utils.Util
 
 open class Rotation2d {
     protected var cosAngle = Double.NaN
@@ -122,7 +122,8 @@ open class Rotation2d {
         return if (hasTrig() && other.hasTrig()) {
             Rotation2d(
                 cosAngle * other.cosAngle - sinAngle * other.sinAngle,
-                cosAngle * other.sinAngle + sinAngle * other.cosAngle, true
+                cosAngle * other.sinAngle + sinAngle * other.cosAngle,
+                true,
             )
         } else {
             fromRadians(radians + other.radians)
@@ -152,14 +153,18 @@ open class Rotation2d {
 
     fun isParallel(other: Rotation2d): Boolean {
         return if (hasRadians() && other.hasRadians()) {
-            (Util.epsilonEquals(radians_, other.radians_) ||
-                Util.epsilonEquals(radians_, WrapRadians(other.radians_ + Math.PI)))
+            (
+                Util.epsilonEquals(radians_, other.radians_) ||
+                    Util.epsilonEquals(radians_, WrapRadians(other.radians_ + Math.PI))
+                )
         } else if (hasTrig() && other.hasTrig()) {
             Util.epsilonEquals(sinAngle, other.sinAngle) && Util.epsilonEquals(cosAngle, other.cosAngle)
         } else {
             // Use public, checked version.
-            (Util.epsilonEquals(radians, other.radians) ||
-                Util.epsilonEquals(radians_, WrapRadians(other.radians_ + Math.PI)))
+            (
+                Util.epsilonEquals(radians, other.radians) ||
+                    Util.epsilonEquals(radians_, WrapRadians(other.radians_ + Math.PI))
+                )
         }
     }
 

@@ -21,7 +21,7 @@ import org.ghrobotics.lib.utils.Source
 
 class SwerveTrajectoryTrackerCommand(
     private val drivetrain: FalconSwerveDrivetrain,
-    private val trajectorySource: Source<Trajectory>
+    private val trajectorySource: Source<Trajectory>,
 ) : FalconCommand(drivetrain) {
 
     private var prevStates = Array(4) { SwerveModuleState() }
@@ -47,13 +47,13 @@ class SwerveTrajectoryTrackerCommand(
 
         val chassisSpeeds = drivetrain.controller.calculate(
             drivetrain.robotPosition,
-            currentTrajectoryState
+            currentTrajectoryState,
         )
 
         val wheelStates = drivetrain.kinematics.toSwerveModuleStates(chassisSpeeds)
 
         drivetrain.setOutputSI(
-            wheelStates
+            wheelStates,
         )
 
         if (currentTrajectoryState != null) {

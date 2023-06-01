@@ -7,5 +7,5 @@
  */
 
 package org.ghrobotics.lib.mathematics
-
-const val kEpsilon = 1E-9
+// ktlint-disable
+const val kEpsilon : Double = 1E-9

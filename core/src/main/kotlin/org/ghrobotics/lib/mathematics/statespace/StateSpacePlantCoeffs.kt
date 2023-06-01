@@ -19,5 +19,5 @@ data class StateSpacePlantCoeffs<States : Num, Inputs : Num, Outputs : Num>(
     val A: Matrix<States, States>,
     val B: Matrix<States, Inputs>,
     val C: Matrix<Outputs, States>,
-    val D: Matrix<Outputs, Inputs>
+    val D: Matrix<Outputs, Inputs>,
 )

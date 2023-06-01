@@ -12,11 +12,11 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Twist2d
 import edu.wpi.first.wpilibj.Timer
-import kotlin.reflect.KProperty
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.utils.Source
+import kotlin.reflect.KProperty
 
 /**
  * @param localizationBuffer Stores the previous 100 states so that we can interpolate if needed.
@@ -25,7 +25,7 @@ import org.ghrobotics.lib.utils.Source
 @Deprecated("The FalconLibrary localization class is no longer supported.")
 abstract class Localization(
     protected val robotHeading: Source<Rotation2d>,
-    private val localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
+    private val localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer(),
 ) : Source<Pose2d> {
 
     /**
@@ -61,7 +61,7 @@ abstract class Localization(
         val newRobotPosition = robotPosition.exp(update(deltaHeading))
         robotPosition = Pose2d(
             newRobotPosition.translation,
-            newHeading + headingOffset
+            newHeading + headingOffset,
         )
 
         prevHeading = newHeading

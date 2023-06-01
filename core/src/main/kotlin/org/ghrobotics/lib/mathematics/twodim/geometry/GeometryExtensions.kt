@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.geometry.Twist2d
-import kotlin.math.absoluteValue
 import org.ghrobotics.lib.mathematics.kEpsilon
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -22,6 +21,7 @@ import org.ghrobotics.lib.mathematics.units.derived.Radian
 import org.ghrobotics.lib.mathematics.units.derived.degrees
 import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
 import org.ghrobotics.lib.mathematics.units.meters
+import kotlin.math.absoluteValue
 
 /* Translation2d Unit-Safe Constructors */
 
@@ -64,8 +64,8 @@ fun Pose2d.log(): Twist2d {
     val translationPart = translation.rotateBy(
         Rotation2d(
             halfThetaByTanOfHalfDTheta,
-            -halfDTheta
-        )
+            -halfDTheta,
+        ),
     )
     return Twist2d(translationPart.x, translationPart.y, dtheta)
 }

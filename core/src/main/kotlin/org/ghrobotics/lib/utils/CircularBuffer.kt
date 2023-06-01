@@ -20,9 +20,9 @@ class CircularBuffer(private val size: Int) {
     // Gets average of all elements
     val average: Double
         get() {
-            return if (numElements == 0)
+            return if (numElements == 0) {
                 0.0
-            else
+            } else
                 sum / numElements
         }
 

@@ -8,10 +8,10 @@
 
 package org.ghrobotics.lib.mathematics.statespace
 
+import frc.team4069.keigen.`1`
 import frc.team4069.keigen.Matrix
 import frc.team4069.keigen.Num
 import frc.team4069.keigen.Vector
-import frc.team4069.keigen.`1`
 import frc.team4069.keigen.zeros
 
 /**
@@ -35,7 +35,7 @@ import frc.team4069.keigen.zeros
 @Suppress("PrivatePropertyName")
 class StateSpaceObserver<States : Num, Inputs : Num, Outputs : Num>(
     coeffs: StateSpaceObserverCoeffs<States, Inputs, Outputs>,
-    private val plant: StateSpacePlant<States, Inputs, Outputs>
+    private val plant: StateSpacePlant<States, Inputs, Outputs>,
 ) {
 
     private val states = plant.coeffs.states

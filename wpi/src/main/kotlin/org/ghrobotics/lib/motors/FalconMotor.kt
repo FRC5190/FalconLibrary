@@ -27,6 +27,7 @@ interface FalconMotor<K : SIKey> {
      * The encoder attached to the motor
      */
     val encoder: FalconEncoder<K>
+
     /**
      * The voltage output of the motor controller in volts
      */
@@ -57,11 +58,13 @@ interface FalconMotor<K : SIKey> {
      *  Unit is [K]/s
      */
     var motionProfileCruiseVelocity: SIUnit<Velocity<K>>
+
     /**
      *  Acceleration that the on board motion profile generator will
      *  Unit is [K]/s/s
      */
     var motionProfileAcceleration: SIUnit<Acceleration<K>>
+
     /**
      * Enables the use of on board motion profiling for position mode
      */
@@ -71,6 +74,7 @@ interface FalconMotor<K : SIKey> {
      * Soft limit in the forward direction.
      */
     var softLimitForward: SIUnit<K>
+
     /**
      * Soft limit in the reverse direction.
      */

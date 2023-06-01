@@ -16,13 +16,15 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.meters
 import org.ghrobotics.lib.utils.Source
 
-@Deprecated("The TankEncoderLocalization class is no longer supported.",
-    ReplaceWith("DifferentialDriveOdometry", "edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry"))
+@Deprecated(
+    "The TankEncoderLocalization class is no longer supported.",
+    ReplaceWith("DifferentialDriveOdometry", "edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry"),
+)
 class TankEncoderLocalization(
     robotHeading: Source<Rotation2d>,
     val leftEncoder: Source<SIUnit<Meter>>,
     val rightEncoder: Source<SIUnit<Meter>>,
-    localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer()
+    localizationBuffer: TimePoseInterpolatableBuffer = TimePoseInterpolatableBuffer(),
 ) : Localization(robotHeading, localizationBuffer) {
 
     private var prevLeftEncoder = 0.0.meters
@@ -53,7 +55,7 @@ class TankEncoderLocalization(
     private fun forwardKinematics(
         leftDelta: SIUnit<Meter>,
         rightDelta: SIUnit<Meter>,
-        rotationDelta: Rotation2d
+        rotationDelta: Rotation2d,
     ): Twist2d {
         val dx = (leftDelta + rightDelta) / 2.0
         return Twist2d(dx.value, 0.0, rotationDelta.radians)

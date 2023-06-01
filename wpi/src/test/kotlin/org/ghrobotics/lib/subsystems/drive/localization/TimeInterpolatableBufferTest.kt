@@ -23,7 +23,7 @@ class TimeInterpolatableBufferTest {
     fun testInterpolation() {
         val buffer = TimePoseInterpolatableBuffer(
             2.seconds,
-            timeSource = { 2.seconds }
+            timeSource = { 2.seconds },
         )
         buffer[1000.seconds] = Pose2d()
         buffer[2000.seconds] = Pose2d(10.meters, 0.meters, Rotation2d())
@@ -31,15 +31,18 @@ class TimeInterpolatableBufferTest {
         Assert.assertEquals(Pose2d().translation.norm, buffer[500.seconds]!!.translation.norm, kEpsilon)
         Assert.assertEquals(
             Pose2d(2.5.meters, 0.meters, Rotation2d()).translation.norm,
-            buffer[1250.seconds]!!.translation.norm, kEpsilon
+            buffer[1250.seconds]!!.translation.norm,
+            kEpsilon,
         )
         Assert.assertEquals(
             Pose2d(5.meters, 0.meters, Rotation2d()).translation.norm,
-            buffer[1500.seconds]!!.translation.norm, kEpsilon
+            buffer[1500.seconds]!!.translation.norm,
+            kEpsilon,
         )
         Assert.assertEquals(
             Pose2d(10.meters, 0.meters, Rotation2d()).translation.norm,
-            buffer[2500.seconds]!!.translation.norm, kEpsilon
+            buffer[2500.seconds]!!.translation.norm,
+            kEpsilon,
         )
     }
 }

@@ -18,29 +18,33 @@ import org.ghrobotics.lib.mathematics.units.SIUnit
 @Suppress("FunctionName")
 fun Rectangle2d(
     one: Translation2d,
-    two: Translation2d
+    two: Translation2d,
 ): Rectangle2d {
     val minX = min(one.x_u, two.x_u)
     val minY = min(one.y_u, two.y_u)
     val maxX = max(one.x_u, two.x_u)
     val maxY = max(one.y_u, two.y_u)
     return Rectangle2d(
-        minX, minY,
-        maxX - minX, maxY - minY
+        minX,
+        minY,
+        maxX - minX,
+        maxY - minY,
     )
 }
 
 @Suppress("FunctionName", "UnsafeCallOnNullableType")
 fun Rectangle2d(
-    vararg pointsToInclude: Translation2d
+    vararg pointsToInclude: Translation2d,
 ): Rectangle2d {
     val minX = pointsToInclude.minByOrNull { it.x }!!.x_u
     val minY = pointsToInclude.minByOrNull { it.y }!!.y_u
     val maxX = pointsToInclude.maxByOrNull { it.x }!!.x_u
     val maxY = pointsToInclude.maxByOrNull { it.y }!!.y_u
     return Rectangle2d(
-        minX, minY,
-        maxX - minX, maxY - minY
+        minX,
+        minY,
+        maxX - minX,
+        maxY - minY,
     )
 }
 
@@ -48,7 +52,7 @@ data class Rectangle2d constructor(
     val x: SIUnit<Meter>,
     val y: SIUnit<Meter>,
     val w: SIUnit<Meter>,
-    val h: SIUnit<Meter>
+    val h: SIUnit<Meter>,
 ) {
 
     val topLeft = Translation2d(x, y + h)
@@ -73,8 +77,10 @@ data class Rectangle2d constructor(
         if (translation.x epsilonEquals 0.0 && translation.y epsilonEquals 0.0) return false
         // Check if its even in range
         val boxRect = Rectangle2d(
-            rectangle.topLeft, rectangle.bottomRight,
-            rectangle.topLeft + translation, rectangle.bottomRight + translation
+            rectangle.topLeft,
+            rectangle.bottomRight,
+            rectangle.topLeft + translation,
+            rectangle.bottomRight + translation,
         )
         // println(boxRect)
         if (!boxRect.isIn(this)) return false

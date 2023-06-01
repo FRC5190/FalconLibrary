@@ -8,11 +8,11 @@
 
 package org.ghrobotics.lib.subsystems.drive.utils
 
+import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
+import org.ghrobotics.lib.subsystems.drive.FalconSwerveDrivetrain
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.subsystems.drive.FalconSwerveDrivetrain
 
 class Kinematics(val driveTrain: FalconSwerveDrivetrain) {
     private val L: Double = driveTrain.wheelbase
@@ -89,7 +89,7 @@ class Kinematics(val driveTrain: FalconSwerveDrivetrain) {
         forward: Double,
         strafe: Double,
         rotation: Double,
-        field_relative: Boolean
+        field_relative: Boolean,
     ): DriveSignal {
         return inverseKinematics(forward, strafe, rotation, field_relative, true)
     }
@@ -99,7 +99,7 @@ class Kinematics(val driveTrain: FalconSwerveDrivetrain) {
         strafe: Double,
         rotation: Double,
         field_relative: Boolean,
-        normalize_outputs: Boolean
+        normalize_outputs: Boolean,
     ): DriveSignal {
         var forward = forward
         var strafe = strafe

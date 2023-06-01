@@ -24,7 +24,7 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
  */
 class FalconSPX<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val victorSPX: VictorSPX,
-    model: NativeUnitModel<K>
+    model: NativeUnitModel<K>,
 ) : FalconCTRE<K>(victorSPX, model) {
 
     /**
@@ -48,11 +48,11 @@ class FalconSPX<K : SIKey>(
 fun <K : SIKey> falconSPX(
     victorSPX: VictorSPX,
     model: NativeUnitModel<K>,
-    block: FalconSPX<K>.() -> Unit
+    block: FalconSPX<K>.() -> Unit,
 ) = FalconSPX(victorSPX, model).also(block)
 
 fun <K : SIKey> falconSPX(
     id: Int,
     model: NativeUnitModel<K>,
-    block: FalconSPX<K>.() -> Unit
+    block: FalconSPX<K>.() -> Unit,
 ) = FalconSPX(id, model).also(block)

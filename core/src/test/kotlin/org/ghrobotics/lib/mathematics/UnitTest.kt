@@ -33,7 +33,7 @@ class UnitTest {
 
     private val settings = NativeUnitLengthModel(
         1440.nativeUnits,
-        3.0.inches
+        3.0.inches,
     )
 
     @Test

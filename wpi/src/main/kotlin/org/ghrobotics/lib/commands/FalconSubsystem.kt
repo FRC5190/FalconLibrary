@@ -21,7 +21,7 @@ abstract class FalconSubsystem : SubsystemBase() {
     open fun checkSubsystem(): Command {
         return PrintCommand(
             "No test routine was run. Override the" +
-                "checkSubsystem() method in this subsystem to run tests."
+                "checkSubsystem() method in this subsystem to run tests.",
         )
     }
 }

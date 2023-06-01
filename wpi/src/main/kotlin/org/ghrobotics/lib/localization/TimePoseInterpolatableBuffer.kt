@@ -10,17 +10,17 @@ package org.ghrobotics.lib.localization
 
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.wpilibj.Timer
-import java.util.TreeMap
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.utils.Source
+import java.util.TreeMap
 
 class TimePoseInterpolatableBuffer(
     private val historySpan: SIUnit<Second> = 1.0.seconds,
-    private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().seconds }
+    private val timeSource: Source<SIUnit<Second>> = { Timer.getFPGATimestamp().seconds },
 ) {
 
     private val bufferMap = TreeMap<SIUnit<Second>, Pose2d>()
@@ -60,7 +60,7 @@ class TimePoseInterpolatableBuffer(
             bottomBound == null -> topBound.value
             else -> bottomBound.value.interpolate(
                 topBound.value,
-                ((time - bottomBound.key) / (topBound.key - bottomBound.key)).unitlessValue
+                ((time - bottomBound.key) / (topBound.key - bottomBound.key)).unitlessValue,
             )
         }
     }

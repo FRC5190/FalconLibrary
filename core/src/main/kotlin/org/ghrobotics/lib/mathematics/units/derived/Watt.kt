@@ -15,8 +15,10 @@ import org.ghrobotics.lib.mathematics.units.Mult
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 
-typealias Watt = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
-    Mult<Second, Mult<Second, Second>>>
+typealias Watt = Frac<
+    Mult<Kilogram, Mult<Meter, Meter>>,
+    Mult<Second, Mult<Second, Second>>,
+    >
 
 @Deprecated("Replaced with Plural version", ReplaceWith("watts"))
 val Double.watt

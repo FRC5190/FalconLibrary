@@ -20,6 +20,6 @@ abstract class TrajectoryTrackerSwerveDriveBase : FalconSubsystem() {
     abstract val kinematics: SwerveDriveKinematics
 
     abstract fun setOutputSI(
-        states: Array<SwerveModuleState>
+        states: Array<SwerveModuleState>,
     )
 }

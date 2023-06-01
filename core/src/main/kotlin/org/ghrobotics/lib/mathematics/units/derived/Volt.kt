@@ -16,8 +16,10 @@ import org.ghrobotics.lib.mathematics.units.Mult
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
 
-typealias Volt = Frac<Mult<Kilogram, Mult<Meter, Meter>>,
-    Mult<Ampere, Mult<Second, Mult<Second, Second>>>>
+typealias Volt = Frac<
+    Mult<Kilogram, Mult<Meter, Meter>>,
+    Mult<Ampere, Mult<Second, Mult<Second, Second>>>,
+    >
 
 @Deprecated("Replaced with Plural version", ReplaceWith("volts"))
 val Double.volt

@@ -26,7 +26,7 @@ import frc.team4069.keigen.zeros
 @Suppress("PrivatePropertyName")
 class StateSpaceController<States : Num, Inputs : Num, Outputs : Num>(
     coeffs: StateSpaceControllerCoeffs<States, Inputs, Outputs>,
-    private val plant: StateSpacePlant<States, Inputs, Outputs>
+    private val plant: StateSpacePlant<States, Inputs, Outputs>,
 ) {
 
     private val states = plant.coeffs.states

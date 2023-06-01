@@ -19,7 +19,7 @@ import org.ghrobotics.lib.mathematics.epsilonEquals
 data class Translation3d(
     val x: Double,
     val y: Double,
-    val z: Double
+    val z: Double,
 ) {
 
     val magnitude get() = Math.sqrt(sqrMagnitude)
@@ -39,7 +39,7 @@ data class Translation3d(
         Translation3d(
             x + other.x,
             y + other.y,
-            z + other.z
+            z + other.z,
         )
 
     operator fun times(quaternion: Quaternion) = quaternion.transform(this)

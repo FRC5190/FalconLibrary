@@ -27,9 +27,11 @@ val <K : SIKey> SIUnit<K>.velocity get() = SIUnit<Velocity<K>>(value)
 @Deprecated("", ReplaceWith("inFeetPerSecond()"))
 val SIUnit<LinearVelocity>.feetPerSecond
     get() = inFeetPerSecond()
+
 @Deprecated("", ReplaceWith("inFeetPerMinute()"))
 val SIUnit<LinearVelocity>.feetPerMinute
     get() = inFeetPerMinute()
+
 @Deprecated("", ReplaceWith("inInchesPerSecond()"))
 val SIUnit<LinearVelocity>.inchesPerSecond
     get() = inInchesPerSecond()

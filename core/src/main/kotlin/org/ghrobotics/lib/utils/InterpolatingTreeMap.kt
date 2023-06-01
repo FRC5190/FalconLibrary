@@ -8,12 +8,12 @@
 
 package org.ghrobotics.lib.utils
 
-import java.util.TreeMap
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.operations.div
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.types.Interpolatable
+import java.util.TreeMap
 
 /**
  * Creates an interpolating tree map. An interpolating tree map is similar
@@ -51,7 +51,7 @@ open class InterpolatingTreeMap<K : SIKey, V>(val interpolatingFunc: (start: V, 
             else -> interpolatingFunc(
                 bottomBound.value,
                 topBound.value,
-                ((key - bottomBound.key) / (topBound.key - bottomBound.key)).unitlessValue
+                ((key - bottomBound.key) / (topBound.key - bottomBound.key)).unitlessValue,
             )
         }
     }

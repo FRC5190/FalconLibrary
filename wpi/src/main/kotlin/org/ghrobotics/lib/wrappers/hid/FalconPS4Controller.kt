@@ -19,13 +19,13 @@ fun ps4Controller(port: Int, block: FalconPS4Builder.() -> Unit): FalconPS4Contr
 
 fun FalconPS4Builder.button(
     button: PS4Button,
-    block: FalconHIDButtonBuilder.() -> Unit = {}
+    block: FalconHIDButtonBuilder.() -> Unit = {},
 ) = button(button.value, block)
 
 fun FalconPS4Builder.triggerAxisButton(
     hand: Hand,
     threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-    block: FalconHIDButtonBuilder.() -> Unit = {}
+    block: FalconHIDButtonBuilder.() -> Unit = {},
 ) = axisButton(yTriggerAxisToRawAxis(hand), threshold, block)
 
 // Source helpers
@@ -34,9 +34,9 @@ fun FalconPS4Controller.getY(hand: Hand) = getRawAxis(yAxisToRawAxis(hand))
 fun FalconPS4Controller.getX(hand: Hand) = getRawAxis(xAxisToRawAxis(hand))
 fun FalconPS4Controller.getRawButton(button: XboxButton) = getRawButton(button.value)
 
-private fun yAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 1 else 5
-private fun xAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 0 else 2
-private fun yTriggerAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 2 else 3
+private fun yAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 1 else 5
+private fun xAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 0 else 2
+private fun yTriggerAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 2 else 3
 
 enum class PS4Button(val value: Int) {
     Square(1),
@@ -52,5 +52,5 @@ enum class PS4Button(val value: Int) {
     StickLeft(11),
     StickRight(12),
     Playstation(13),
-    Touchpad(14)
+    Touchpad(14),
 }

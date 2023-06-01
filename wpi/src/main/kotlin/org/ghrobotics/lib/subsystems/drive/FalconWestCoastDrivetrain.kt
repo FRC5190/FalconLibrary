@@ -146,7 +146,9 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
         val rightFeedforward = periodicIO.rightFeedforward
 
         robotPosition = odometry.update(
-            periodicIO.gyro, periodicIO.leftPosition.value, periodicIO.rightPosition.value
+            periodicIO.gyro,
+            periodicIO.leftPosition.value,
+            periodicIO.rightPosition.value,
         )
         poseBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
 
@@ -195,7 +197,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
         leftVelocity: Double,
         rightVelocity: Double,
         leftAcceleration: Double,
-        rightAcceleration: Double
+        rightAcceleration: Double,
     ) {
         periodicIO.leftFeedforward = SIUnit(leftCharacterization.calculate(leftVelocity, leftAcceleration))
         periodicIO.rightFeedforward = SIUnit(rightCharacterization.calculate(rightVelocity, rightAcceleration))
@@ -223,7 +225,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
      */
     fun arcadeDrive(
         linearPercent: Double,
-        rotationPercent: Double
+        rotationPercent: Double,
     ) {
         val (l, r) = driveHelper.arcadeDrive(linearPercent, rotationPercent)
         setPercent(l, r)
@@ -239,7 +241,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
     fun curvatureDrive(
         linearPercent: Double,
         curvaturePercent: Double,
-        isQuickTurn: Boolean
+        isQuickTurn: Boolean,
     ) {
         val (l, r) = driveHelper.curvatureDrive(linearPercent, curvaturePercent, isQuickTurn)
         setPercent(l, r)
@@ -275,7 +277,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
             gyro(),
             leftMotor.encoder.position.value,
             rightMotor.encoder.position.value,
-            pose
+            pose,
         )
     }
 
@@ -326,7 +328,7 @@ abstract class FalconWestCoastDrivetrain : TrajectoryTrackerWestCoastDriveBase()
         // Velocity Output
         class Velocity(
             val left: SIUnit<LinearVelocity>,
-            val right: SIUnit<LinearVelocity>
+            val right: SIUnit<LinearVelocity>,
         ) : Output()
     }
 }

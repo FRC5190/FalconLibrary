@@ -8,9 +8,9 @@
 
 package org.ghrobotics.lib.mathematics
 
-import kotlin.math.pow
 import org.junit.Assert
 import org.junit.Test
+import kotlin.math.pow
 
 class NumericalApproximationsTest {
     @Test

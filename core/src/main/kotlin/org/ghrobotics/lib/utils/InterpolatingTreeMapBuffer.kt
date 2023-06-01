@@ -18,7 +18,7 @@ import org.ghrobotics.lib.types.Interpolatable
 class InterpolatingTreeMapBuffer<K : SIKey, V>(
     interpolatingFunc: (start: V, end: V, t: Double) -> V,
     private val bufferSize: SIUnit<K>,
-    private val source: Source<SIUnit<K>>
+    private val source: Source<SIUnit<K>>,
 ) : InterpolatingTreeMap<K, V>(interpolatingFunc) {
     /**
      * Removes old entries from the map.
@@ -61,7 +61,7 @@ class InterpolatingTreeMapBuffer<K : SIKey, V>(
          */
         fun <K : SIKey, V : SIKey> createFromSI(
             bufferSize: SIUnit<K>,
-            source: Source<SIUnit<K>>
+            source: Source<SIUnit<K>>,
         ) = InterpolatingTreeMapBuffer<K, SIUnit<V>>({ start, end, t ->
             start.lerp(end, t)
         }, bufferSize, source)
@@ -71,7 +71,7 @@ class InterpolatingTreeMapBuffer<K : SIKey, V>(
          */
         fun <K : SIKey, V : Interpolatable<V>> createFromInterpolatable(
             bufferSize: SIUnit<K>,
-            source: Source<SIUnit<K>>
+            source: Source<SIUnit<K>>,
         ) = InterpolatingTreeMapBuffer<K, V>({ start, end, t ->
             start.interpolate(end, t)
         }, bufferSize, source)

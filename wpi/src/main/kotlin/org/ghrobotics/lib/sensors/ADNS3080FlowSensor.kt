@@ -11,13 +11,13 @@ package org.ghrobotics.lib.sensors
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.SPI
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.ghrobotics.lib.mathematics.units.feet
 import org.ghrobotics.lib.utils.Source
+import kotlin.coroutines.CoroutineContext
 
 /**
  *  Implementation of the ADNS3080 Optical Flow Sensor connected over SPI
@@ -30,7 +30,7 @@ class ADNS3080FlowSensor(
     private val port: SPI.Port,
     private val ticksPerFoot: Double,
     private val rotation2d: Rotation2d,
-    parent: CoroutineContext
+    parent: CoroutineContext,
 ) : Source<Translation2d> {
 
     private val job = Job(parent[Job])

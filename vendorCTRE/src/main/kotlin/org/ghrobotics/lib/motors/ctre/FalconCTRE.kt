@@ -13,8 +13,6 @@ import com.ctre.phoenix.motorcontrol.DemandType
 import com.ctre.phoenix.motorcontrol.IMotorController
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import com.ctre.phoenix.motorcontrol.StatusFrame
-import kotlin.math.roundToInt
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.Second
@@ -31,6 +29,8 @@ import org.ghrobotics.lib.mathematics.units.seconds
 import org.ghrobotics.lib.mathematics.units.unitlessValue
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
+import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 
 /**
  * Represents the abstract class for all CTRE motor controllers.
@@ -40,7 +40,7 @@ import org.ghrobotics.lib.motors.FalconMotor
  */
 abstract class FalconCTRE<K : SIKey>(
     val motorController: IMotorController,
-    private val model: NativeUnitModel<K>
+    private val model: NativeUnitModel<K>,
 ) : AbstractFalconMotor<K>() {
 
     /**
@@ -90,7 +90,7 @@ abstract class FalconCTRE<K : SIKey>(
     override var motionProfileCruiseVelocity: SIUnit<Velocity<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
         motorController.configMotionCruiseVelocity(
             model.toNativeUnitVelocity(newValue).inNativeUnitsPer100ms().roundToInt().toDouble(),
-            0
+            0,
         )
     }
 
@@ -100,7 +100,7 @@ abstract class FalconCTRE<K : SIKey>(
     override var motionProfileAcceleration: SIUnit<Acceleration<K>> by Delegates.observable(SIUnit(0.0)) { _, _, newValue ->
         motorController.configMotionAcceleration(
             model.toNativeUnitAcceleration(newValue).inNativeUnitsPer100msPerSecond().roundToInt().toDouble(),
-            0
+            0,
         )
     }
 
@@ -196,9 +196,11 @@ abstract class FalconCTRE<K : SIKey>(
     override fun setVoltage(voltage: SIUnit<Volt>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.PercentOutput, (voltage / voltageCompSaturation).unitlessValue,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
-            )
+                ControlMode.PercentOutput,
+                (voltage / voltageCompSaturation).unitlessValue,
+                DemandType.ArbitraryFeedForward,
+                (arbitraryFeedForward / voltageCompSaturation).unitlessValue,
+            ),
         )
 
     /**
@@ -210,9 +212,11 @@ abstract class FalconCTRE<K : SIKey>(
     override fun setDutyCycle(dutyCycle: Double, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.PercentOutput, dutyCycle,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
-            )
+                ControlMode.PercentOutput,
+                dutyCycle,
+                DemandType.ArbitraryFeedForward,
+                (arbitraryFeedForward / voltageCompSaturation).unitlessValue,
+            ),
         )
 
     /**
@@ -224,9 +228,11 @@ abstract class FalconCTRE<K : SIKey>(
     override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) =
         sendDemand(
             Demand(
-                ControlMode.Velocity, model.toNativeUnitVelocity(velocity).inNativeUnitsPer100ms(),
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
-            )
+                ControlMode.Velocity,
+                model.toNativeUnitVelocity(velocity).inNativeUnitsPer100ms(),
+                DemandType.ArbitraryFeedForward,
+                (arbitraryFeedForward / voltageCompSaturation).unitlessValue,
+            ),
         )
 
     /**
@@ -241,15 +247,16 @@ abstract class FalconCTRE<K : SIKey>(
             Demand(
                 if (useMotionProfileForPosition) ControlMode.MotionMagic else ControlMode.Position,
                 model.toNativeUnitPosition(position).value,
-                DemandType.ArbitraryFeedForward, (arbitraryFeedForward / voltageCompSaturation).unitlessValue
-            )
+                DemandType.ArbitraryFeedForward,
+                (arbitraryFeedForward / voltageCompSaturation).unitlessValue,
+            ),
         )
 
     /**
      * Gives the motor neutral output.
      */
     override fun setNeutral() = sendDemand(
-        Demand(ControlMode.Disabled, 0.0, DemandType.Neutral, 0.0)
+        Demand(ControlMode.Disabled, 0.0, DemandType.Neutral, 0.0),
     )
 
     /**
@@ -289,6 +296,6 @@ abstract class FalconCTRE<K : SIKey>(
         val mode: ControlMode,
         val demand0: Double,
         val demand1Type: DemandType,
-        val demand1: Double
+        val demand1: Double,
     )
 }

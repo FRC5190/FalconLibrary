@@ -10,8 +10,6 @@ package org.ghrobotics.lib.subsystems
 
 import edu.wpi.first.math.kinematics.SwerveModulePosition
 import edu.wpi.first.math.kinematics.SwerveModuleState
-import kotlin.math.abs
-import kotlin.math.sign
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
 import org.ghrobotics.lib.mathematics.units.Meter
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -27,6 +25,8 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitRotationModel
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.motors.FalconMotor
 import org.ghrobotics.lib.motors.ctre.falconFX
+import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Falcon swerve module
@@ -72,6 +72,7 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
         var kInvertAzimuth = false
         var kInvertAzimuthSensorPhase = false
         var kAzimuthBrakeMode = true // neutral mode could change
+
 //        var kAzimuthTicksPerRadian = 4096.0 / (2 * Math.PI) // for azimuth
         var kAzimuthNativeUnitModel = NativeUnitRotationModel(2048.nativeUnits)
         var kAzimuthEncoderHomeOffset = 0.0
@@ -127,7 +128,11 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
      * @param percent
      * @param arbitraryFeedForward
      */
-    fun setPercent(percent: Double, arbitraryFeedForward: SIUnit<Volt> = SIUnit(0.0)) { driveMotor.setDutyCycle(percent, arbitraryFeedForward) }
+    fun setPercent(
+        percent: Double,
+        arbitraryFeedForward: SIUnit<Volt> =
+            SIUnit(0.0),
+    ) { driveMotor.setDutyCycle(percent, arbitraryFeedForward) }
 
     /**
      * Set drive motors of drive motors
@@ -141,7 +146,10 @@ class FalconSwerveModule(val swerveModuleConstants: SwerveModuleConstants) : Abs
      * @param velocity
      * @param arbitraryFeedForward
      */
-    fun setVelocity(velocity: SIUnit<LinearVelocity>, arbitraryFeedForward: SIUnit<Volt> = SIUnit(0.0)) { driveMotor.setVelocity(velocity, arbitraryFeedForward) }
+    fun setVelocity(velocity: SIUnit<LinearVelocity>, arbitraryFeedForward: SIUnit<Volt> = SIUnit(0.0)) { driveMotor.setVelocity(
+        velocity,
+        arbitraryFeedForward,
+    ) }
 
     /**
      * Set angle of turn motors

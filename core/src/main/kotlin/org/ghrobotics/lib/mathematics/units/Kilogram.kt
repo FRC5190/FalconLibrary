@@ -45,63 +45,83 @@ val Number.slugs get() = toDouble().slugs
 @Deprecated("Replaced with Plural version", ReplaceWith("inYottagrams()"))
 val SIUnit<Kilogram>.yottagram
     get() = inYottagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inZettagrams()"))
 val SIUnit<Kilogram>.zettagram
     get() = inZettagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inExagrams()"))
 val SIUnit<Kilogram>.exagram
     get() = inExagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inPetagrams()"))
 val SIUnit<Kilogram>.petagram
     get() = inPetagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inTeragrams()"))
 val SIUnit<Kilogram>.teragram
     get() = inTeragrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inGigagrams()"))
 val SIUnit<Kilogram>.gigagram
     get() = inGigagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMegagrams()"))
 val SIUnit<Kilogram>.megagram
     get() = inMegagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inKilograms()"))
 val SIUnit<Kilogram>.kilogram
     get() = inKilograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inHectograms()"))
 val SIUnit<Kilogram>.hectogram
     get() = inHectograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecagrams()"))
 val SIUnit<Kilogram>.decagram
     get() = inDecagrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inGrams()"))
 val SIUnit<Kilogram>.gram
     get() = inGrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecigrams()"))
 val SIUnit<Kilogram>.decigram
     get() = inDecigrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inCentigrams()"))
 val SIUnit<Kilogram>.centigram
     get() = inCentigrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMilligrams()"))
 val SIUnit<Kilogram>.milligram
     get() = inMilligrams()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMicrograms()"))
 val SIUnit<Kilogram>.microgram
     get() = inMicrograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inNanograms()"))
 val SIUnit<Kilogram>.nanogram
     get() = inNanograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inPicograms()"))
 val SIUnit<Kilogram>.picogram
     get() = inPicograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inFemtograms()"))
 val SIUnit<Kilogram>.femtogram
     get() = inFemtograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inAttograms()"))
 val SIUnit<Kilogram>.attogram
     get() = inAttograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inZeptograms()"))
 val SIUnit<Kilogram>.zeptogram
     get() = inZeptograms()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inYoctograms()"))
 val SIUnit<Kilogram>.yoctogram
     get() = inYoctograms()
@@ -109,9 +129,11 @@ val SIUnit<Kilogram>.yoctogram
 @Deprecated("Replaced with Plural version", ReplaceWith("inLbs()"))
 val SIUnit<Kilogram>.lb
     get() = inLbs()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inPounds()"))
 val SIUnit<Kilogram>.pounds
     get() = inPounds()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inSlugs()"))
 val SIUnit<Kilogram>.slug
     get() = inSlugs()

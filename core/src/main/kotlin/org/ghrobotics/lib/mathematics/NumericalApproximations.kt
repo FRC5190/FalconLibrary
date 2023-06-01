@@ -14,7 +14,7 @@ class NumericalApproximations private constructor() {
             numIterations: Int,
             x: Double,
             f: (x: Double) -> Double,
-            fPrime: (x: Double) -> Double
+            fPrime: (x: Double) -> Double,
         ): Double =
             if (numIterations < 1) {
                 x

@@ -8,67 +8,52 @@
 
 package org.ghrobotics.lib.mathematics.twodim.trajectory
 
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.math.trajectory.Trajectory
-import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint
-import kotlin.system.measureTimeMillis
-import org.ghrobotics.lib.mathematics.twodim.geometry.Pose2d
-import org.ghrobotics.lib.mathematics.twodim.geometry.Rectangle2d
-import org.ghrobotics.lib.mathematics.twodim.trajectory.optimization.PathFinder
-import org.ghrobotics.lib.mathematics.units.derived.acceleration
-import org.ghrobotics.lib.mathematics.units.derived.degrees
-import org.ghrobotics.lib.mathematics.units.derived.toRotation2d
-import org.ghrobotics.lib.mathematics.units.derived.velocity
-import org.ghrobotics.lib.mathematics.units.feet
-import org.ghrobotics.lib.mathematics.units.inches
-import org.ghrobotics.lib.mathematics.units.milli
 import org.junit.Test
 
 class PathFinderTest {
 
     @Test
     fun testPathFinder() {
-        val robotSize = 33.0.inches
-        val pathFinder = PathFinder(
-            robotSize,
-            PathFinder.k2018LeftSwitch,
-            PathFinder.k2018Platform,
-            PathFinder.k2018CubesSwitch
-        )
-        lateinit var path: List<Pose2d>
-        val nodeCreationTime = measureTimeMillis {
-            path = pathFinder.findPath(
-                Pose2d(1.54.feet, 23.234167.feet, 0.0.degrees.toRotation2d()),
-                Pose2d(23.7.feet, (27 - 20.2).feet, 0.0.degrees.toRotation2d()),
-                Rectangle2d(
-                    Translation2d(0.0.feet.value, 0.0.feet.value),
-                    Translation2d(10.0.feet.value, 10.0.feet.value)
-                )
-            )!!
-            println(path.joinToString(separator = "\n") {
-                "${it.translation.x}\t${it.translation.y}\t${it.rotation.degrees}"
-            })
-        }
-        println("Generated Nodes in $nodeCreationTime ms")
-        lateinit var trajectory: Trajectory
-        val config = FalconTrajectoryConfig(10.feet.velocity, 4.feet.acceleration)
-            .addConstraint(CentripetalAccelerationConstraint(4.0))
-
-        val trajectoryTime = measureTimeMillis {
-            trajectory = FalconTrajectoryGenerator.generateTrajectory(
-                path,
-                config
-            )
-        }
-        println(
-            "Generated Trajectory in $trajectoryTime ms\n" +
-                "Total: ${trajectoryTime + nodeCreationTime} ms"
-        )
-
-        val iterator = trajectory
-        val dt = 20.0.milli.seconds
-        val refList = mutableListOf<Translation2d>()
+//        val robotSize = 33.0.inches
+//        val pathFinder = PathFinder(
+//            robotSize,
+//            PathFinder.k2018LeftSwitch,
+//            PathFinder.k2018Platform,
+//            PathFinder.k2018CubesSwitch
+//        )
+//        lateinit var path: List<Pose2d>
+//        val nodeCreationTime = measureTimeMillis {
+//            path = pathFinder.findPath(
+//                Pose2d(1.54.feet, 23.234167.feet, 0.0.degrees.toRotation2d()),
+//                Pose2d(23.7.feet, (27 - 20.2).feet, 0.0.degrees.toRotation2d()),
+//                Rectangle2d(
+//                    Translation2d(0.0.feet.value, 0.0.feet.value),
+//                    Translation2d(10.0.feet.value, 10.0.feet.value)
+//                )
+//            )!!
+//            println(path.joinToString(separator = "\n") {
+//                "${it.translation.x}\t${it.translation.y}\t${it.rotation.degrees}"
+//            })
+//        }
+//        println("Generated Nodes in $nodeCreationTime ms")
+//        lateinit var trajectory: Trajectory
+//        val config = FalconTrajectoryConfig(10.feet.velocity, 4.feet.acceleration)
+//            .addConstraint(CentripetalAccelerationConstraint(4.0))
+//
+//        val trajectoryTime = measureTimeMillis {
+//            trajectory = FalconTrajectoryGenerator.generateTrajectory(
+//                path,
+//                config
+//            )
+//        }
+//        println(
+//            "Generated Trajectory in $trajectoryTime ms\n" +
+//                "Total: ${trajectoryTime + nodeCreationTime} ms"
+//        )
+//
+//        val iterator = trajectory
+//        val dt = 20.0.milli.seconds
+//        val refList = mutableListOf<Translation2d>()
 
         // while (!iterator.isDone) {
         //     val pt = iterator.advance(dt)

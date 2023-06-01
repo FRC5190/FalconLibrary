@@ -9,8 +9,6 @@
 package org.ghrobotics.lib.motors.ctre
 
 import com.ctre.phoenix.motorcontrol.IMotorController
-import kotlin.math.roundToInt
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnit
@@ -19,6 +17,8 @@ import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitVelocity
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnits
 import org.ghrobotics.lib.mathematics.units.nativeunit.nativeUnitsPer100ms
 import org.ghrobotics.lib.motors.AbstractFalconEncoder
+import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 
 /**
  * Represents the encoder connected to a CTRE motor controller.
@@ -30,7 +30,7 @@ import org.ghrobotics.lib.motors.AbstractFalconEncoder
 class FalconCTREEncoder<K : SIKey>(
     private val motorController: IMotorController,
     private val pidIdx: Int = 0,
-    model: NativeUnitModel<K>
+    model: NativeUnitModel<K>,
 ) : AbstractFalconEncoder<K>(model) {
     /**
      * Returns the raw velocity from the encoder.

@@ -10,7 +10,6 @@ package org.ghrobotics.lib.motors.pwf
 
 import com.playingwithfusion.CANVenom
 import edu.wpi.first.wpilibj.DriverStation
-import kotlin.properties.Delegates
 import org.ghrobotics.lib.mathematics.units.Ampere
 import org.ghrobotics.lib.mathematics.units.SIKey
 import org.ghrobotics.lib.mathematics.units.SIUnit
@@ -22,6 +21,7 @@ import org.ghrobotics.lib.mathematics.units.derived.volts
 import org.ghrobotics.lib.mathematics.units.nativeunit.NativeUnitModel
 import org.ghrobotics.lib.motors.AbstractFalconMotor
 import org.ghrobotics.lib.motors.FalconMotor
+import kotlin.properties.Delegates
 
 /**
  * Wrapper around the Venom motor controller.
@@ -31,7 +31,7 @@ import org.ghrobotics.lib.motors.FalconMotor
  */
 class FalconVenom<K : SIKey>(
     @Suppress("MemberVisibilityCanBePrivate") val venom: CANVenom,
-    private val model: NativeUnitModel<K>
+    private val model: NativeUnitModel<K>,
 ) : AbstractFalconMotor<K>() {
 
     /**
@@ -130,8 +130,10 @@ class FalconVenom<K : SIKey>(
      */
     override fun setVelocity(velocity: SIUnit<Velocity<K>>, arbitraryFeedForward: SIUnit<Volt>) {
         venom.setCommand(
-            CANVenom.ControlMode.SpeedControl, model.toNativeUnitVelocity(velocity).value * 60.0,
-            0.0, arbitraryFeedForward.value / 6.0
+            CANVenom.ControlMode.SpeedControl,
+            model.toNativeUnitVelocity(velocity).value * 60.0,
+            0.0,
+            arbitraryFeedForward.value / 6.0,
         )
     }
 
@@ -144,8 +146,10 @@ class FalconVenom<K : SIKey>(
      */
     override fun setPosition(position: SIUnit<K>, arbitraryFeedForward: SIUnit<Volt>) {
         venom.setCommand(
-            CANVenom.ControlMode.PositionControl, model.toNativeUnitPosition(position).value,
-            0.0, arbitraryFeedForward.value / 6.0
+            CANVenom.ControlMode.PositionControl,
+            model.toNativeUnitPosition(position).value,
+            0.0,
+            arbitraryFeedForward.value / 6.0,
         )
     }
 
@@ -172,11 +176,11 @@ class FalconVenom<K : SIKey>(
 fun <K : SIKey> falconVenom(
     venom: CANVenom,
     model: NativeUnitModel<K>,
-    block: FalconVenom<K>.() -> Unit
+    block: FalconVenom<K>.() -> Unit,
 ) = FalconVenom(venom, model).also(block)
 
 fun <K : SIKey> falconVenom(
     id: Int,
     model: NativeUnitModel<K>,
-    block: FalconVenom<K>.() -> Unit
+    block: FalconVenom<K>.() -> Unit,
 ) = FalconVenom(id, model).also(block)

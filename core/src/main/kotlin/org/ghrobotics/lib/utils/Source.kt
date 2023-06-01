@@ -18,7 +18,7 @@ typealias BooleanSource = Source<Boolean>
 
 fun <T, O, P> Source<T>.withMerge(
     other: Source<O>,
-    block: (T, O) -> P
+    block: (T, O) -> P,
 ): Source<P> = { block(this@withMerge(), other()) }
 
 fun <T, O> Source<T>.withEquals(other: O): BooleanSource = { this@withEquals() == other }
@@ -38,7 +38,7 @@ fun DoubleSource.withThreshold(threshold: Double = 0.5): BooleanSource = map { t
 fun DoubleSource.withDeadband(
     deadband: Double,
     scaleDeadband: Boolean = true,
-    maxMagnitude: Double = 1.0
+    maxMagnitude: Double = 1.0,
 ): DoubleSource = map {
     val currentValue = this@withDeadband()
     if (currentValue in (-deadband)..deadband) return@map 0.0 // in deadband
@@ -52,19 +52,21 @@ fun DoubleSource.withDeadband(
 
 fun <T> BooleanSource.map(trueMap: T, falseMap: T) = map(
     Source(
-        trueMap
-    ), Source(falseMap)
+        trueMap,
+    ),
+    Source(falseMap),
 )
 
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: T) = map(
     trueMap,
-    Source(falseMap)
+    Source(falseMap),
 )
 
 fun <T> BooleanSource.map(trueMap: T, falseMap: Source<T>) = map(
     Source(
-        trueMap
-    ), falseMap
+        trueMap,
+    ),
+    falseMap,
 )
 
 fun <T> BooleanSource.map(trueMap: Source<T>, falseMap: Source<T>) = map { if (it) trueMap() else falseMap() }

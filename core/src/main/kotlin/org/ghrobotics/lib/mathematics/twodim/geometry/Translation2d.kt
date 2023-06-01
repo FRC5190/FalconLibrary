@@ -8,10 +8,10 @@
 
 package org.ghrobotics.lib.mathematics.twodim.geometry
 
+import org.ghrobotics.lib.utils.Util
 import java.text.DecimalFormat
 import kotlin.math.acos
 import kotlin.math.hypot
-import org.ghrobotics.lib.utils.Util
 
 class Translation2d {
     protected val x: Double

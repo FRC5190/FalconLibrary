@@ -12,7 +12,7 @@ typealias Transform = Pose3d
 
 data class Pose3d(
     val translation: Translation3d = Translation3d.kZero,
-    val rotation: Quaternion = Quaternion.kIdentity
+    val rotation: Quaternion = Quaternion.kIdentity,
 ) {
 
     operator fun minus(other: Pose3d) = this + -other
@@ -20,7 +20,7 @@ data class Pose3d(
     operator fun plus(other: Pose3d) =
         Pose3d(
             translation + (other.translation * rotation),
-            rotation * other.rotation
+            rotation * other.rotation,
         )
 
     operator fun unaryMinus(): Pose3d {
@@ -30,7 +30,7 @@ data class Pose3d(
 
     operator fun times(scalar: Double) = Pose3d(
         translation * scalar,
-        rotation * scalar
+        rotation * scalar,
     )
 
     operator fun div(scalar: Double) = times(1.0 / scalar)

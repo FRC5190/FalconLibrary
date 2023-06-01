@@ -19,33 +19,33 @@ fun xboxController(port: Int, block: FalconXboxBuilder.() -> Unit): FalconXboxCo
 
 fun FalconXboxBuilder.button(
     button: XboxButton,
-    block: FalconHIDButtonBuilder.() -> Unit = {}
+    block: FalconHIDButtonBuilder.() -> Unit = {},
 ) = button(button.value, block)
 
 fun FalconXboxBuilder.triggerAxisButton(
     hand: Hand,
     threshold: Double = HIDButton.DEFAULT_THRESHOLD,
-    block: FalconHIDButtonBuilder.() -> Unit = {}
+    block: FalconHIDButtonBuilder.() -> Unit = {},
 ) = axisButton(yTriggerAxisToRawAxis(hand), threshold, block)
 
 // Source Helpers
 fun FalconXboxController.getY(hand: Hand) = getRawAxis(
     yAxisToRawAxis(
-        hand
-    )
+        hand,
+    ),
 )
 
 fun FalconXboxController.getX(hand: Hand) = getRawAxis(
     xAxisToRawAxis(
-        hand
-    )
+        hand,
+    ),
 )
 
 fun FalconXboxController.getRawButton(button: XboxButton) = getRawButton(button.value)
 
-private fun yAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 1 else 5
-private fun xAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 0 else 4
-private fun yTriggerAxisToRawAxis(hand: Hand) = if (hand == Hand.kLeft) 2 else 3
+private fun yAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 1 else 5
+private fun xAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 0 else 4
+private fun yTriggerAxisToRawAxis(hand: Hand) = if (hand == Hand.Left) 2 else 3
 
 val kBumperLeft = XboxButton(5)
 val kBumperRight = XboxButton(6)

@@ -16,7 +16,7 @@ class HIDButton(
     private val whileOff: List<HIDControlListener>,
     private val whileOn: List<HIDControlListener>,
     private val changeOn: List<HIDControlListener>,
-    private val changeOff: List<HIDControlListener>
+    private val changeOff: List<HIDControlListener>,
 ) : HIDControl {
 
     companion object {

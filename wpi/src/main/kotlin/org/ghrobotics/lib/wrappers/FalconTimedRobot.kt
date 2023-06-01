@@ -26,7 +26,7 @@ abstract class FalconTimedRobot {
         DISABLED,
         AUTONOMOUS,
         TELEOP,
-        TEST
+        TEST,
     }
 
     var currentMode = Mode.NONE

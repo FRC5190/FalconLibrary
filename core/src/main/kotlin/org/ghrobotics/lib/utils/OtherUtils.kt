@@ -20,7 +20,7 @@ fun String.capitalizeEachWord() = buildString(length) {
             if (previousWasSpace) {
                 previousWasSpace = false
                 letter.toUpperCase()
-            } else letter.toLowerCase()
+            } else letter.toLowerCase(),
         )
         if (letter.isWhitespace()) previousWasSpace = true
     }

@@ -106,7 +106,7 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
      */
     class TrackedTarget(
         private val initialSample: TrackedTargetSample,
-        private val constants: TargetTrackerConstants
+        private val constants: TargetTrackerConstants,
     ) {
         // The samples that make up this target.
         private val samples = mutableSetOf<TrackedTargetSample>()
@@ -197,6 +197,6 @@ open class TargetTracker(private val constants: TargetTrackerConstants) {
     data class TargetTrackerConstants(
         val kMaxTargetTrackingLifetime: SIUnit<Second>,
         val kTargetTrackingDistanceErrorTolerance: SIUnit<Meter>,
-        val kMedianWindowSize: Int
+        val kMedianWindowSize: Int,
     )
 }

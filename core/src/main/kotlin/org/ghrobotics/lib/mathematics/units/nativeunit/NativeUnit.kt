@@ -38,6 +38,7 @@ val Number.STUPer100ms get() = toDouble().STUPer100ms
 @Deprecated("", ReplaceWith("inNativeUnitsPer100ms()"))
 val SIUnit<NativeUnitVelocity>.nativeUnitsPer100ms
     get() = inNativeUnitsPer100ms()
+
 @Deprecated("", ReplaceWith("inSTUPer100ms()"))
 val SIUnit<NativeUnitVelocity>.STUPer100ms
     get() = inSTUPer100ms()
@@ -53,7 +54,8 @@ fun <K : SIKey> SIUnit<NativeUnitVelocity>.fromNativeUnitVelocity(model: NativeU
 
 typealias NativeUnitAcceleration = Acceleration<NativeUnit>
 
-val Double.nativeUnitsPer100msPerSecond get() = SIUnit<NativeUnitAcceleration>(times(10.0))
+val Double.nativeUnitsPer100msPerSecond get() =
+    SIUnit<NativeUnitAcceleration>(times(10.0))
 val Double.STUPer100msPerSecond get() = nativeUnitsPer100msPerSecond
 
 val Number.nativeUnitsPer100msPerSecond get() = toDouble().nativeUnitsPer100msPerSecond
@@ -62,6 +64,7 @@ val Number.STUPer100msPerSecond get() = toDouble().STUPer100msPerSecond
 @Deprecated("", ReplaceWith("inNativeUnitsPer100msPerSecond()"))
 val SIUnit<NativeUnitAcceleration>.nativeUnitsPer100msPerSecond
     get() = inNativeUnitsPer100msPerSecond()
+
 @Deprecated("", ReplaceWith("inSTUPer100msPerSecond()"))
 val SIUnit<NativeUnitAcceleration>.STUPer100msPerSecond
     get() = inSTUPer100msPerSecond()
@@ -69,8 +72,8 @@ val SIUnit<NativeUnitAcceleration>.STUPer100msPerSecond
 fun SIUnit<NativeUnitAcceleration>.inNativeUnitsPer100msPerSecond() = value.div(10.0)
 fun SIUnit<NativeUnitAcceleration>.inSTUPer100msPerSecond() = inNativeUnitsPer100msPerSecond()
 
-fun <K : SIKey> SIUnit<Acceleration<K>>.toNativeUnitAcceleration(model: NativeUnitModel<K>): SIUnit<NativeUnitAcceleration> =
-    model.toNativeUnitAcceleration(this)
+fun <K : SIKey> SIUnit<Acceleration<K>>.toNativeUnitAcceleration(model: NativeUnitModel<K>):
+    SIUnit<NativeUnitAcceleration> = model.toNativeUnitAcceleration(this)
 
-fun <K : SIKey> SIUnit<NativeUnitAcceleration>.fromNativeUnitAcceleration(model: NativeUnitModel<K>): SIUnit<Acceleration<K>> =
-    model.fromNativeUnitAcceleration(this)
+fun <K : SIKey> SIUnit<NativeUnitAcceleration>.fromNativeUnitAcceleration(model: NativeUnitModel<K>):
+    SIUnit<Acceleration<K>> = model.fromNativeUnitAcceleration(this)

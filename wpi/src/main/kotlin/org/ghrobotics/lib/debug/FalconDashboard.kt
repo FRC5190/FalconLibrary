@@ -47,9 +47,9 @@ object FalconDashboard {
                     jsonObject(
                         "x" to it.translation.x,
                         "y" to it.translation.y,
-                        "angle" to it.rotation.degrees
+                        "angle" to it.rotation.degrees,
                     ).toString()
-                }.toTypedArray()
+                }.toTypedArray(),
             )
         }
         get() = visionTargetEntry.getStringArray(emptyArray())
@@ -58,7 +58,7 @@ object FalconDashboard {
                 Pose2d(
                     data["x"].asDouble.meters,
                     data["y"].asDouble.meters,
-                    data["angle"].asDouble.degrees.toRotation2d()
+                    data["angle"].asDouble.degrees.toRotation2d(),
                 )
             }
 

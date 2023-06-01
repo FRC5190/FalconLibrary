@@ -137,7 +137,8 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         }
 
         robotPosition = odometry.update(
-            periodicIO.gyro, periodicIO.positions
+            periodicIO.gyro,
+            periodicIO.positions,
         )
         poseBuffer[Timer.getFPGATimestamp().seconds] = robotPosition
 
@@ -180,7 +181,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
     }
 
     override fun setOutputSI(
-        states: Array<SwerveModuleState>
+        states: Array<SwerveModuleState>,
     ) {
         periodicIO.desiredOutput = Output.States(states)
     }
@@ -244,6 +245,7 @@ abstract class FalconSwerveDrivetrain : TrajectoryTrackerSwerveDriveBase(), Sens
         var rightBackFeedforward: SIUnit<Volt> = 0.volts
         var leftBackFeedforward: SIUnit<Volt> = 0.volts
     }
+
     /**
      * Represents the typical outputs for the drivetrain.
      */

@@ -20,7 +20,7 @@ interface FalconSolenoid {
     enum class State {
         Forward,
         Reverse,
-        Off
+        Off,
     }
 
     var state: State
@@ -53,8 +53,11 @@ class FalconDoubleSolenoid(forwardChannel: Int, reverseChannel: Int, moduleType:
     FalconSolenoid {
 
     private val wpiSolenoid: DoubleSolenoid =
-        if (module == null) DoubleSolenoid(moduleType, forwardChannel, reverseChannel)
-        else DoubleSolenoid(module, moduleType, forwardChannel, reverseChannel)
+        if (module == null) {
+            DoubleSolenoid(moduleType, forwardChannel, reverseChannel)
+        } else {
+            DoubleSolenoid(module, moduleType, forwardChannel, reverseChannel)
+        }
 
     // Set the solenoid to the desired position
     override var state: FalconSolenoid.State by Delegates.observable(FalconSolenoid.State.Off) { _, _, newValue ->

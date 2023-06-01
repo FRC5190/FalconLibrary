@@ -17,63 +17,83 @@ val Number.amps get() = toDouble().amps
 @Deprecated("Replaced with Plural version", ReplaceWith("inYottaamps()"))
 val SIUnit<Ampere>.yottaamp
     get() = inYottaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inZettaamps()"))
 val SIUnit<Ampere>.zettaamp
     get() = inZettaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inExaamps()"))
 val SIUnit<Ampere>.exaamp
     get() = inExaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inPetaamps()"))
 val SIUnit<Ampere>.petaamp
     get() = inPetaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inTeraamps()"))
 val SIUnit<Ampere>.teraamp
     get() = inTeraamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inGigaamps()"))
 val SIUnit<Ampere>.gigaamp
     get() = inGigaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMegaamps()"))
 val SIUnit<Ampere>.megaamp
     get() = inMegaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inKiloamps()"))
 val SIUnit<Ampere>.kiloamp
     get() = inKiloamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inHectoamps()"))
 val SIUnit<Ampere>.hectoamp
     get() = inHectoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inDecaamps()"))
 val SIUnit<Ampere>.decaamp
     get() = inDecaamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inAmps()"))
 val SIUnit<Ampere>.amp
     get() = inAmps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inDeciamps()"))
 val SIUnit<Ampere>.deciamp
     get() = inDeciamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inCentiamps()"))
 val SIUnit<Ampere>.centiamp
     get() = inCentiamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMilliamps()"))
 val SIUnit<Ampere>.milliamp
     get() = inMilliamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inMicroamps()"))
 val SIUnit<Ampere>.microamp
     get() = inMicroamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inNanoamps()"))
 val SIUnit<Ampere>.nanoamp
     get() = inNanoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inPicoamps()"))
 val SIUnit<Ampere>.picoamp
     get() = inPicoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inFemtoamps()"))
 val SIUnit<Ampere>.femtoamp
     get() = inFemtoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inAttoamps()"))
 val SIUnit<Ampere>.attoamp
     get() = inAttoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inZeptoamps()"))
 val SIUnit<Ampere>.zeptoamp
     get() = inZeptoamps()
+
 @Deprecated("Replaced with Plural version", ReplaceWith("inYoctoamps()"))
 val SIUnit<Ampere>.yoctoamp
     get() = inYoctoamps()

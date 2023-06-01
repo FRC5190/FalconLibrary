@@ -8,15 +8,15 @@
 
 package org.ghrobotics.lib.mathematics.units
 
-import kotlin.math.absoluteValue
 import org.ghrobotics.lib.mathematics.epsilonEquals
 import org.ghrobotics.lib.mathematics.lerp
+import kotlin.math.absoluteValue
 
 /**
  * @param value This is the value expressed in its SI Base Unit
  */
-
-inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
+@JvmInline // ktlint-disable
+value class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
 
     val absoluteValue get() = SIUnit<K>(value.absoluteValue)
 
@@ -25,6 +25,8 @@ inline class SIUnit<K : SIKey>(val value: Double) : Comparable<SIUnit<K>> {
     operator fun plus(other: SIUnit<K>) = SIUnit<K>(value.plus(other.value))
     operator fun minus(other: SIUnit<K>) = SIUnit<K>(value.minus(other.value))
 
+//    operator fun <M : SIKey> times(other: SIUnit<M>) = SIUnit<Mult<K, M>>(value * other.value)
+//    operator fun <D : SIKey> div(other: SIUnit<D>) = SIUnit<Frac<K, D>>(value / other.value)
     operator fun times(other: Double) = SIUnit<K>(value.times(other))
     operator fun div(other: Double) = SIUnit<K>(value.div(other))
 
