@@ -10,9 +10,9 @@ package org.ghrobotics.lib.commands
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 
-internal object FalconSubsystemHandler {
+object FalconSubsystemHandler {
     private val registeredSubsystems = arrayListOf<FalconSubsystem>()
-    internal val testCommand = SequentialCommandGroup()
+    val testCommand = SequentialCommandGroup()
 
     fun add(subsystem: FalconSubsystem) {
         registeredSubsystems.add(subsystem)

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Launch Shuffleboard" type="JarApplication" activateToolWindowBeforeRun="false">
+    <option name="JAR_PATH" value="C:\Users\Public\wpilib\2023\tools\artifacts\Shuffleboard-2023.4.3-winx64.jar" />
+    <module name="FalconLibrary.main" />
+    <method v="2" />
+  </configuration>
+</component>

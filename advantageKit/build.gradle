@@ -1,0 +1,19 @@
+dependencies {
+    api project(":core")
+    api project(":wpi")
+    api wpi.java.deps.wpilib()
+    api wpi.java.vendor.java()
+    api 'com.squareup:kotlinpoet-ksp:1.13.0'
+    api 'com.squareup:kotlinpoet-javapoet:1.13.0'
+    api 'com.squareup:kotlinpoet:1.13.0'
+    api "com.google.devtools.ksp:symbol-processing-api:1.6.20-1.0.5"
+
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+}

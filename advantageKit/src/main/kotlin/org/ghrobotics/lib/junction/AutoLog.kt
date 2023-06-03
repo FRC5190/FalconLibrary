@@ -6,7 +6,8 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-rootProject.name = "FalconLibrary"
-include("core", "wpi", "vendorCTRE", "vendorREV", "vendorNAVX", "vendorPWF")
-include("advantageKit")
-include("pathPlanner")
+package org.ghrobotics.lib.junction
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+annotation class AutoLog()

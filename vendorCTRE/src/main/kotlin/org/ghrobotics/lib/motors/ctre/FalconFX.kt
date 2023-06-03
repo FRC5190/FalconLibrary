@@ -69,7 +69,7 @@ class FalconFX<K : SIKey>(
      * Returns the current drawn by the motor.
      */
     override val drawnCurrent: SIUnit<Ampere>
-        get() = talonFX.outputCurrent.amps
+        get() = talonFX.supplyCurrent.amps
 
     /**
      * Configures the supply-side current limit for the motor.

@@ -6,7 +6,16 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-rootProject.name = "FalconLibrary"
-include("core", "wpi", "vendorCTRE", "vendorREV", "vendorNAVX", "vendorPWF")
-include("advantageKit")
-include("pathPlanner")
+dependencies {
+    api project(":core")
+    api wpi.java.deps.wpilib()
+    api wpi.java.vendor.java()
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+}

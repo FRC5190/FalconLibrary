@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.RobotController
 import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.commands.FalconCommand
+import org.ghrobotics.lib.subsystems.drive.westcoast.FalconWestCoastDrivetrain
 
 /**
  * Command that characterizes the robot using the robotpy-characterization

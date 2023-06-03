@@ -48,7 +48,6 @@ class ADNS3080FlowSensor(
         scope.launch {
             val spi = SPI(port)
             spi.setChipSelectActiveLow()
-            spi.setClockActiveHigh()
             spi.setClockRate(500000)
 
             while (isActive) {

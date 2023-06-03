@@ -45,7 +45,7 @@ class FalconSRX<K : SIKey>(
      * Returns the current drawn by the motor.
      */
     override val drawnCurrent: SIUnit<Ampere>
-        get() = talonSRX.outputCurrent.amps
+        get() = talonSRX.supplyCurrent.amps
 
     /**
      * Configures the feedback device for the motor controller.

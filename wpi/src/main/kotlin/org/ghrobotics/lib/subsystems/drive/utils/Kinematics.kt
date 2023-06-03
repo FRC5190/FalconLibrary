@@ -9,14 +9,14 @@
 package org.ghrobotics.lib.subsystems.drive.utils
 
 import org.ghrobotics.lib.mathematics.twodim.geometry.Rotation2d
-import org.ghrobotics.lib.subsystems.drive.FalconSwerveDrivetrain
+import org.ghrobotics.lib.subsystems.drive.swerve.FalconSwerveDrivetrain
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.hypot
 
 class Kinematics(val driveTrain: FalconSwerveDrivetrain) {
     private val L: Double = driveTrain.wheelbase
-    private val W: Double = driveTrain.trackwidth
+    private val W: Double = driveTrain.trackWidth
     private val R = hypot(L, W)
 
     /**
@@ -104,7 +104,7 @@ class Kinematics(val driveTrain: FalconSwerveDrivetrain) {
         var forward = forward
         var strafe = strafe
         if (field_relative) {
-            val gyroHeading = Rotation2d(driveTrain.gyro().radians, true)
+            val gyroHeading = Rotation2d(driveTrain.swerveDriveIO.gyro().radians, true)
             val temp: Double = forward * gyroHeading.cos() + strafe * gyroHeading.sin()
             strafe = -forward * gyroHeading.sin() + strafe * gyroHeading.cos()
             forward = temp

@@ -6,10 +6,10 @@
  * Copyright 2019, Green Hope Falcons
  */
 
-package org.ghrobotics.lib.subsystems.drive
+package org.ghrobotics.lib.subsystems.drive.swerve
 
+import com.pathplanner.lib.PathPlannerTrajectory
 import edu.wpi.first.math.kinematics.SwerveModuleState
-import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Timer
 import org.ghrobotics.lib.commands.FalconCommand
@@ -21,17 +21,20 @@ import org.ghrobotics.lib.utils.Source
 
 class SwerveTrajectoryTrackerCommand(
     private val drivetrain: FalconSwerveDrivetrain,
-    private val trajectorySource: Source<Trajectory>,
+    private val trajectorySource: Source<com.pathplanner.lib.PathPlannerTrajectory>,
 ) : FalconCommand(drivetrain) {
 
     private var prevStates = Array(4) { SwerveModuleState() }
 
     private val timer = Timer()
     private var elapsed = 0.0
-    private lateinit var trajectory: Trajectory
+    private lateinit var trajectory: PathPlannerTrajectory
 
     override fun initialize() {
         trajectory = trajectorySource()
+        drivetrain.setTrajectory(trajectory)
+
+        timer.reset()
         timer.start()
 
         prevStates = Array(4) { SwerveModuleState() }
@@ -41,13 +44,12 @@ class SwerveTrajectoryTrackerCommand(
 
     override fun execute() {
         elapsed = timer.get()
-
-        val currentTrajectoryState = trajectory.sample(elapsed)
-        val accelerations = Array(4) { 0.0 }
+        val currentTrajectoryState = trajectory.sample(elapsed) as PathPlannerTrajectory.PathPlannerState
 
         val chassisSpeeds = drivetrain.controller.calculate(
             drivetrain.robotPosition,
             currentTrajectoryState,
+            currentTrajectoryState.holonomicRotation,
         )
 
         val wheelStates = drivetrain.kinematics.toSwerveModuleStates(chassisSpeeds)
