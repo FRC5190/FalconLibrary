@@ -1,3 +1,11 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * Copyright 2019, Green Hope Falcons
+ */
+
 package org.ghrobotics.lib
 
 import com.revrobotics.CANSparkMaxLowLevel
@@ -34,12 +42,14 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
     override var encoder: AbstractFalconAbsoluteEncoder<Radian> = FalconCanCoder(
         swerveModuleConstants.kCanCoderId,
         swerveModuleConstants.kCanCoderNativeUnitModel,
-        swerveModuleConstants.kAzimuthEncoderHomeOffset
+        swerveModuleConstants.kAzimuthEncoderHomeOffset,
     )
 
     override var driveMotor = with(swerveModuleConstants) {
         falconMAX(
-            kDriveTalonId, CANSparkMaxLowLevel.MotorType.kBrushless, kDriveNativeUnitModel
+            kDriveTalonId,
+            CANSparkMaxLowLevel.MotorType.kBrushless,
+            kDriveNativeUnitModel,
         ) {
             outputInverted = kInvertDrive
             brakeMode = kDriveBrakeMode
@@ -50,13 +60,13 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
                 setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20)
                 setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 20)
             }
-
-
         }
     }
     override var azimuthMotor = with(swerveModuleConstants) {
         falconMAX(
-            kAzimuthTalonId, CANSparkMaxLowLevel.MotorType.kBrushless, kAzimuthNativeUnitModel
+            kAzimuthTalonId,
+            CANSparkMaxLowLevel.MotorType.kBrushless,
+            kAzimuthNativeUnitModel,
         ) {
             outputInverted = kInvertAzimuth
             brakeMode = kAzimuthBrakeMode
@@ -64,7 +74,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
                 setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100)
                 setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20)
                 setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 20)
-
             }
             voltageCompSaturation = 12.volts
             smartCurrentLimit = 20.amps
@@ -76,7 +85,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
                 iZone = kAzimuthIZone
                 setFeedbackDevice(canSparkMax.encoder)
             }
-
         }
     }
 
@@ -84,7 +92,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
         var setAngle = state.angle.radians % (2 * Math.PI)
         var voltage = (state.speedMetersPerSecond / swerveModuleConstants.kDriveMaxSpeed) * maxVoltage
         if (setAngle < 0.0) setAngle += 2.0 * Math.PI
-
 
         var diff = setAngle - stateAngle()
         if (diff >= PI) {
@@ -103,7 +110,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
 
         setVoltage(voltage)
         setAngle(setAngle)
-
     }
 
     private fun stateAngle(): Double {
@@ -113,10 +119,10 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
         return motorAngle
     }
 
-
-    //Keep an eye on this function
+    // Keep an eye on this function
     override fun swervePosition(): SwerveModulePosition = SwerveModulePosition(
-        drivePosition.value, edu.wpi.first.math.geometry.Rotation2d(stateAngle())
+        drivePosition.value,
+        edu.wpi.first.math.geometry.Rotation2d(stateAngle()),
     )
 
     override fun setNeutral() {
@@ -161,7 +167,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
         referenceAngle = angle
 
         azimuthMotor.setPosition(adjustedReferenceAngleRadians.radians)
-
     }
 
     override fun setVoltage(voltage: Double) {
@@ -172,11 +177,10 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
         azimuthMotor.encoder.resetPosition(encoder.absolutePosition)
     }
 
-
-    override val voltageOutput: SIUnit<Volt> get () = driveMotor.voltageOutput
+    override val voltageOutput: SIUnit<Volt> get() = driveMotor.voltageOutput
     override val drawnCurrent: SIUnit<Ampere> get() = driveMotor.drawnCurrent
     override val drivePosition: SIUnit<Meter> get() = driveMotor.encoder.position
-    override val driveVelocity: SIUnit<Velocity<Meter>> get () = driveMotor.encoder.velocity
+    override val driveVelocity: SIUnit<Velocity<Meter>> get() = driveMotor.encoder.velocity
     override val anglePosition: SIUnit<Radian> get() = encoder.position
 
     companion object {
@@ -193,11 +197,6 @@ class FalconNeoSwerveModule(private val swerveModuleConstants: SwerveModuleConst
                 driveMotor.voltageOutput.value
             }, {})
             addDoubleProperty("State Angle", { stateAngle() }, {})
-
-
         }
-
-
-
     }
 }
