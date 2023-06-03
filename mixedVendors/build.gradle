@@ -1,0 +1,18 @@
+dependencies {
+    api project(":core")
+    api project(":wpi")
+    api project(":vendorCTRE")
+    api project(":vendorREV")
+
+    api wpi.java.deps.wpilib()
+    api wpi.java.vendor.java()
+    api "com.github.salomonbrys.kotson:kotson:2.5.0"
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+}
